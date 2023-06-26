@@ -1,0 +1,11 @@
+.tmp
+.cache/
+coverage/
+.nyc_output/
+**/.pnp.*
+/dist*/
+node_modules/
+
+
+/tailwind.config.js
+index.html
