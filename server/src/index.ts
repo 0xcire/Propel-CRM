@@ -7,11 +7,11 @@ import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 
+import { db } from "./db";
 import { sql } from "drizzle-orm";
-import { drizzle, PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import { migrate } from "drizzle-orm/postgres-js/migrator";
-import postgres from "postgres";
+// import { migrate } from "drizzle-orm/postgres-js/migrator";
 
+dotenv.config();
 const app = express();
 
 app.use(helmet());
@@ -27,19 +27,12 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// make connection then listen for server
-
 // for migrations
 // const migrationClient = postgres("url", { max: 1 });
 // migrate(drizzle(migrationClient), ...)
 
-// for querying
-// const queryClient = postgres("url");
-// const db: PostgresJsDatabase = drizzle(queryClient);
-// await db.select().from(...)...
-
-app.get("/", (req, res) => {
-  res.json("responding from express");
+app.get("/", async (req, res) => {
+  res.json(["from express", await db.execute(sql`select version()`)]);
 });
 
 app.listen(1337, () => {

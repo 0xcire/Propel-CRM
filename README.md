@@ -58,17 +58,17 @@ Populate `./server/.env.example` with your own postgreSQL credentials and:
 
 ### Without Docker
 
-`git clone _link _name` \
-`cd _name` \
-from `_name` ... \
+`git clone https://github.com/0xcire/Propel-CRM.git propel-crm` \
+`cd propel-crm` \
+from `propel-crm` ... \
 `cd server && npm install && npm run dev` \
 `cd client && npm install && npm run dev` \
 open up `http://localhost:5173/` in your browser
 
-### With Docker (recommended)
+### With Docker (recommended, but not supported yet 😅)
 
-`git clone _link _name` \
-`cd _name` \
+`git clone https://github.com/0xcire/Propel-CRM.git propel-crm` \
+`cd propel-crm` \
 `docker-compose up`
 
 <!-- ## Learning Points
