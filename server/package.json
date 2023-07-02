@@ -2,9 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
-    "start": "nodemon"
+    "dev": "NODE_ENV=development nodemon",
+    "build": "rm -rf dist && tsc --project './tsconfig.build.json'",
+    "start": "npm run build && NODE_ENV=production node ./dist/index.js"
   },
   "keywords": [],
   "author": "",

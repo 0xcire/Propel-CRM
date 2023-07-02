@@ -14,15 +14,19 @@ A CRM for real estate agents.
   - look at my ts rest repo for starting point
 - Solidify Express comfortability
 - PostgreSQL
+- use for redis?
 - Expand on limited testing experience
   - Mock Service Worker, React Testing Library, etc etc
-- Docker (Docker.client, Docker.server, docker-compose ?)
+- [x] Docker (Docker.client, Docker.server, docker-compose ?)
 - better git, git squash, rebase?
 - Improve CI/CD branches (prod, test, dev)
   - don't think this is possible on render free tier.
   - next project in next.js -> vercel. possible there.
 
-<!-- ## Features -->
+## Features
+
+- [toast notis](https://react-hot-toast.com/)
+- [emails](https://resend.com/)
 
 ## Architecture
 
@@ -45,7 +49,7 @@ A CRM for real estate agents.
 
 ### Database
 
-- PostgreSQL (Neon)
+- PostgreSQL (Neon) (Switch to PlanetScale mySQL if usage hours become an issue w/ Neon)
 - Drizzle ORM
 
 ### Containerization
@@ -65,14 +69,26 @@ from `propel-crm` ... \
 `cd client && npm install && npm run dev` \
 open up `http://localhost:5173/` in your browser
 
-### With Docker (recommended, but not supported yet 😅)
+### With Docker (recommended)
 
 `git clone https://github.com/0xcire/Propel-CRM.git propel-crm` \
 `cd propel-crm` \
-`docker-compose up`
+`docker compose -f docker-compose.dev.yml up` to run in dev mode & \
+`docker compose up` to run in prod
 
-<!-- ## Learning Points
+## Learning Points
 
-## Issues
+- Docker
+  - Containerizing both client and server separately
+  - Writing separate configs for dev and prod
+    - Trying to follow best practices as necessary
+  - Using nginx as a reverse proxy server
+  - Using docker-compose to sync app together
 
-## Roadmap -->
+<!-- ## Issues -->
+
+## Roadmap
+
+- [x] adding **full** Docker support
+- [] auth / middlewares
+- [] then -> full stack slices for each api endpoint
