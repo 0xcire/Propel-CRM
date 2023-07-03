@@ -34,9 +34,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get("/", async (req: Request, res: Response) => {
   res.json("From LeExpress");
 });
-app.get("/db", async (req: Request, res: Response) => {
-  res.json(await db.execute(sql`select version()`));
-});
+// app.get("/db", async (req: Request, res: Response) => {
+//   res.json(await db.execute(sql`select version()`));
+// });
 
 app.get("/test", async (req: Request, res: Response) => {
   res.json("testing testing 1234");

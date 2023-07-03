@@ -39,13 +39,13 @@ A CRM for real estate agents.
 - React
 - React Router
 - React Query / React Context
-- - @trpc/client --> look into ts-rest
+- ts-rest
 
 ### Server
 
 - Node
 - Express
-- @trpc/server --> look into ts-rest
+- ts-rest
 
 ### Database
 
