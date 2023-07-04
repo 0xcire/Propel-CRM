@@ -25,8 +25,8 @@ A CRM for real estate agents.
 
 ## Features
 
-- [toast notis](https://react-hot-toast.com/)
 - [emails](https://resend.com/)
+- text service? try to find free tiers
 
 ## Architecture
 

@@ -1,6 +1,4 @@
 import express from "express";
-import { Request, Response } from "express";
-import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import dotenv from "dotenv";
@@ -9,6 +7,8 @@ import helmet from "helmet";
 
 import { db } from "./db";
 import { sql } from "drizzle-orm";
+
+import router from "./router";
 // import { migrate } from "drizzle-orm/postgres-js/migrator";
 
 dotenv.config();
@@ -24,23 +24,12 @@ app.use(
 
 app.use(compression());
 app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // for migrations
 // const migrationClient = postgres("url", { max: 1 });
 // migrate(drizzle(migrationClient), ...)
-
-app.get("/", async (req: Request, res: Response) => {
-  res.json("From LeExpress");
-});
-// app.get("/db", async (req: Request, res: Response) => {
-//   res.json(await db.execute(sql`select version()`));
-// });
-
-app.get("/test", async (req: Request, res: Response) => {
-  res.json("testing testing 1234");
-});
 
 const PORT = 1337;
 const server = app.listen(PORT, () => {
@@ -51,6 +40,8 @@ const server = app.listen(PORT, () => {
   }
 });
 
+app.use("/", router());
+
 async function close() {
   console.log("closing...");
   await new Promise((r) => server.close(r));
@@ -58,5 +49,4 @@ async function close() {
 }
 
 process.on("SIGINT", close);
-
 process.on("SIGTERM", close);
