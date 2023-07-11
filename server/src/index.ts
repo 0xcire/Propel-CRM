@@ -9,7 +9,6 @@ import { db } from "./db";
 import { sql } from "drizzle-orm";
 
 import router from "./router";
-// import { migrate } from "drizzle-orm/postgres-js/migrator";
 
 dotenv.config();
 const app = express();
@@ -27,10 +26,6 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// for migrations
-// const migrationClient = postgres("url", { max: 1 });
-// migrate(drizzle(migrationClient), ...)
-
 const PORT = 1337;
 const server = app.listen(PORT, () => {
   if (process.env.NODE_ENV === "development") {
@@ -44,8 +39,8 @@ app.use("/", router());
 
 async function close() {
   console.log("closing...");
-  await new Promise((r) => server.close(r));
   await sql`sql.end( {timeout: 5 })`;
+  await new Promise((r) => server.close(r));
 }
 
 process.on("SIGINT", close);

@@ -76,6 +76,16 @@ open up `http://localhost:5173/` in your browser
 `docker compose -f docker-compose.dev.yml up` to run in dev mode & \
 `docker compose up` to run in prod
 
+### Interacting with DB via Drizzle
+
+Ensure `server/drizzle.config.ts` is properly configured and:
+
+`npm exec drizzle-kit generate:pg` to run migrations \
+`npm exec drizzle-kit introspect:pg` to generate schemas based on existing db \
+`npm exec drizzle-kit drop` to delete previously generated migrations \
+`npm exec drizzle-kit studio` to use Drizzle ORM's new feature to explore your db \
+see more commands [here](https://orm.drizzle.team/kit-docs/commands)
+
 ## Learning Points
 
 - Docker

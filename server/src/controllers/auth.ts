@@ -1,27 +1,169 @@
 import type { Request, Response } from "express";
+import { db } from "../db";
+import { users, type User, type NewUser } from "../db/schema";
+import { eq } from "drizzle-orm";
+import { checkPassword, createSessionToken, hashPassword } from "../utils";
 
+// [] handle links between sign in and sign up
+// [] general: cookies, sessions, authentication, hashing, salting, bcrypt
+// [] sign in: forgot password flow, phone # account recovery
+// [] figure out redirects, protected routes, etc
+
+// BASIC
+// [x] user can sign in and be instructed on incorrect inputs
+// [x] user can sign up and be instructed on duplicate email/username
+// [x] user can sign out - figure this out
+// [] user can delete their own account
+// [] user can update their account info
+
+// extract
+type UserResponse = Pick<User, "username" | "email" | "hashedPassword">;
+type UserInput = {
+  name?: string | undefined;
+  username?: string | undefined;
+  email: string | undefined;
+  password: string | undefined;
+};
+
+// able to sign in via username or email
+// if user cant be found via email -> render link to sign up: "account doesn't exist, create one here"
 export const signin = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
+  try {
+    const { email, password }: UserInput = req.body;
+
+    if (!email || !password) {
+      // "please fill out all fields"
+      return res.sendStatus(400);
+    }
+
+    // extract
+    const user: Array<UserResponse> = await db
+      .select({
+        username: users.username,
+        email: users.email,
+        hashedPassword: users.hashedPassword,
+      })
+      .from(users)
+      .where(eq(users.email, email));
+
+    if (!user[0].email) {
+      return res.sendStatus(400);
+    }
+
+    const passwordMatches = await checkPassword(password, user[0].hashedPassword);
+    // delete req.body.password; ?
+
+    if (!passwordMatches) {
+      console.log("stop right there");
+      return res.sendStatus(401);
+    }
+
+    // sign in logic here
+
+    const THIRTY_MINUTES = 1800000;
+    const token = await createSessionToken();
+
+    await db.update(users).set({ sessionToken: token }).where(eq(users.email, email));
+
+    res.cookie("session", token, {
+      expires: new Date(Date.now() + THIRTY_MINUTES),
+      httpOnly: true,
+      secure: true,
+    });
+
+    return res.status(200).json("signing in").end();
+  } catch (error) {
+    console.log(error);
     return res.sendStatus(400);
   }
-  //check user exists
-  //check password is correct
-
-  return res.status(200).json("signing in").end();
 };
 
+// successful sign up should redirect user to application
 export const signup = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    return res.sendStatus(400);
-  }
-  // check for existing user
+  try {
+    const { name, username, email, password }: UserInput = req.body;
 
-  return res.status(200).json("signing up").end();
+    if (!name || !username || !email || !password) {
+      // "please fill out all fields"
+      return res.sendStatus(400);
+    }
+
+    // extract
+    const userByEmail: Array<Pick<UserResponse, "email">> = await db
+      .select({
+        email: users.email,
+      })
+      .from(users)
+      .where(eq(users.email, email));
+
+    const userByUsername: Array<Pick<UserResponse, "username">> = await db
+      .select({
+        username: users.username,
+      })
+      .from(users)
+      .where(eq(users.username, username));
+
+    if (username === userByUsername[0].username) {
+      // "username not available, please pick another"
+      return res.sendStatus(409);
+    }
+
+    if (email === userByEmail[0].email) {
+      // "email already exists. recover your password here."
+      return res.sendStatus(409);
+    }
+
+    // extract into helpers
+    const insertUser = async (user: NewUser) => {
+      return db.insert(users).values(user).returning({
+        id: users.id,
+        name: users.name,
+        username: users.username,
+        email: users.email,
+      });
+    };
+
+    const hashedPassword = await hashPassword(password);
+    // delete password; ?
+    const token = createSessionToken();
+
+    const newUser: NewUser = {
+      name: name,
+      username: username,
+      email: email,
+      hashedPassword: hashedPassword,
+      sessionToken: token,
+    };
+
+    await insertUser(newUser);
+
+    const THIRTY_MINUTES = 1800000;
+    res.cookie("session", token, {
+      expires: new Date(Date.now() + THIRTY_MINUTES),
+      httpOnly: true,
+      secure: true,
+    });
+
+    return res.status(201).json("signing up").end();
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
 };
 
+// return status code on success and redirect based on code?
 export const signout = async (req: Request, res: Response) => {
-  // console.log("signing out");
-  return res.json("signing out");
+  try {
+    const { username } = req.body;
+
+    console.log("signing out");
+
+    await db.update(users).set({ sessionToken: "" }).where(eq(users.username, username));
+
+    res.clearCookie("session");
+    return res.status(200).json("signing out").end();
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
 };
