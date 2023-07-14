@@ -6,5 +6,3 @@ const isAuthorized = false;
 const routes = isAuthorized ? privateRoutes : publicRoutes;
 
 export default routes;
-
-// how to redirect

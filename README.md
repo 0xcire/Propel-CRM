@@ -10,7 +10,7 @@ A CRM for real estate agents.
 - React Router for query params
   - url component state necessary for this?
 - TRPC || ts-rest, React Query
-- Rolling Authenticaion (OWASP, bcrypt, other security measures)
+- [x] Rolling Authenticaion (OWASP, bcrypt, other security measures)
   - look at my ts rest repo for starting point
 - Solidify Express comfortability
 - PostgreSQL
@@ -34,7 +34,9 @@ A CRM for real estate agents.
 
 ### Client
 
-- Tailwind / Shadcn UI
+- Tailwind / Shadcn UI (Radix)
+  - `./client/src/components/ui` contain shadcn components and everything in
+  - `./client/src/components` contain my extension / customization of them
 - Vite
 - React
 - React Router

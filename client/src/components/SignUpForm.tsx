@@ -18,6 +18,8 @@ import clsx from 'clsx';
 // import { useEffect } from 'react';
 
 const signInSchema = z.object({
+  Name: z.string(),
+  Username: z.string(),
   Email: z.string().email(),
   Password: z.string().min(8, {
     message: 'Must be greater than 8 characters',
@@ -47,7 +49,7 @@ export function SignUpForm() {
       return;
     } else {
       toast({
-        description: 'Invalid Email or Password',
+        description: 'Username taken',
       });
     }
   };
@@ -58,7 +60,7 @@ export function SignUpForm() {
 
   return (
     <>
-      <div className='mx-auto w-1/2'>
+      <div className='mx-auto w-1/4'>
         <h1 className='scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl'>
           Sign Up
         </h1>
@@ -67,6 +69,38 @@ export function SignUpForm() {
             onSubmit={form.handleSubmit(onSubmit)}
             className='mt-6 space-y-3'
           >
+            <FormField
+              control={form.control}
+              name='Name'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{field.name}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder='John Deere'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='Username'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{field.name}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder='jdeere123'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name='Email'

@@ -14,7 +14,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { SubmitHandler } from 'react-hook-form';
-import clsx from 'clsx';
 // import { useEffect } from 'react';
 
 const signInSchema = z.object({
@@ -34,6 +33,7 @@ export function SignInForm() {
       Password: '',
     },
   });
+  const formNotFilledIn = form.getValues().Password === '';
 
   const onSubmit: SubmitHandler<SignInFields> = (values: SignInFields) => {
     console.log(values);
@@ -56,7 +56,7 @@ export function SignInForm() {
 
   return (
     <>
-      <div className='mx-auto w-1/2'>
+      <div className='mx-auto w-1/4'>
         <h1 className='scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl'>
           Sign In
         </h1>
@@ -98,10 +98,8 @@ export function SignInForm() {
               )}
             />
             <Button
-              className={clsx(
-                form.getValues().Password === '' &&
-                  'pointer-events-none bg-slate-600'
-              )}
+              disabled={formNotFilledIn}
+              aria-disabled={formNotFilledIn}
               type='submit'
             >
               Submit

@@ -1,8 +1,8 @@
 // welcome page
 // sign in
 // sign up
-import { SignInForm } from '@/components/SignInForm';
-import { SignUpForm } from '@/components/SignUpForm';
+import { SignInForm } from '@/components';
+import { SignUpForm } from '@/components';
 import { LinkButton } from '@/components';
 import { Outlet } from 'react-router-dom';
 import type { RouteObject } from 'react-router-dom';

@@ -1,8 +1,9 @@
 import type { Request, Response } from "express";
 import { db } from "../db";
 import { users, type User, type NewUser } from "../db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { checkPassword, createSessionToken, hashPassword } from "../utils";
+import { timestamp } from "drizzle-orm/pg-core";
 
 // [] handle links between sign in and sign up
 // [] general: cookies, sessions, authentication, hashing, salting, bcrypt
@@ -45,9 +46,11 @@ export const signin = async (req: Request, res: Response) => {
       })
       .from(users)
       .where(eq(users.email, email));
+    // console.log(user[0].hashedPassword);
 
     if (!user[0].email) {
-      return res.sendStatus(400);
+      // "No account with this email. Sign up here."
+      return res.sendStatus(401);
     }
 
     const passwordMatches = await checkPassword(password, user[0].hashedPassword);
@@ -62,6 +65,8 @@ export const signin = async (req: Request, res: Response) => {
 
     const THIRTY_MINUTES = 1800000;
     const token = await createSessionToken();
+
+    // await db.update(users).set({ sessionToken: token, lastLogin: sql`current_timestampz` }).where(eq(users.email, email));
 
     await db.update(users).set({ sessionToken: token }).where(eq(users.email, email));
 
@@ -103,12 +108,12 @@ export const signup = async (req: Request, res: Response) => {
       .from(users)
       .where(eq(users.username, username));
 
-    if (username === userByUsername[0].username) {
+    if (userByUsername[0]) {
       // "username not available, please pick another"
       return res.sendStatus(409);
     }
 
-    if (email === userByEmail[0].email) {
+    if (userByEmail[0]) {
       // "email already exists. recover your password here."
       return res.sendStatus(409);
     }
@@ -124,7 +129,7 @@ export const signup = async (req: Request, res: Response) => {
     };
 
     const hashedPassword = await hashPassword(password);
-    // delete password; ?
+
     const token = createSessionToken();
 
     const newUser: NewUser = {
@@ -154,13 +159,12 @@ export const signup = async (req: Request, res: Response) => {
 // return status code on success and redirect based on code?
 export const signout = async (req: Request, res: Response) => {
   try {
-    const { username } = req.body;
-
-    console.log("signing out");
+    const username = req.user.username;
 
     await db.update(users).set({ sessionToken: "" }).where(eq(users.username, username));
 
     res.clearCookie("session");
+    // return a 300 code?
     return res.status(200).json("signing out").end();
   } catch (error) {
     console.log(error);
