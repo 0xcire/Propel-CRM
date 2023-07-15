@@ -1,8 +1,12 @@
+import { ReactElement } from 'react';
+import { redirect } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
+import { useRegister } from '@/lib/react-query-auth';
+import { queryClient } from '@/lib/react-query';
+
 import {
   Form,
   FormControl,
@@ -13,54 +17,52 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
-import { SubmitHandler } from 'react-hook-form';
-import clsx from 'clsx';
-// import { useEffect } from 'react';
 
-const signInSchema = z.object({
-  Name: z.string(),
-  Username: z.string(),
-  Email: z.string().email(),
-  Password: z.string().min(8, {
+import SubmitButton from './SubmitButton';
+
+const signUpSchema = z.object({
+  name: z.string(),
+  username: z.string(),
+  email: z.string().email(),
+  password: z.string().min(8, {
     message: 'Must be greater than 8 characters',
   }),
 });
 
-type SignInFields = z.infer<typeof signInSchema>;
+export type SignUpFields = z.infer<typeof signUpSchema>;
 
-export function SignUpForm() {
+export function SignUpForm(): JSX.Element {
   const { toast } = useToast();
-
-  const form = useForm<SignInFields>({
-    resolver: zodResolver(signInSchema),
-    defaultValues: {
-      Email: '',
-      Password: '',
+  const register = useRegister({
+    onSuccess: () => {
+      queryClient.invalidateQueries(['authenticated-user']);
+      return redirect('/');
+    },
+    onError: (error) => {
+      return toast({
+        description: error.message,
+      });
     },
   });
 
-  const onSubmit: SubmitHandler<SignInFields> = (values: SignInFields) => {
-    console.log(values);
-    // based off api call
-    const success = false;
-    if (success) {
-      // handle redirect to app here
-      form.reset();
-      return;
-    } else {
-      toast({
-        description: 'Username taken',
-      });
-    }
-  };
+  const form = useForm<SignUpFields>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      name: '',
+      username: '',
+      email: '',
+      password: '',
+    },
+  });
+  const formNotFilledIn = form.getValues().password === '';
 
-  //   useEffect(() => {
-  //     form.formState.isSubmitSuccessful && form.reset();
-  //   }, [form]);
+  const onSubmit: SubmitHandler<SignUpFields> = (values: SignUpFields) => {
+    register.mutate(values);
+  };
 
   return (
     <>
-      <div className='mx-auto w-1/4'>
+      <div className='mx-auto w-3/4 max-w-[500px]'>
         <h1 className='scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl'>
           Sign Up
         </h1>
@@ -71,8 +73,8 @@ export function SignUpForm() {
           >
             <FormField
               control={form.control}
-              name='Name'
-              render={({ field }) => (
+              name='name'
+              render={({ field }): ReactElement => (
                 <FormItem>
                   <FormLabel>{field.name}</FormLabel>
                   <FormControl>
@@ -87,8 +89,8 @@ export function SignUpForm() {
             />
             <FormField
               control={form.control}
-              name='Username'
-              render={({ field }) => (
+              name='username'
+              render={({ field }): ReactElement => (
                 <FormItem>
                   <FormLabel>{field.name}</FormLabel>
                   <FormControl>
@@ -103,8 +105,8 @@ export function SignUpForm() {
             />
             <FormField
               control={form.control}
-              name='Email'
-              render={({ field }) => (
+              name='email'
+              render={({ field }): ReactElement => (
                 <FormItem>
                   <FormLabel>{field.name}</FormLabel>
                   <FormControl>
@@ -119,13 +121,14 @@ export function SignUpForm() {
             />
             <FormField
               control={form.control}
-              name='Password'
-              render={({ field }) => (
+              name='password'
+              render={({ field }): ReactElement => (
                 <FormItem>
                   <FormLabel>{field.name}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder='password123'
+                      type='password'
                       {...field}
                     />
                   </FormControl>
@@ -133,15 +136,12 @@ export function SignUpForm() {
                 </FormItem>
               )}
             />
-            <Button
-              className={clsx(
-                form.getValues().Password === '' &&
-                  'pointer-events-none bg-slate-600'
-              )}
-              type='submit'
-            >
-              Submit
-            </Button>
+            <SubmitButton
+              text='Sign Up'
+              disabled={formNotFilledIn}
+              ariaDisabled={formNotFilledIn}
+              isLoading={register.isLoading}
+            />
           </form>
         </Form>
       </div>

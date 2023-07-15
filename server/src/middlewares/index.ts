@@ -8,7 +8,9 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
     const sessionToken = req.cookies["session"];
 
     if (!sessionToken) {
-      return res.sendStatus(403);
+      return res.status(403).json({
+        message: "Session does not exist",
+      });
     }
 
     // extract
@@ -17,7 +19,9 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
     const user: User = existingUser[0];
 
     if (!user) {
-      return res.sendStatus(403);
+      return res.status(403).json({
+        message: "Can't find user.",
+      });
     }
 
     req.user = {
@@ -37,7 +41,6 @@ export const isOwner = (req: Request, res: Response, next: NextFunction) => {
   try {
     // may need to modify this
     // const { id } = req.params;
-    // console.log("parameters", req.params);
     const currentUser = req.user.username;
 
     if (!currentUser) {

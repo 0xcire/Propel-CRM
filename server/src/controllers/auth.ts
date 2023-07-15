@@ -3,12 +3,6 @@ import { db } from "../db";
 import { users, type User, type NewUser } from "../db/schema";
 import { eq, sql } from "drizzle-orm";
 import { checkPassword, createSessionToken, hashPassword } from "../utils";
-import { timestamp } from "drizzle-orm/pg-core";
-
-// [] handle links between sign in and sign up
-// [] general: cookies, sessions, authentication, hashing, salting, bcrypt
-// [] sign in: forgot password flow, phone # account recovery
-// [] figure out redirects, protected routes, etc
 
 // BASIC
 // [x] user can sign in and be instructed on incorrect inputs
@@ -16,6 +10,10 @@ import { timestamp } from "drizzle-orm/pg-core";
 // [x] user can sign out - figure this out
 // [] user can delete their own account
 // [] user can update their account info
+
+// [] users are sent an email verification on sign up, and cannot sign in if not verified
+// [] users can recover password if they input incorrectly X times on sign in
+// ^ or recover password if on sign up, inputting an existing email
 
 // extract
 type UserResponse = Pick<User, "username" | "email" | "hashedPassword">;
@@ -29,16 +27,17 @@ type UserInput = {
 // able to sign in via username or email
 // if user cant be found via email -> render link to sign up: "account doesn't exist, create one here"
 export const signin = async (req: Request, res: Response) => {
+  // check for email verification
   try {
     const { email, password }: UserInput = req.body;
 
+    // client side validation handles this case, dont need to return message
     if (!email || !password) {
-      // "please fill out all fields"
       return res.sendStatus(400);
     }
 
     // extract
-    const user: Array<UserResponse> = await db
+    const userArray: Array<UserResponse> = await db
       .select({
         username: users.username,
         email: users.email,
@@ -46,29 +45,42 @@ export const signin = async (req: Request, res: Response) => {
       })
       .from(users)
       .where(eq(users.email, email));
-    // console.log(user[0].hashedPassword);
+    const userByEmail = userArray[0];
 
-    if (!user[0].email) {
-      // "No account with this email. Sign up here."
-      return res.sendStatus(401);
+    // 'redirect' to sign up page
+    if (!userByEmail) {
+      return res.status(401).json({
+        message: "Account with this email does not exist.",
+      });
     }
 
-    const passwordMatches = await checkPassword(password, user[0].hashedPassword);
-    // delete req.body.password; ?
+    const passwordMatches = await checkPassword(password, userByEmail.hashedPassword);
 
+    // after X tries, 'redirect' to account recovery
     if (!passwordMatches) {
-      console.log("stop right there");
-      return res.sendStatus(401);
+      return res.status(401).json({
+        message: "Incorrect password.",
+      });
     }
 
-    // sign in logic here
-
+    // increase this and extract
     const THIRTY_MINUTES = 1800000;
     const token = await createSessionToken();
 
-    // await db.update(users).set({ sessionToken: token, lastLogin: sql`current_timestampz` }).where(eq(users.email, email));
-
-    await db.update(users).set({ sessionToken: token }).where(eq(users.email, email));
+    const user = await db
+      .update(users)
+      .set({
+        sessionToken: token,
+        lastLogin: sql`CURRENT_TIMESTAMP`,
+      })
+      .where(eq(users.email, email))
+      .returning({
+        id: users.id,
+        username: users.username,
+        name: users.name,
+        email: users.email,
+        lastLogin: users.lastLogin,
+      });
 
     res.cookie("session", token, {
       expires: new Date(Date.now() + THIRTY_MINUTES),
@@ -76,10 +88,10 @@ export const signin = async (req: Request, res: Response) => {
       secure: true,
     });
 
-    return res.status(200).json("signing in").end();
+    return res.status(200).json({ message: "signing in", user: user[0] });
   } catch (error) {
     console.log(error);
-    return res.sendStatus(400);
+    return res.sendStatus(500);
   }
 };
 
@@ -89,7 +101,6 @@ export const signup = async (req: Request, res: Response) => {
     const { name, username, email, password }: UserInput = req.body;
 
     if (!name || !username || !email || !password) {
-      // "please fill out all fields"
       return res.sendStatus(400);
     }
 
@@ -109,13 +120,16 @@ export const signup = async (req: Request, res: Response) => {
       .where(eq(users.username, username));
 
     if (userByUsername[0]) {
-      // "username not available, please pick another"
-      return res.sendStatus(409);
+      return res.status(409).json({
+        message: "Username not available. Please pick another.",
+      });
     }
 
+    // 'redirect' to sign up or account recovery
     if (userByEmail[0]) {
-      // "email already exists. recover your password here."
-      return res.sendStatus(409);
+      return res.status(409).json({
+        message: "Email already exists.",
+      });
     }
 
     // extract into helpers
@@ -127,6 +141,8 @@ export const signup = async (req: Request, res: Response) => {
         email: users.email,
       });
     };
+
+    // create email verification functionality
 
     const hashedPassword = await hashPassword(password);
 
@@ -140,8 +156,9 @@ export const signup = async (req: Request, res: Response) => {
       sessionToken: token,
     };
 
-    await insertUser(newUser);
+    const user = await insertUser(newUser);
 
+    // extract
     const THIRTY_MINUTES = 1800000;
     res.cookie("session", token, {
       expires: new Date(Date.now() + THIRTY_MINUTES),
@@ -149,10 +166,13 @@ export const signup = async (req: Request, res: Response) => {
       secure: true,
     });
 
-    return res.status(201).json("signing up").end();
+    return res.status(201).json({
+      message: "Signing up.",
+      user: user[0],
+    });
   } catch (error) {
     console.log(error);
-    res.sendStatus(400);
+    res.sendStatus(500);
   }
 };
 
@@ -160,14 +180,38 @@ export const signup = async (req: Request, res: Response) => {
 export const signout = async (req: Request, res: Response) => {
   try {
     const username = req.user.username;
+    const sessionToken = req.cookies["session"];
 
-    await db.update(users).set({ sessionToken: "" }).where(eq(users.username, username));
+    if (!req.cookies) {
+      return res.status(204).json({
+        message: "Session does not exist.",
+      });
+    }
+
+    // extract
+    const userByToken = await db.select().from(users).where(eq(users.sessionToken, sessionToken));
+
+    if (!userByToken) {
+      res.clearCookie("session");
+      return res.status(204).json({
+        message: "Can't find user.",
+      });
+    }
+
+    //extract
+    await db
+      .update(users)
+      .set({
+        sessionToken: "",
+      })
+      .where(eq(users.sessionToken, sessionToken));
 
     res.clearCookie("session");
-    // return a 300 code?
-    return res.status(200).json("signing out").end();
+    return res.status(204).json({
+      message: "Signing out.",
+    });
   } catch (error) {
     console.log(error);
-    res.sendStatus(400);
+    res.sendStatus(500);
   }
 };

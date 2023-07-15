@@ -7,12 +7,16 @@ type LinkButtonProps = {
   className?: string;
 };
 
-export function LinkButton({ text, path, className }: LinkButtonProps) {
+export function LinkButton({
+  text,
+  path,
+  className,
+}: LinkButtonProps): JSX.Element {
   const navigate = useNavigate();
   return (
     <Button
       className={className}
-      onClick={() => navigate(path)}
+      onClick={(): void => navigate(path)}
     >
       {text}
     </Button>

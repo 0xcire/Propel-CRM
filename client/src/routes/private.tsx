@@ -5,6 +5,9 @@
 // tasks
 // analytics
 
-export const privateRoutes = [
-  { path: '/private', element: <div>protected</div> },
+import { RouteObject } from 'react-router-dom';
+import Protected from '@/components/Protected';
+
+export const privateRoutes: Array<RouteObject> = [
+  { path: '/', element: <Protected /> },
 ];

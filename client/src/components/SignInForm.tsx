@@ -1,8 +1,13 @@
+import { ReactElement } from 'react';
+import { redirect } from 'react-router-dom';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
+import { useLogin } from '@/lib/react-query-auth';
+import { queryClient } from '@/lib/react-query';
+
 import {
   Form,
   FormControl,
@@ -13,50 +18,48 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
-import { SubmitHandler } from 'react-hook-form';
-// import { useEffect } from 'react';
+import SubmitButton from './SubmitButton';
 
 const signInSchema = z.object({
-  Email: z.string().email(),
-  Password: z.string(),
+  email: z.string().email(),
+  password: z.string(),
 });
 
-type SignInFields = z.infer<typeof signInSchema>;
+export type SignInFields = z.infer<typeof signInSchema>;
 
-export function SignInForm() {
+export function SignInForm(): JSX.Element {
   const { toast } = useToast();
+  const login = useLogin({
+    onSuccess: () => {
+      queryClient.invalidateQueries(['authenticated-user']);
+      return redirect('/');
+    },
+    onError: (error) => {
+      return toast({
+        description: error.message,
+      });
+    },
+    meta: {
+      isErrorHandledLocally: true,
+    },
+  });
 
   const form = useForm<SignInFields>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      Email: '',
-      Password: '',
+      email: '',
+      password: '',
     },
   });
-  const formNotFilledIn = form.getValues().Password === '';
+  const formNotFilledIn = form.getValues().password === '';
 
   const onSubmit: SubmitHandler<SignInFields> = (values: SignInFields) => {
-    console.log(values);
-    // based off api call
-    const success = false;
-    if (success) {
-      // handle redirect to app here
-      form.reset();
-      return;
-    } else {
-      toast({
-        description: 'Invalid Email or Password',
-      });
-    }
+    login.mutate(values);
   };
-
-  //   useEffect(() => {
-  //     form.formState.isSubmitSuccessful && form.reset();
-  //   }, [form]);
 
   return (
     <>
-      <div className='mx-auto w-1/4'>
+      <div className='mx-auto w-3/4 max-w-[500px]'>
         <h1 className='scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl'>
           Sign In
         </h1>
@@ -67,8 +70,8 @@ export function SignInForm() {
           >
             <FormField
               control={form.control}
-              name='Email'
-              render={({ field }) => (
+              name='email'
+              render={({ field }): ReactElement => (
                 <FormItem>
                   <FormLabel>{field.name}</FormLabel>
                   <FormControl>
@@ -83,13 +86,14 @@ export function SignInForm() {
             />
             <FormField
               control={form.control}
-              name='Password'
-              render={({ field }) => (
+              name='password'
+              render={({ field }): ReactElement => (
                 <FormItem>
                   <FormLabel>{field.name}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder='password123'
+                      type='password'
                       {...field}
                     />
                   </FormControl>
@@ -97,13 +101,12 @@ export function SignInForm() {
                 </FormItem>
               )}
             />
-            <Button
+            <SubmitButton
+              text={'Sign In'}
               disabled={formNotFilledIn}
-              aria-disabled={formNotFilledIn}
-              type='submit'
-            >
-              Submit
-            </Button>
+              ariaDisabled={formNotFilledIn}
+              isLoading={login.isLoading}
+            />
           </form>
         </Form>
       </div>
