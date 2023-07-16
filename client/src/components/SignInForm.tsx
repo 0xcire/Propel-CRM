@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { redirect } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, type SubmitHandler } from 'react-hook-form';
@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
-import SubmitButton from './SubmitButton';
+import { SubmitButton } from '@/components';
 
 const signInSchema = z.object({
   email: z.string().email(),
@@ -29,10 +29,11 @@ export type SignInFields = z.infer<typeof signInSchema>;
 
 export function SignInForm(): JSX.Element {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const login = useLogin({
     onSuccess: () => {
       queryClient.invalidateQueries(['authenticated-user']);
-      return redirect('/');
+      navigate('/');
     },
     onError: (error) => {
       return toast({

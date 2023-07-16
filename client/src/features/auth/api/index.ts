@@ -17,7 +17,7 @@ export type User = {
 
 export const handleAPIResponse = async (
   response: Response
-): Promise<APIResponse | Error> => {
+): Promise<APIResponse> => {
   const data: APIResponse = await response.json();
   if (response.ok) {
     return data;

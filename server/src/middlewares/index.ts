@@ -1,11 +1,10 @@
 import type { Request, Response, NextFunction } from "express";
-import { db } from "../db";
-import { eq } from "drizzle-orm";
-import { User, users } from "../db/schema";
+import { findUsersBySessionToken } from "../db/queries";
+import { SESSION_COOKIE_NAME } from "../config";
 
 export const isAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const sessionToken = req.cookies["session"];
+    const sessionToken = req.cookies[SESSION_COOKIE_NAME as string];
 
     if (!sessionToken) {
       return res.status(403).json({
@@ -14,20 +13,20 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
     }
 
     // extract
-    const existingUser: Array<User> = await db.select().from(users).where(eq(users.sessionToken, sessionToken));
+    const userByToken = await findUsersBySessionToken(sessionToken);
 
-    const user: User = existingUser[0];
-
-    if (!user) {
+    if (!userByToken) {
       return res.status(403).json({
         message: "Can't find user.",
       });
     }
 
-    req.user = {
-      id: user.id,
-      username: user.username,
-    };
+    if (userByToken.id && userByToken.username) {
+      req.user = {
+        id: userByToken.id,
+        username: userByToken.username,
+      };
+    }
 
     return next();
   } catch (error) {

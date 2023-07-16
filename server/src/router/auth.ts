@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { signup, signin, signout } from "../controllers/auth";
 import { isAuth } from "../middlewares";
+import { signup, signin, signout } from "../controllers/auth";
 
 export default (router: Router) => {
   router.post("/auth/signup", signup);

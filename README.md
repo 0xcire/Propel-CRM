@@ -22,11 +22,13 @@ A CRM for real estate agents.
 - Improve CI/CD branches (prod, test, dev)
   - don't think this is possible on render free tier.
   - next project in next.js -> vercel. possible there.
+- [emails](https://resend.com/)
+- text service? try to find free tiers
 
 ## Features
 
-- [emails](https://resend.com/)
-- text service? try to find free tiers
+- Docker setup for Development and Production.
+- Session based cookie authentication
 
 ## Architecture
 

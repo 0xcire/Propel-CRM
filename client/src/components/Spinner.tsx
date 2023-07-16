@@ -9,10 +9,8 @@ const VariantMap = {
   lg: 'loading-lg',
 };
 
-const Spinner = ({ variant }: SpinnerProps): JSX.Element => {
+export const Spinner = ({ variant }: SpinnerProps): JSX.Element => {
   const modifier = VariantMap[variant];
 
   return <span className={`loading loading-spinner ${modifier}`}></span>;
 };
-
-export default Spinner;

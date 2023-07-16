@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
 
-// import { db } from "./db";
 import { sql } from "drizzle-orm";
 
 import router from "./router";

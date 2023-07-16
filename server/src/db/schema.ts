@@ -4,8 +4,7 @@
 // tasks
 // analytics
 
-import { InferModel, eq, isNotNull } from "drizzle-orm";
-import { boolean, jsonb, pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -15,8 +14,6 @@ export const users = pgTable("users", {
   hashedPassword: varchar("hashed_password", { length: 256 }).notNull(),
   sessionToken: varchar("session_token", { length: 256 }).notNull(),
   isAdmin: boolean("is_admin").default(false).notNull(),
-  lastLogin: timestamp("last_login", { withTimezone: true }),
+  lastLogin: timestamp("last_login", { withTimezone: true }).defaultNow(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
-export type User = InferModel<typeof users, "select">;
-export type NewUser = InferModel<typeof users, "insert">;

@@ -1,5 +1,5 @@
-import Spinner from './Spinner';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components';
 
 type SubmitButtonProps = {
   text: string;
@@ -8,7 +8,7 @@ type SubmitButtonProps = {
   ariaDisabled?: boolean;
 };
 
-const SubmitButton = ({
+export const SubmitButton = ({
   text,
   isLoading,
   disabled,
@@ -26,5 +26,3 @@ const SubmitButton = ({
     </Button>
   );
 };
-
-export default SubmitButton;
