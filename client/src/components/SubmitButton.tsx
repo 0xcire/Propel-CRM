@@ -1,23 +1,24 @@
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components';
+import type { ButtonHTMLAttributes } from 'react';
 
-type SubmitButtonProps = {
+interface SubmitButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
   isLoading: boolean;
   disabled?: boolean;
-  ariaDisabled?: boolean;
-};
+}
 
 export const SubmitButton = ({
   text,
   isLoading,
   disabled,
-  ariaDisabled,
+  ...props
 }: SubmitButtonProps): JSX.Element => {
   return (
     <Button
-      disabled={disabled}
-      aria-disabled={ariaDisabled}
+      {...props}
+      disabled={isLoading || disabled}
+      aria-disabled={isLoading || disabled}
       className='max-w-content'
       type='submit'
     >

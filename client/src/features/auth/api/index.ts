@@ -1,6 +1,5 @@
-import { API_URL } from '@/config';
-import type { SignInFields as LoginCredentials } from '@/components/SignInForm';
-import { SignUpFields } from '@/components/SignUpForm';
+import type { SigninCredentials, SignupCredentials } from '@/features/auth';
+import { Get, Post } from '@/lib/fetch';
 
 export type APIResponse = {
   message: string | undefined;
@@ -27,42 +26,30 @@ export const handleAPIResponse = async (
 };
 
 export const getMe = async (): Promise<APIResponse> => {
-  return fetch(`${API_URL}/user/me`).then(handleAPIResponse);
+  return Get({ endpoint: 'user/me' }).then(handleAPIResponse);
 };
 
 export const signin = async (
-  credentials: LoginCredentials
+  credentials: SigninCredentials
 ): Promise<APIResponse> => {
-  return fetch(`${API_URL}/auth/signin`, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
+  return Post({
+    endpoint: 'auth/signin',
     body: JSON.stringify(credentials),
   }).then(handleAPIResponse);
 };
 
 export const signup = async (
-  credentials: SignUpFields
+  credentials: SignupCredentials
 ): Promise<APIResponse> => {
-  return fetch(`${API_URL}/auth/signup`, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
+  return Post({
+    endpoint: 'auth/signup',
     body: JSON.stringify(credentials),
   }).then(handleAPIResponse);
 };
 
 export const signout = async (): Promise<Response> => {
-  const response = await fetch(`${API_URL}/auth/signout`, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
+  const response = await Post({
+    endpoint: 'auth/signout',
     body: undefined,
   });
   return response;

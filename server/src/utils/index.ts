@@ -9,7 +9,7 @@ export const createSessionToken = () => {
 };
 
 export const hashPassword = async (password: string) => {
-  return bcrypt.hash(password, SALT_ROUNDS as string);
+  return bcrypt.hash(password, Number(SALT_ROUNDS));
 };
 
 export const checkPassword = async (password: string, storedPassword: string) => {

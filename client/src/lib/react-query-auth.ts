@@ -9,10 +9,9 @@ import {
   type User,
 } from '@/features/auth';
 
-import type { SignInFields as LoginCredentials } from '@/components/SignInForm';
-import type { SignUpFields as SignUpCredentials } from '@/components/SignUpForm';
+import type { SignInFields as LoginCredentials } from '@/features/auth/components/SignInForm';
+import type { SignUpFields as SignUpCredentials } from '@/features/auth/components/SignUpForm';
 
-// [] hmmm
 const handleUserResponse = (response: APIResponse): APIResponse => {
   return response;
 };

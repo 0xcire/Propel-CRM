@@ -110,6 +110,7 @@ export const signup = async (req: Request, res: Response) => {
       hashedPassword: hashedPassword,
       sessionToken: token,
     };
+    console.log(newUser);
 
     const insertedUser = await insertNewUser(newUser);
 

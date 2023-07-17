@@ -7,6 +7,7 @@ export const Routes = (): JSX.Element => {
   const user = useUser({
     retry: false,
   });
+
   const routes = user.data ? privateRoutes : publicRoutes;
 
   const element = useRoutes(routes);
