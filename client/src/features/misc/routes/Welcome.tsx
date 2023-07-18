@@ -1,8 +1,9 @@
 import { LinkButton } from '@/components';
+import { Typography } from '@/components/ui/typography';
 import { useUser } from '@/lib/react-query-auth';
 // import { useNavigate } from 'react-router-dom';
 
-function Welcome(): JSX.Element {
+export function Welcome(): JSX.Element {
   const user = useUser();
   // const navigate = useNavigate();
 
@@ -16,12 +17,10 @@ function Welcome(): JSX.Element {
   return (
     <div className='grid h-screen w-full place-items-center'>
       <div className='space-y-2'>
-        <h1 className='scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl'>
-          Propel CRM
-        </h1>
-        <p>
+        <Typography variant='h1'>Propel CRM</Typography>
+        <Typography variant='p'>
           "Elevate Your Real Estate Success with Our Cutting-Edge CRM Solution."
-        </p>
+        </Typography>
         <LinkButton
           text='Get Started'
           path={redirectPath()}
@@ -30,5 +29,3 @@ function Welcome(): JSX.Element {
     </div>
   );
 }
-
-export default Welcome;

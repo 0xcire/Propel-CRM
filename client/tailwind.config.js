@@ -1,4 +1,9 @@
 /** @type {import('tailwindcss').Config} */
+
+// const defaultTheme = require('tailwindcss/defaultTheme');
+import defaultTheme from 'tailwindcss/defaultTheme';
+// const defaultTheme = import('tailwindcss/defaultTheme');
+
 module.exports = {
   darkMode: ['class'],
   content: [
@@ -16,6 +21,9 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Satoshi', ...defaultTheme.fontFamily.sans],
+      },
       keyframes: {
         'accordion-down': {
           from: { height: 0 },

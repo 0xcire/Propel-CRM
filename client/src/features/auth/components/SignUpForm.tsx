@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
+import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from '@/components';
 
@@ -64,9 +65,7 @@ export function SignUpForm(): JSX.Element {
   return (
     <>
       <div className='mx-auto w-3/4 max-w-[500px]'>
-        <h1 className='scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl'>
-          Sign Up
-        </h1>
+        <Typography variant='h1'>Sign Up</Typography>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
