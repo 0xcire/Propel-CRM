@@ -1,9 +1,12 @@
-import dotenv from "dotenv";
 import { drizzle, PostgresJsDatabase } from "drizzle-orm/postgres-js";
+// import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
 
-// TODO: add https://github.com/t3-oss/t3-env
-dotenv.config();
+import * as schema from "./schema";
 
-const queryClient = postgres(`${process.env.PG_URL}`);
-export const db: PostgresJsDatabase = drizzle(queryClient);
+import { PG_URL } from "../config";
+
+const queryClient = postgres(`${PG_URL}`);
+// : PostgresJsDatabase
+export const db = drizzle(queryClient, { schema: schema });
+// migrate(db, { migrationsFolder: "drizzle" });

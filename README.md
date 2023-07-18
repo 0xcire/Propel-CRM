@@ -10,7 +10,7 @@ A CRM for real estate agents.
 - React Router for query params
   - url component state necessary for this?
 - TRPC || ts-rest, React Query
-- Rolling Authenticaion (OWASP, bcrypt, other security measures)
+- [x] Rolling Authenticaion (OWASP, bcrypt, other security measures)
   - look at my ts rest repo for starting point
 - Solidify Express comfortability
 - PostgreSQL
@@ -22,11 +22,13 @@ A CRM for real estate agents.
 - Improve CI/CD branches (prod, test, dev)
   - don't think this is possible on render free tier.
   - next project in next.js -> vercel. possible there.
+- [emails](https://resend.com/)
+- text service? try to find free tiers
 
 ## Features
 
-- [toast notis](https://react-hot-toast.com/)
-- [emails](https://resend.com/)
+- Docker setup for Development and Production.
+- Session based cookie authentication
 
 ## Architecture
 
@@ -34,18 +36,20 @@ A CRM for real estate agents.
 
 ### Client
 
-- Tailwind / Shadcn UI
+- Tailwind / Shadcn UI (Radix)
+  - `./client/src/components/ui` contain shadcn components and everything in
+  - `./client/src/components` contain my extension / customization of them
 - Vite
 - React
 - React Router
 - React Query / React Context
-- - @trpc/client --> look into ts-rest
+- ts-rest
 
 ### Server
 
 - Node
 - Express
-- @trpc/server --> look into ts-rest
+- ts-rest
 
 ### Database
 
@@ -75,6 +79,16 @@ open up `http://localhost:5173/` in your browser
 `cd propel-crm` \
 `docker compose -f docker-compose.dev.yml up` to run in dev mode & \
 `docker compose up` to run in prod
+
+### Interacting with DB via Drizzle
+
+Ensure `server/drizzle.config.ts` is properly configured and:
+
+`npm exec drizzle-kit generate:pg` to run migrations \
+`npm exec drizzle-kit introspect:pg` to generate schemas based on existing db \
+`npm exec drizzle-kit drop` to delete previously generated migrations \
+`npm exec drizzle-kit studio` to use Drizzle ORM's new feature to explore your db \
+see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 
 ## Learning Points
 
