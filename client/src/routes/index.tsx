@@ -2,8 +2,7 @@ import { useRoutes } from 'react-router-dom';
 import { useUser } from '@/lib/react-query-auth';
 import { publicRoutes } from './public';
 import { privateRoutes } from './private';
-import Welcome from '@/features/misc/routes/Welcome';
-// import { useEffect } from 'react';
+import { Welcome } from '@/features/misc';
 
 export const Routes = (): JSX.Element => {
   const user = useUser({
@@ -15,6 +14,5 @@ export const Routes = (): JSX.Element => {
   const routes = user.data ? privateRoutes : publicRoutes;
 
   const element = useRoutes([...welcome, ...routes]);
-  // const element = useRoutes(routes);
   return <>{element}</>;
 };

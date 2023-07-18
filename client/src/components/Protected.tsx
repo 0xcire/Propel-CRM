@@ -2,6 +2,7 @@ import { useLogout, useUser } from '@/lib/react-query-auth';
 import { queryClient } from '@/lib/react-query';
 import { useNavigate } from 'react-router-dom';
 import { SubmitButton } from './SubmitButton';
+import { Typography } from './ui/typography';
 
 const Protected = (): JSX.Element => {
   const user = useUser();
@@ -10,7 +11,7 @@ const Protected = (): JSX.Element => {
 
   return (
     <>
-      <h1>welcome, {user.data?.name}</h1>
+      <Typography variant='h4'>welcome, {user.data?.name as string}</Typography>
 
       <SubmitButton
         text='Logout'
