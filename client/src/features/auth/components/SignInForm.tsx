@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, type SubmitHandler } from 'react-hook-form';
@@ -36,11 +36,9 @@ export function SignInForm(): JSX.Element {
       navigate('/protected');
     },
     onError: (error) => {
-      if (error instanceof Error) {
-        return toast({
-          description: error.message,
-        });
-      }
+      return toast({
+        description: error.message,
+      });
     },
     meta: {
       isErrorHandledLocally: true,
@@ -111,6 +109,12 @@ export function SignInForm(): JSX.Element {
             />
           </form>
         </Form>
+        <Link
+          to='/auth/signup'
+          className='text-sm text-slate-900'
+        >
+          No account yet? Sign up here.
+        </Link>
       </div>
     </>
   );

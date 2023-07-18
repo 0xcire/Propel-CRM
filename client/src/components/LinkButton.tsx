@@ -5,7 +5,7 @@ import type { ButtonHTMLAttributes } from 'react';
 interface LinkButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
   path: string;
-  className: string;
+  className?: string;
 }
 
 export function LinkButton({
