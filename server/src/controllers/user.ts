@@ -22,7 +22,7 @@ export const getMyInfo = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
-    res.sendStatus(500);
+    return res.status(500).json({});
   }
 };
 

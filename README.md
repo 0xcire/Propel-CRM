@@ -53,7 +53,7 @@ A CRM for real estate agents.
 
 ### Database
 
-- PostgreSQL (Neon) (Switch to PlanetScale mySQL if usage hours become an issue w/ Neon)
+- PostgreSQL (Neon)
 - Drizzle ORM
 
 ### Containerization
@@ -99,10 +99,12 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - Using nginx as a reverse proxy server
   - Using docker-compose to sync app together
 
+<!-- ## Successes -->
+
 <!-- ## Issues -->
 
 ## Roadmap
 
 - [x] adding **full** Docker support
-- [] auth / middlewares
+- [x] auth / middlewares
 - [] then -> full stack slices for each api endpoint

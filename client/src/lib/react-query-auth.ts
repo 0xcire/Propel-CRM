@@ -1,20 +1,9 @@
 import { configureAuth } from 'react-query-auth';
 
-import {
-  getMe,
-  signin,
-  signup,
-  signout,
-  type APIResponse,
-  type User,
-} from '@/features/auth';
+import { getMe, signin, signup, signout, type User } from '@/features/auth';
 
 import type { SignInFields as LoginCredentials } from '@/features/auth/components/SignInForm';
 import type { SignUpFields as SignUpCredentials } from '@/features/auth/components/SignUpForm';
-
-const handleUserResponse = (response: APIResponse): APIResponse => {
-  return response;
-};
 
 const userFn = async (): Promise<User | undefined> => {
   const { user } = await getMe();
@@ -24,16 +13,14 @@ const userFn = async (): Promise<User | undefined> => {
 const loginFn = async (
   credentials: LoginCredentials
 ): Promise<User | undefined> => {
-  const response = await signin(credentials);
-  const { user } = await handleUserResponse(response);
+  const { user } = await signin(credentials);
   return user;
 };
 
 const registerFn = async (
   credentials: SignUpCredentials
 ): Promise<User | undefined> => {
-  const response = await signup(credentials);
-  const { user } = await handleUserResponse(response);
+  const { user } = await signup(credentials);
   return user;
 };
 

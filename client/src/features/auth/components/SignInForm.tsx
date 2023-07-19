@@ -21,6 +21,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from '@/components';
+import { isAPIError } from '@/utils/error';
 
 const signInSchema = z.object({
   email: z.string().email(),
@@ -38,13 +39,13 @@ export function SignInForm(): JSX.Element {
       navigate('/protected');
     },
     onError: (error) => {
-      return toast({
-        description: error.message,
-      });
+      if (isAPIError(error)) {
+        return toast({
+          description: `${error.message}`,
+        });
+      }
     },
-    meta: {
-      isErrorHandledLocally: true,
-    },
+    useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
   });
 
   const form = useForm<SignInFields>({

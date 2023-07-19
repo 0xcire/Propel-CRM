@@ -6,6 +6,11 @@ export type APIResponse = {
   user?: User;
 };
 
+export type APIError = {
+  message: string;
+  status: number;
+};
+
 export type User = {
   id: number;
   name: string;
@@ -16,12 +21,16 @@ export type User = {
 
 export const handleAPIResponse = async (
   response: Response
-): Promise<APIResponse> => {
+): Promise<APIResponse | APIError> => {
   const data: APIResponse = await response.json();
+
   if (response.ok) {
     return data;
   } else {
-    return Promise.reject(data);
+    throw {
+      message: data.message,
+      status: response.status,
+    };
   }
 };
 

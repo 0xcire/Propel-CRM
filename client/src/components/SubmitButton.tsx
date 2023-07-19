@@ -1,6 +1,6 @@
+import type { ButtonHTMLAttributes } from 'react';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components';
-import type { ButtonHTMLAttributes } from 'react';
 
 interface SubmitButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
