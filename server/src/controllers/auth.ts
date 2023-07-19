@@ -69,7 +69,7 @@ export const signin = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
-    return res.sendStatus(500);
+    return res.status(500).json({});
   }
 };
 
@@ -126,7 +126,7 @@ export const signup = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
-    res.sendStatus(500);
+    return res.status(500).json({});
   }
 };
 
@@ -162,6 +162,6 @@ export const signout = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
-    res.sendStatus(500);
+    return res.status(500).json({});
   }
 };

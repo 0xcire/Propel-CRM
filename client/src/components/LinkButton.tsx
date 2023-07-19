@@ -1,10 +1,10 @@
+import type { ButtonHTMLAttributes } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import type { ButtonHTMLAttributes } from 'react';
 
 interface LinkButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
-  path: string;
+  path?: string;
   className?: string;
 }
 

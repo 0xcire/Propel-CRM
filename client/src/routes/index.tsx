@@ -1,15 +1,19 @@
-import { useRoutes } from 'react-router-dom';
+import { type RouteObject, useRoutes } from 'react-router-dom';
 import { useUser } from '@/lib/react-query-auth';
 import { publicRoutes } from './public';
 import { privateRoutes } from './private';
-import { Welcome } from '@/features/misc';
+import { Welcome, NotFound } from '@/features/misc';
 
 export const Routes = (): JSX.Element => {
   const user = useUser({
     retry: false,
   });
 
-  const welcome = [{ path: '/', element: <Welcome /> }];
+  // TODO: figure out a better flow. User is logged in and coming back to site, should just be redirected to app. Issue with BrowserRouter, though.
+  const welcome: Array<RouteObject> = [
+    { path: '/', element: <Welcome /> },
+    { path: '*', element: <NotFound /> },
+  ];
 
   const routes = user.data ? privateRoutes : publicRoutes;
 
