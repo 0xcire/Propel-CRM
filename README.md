@@ -18,7 +18,6 @@ A CRM for real estate agents.
 - Expand on limited testing experience
   - Mock Service Worker, React Testing Library, etc etc
 - [x] Docker (Docker.client, Docker.server, docker-compose ?)
-- better git, git squash, rebase?
 - Improve CI/CD branches (prod, test, dev)
   - don't think this is possible on render free tier.
   - next project in next.js -> vercel. possible there.

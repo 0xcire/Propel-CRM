@@ -14,13 +14,6 @@ import { SESSION_COOKIE_LENGTH, SESSION_COOKIE_NAME } from "../config";
 import type { NewUser } from "../db/types";
 import type { UserInput } from "./types";
 
-// BASIC
-// [x] user can sign in and be instructed on incorrect inputs
-// [x] user can sign up and be instructed on duplicate email/username
-// [x] user can sign out - figure this out
-// [] user can delete their own account
-// [] user can update their account info
-
 // [] add email verification later
 // [] add account recover later
 

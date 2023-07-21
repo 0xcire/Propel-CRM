@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 
 interface LinkButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
-  path?: string;
+  path: string;
   className?: string;
 }
 

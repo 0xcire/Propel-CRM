@@ -13,12 +13,25 @@ type FindUsersByEmailOptions = {
 type FindUsersByUsernameOptions = {
   username: string;
   requestingInfo?: boolean;
+  updating?: boolean;
 };
 
 type updateUsersByEmailOptions = {
   email: string;
   token: string;
   signingIn?: boolean;
+};
+
+type updateUsersByIDOptions = {
+  id: number;
+  newUsername: string | undefined;
+  newEmail: string | undefined;
+  newPassword: string | undefined;
+  // info: {
+  //   username: string | undefined;
+  //   email: string | undefined;
+  //   hashedPassword: string | undefined;
+  // };
 };
 
 export const findUsersByEmail = async ({
@@ -57,6 +70,7 @@ export const findUsersByEmail = async ({
 export const findUsersByUsername = async ({
   username,
   requestingInfo,
+  updating,
 }: FindUsersByUsernameOptions): Promise<UserResponse | undefined> => {
   const user = await db
     .select({
@@ -66,6 +80,11 @@ export const findUsersByUsername = async ({
             id: users.id,
             name: users.name,
             lastLogin: users.lastLogin,
+          }
+        : {}),
+      ...(updating
+        ? {
+            hashedPassword: users.hashedPassword,
           }
         : {}),
     })
@@ -130,4 +149,41 @@ export const insertNewUser = async (user: NewUser) => {
   return insertedUser[0];
 };
 
-// updateUsersByUsername(username)
+export const updateUserByID = async ({ id, newUsername, newEmail, newPassword }: updateUsersByIDOptions) => {
+  const updatedUser = await db
+    .update(users)
+    .set({
+      ...(newUsername
+        ? {
+            username: newUsername,
+          }
+        : {}),
+      ...(newEmail
+        ? {
+            email: newEmail,
+          }
+        : {}),
+      ...(newPassword
+        ? {
+            hashedPassword: newPassword,
+          }
+        : {}),
+    })
+    .where(eq(users.id, id))
+    .returning({
+      id: users.id,
+      username: users.username,
+      email: users.email,
+    });
+
+  return updatedUser[0];
+};
+
+export const deleteUserByID = async (id: number) => {
+  const deletedUser = await db.delete(users).where(eq(users.id, id)).returning({
+    name: users.name,
+    username: users.username,
+  });
+
+  return deletedUser[0];
+};

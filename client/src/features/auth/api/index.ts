@@ -6,6 +6,7 @@ export type APIResponse = {
   user?: User;
 };
 
+// TODO: potentially extract. imagine this will be used in multiple spots
 export type APIError = {
   message: string;
   status: number;
