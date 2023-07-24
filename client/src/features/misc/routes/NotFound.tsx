@@ -16,8 +16,8 @@ export const NotFound = (): JSX.Element => {
           </Typography>
         </div>
         <LinkButton
-          path='/'
-          text='Go Home'
+          delta={-1}
+          text='Go Back'
           className='mt-3'
         />
       </div>

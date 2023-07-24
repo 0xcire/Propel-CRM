@@ -1,15 +1,12 @@
 import { LinkButton } from '@/components';
 import { Typography } from '@/components/ui/typography';
 import { useUser } from '@/lib/react-query-auth';
-// import { useNavigate } from 'react-router-dom';
 
 export function Welcome(): JSX.Element {
   const user = useUser();
-  // const navigate = useNavigate();
 
   const redirectPath = (): string => {
     if (user.data) {
-      // navigate('/protected');
       return '/protected';
     }
     return '/auth/signin';
