@@ -59,12 +59,6 @@ export const Typography = ({
         </h4>
       );
     case 'p':
-      return (
-        <p
-          className={twMerge('leading-7 [&:not(:first-child)]:mt-6', className)}
-        >
-          {children}
-        </p>
-      );
+      return <p className={twMerge('leading-7', className)}>{children}</p>;
   }
 };

@@ -5,7 +5,7 @@ import { queryClient } from '@/lib/react-query';
 
 import { Typography } from './ui/typography';
 import { SubmitButton } from './SubmitButton';
-import { Navbar } from './Navbar';
+// import { Navbar } from './Navbar';
 
 const Protected = (): JSX.Element => {
   const user = useUser();
@@ -14,10 +14,11 @@ const Protected = (): JSX.Element => {
   const location = useLocation();
   console.log(location);
 
+  // className='h-screen w-full xl:flex'>
   return (
-    <div className='h-screen w-full xl:flex'>
-      <Navbar name={user.data?.name as string} />
-      <div className='grid flex-1 place-items-center'>
+    <>
+      {/* <Navbar name={user.data?.name as string} /> */}
+      <div className='grid h-full w-full place-items-center xl:flex-1'>
         <div>
           {user.data && (
             <>
@@ -43,7 +44,7 @@ const Protected = (): JSX.Element => {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -19,15 +19,6 @@ export function CustomLink({
   const location = useLocation();
   const isActive = location.pathname === path;
   return (
-    // <Link to={path}>
-    //   <NavigationMenuLink
-    //     className={navigationMenuTriggerStyle()}
-    //     active={isActive}
-    //     {...props}
-    //   >
-    //     {children}
-    //   </NavigationMenuLink>
-    // </Link>
     <NavigationMenuLink
       className={navigationMenuTriggerStyle()}
       active={isActive}

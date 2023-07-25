@@ -7,7 +7,17 @@
 
 import { RouteObject } from 'react-router-dom';
 import Protected from '@/components/Protected';
+import { Profile } from '@/features/users/routes/Profile';
+import { AppLayout } from '@/components/Layout/AppLayout';
 
 export const privateRoutes: Array<RouteObject> = [
-  { path: '/protected', element: <Protected /> },
+  {
+    element: <AppLayout />,
+    children: [
+      { path: '/protected', element: <Protected /> },
+      { path: '/profile', element: <Profile /> },
+    ],
+  },
+  // { path: '/protected', element: <Protected /> },
+  // { path: '/profile', element: <Profile /> },
 ];

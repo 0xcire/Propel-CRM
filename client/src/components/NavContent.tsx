@@ -24,13 +24,13 @@ export function NavContent({ className, name }: NavContentProps): JSX.Element {
   return (
     <div
       className={twMerge(
-        'flex h-full flex-col px-4 py-10 xl:border-r-2',
+        'flex h-full max-w-[350px] flex-col px-4 py-10 xl:w-1/6 xl:border-r-2',
         className
       )}
     >
       <Typography
         variant='h2'
-        className='hidden xl:block'
+        className='hidden text-center xl:block'
       >
         Propel CRM
       </Typography>
@@ -40,8 +40,11 @@ export function NavContent({ className, name }: NavContentProps): JSX.Element {
       >
         <NavigationMenuList
           aria-orientation='vertical'
-          className='flex-col xl:flex-1'
+          className='flex-col items-start xl:flex-1'
         >
+          <NavigationMenuItem>
+            <CustomLink path='/protected'>Home</CustomLink>
+          </NavigationMenuItem>
           <NavigationMenuItem>
             <CustomLink path='/listings'>Listings</CustomLink>
           </NavigationMenuItem>
@@ -61,12 +64,12 @@ export function NavContent({ className, name }: NavContentProps): JSX.Element {
 
         <Typography
           variant='p'
-          className='mx-3 [&:not(:first-child)]:mt-0'
+          className='mx-3 text-sm'
         >
           {name}
         </Typography>
 
-        <Link to='/settings'>
+        <Link to='/profile'>
           <Settings size={20} />
         </Link>
       </div>

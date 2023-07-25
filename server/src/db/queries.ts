@@ -79,7 +79,10 @@ export const findUsersByUsername = async ({
         ? {
             id: users.id,
             name: users.name,
+            email: users.email,
             lastLogin: users.lastLogin,
+            createdAt: users.createdAt,
+            isAdmin: users.isAdmin,
           }
         : {}),
       ...(updating

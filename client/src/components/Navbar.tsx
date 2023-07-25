@@ -1,24 +1,17 @@
-// contacts
-// listings
-// tasks
-// analytics
-// ...?
-
-import { Menu } from 'lucide-react';
-import { NavContent } from './NavContent';
 import {
   Sheet,
   SheetContent,
-  // SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from './ui/sheet';
 
+import { Menu } from 'lucide-react';
+import { NavContent } from './NavContent';
+
 export function Navbar({ name }: { name: string }): JSX.Element {
   return (
     <>
-      {/* <div className='md:hidden'> */}
       <Sheet>
         <SheetTrigger className='absolute left-5 top-5 xl:hidden'>
           <Menu />
@@ -33,7 +26,6 @@ export function Navbar({ name }: { name: string }): JSX.Element {
           <NavContent name={name} />
         </SheetContent>
       </Sheet>
-      {/* </div> */}
       <NavContent
         name={name}
         className='hidden xl:flex'
