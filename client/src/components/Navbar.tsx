@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
 import {
   Sheet,
   SheetClose,
@@ -21,28 +21,12 @@ import { Avatar } from './Avatar';
 
 import { navLinks } from '@/config';
 
-const desktopMediaQuery = '(min-width: 1280px)';
-
 type NavProps = {
   name: string;
 };
 
 export function Navbar({ name }: { name: string }): JSX.Element {
-  const [isDesktop, setIsDesktop] = useState<boolean>();
-
-  useEffect(() => {
-    const query = window.matchMedia(desktopMediaQuery);
-
-    function handleQueryChange(event: MediaQueryListEvent): void {
-      setIsDesktop(event.matches);
-    }
-
-    query.addEventListener('change', handleQueryChange);
-
-    return () => {
-      query.removeEventListener('change', handleQueryChange);
-    };
-  }, []);
+  const isDesktop = useIsDesktop();
 
   return (
     <>{isDesktop ? <SideNav name={name} /> : <MobileSideNav name={name} />}</>

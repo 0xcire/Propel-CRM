@@ -18,6 +18,4 @@ export const privateRoutes: Array<RouteObject> = [
       { path: '/profile', element: <Profile /> },
     ],
   },
-  // { path: '/protected', element: <Protected /> },
-  // { path: '/profile', element: <Profile /> },
 ];
