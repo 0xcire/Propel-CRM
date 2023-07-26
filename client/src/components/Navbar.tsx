@@ -1,35 +1,143 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from './ui/sheet';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+} from './ui/navigation-menu';
+import { Typography } from './ui/typography';
+import { Menu, Settings } from 'lucide-react';
 
-import { Menu } from 'lucide-react';
-import { NavContent } from './NavContent';
+import { CustomLink } from './CustomLink';
+import { Avatar } from './Avatar';
+
+import { navLinks } from '@/config';
+
+const desktopMediaQuery = '(min-width: 1280px)';
+
+type NavProps = {
+  name: string;
+};
 
 export function Navbar({ name }: { name: string }): JSX.Element {
+  const [isDesktop, setIsDesktop] = useState<boolean>();
+
+  useEffect(() => {
+    const query = window.matchMedia(desktopMediaQuery);
+
+    function handleQueryChange(event: MediaQueryListEvent): void {
+      setIsDesktop(event.matches);
+    }
+
+    query.addEventListener('change', handleQueryChange);
+
+    return () => {
+      query.removeEventListener('change', handleQueryChange);
+    };
+  }, []);
+
   return (
-    <>
-      <Sheet>
-        <SheetTrigger className='absolute left-5 top-5 xl:hidden'>
-          <Menu />
-        </SheetTrigger>
-        <SheetContent
-          side='left'
-          className='w-[300px] xl:hidden'
+    <>{isDesktop ? <SideNav name={name} /> : <MobileSideNav name={name} />}</>
+  );
+}
+
+function MobileSideNav({ name }: NavProps): JSX.Element {
+  return (
+    <Sheet>
+      <SheetTrigger className='absolute left-5 top-5'>
+        <Menu />
+      </SheetTrigger>
+      <SheetContent
+        side='left'
+        className='flex w-[300px] flex-col'
+      >
+        <SheetHeader>
+          <SheetTitle className='mx-auto text-2xl'>Propel CRM</SheetTitle>
+        </SheetHeader>
+        <NavigationMenu
+          orientation='vertical'
+          className='m-auto'
         >
-          <SheetHeader>
-            <SheetTitle className='mx-auto text-2xl'>Propel CRM</SheetTitle>
-          </SheetHeader>
-          <NavContent name={name} />
-        </SheetContent>
-      </Sheet>
-      <NavContent
-        name={name}
-        className='hidden xl:flex'
-      />
-    </>
+          <NavigationMenuList
+            aria-orientation='vertical'
+            className='flex-col items-start'
+          >
+            {navLinks.map((link) => (
+              <NavigationMenuItem key={link.name}>
+                <SheetClose asChild>
+                  <CustomLink path={link.path}>{link.name}</CustomLink>
+                </SheetClose>
+              </NavigationMenuItem>
+            ))}
+          </NavigationMenuList>
+        </NavigationMenu>
+        <div className='mx-auto flex items-center'>
+          <Avatar name={name} />
+
+          <Typography
+            variant='p'
+            className='mx-3 text-sm'
+          >
+            {name}
+          </Typography>
+
+          <SheetClose asChild>
+            <Link to='/profile'>
+              <Settings size={18} />
+            </Link>
+          </SheetClose>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+function SideNav({ name }: NavProps): JSX.Element {
+  return (
+    <div className='flex h-full w-1/6 max-w-[350px] flex-col border-r-2 px-4 py-10'>
+      <Typography
+        variant='h2'
+        className='text-center'
+      >
+        Propel CRM
+      </Typography>
+      <NavigationMenu
+        orientation='vertical'
+        className='m-auto'
+      >
+        <NavigationMenuList
+          aria-orientation='vertical'
+          className='flex-col items-start'
+        >
+          {navLinks.map((link) => (
+            <NavigationMenuItem key={link.name}>
+              <CustomLink path={link.path}>{link.name}</CustomLink>
+            </NavigationMenuItem>
+          ))}
+        </NavigationMenuList>
+      </NavigationMenu>
+      <div className='mx-auto flex items-center'>
+        <Avatar name={name} />
+
+        <Typography
+          variant='p'
+          className='mx-3 text-sm'
+        >
+          {name}
+        </Typography>
+
+        <Link to='/profile'>
+          <Settings size={20} />
+        </Link>
+      </div>
+    </div>
   );
 }
