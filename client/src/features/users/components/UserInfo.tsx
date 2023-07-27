@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -26,6 +26,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { SubmitButton } from '@/components';
+import { useUpdateAccount } from '../hooks/useUpdateAccount';
 
 const UserInfoSchema = z.object({
   username: z.string(),
@@ -35,15 +36,18 @@ const UserInfoSchema = z.object({
 type UserInfoFields = z.infer<typeof UserInfoSchema>;
 
 export function UserInfo(): JSX.Element {
+  const [open, setOpen] = useState(false);
+
   const user = useUser();
+
+  const { mutateAsync, isLoading } = useUpdateAccount();
   const form = useForm<UserInfoFields>({
     resolver: zodResolver(UserInfoSchema),
-    defaultValues: {
-      username: user.data?.username,
-      email: user.data?.email,
-      verifyPassword: '',
-    },
   });
+
+  const userHasChangedInfo = Object.keys(form.formState.dirtyFields).some(
+    (field) => field === 'username' || field === 'email'
+  );
 
   const handleEditToggle = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -57,10 +61,29 @@ export function UserInfo(): JSX.Element {
     []
   );
 
+  useEffect(() => {
+    form.setValue('email', user.data?.email as string);
+  });
+
   function onSubmit(values: UserInfoFields): void {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    const data = Object.fromEntries(
+      Object.entries(values).filter(([key, value]) => {
+        if (user.data) {
+          return value !== user.data[key as keyof typeof user.data];
+        }
+      })
+    );
+
+    mutateAsync(
+      { id: user.data?.id as number, data: data },
+      {
+        onSuccess: async () => {
+          setOpen(false);
+          form.reset();
+          form.setValue('verifyPassword', '');
+        },
+      }
+    );
   }
   return (
     <>
@@ -79,11 +102,10 @@ export function UserInfo(): JSX.Element {
                 <FormControl>
                   <div className='flex items-center gap-8'>
                     <Input
-                      // id='username'
                       className='username-input'
                       disabled={true}
-                      placeholder={user.data?.username}
                       {...field}
+                      value={field.value ?? user.data?.username}
                     />
                     <Button
                       variant='default'
@@ -108,9 +130,9 @@ export function UserInfo(): JSX.Element {
                 <FormControl>
                   <div className='flex items-center gap-8'>
                     <Input
-                      placeholder={user.data?.email}
                       disabled={true}
                       {...field}
+                      value={field.value ?? user.data?.email}
                     />
                     <Button
                       variant='default'
@@ -124,8 +146,10 @@ export function UserInfo(): JSX.Element {
               </FormItem>
             )}
           />
-          {/* TODO: change disabled based on either username or email changing */}
-          <Dialog>
+          <Dialog
+            open={open}
+            onOpenChange={setOpen}
+          >
             <DialogTrigger asChild>
               <Button variant='outline'>Save Changes</Button>
             </DialogTrigger>
@@ -149,6 +173,7 @@ export function UserInfo(): JSX.Element {
                             type='password'
                             placeholder='password123'
                             {...field}
+                            value={field.value ?? ''}
                           />
                         </>
                       </FormControl>
@@ -160,18 +185,13 @@ export function UserInfo(): JSX.Element {
               <DialogFooter>
                 <SubmitButton
                   form='user-info'
-                  isLoading={false}
-                  disabled={false}
+                  isLoading={isLoading}
+                  disabled={!userHasChangedInfo}
                   text='Save Changes'
                 />
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          {/* <SubmitButton
-              isLoading={false}
-              disabled={true}
-              text='Save Changes'
-            /> */}
         </form>
       </Form>
     </>

@@ -24,21 +24,31 @@ import {
 } from '@/components/ui/dialog';
 
 import { SubmitButton } from '@/components';
+import { useUpdateAccount } from '../hooks/useUpdateAccount';
+import { useUser } from '@/lib/react-query-auth';
 
 const PasswordSchema = z.object({
-  oldPassword: z.string(),
-  newPassword: z.string(),
+  verifyPassword: z.string(),
+  password: z.string(),
   confirmPassword: z.string(),
 });
 
 type PasswordFields = z.infer<typeof PasswordSchema>;
 
 export function Authentication(): JSX.Element {
+  const user = useUser();
+  // let id: number;
+  // if (user.data) {
+  //   id = user.data.id;
+  // }
+  // const {id} = user.data;
+  const { mutate, isLoading } = useUpdateAccount();
+
   const passwordForm = useForm<PasswordFields>({
     resolver: zodResolver(PasswordSchema),
     defaultValues: {
-      oldPassword: '',
-      newPassword: '',
+      verifyPassword: '',
+      password: '',
       confirmPassword: '',
     },
   });
@@ -46,7 +56,15 @@ export function Authentication(): JSX.Element {
   function onSubmit(values: PasswordFields): void {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    // const data = Object.keys(values).map((key) => {
+    //   if (user.data) {
+    //     return values[key];
+    //   }
+    // });
+    console.log(typeof values);
+    // if (user.data) {
+    //   mutate({ id, values });
+    // }
   }
   return (
     <>
@@ -69,7 +87,7 @@ export function Authentication(): JSX.Element {
               <div className='grid gap-4 py-4'>
                 <FormField
                   control={passwordForm.control}
-                  name='oldPassword'
+                  name='verifyPassword'
                   render={({ field }): JSX.Element => (
                     <FormItem>
                       <FormLabel>Old Password</FormLabel>
@@ -87,7 +105,7 @@ export function Authentication(): JSX.Element {
                 />
                 <FormField
                   control={passwordForm.control}
-                  name='newPassword'
+                  name='password'
                   render={({ field }): JSX.Element => (
                     <FormItem>
                       <FormLabel>New Password</FormLabel>

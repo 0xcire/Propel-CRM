@@ -11,8 +11,13 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
+import { useDeleteAccount } from '../hooks/useDeleteAccount';
+import { useUser } from '@/lib/react-query-auth';
+import { SubmitButton } from '@/components';
 
 export function DeleteAccount(): JSX.Element {
+  const user = useUser();
+  const { mutate, isLoading } = useDeleteAccount();
   return (
     <>
       <Typography variant='h3'>Account Removal</Typography>
@@ -30,11 +35,12 @@ export function DeleteAccount(): JSX.Element {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            {/* TODO: call mutation below */}
-            <AlertDialogAction
-              onClick={(): void => console.log('youve been deleted')}
-            >
-              Continue
+            <AlertDialogAction asChild>
+              <SubmitButton
+                text='Continue'
+                isLoading={isLoading}
+                onClick={(): void => mutate(user.data?.id as number)}
+              />
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
