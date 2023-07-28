@@ -26,6 +26,8 @@ import {
 import { SubmitButton } from '@/components';
 import { useUpdateAccount } from '../hooks/useUpdateAccount';
 import { useUser } from '@/lib/react-query-auth';
+import { toast } from '@/components/ui/use-toast';
+import type { Toast } from '@/types';
 
 const PasswordSchema = z.object({
   verifyPassword: z.string(),
@@ -37,14 +39,10 @@ type PasswordFields = z.infer<typeof PasswordSchema>;
 
 export function Authentication(): JSX.Element {
   const user = useUser();
-  // let id: number;
-  // if (user.data) {
-  //   id = user.data.id;
-  // }
-  // const {id} = user.data;
+
   const { mutate, isLoading } = useUpdateAccount();
 
-  const passwordForm = useForm<PasswordFields>({
+  const form = useForm<PasswordFields>({
     resolver: zodResolver(PasswordSchema),
     defaultValues: {
       verifyPassword: '',
@@ -52,32 +50,40 @@ export function Authentication(): JSX.Element {
       confirmPassword: '',
     },
   });
+  console.log(form.getValues().confirmPassword);
 
-  function onSubmit(values: PasswordFields): void {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    // const data = Object.keys(values).map((key) => {
-    //   if (user.data) {
-    //     return values[key];
-    //   }
-    // });
-    console.log(typeof values);
-    // if (user.data) {
-    //   mutate({ id, values });
-    // }
+  const passwordIsConfirmed = (): boolean => {
+    return form.getValues().password === form.getValues().confirmPassword;
+  };
+
+  function onSubmit(values: PasswordFields): Toast | void {
+    if (!passwordIsConfirmed()) {
+      return toast({
+        description: 'Please confirm your new password correctly.',
+      });
+    }
+    const data = {
+      verifyPassword: values.verifyPassword,
+      password: values.password,
+    };
+    mutate(
+      { id: user.data?.id as number, data: data },
+      {
+        onSuccess: () => form.reset(),
+      }
+    );
   }
   return (
     <>
       <Typography variant='h3'>Password and Authentication</Typography>
 
-      {/* TODO: verify old password with stored. new and confirm need to match to enable submit btn */}
       <Dialog>
         <DialogTrigger asChild>
           <Button variant='outline'>Change Password</Button>
         </DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
-          <Form {...passwordForm}>
-            <form onSubmit={passwordForm.handleSubmit(onSubmit)}>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
               <DialogHeader>
                 <DialogTitle>Change Password</DialogTitle>
                 <DialogDescription>
@@ -86,7 +92,7 @@ export function Authentication(): JSX.Element {
               </DialogHeader>
               <div className='grid gap-4 py-4'>
                 <FormField
-                  control={passwordForm.control}
+                  control={form.control}
                   name='verifyPassword'
                   render={({ field }): JSX.Element => (
                     <FormItem>
@@ -94,6 +100,7 @@ export function Authentication(): JSX.Element {
                       <FormControl>
                         <>
                           <Input
+                            type='password'
                             placeholder='password123'
                             {...field}
                           />
@@ -104,7 +111,7 @@ export function Authentication(): JSX.Element {
                   )}
                 />
                 <FormField
-                  control={passwordForm.control}
+                  control={form.control}
                   name='password'
                   render={({ field }): JSX.Element => (
                     <FormItem>
@@ -112,6 +119,7 @@ export function Authentication(): JSX.Element {
                       <FormControl>
                         <>
                           <Input
+                            type='password'
                             placeholder='password123'
                             {...field}
                           />
@@ -122,7 +130,7 @@ export function Authentication(): JSX.Element {
                   )}
                 />
                 <FormField
-                  control={passwordForm.control}
+                  control={form.control}
                   name='confirmPassword'
                   render={({ field }): JSX.Element => (
                     <FormItem>
@@ -130,6 +138,7 @@ export function Authentication(): JSX.Element {
                       <FormControl>
                         <>
                           <Input
+                            type='password'
                             placeholder='password123'
                             {...field}
                           />
@@ -141,9 +150,8 @@ export function Authentication(): JSX.Element {
                 />
               </div>
               <DialogFooter>
-                {/* TODO: change disabled if new and confirm are matching */}
                 <SubmitButton
-                  isLoading={false}
+                  isLoading={isLoading}
                   disabled={false}
                   text='Save Changes'
                 />

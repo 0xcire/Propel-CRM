@@ -19,7 +19,6 @@ export const useUpdateAccount = (): UseMutationResult<
   return useMutation({
     mutationFn: updateAccount,
     onSuccess: (data) => {
-      console.log(data);
       toast({
         description: data.message,
       });

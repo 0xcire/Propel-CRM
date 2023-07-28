@@ -40,7 +40,7 @@ export function UserInfo(): JSX.Element {
 
   const user = useUser();
 
-  const { mutateAsync, isLoading } = useUpdateAccount();
+  const { mutate, isLoading } = useUpdateAccount();
   const form = useForm<UserInfoFields>({
     resolver: zodResolver(UserInfoSchema),
   });
@@ -74,10 +74,10 @@ export function UserInfo(): JSX.Element {
       })
     );
 
-    mutateAsync(
+    mutate(
       { id: user.data?.id as number, data: data },
       {
-        onSuccess: async () => {
+        onSuccess: () => {
           setOpen(false);
           form.reset();
           form.setValue('verifyPassword', '');

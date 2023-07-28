@@ -102,6 +102,10 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 
 <!-- ## Issues -->
 
+- React Query and Forms.
+  - Ran into issues where default values were not updated after invalidating queries on mutation success.
+  - [this TK Dodo article](https://tkdodo.eu/blog/react-query-and-forms) really helped me out
+
 ## Roadmap
 
 - [x] adding **full** Docker support
