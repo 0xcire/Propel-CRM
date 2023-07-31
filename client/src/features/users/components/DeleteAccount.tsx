@@ -1,3 +1,6 @@
+import { useUser } from '@/lib/react-query-auth';
+import { useDeleteAccount } from '../hooks/useDeleteAccount';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,8 +14,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
-import { useDeleteAccount } from '../hooks/useDeleteAccount';
-import { useUser } from '@/lib/react-query-auth';
 import { SubmitButton } from '@/components';
 
 export function DeleteAccount(): JSX.Element {

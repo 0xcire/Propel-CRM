@@ -2,6 +2,9 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { useUser } from '@/lib/react-query-auth';
+import { useUpdateAccount } from '../hooks/useUpdateAccount';
+
 import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,11 +25,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-
 import { SubmitButton } from '@/components';
-import { useUpdateAccount } from '../hooks/useUpdateAccount';
-import { useUser } from '@/lib/react-query-auth';
 import { toast } from '@/components/ui/use-toast';
+
 import type { Toast } from '@/types';
 
 const PasswordSchema = z.object({

@@ -1,12 +1,16 @@
-import { type UseMutationResult, useMutation } from '@tanstack/react-query';
-import { deleteAccount } from '../api';
 import { useNavigate } from 'react-router-dom';
+import { type UseMutationResult, useMutation } from '@tanstack/react-query';
 import { queryClient } from '@/lib/react-query';
+
+import { deleteAccount } from '../api';
 import { isAPIError } from '@/utils/error';
+
 import { useToast } from '@/components/ui/use-toast';
 
+import type { UserResponse } from '@/types';
+
 export const useDeleteAccount = (): UseMutationResult<
-  Response,
+  UserResponse,
   unknown,
   number,
   unknown
@@ -15,8 +19,11 @@ export const useDeleteAccount = (): UseMutationResult<
   const { toast } = useToast();
   return useMutation({
     mutationFn: deleteAccount,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.setQueryData(['authenticated-user'], null);
+      toast({
+        description: `Deleted ${data.user?.username}'s account`,
+      });
       navigate('/auth/signup');
     },
     onError: (error) => {

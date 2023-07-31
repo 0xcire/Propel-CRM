@@ -1,7 +1,6 @@
-// TODO: APIError likely to not be exclusive to auth feature. extract.
-import type { APIError } from '@/features/auth/api';
+import type { BaseResponse } from '@/types';
 
-export const isAPIError = (error: unknown): error is APIError => {
+export const isAPIError = (error: unknown): error is Required<BaseResponse> => {
   return (
     typeof error === 'object' &&
     error !== null &&

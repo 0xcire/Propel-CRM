@@ -1,16 +1,14 @@
 import { type UseMutationResult, useMutation } from '@tanstack/react-query';
-import {
-  type UserResponse,
-  updateAccount,
-  type UpdateAccountOptions,
-} from '../api';
 import { queryClient } from '@/lib/react-query';
+import { updateAccount } from '../api';
 import { isAPIError } from '@/utils/error';
 import { useToast } from '@/components/ui/use-toast';
-import { APIError } from '@/lib/fetch';
+
+import type { UpdateAccountOptions } from '../types';
+import type { UserResponse } from '@/types';
 
 export const useUpdateAccount = (): UseMutationResult<
-  UserResponse | APIError,
+  UserResponse,
   unknown,
   UpdateAccountOptions,
   unknown
