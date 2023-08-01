@@ -1,5 +1,11 @@
 import { Request, Response } from "express";
-import { deleteUserByID, findUsersByEmail, findUsersByUsername, updateUserByID } from "../db/queries";
+import {
+  deleteUserByID,
+  findUsersByEmail,
+  findUsersByID,
+  findUsersByUsername,
+  updateUserByID,
+} from "../db/user-queries";
 import { checkPassword, hashPassword } from "../utils";
 import { SESSION_COOKIE_NAME } from "../config";
 
@@ -7,14 +13,14 @@ import { SESSION_COOKIE_NAME } from "../config";
 
 export const getMyInfo = async (req: Request, res: Response) => {
   try {
-    const username = req.user.username;
+    const id = req.user.id;
 
-    const userByUsername = await findUsersByUsername({
-      username: username,
+    const userByID = await findUsersByID({
+      id: id,
       requestingInfo: true,
     });
 
-    if (!userByUsername) {
+    if (!userByID) {
       return res.status(204).json({
         message: "Can't find user.",
       });
@@ -22,7 +28,7 @@ export const getMyInfo = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Found user.",
-      user: userByUsername,
+      user: userByID,
     });
   } catch (error) {
     console.log(error);
@@ -30,9 +36,6 @@ export const getMyInfo = async (req: Request, res: Response) => {
   }
 };
 
-// redirect to login page after deletion
-// TODO: on client, prompt user to type in username or something to confirm
-// similar to github flow for deleting repositories
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -54,7 +57,6 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const currentUsername = req.user.username;
     const { username, email, verifyPassword, password } = req.body;
 
     let hashedPassword;
@@ -65,10 +67,9 @@ export const updateUser = async (req: Request, res: Response) => {
       });
     }
 
-    const currentUser = await findUsersByUsername({ username: currentUsername, updating: true });
+    const currentUser = await findUsersByID({ id: Number(id), updating: true });
 
     if (password) {
-      // TODO: remember to add 'type your current password' validation in client
       hashedPassword = await hashPassword(password);
 
       const passwordMatches = await checkPassword(password, currentUser?.hashedPassword as string);
@@ -89,7 +90,7 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 
     if (username) {
-      const userByUsername = await findUsersByUsername({ username: username });
+      const userByUsername = await findUsersByUsername(username);
 
       if (userByUsername) {
         return res.status(409).json({

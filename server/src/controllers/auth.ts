@@ -6,7 +6,7 @@ import {
   findUsersByUsername,
   insertNewUser,
   updateUsersByEmail,
-} from "../db/queries";
+} from "../db/user-queries";
 
 import { checkPassword, createSessionToken, hashPassword } from "../utils";
 import { SESSION_COOKIE_LENGTH, SESSION_COOKIE_NAME } from "../config";
@@ -15,7 +15,7 @@ import type { NewUser } from "../db/types";
 import type { UserInput } from "./types";
 
 // [] add email verification later
-// [] add account recover later
+// [] add account recovery later
 
 export const signin = async (req: Request, res: Response) => {
   try {
@@ -77,7 +77,7 @@ export const signup = async (req: Request, res: Response) => {
 
     const userByEmail = await findUsersByEmail({ email: email });
 
-    const userByUsername = await findUsersByUsername({ username: username });
+    const userByUsername = await findUsersByUsername(username);
 
     if (userByUsername) {
       return res.status(409).json({
@@ -123,7 +123,6 @@ export const signup = async (req: Request, res: Response) => {
   }
 };
 
-// return status code on success and redirect based on code?
 export const signout = async (req: Request, res: Response) => {
   try {
     const username = req.user.username;

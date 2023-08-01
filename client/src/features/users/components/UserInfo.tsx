@@ -62,8 +62,9 @@ export function UserInfo(): JSX.Element {
   );
 
   useEffect(() => {
+    form.setValue('username', user.data?.username as string);
     form.setValue('email', user.data?.email as string);
-  });
+  }, []);
 
   function onSubmit(values: UserInfoFields): void {
     const data = Object.fromEntries(
@@ -102,7 +103,6 @@ export function UserInfo(): JSX.Element {
                 <FormControl>
                   <div className='flex items-center gap-8'>
                     <Input
-                      className='username-input'
                       disabled={true}
                       {...field}
                       value={field.value ?? user.data?.username}

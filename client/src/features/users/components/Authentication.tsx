@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -39,6 +40,7 @@ const PasswordSchema = z.object({
 type PasswordFields = z.infer<typeof PasswordSchema>;
 
 export function Authentication(): JSX.Element {
+  const [open, setOpen] = useState(false);
   const user = useUser();
 
   const { mutate, isLoading } = useUpdateAccount();
@@ -51,7 +53,6 @@ export function Authentication(): JSX.Element {
       confirmPassword: '',
     },
   });
-  console.log(form.getValues().confirmPassword);
 
   const passwordIsConfirmed = (): boolean => {
     return form.getValues().password === form.getValues().confirmPassword;
@@ -70,7 +71,10 @@ export function Authentication(): JSX.Element {
     mutate(
       { id: user.data?.id as number, data: data },
       {
-        onSuccess: () => form.reset(),
+        onSuccess: () => {
+          form.reset();
+          setOpen(false);
+        },
       }
     );
   }
@@ -78,7 +82,10 @@ export function Authentication(): JSX.Element {
     <>
       <Typography variant='h3'>Password and Authentication</Typography>
 
-      <Dialog>
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+      >
         <DialogTrigger asChild>
           <Button variant='outline'>Change Password</Button>
         </DialogTrigger>
