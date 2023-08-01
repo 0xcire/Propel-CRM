@@ -1,5 +1,3 @@
-// TODO: add https://github.com/t3-oss/t3-env
-
 import dotenv from "dotenv";
 dotenv.config();
 

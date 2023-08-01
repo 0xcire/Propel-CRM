@@ -29,7 +29,7 @@ export const Typography = ({
       return (
         <h2
           className={twMerge(
-            'scroll-m-20 border-b pb-2 text-3xl font-bold tracking-tight transition-colors first:mt-0',
+            'scroll-m-20 pb-2 text-3xl font-bold tracking-tight transition-colors first:mt-0',
             className
           )}
         >
@@ -59,12 +59,6 @@ export const Typography = ({
         </h4>
       );
     case 'p':
-      return (
-        <p
-          className={twMerge('leading-7 [&:not(:first-child)]:mt-6', className)}
-        >
-          {children}
-        </p>
-      );
+      return <p className={twMerge('leading-7', className)}>{children}</p>;
   }
 };

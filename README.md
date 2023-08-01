@@ -18,7 +18,6 @@ A CRM for real estate agents.
 - Expand on limited testing experience
   - Mock Service Worker, React Testing Library, etc etc
 - [x] Docker (Docker.client, Docker.server, docker-compose ?)
-- better git, git squash, rebase?
 - Improve CI/CD branches (prod, test, dev)
   - don't think this is possible on render free tier.
   - next project in next.js -> vercel. possible there.
@@ -102,6 +101,10 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 <!-- ## Successes -->
 
 <!-- ## Issues -->
+
+- React Query and Forms.
+  - Ran into issues where default values were not updated after invalidating queries on mutation success.
+  - [this TK Dodo article](https://tkdodo.eu/blog/react-query-and-forms) really helped me out
 
 ## Roadmap
 

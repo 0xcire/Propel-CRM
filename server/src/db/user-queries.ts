@@ -6,13 +6,11 @@ import type { NewUser } from "./types";
 
 type FindUsersByEmailOptions = {
   email: string;
-  requestingInfo?: boolean;
   signingIn?: boolean;
 };
 
 type FindUsersByUsernameOptions = {
   username: string;
-  requestingInfo?: boolean;
 };
 
 type updateUsersByEmailOptions = {
@@ -21,22 +19,26 @@ type updateUsersByEmailOptions = {
   signingIn?: boolean;
 };
 
+type FindUsersByIDOptions = {
+  id: number;
+  requestingInfo?: boolean;
+  updating?: boolean;
+};
+
+type updateUsersByIDOptions = {
+  id: number;
+  newUsername: string | undefined;
+  newEmail: string | undefined;
+  newPassword: string | undefined;
+};
+
 export const findUsersByEmail = async ({
   email,
-  requestingInfo,
   signingIn,
 }: FindUsersByEmailOptions): Promise<UserResponse | undefined> => {
   const user = await db
     .select({
       email: users.email,
-      ...(requestingInfo
-        ? {
-            id: users.id,
-            name: users.name,
-            username: users.username,
-            lastLogin: users.lastLogin,
-          }
-        : {}),
       ...(signingIn
         ? {
             username: users.username,
@@ -46,7 +48,6 @@ export const findUsersByEmail = async ({
     })
     .from(users)
     .where(eq(users.email, email));
-
   if (!user) {
     return undefined;
   }
@@ -54,20 +55,10 @@ export const findUsersByEmail = async ({
   return user[0];
 };
 
-export const findUsersByUsername = async ({
-  username,
-  requestingInfo,
-}: FindUsersByUsernameOptions): Promise<UserResponse | undefined> => {
+export const findUsersByUsername = async (username: string): Promise<UserResponse | undefined> => {
   const user = await db
     .select({
       username: users.username,
-      ...(requestingInfo
-        ? {
-            id: users.id,
-            name: users.name,
-            lastLogin: users.lastLogin,
-          }
-        : {}),
     })
     .from(users)
     .where(eq(users.username, username));
@@ -130,4 +121,71 @@ export const insertNewUser = async (user: NewUser) => {
   return insertedUser[0];
 };
 
-// updateUsersByUsername(username)
+export const findUsersByID = async ({ id, requestingInfo, updating }: FindUsersByIDOptions) => {
+  const user = await db
+    .select({
+      id: users.id,
+      username: users.username,
+      email: users.email,
+      ...(requestingInfo
+        ? {
+            name: users.name,
+            lastLogin: users.lastLogin,
+            createdAt: users.createdAt,
+            isAdmin: users.isAdmin,
+          }
+        : {}),
+      ...(updating
+        ? {
+            hashedPassword: users.hashedPassword,
+          }
+        : {}),
+    })
+    .from(users)
+    .where(eq(users.id, id));
+
+  if (!user) {
+    return undefined;
+  }
+
+  return user[0];
+};
+
+export const updateUserByID = async ({ id, newUsername, newEmail, newPassword }: updateUsersByIDOptions) => {
+  const updatedUser = await db
+    .update(users)
+    .set({
+      ...(newUsername
+        ? {
+            username: newUsername,
+          }
+        : {}),
+      ...(newEmail
+        ? {
+            email: newEmail,
+          }
+        : {}),
+      ...(newPassword
+        ? {
+            hashedPassword: newPassword,
+          }
+        : {}),
+    })
+    .where(eq(users.id, id))
+    .returning({
+      id: users.id,
+      username: users.username,
+      email: users.email,
+    });
+
+  return updatedUser[0];
+};
+
+export const deleteUserByID = async (id: number) => {
+  const deletedUser = await db.delete(users).where(eq(users.id, id)).returning({
+    name: users.name,
+    username: users.username,
+  });
+
+  return deletedUser[0];
+};

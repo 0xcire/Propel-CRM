@@ -9,15 +9,15 @@ export const NotFound = (): JSX.Element => {
           <Typography variant='h3'>404!</Typography>
           <div className='ml-4 mr-4 h-8 w-[1px] border border-black'></div>
           <Typography
-            className='text-slate-700 [&:not(:first-child)]:mt-0'
+            className='text-slate-700'
             variant='p'
           >
             Can't find that page.
           </Typography>
         </div>
         <LinkButton
-          path='/'
-          text='Go Home'
+          delta={-1}
+          text='Go Back'
           className='mt-3'
         />
       </div>

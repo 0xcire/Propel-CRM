@@ -1,8 +1,8 @@
-import type { ButtonHTMLAttributes } from 'react';
+import { ButtonProps } from '@/components/ui/button';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components';
 
-interface SubmitButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface SubmitButtonProps extends ButtonProps {
   text: string;
   isLoading: boolean;
   disabled?: boolean;

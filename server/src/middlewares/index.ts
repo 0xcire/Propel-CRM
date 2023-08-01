@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { findUsersBySessionToken } from "../db/queries";
+import { findUsersBySessionToken } from "../db/user-queries";
 import { SESSION_COOKIE_NAME } from "../config";
 
 export const isAuth = async (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +12,6 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
       });
     }
 
-    // extract
     const userByToken = await findUsersBySessionToken(sessionToken);
 
     if (!userByToken) {
@@ -31,29 +30,31 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
     return next();
   } catch (error) {
     console.log(error);
-    return res.sendStatus(400);
+    return res.status(400).json({});
   }
 };
 
-// [] implement on user contoller: update, delete, etc
 export const isOwner = (req: Request, res: Response, next: NextFunction) => {
   try {
-    // may need to modify this
-    // const { id } = req.params;
-    const currentUser = req.user.username;
+    const { id } = req.params;
+    const authenticatedUserID = req.user.id;
 
-    if (!currentUser) {
-      return res.sendStatus(403);
+    if (!authenticatedUserID) {
+      return res.status(403).json({
+        message: "Not authenticated.",
+      });
     }
 
-    // if (currentUser !== id) {
-    //   return res.sendStatus(403);
-    // }
+    if (authenticatedUserID.toString() !== id) {
+      return res.status(403).json({
+        message: "Can only perform this operation on your own account.",
+      });
+    }
 
     next();
   } catch (error) {
     console.log(error);
-    return res.sendStatus(400);
+    return res.status(400).json({});
   }
 };
 

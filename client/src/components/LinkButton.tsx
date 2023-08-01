@@ -1,16 +1,18 @@
-import type { ButtonHTMLAttributes } from 'react';
+import type { ButtonProps } from './ui/button';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 
-interface LinkButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface LinkButtonProps extends ButtonProps {
   text: string;
   path?: string;
+  delta?: number;
   className?: string;
 }
 
 export function LinkButton({
   text,
   path,
+  delta,
   className,
   ...props
 }: LinkButtonProps): JSX.Element {
@@ -19,7 +21,9 @@ export function LinkButton({
     <Button
       {...props}
       className={className}
-      onClick={(): void => navigate(path)}
+      onClick={(): void => {
+        path ? navigate(path) : navigate(delta as number);
+      }}
     >
       {text}
     </Button>

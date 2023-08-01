@@ -5,6 +5,18 @@ type FetchMethodOptions = {
   body?: BodyInit | undefined;
 };
 
+export const handleAPIResponse = async <T>(response: Response): Promise<T> => {
+  const data = await response.json();
+  if (response.ok) {
+    return data;
+  } else {
+    throw {
+      message: data.message,
+      status: response.status,
+    };
+  }
+};
+
 export const Post = ({
   endpoint,
   body,
