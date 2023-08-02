@@ -27,8 +27,8 @@ export const contacts = pgTable("contacts", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull(),
-  phonenumber: varchar("phone_number", { length: 20 }).notNull(),
-  address: varchar("address", { length: 20 }).notNull(),
+  phoneNumber: varchar("phone_number", { length: 20 }).notNull(),
+  address: varchar("address", { length: 255 }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
@@ -45,6 +45,7 @@ export const usersToContacts = pgTable(
     contactID: integer("contact_id")
       .notNull()
       .references(() => contacts.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   },
   (t) => ({
     pk: primaryKey(t.userID, t.contactID),
