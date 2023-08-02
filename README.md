@@ -2,28 +2,6 @@
 
 A CRM for real estate agents.
 
-## Things to figure out for this project
-
-- Landing page into web app flow like most apps
-  - propel.onrender.com -> app.propel.onrender.com for example
-  - limited funding so probably limited here
-- React Router for query params
-  - url component state necessary for this?
-- TRPC || ts-rest, React Query
-- [x] Rolling Authenticaion (OWASP, bcrypt, other security measures)
-  - look at my ts rest repo for starting point
-- Solidify Express comfortability
-- PostgreSQL
-- use for redis?
-- Expand on limited testing experience
-  - Mock Service Worker, React Testing Library, etc etc
-- [x] Docker (Docker.client, Docker.server, docker-compose ?)
-- Improve CI/CD branches (prod, test, dev)
-  - don't think this is possible on render free tier.
-  - next project in next.js -> vercel. possible there.
-- [emails](https://resend.com/)
-- text service? try to find free tiers
-
 ## Features
 
 - Docker setup for Development and Production.
@@ -31,24 +9,20 @@ A CRM for real estate agents.
 
 ## Architecture
 
----
-
 ### Client
 
 - Tailwind / Shadcn UI (Radix)
   - `./client/src/components/ui` contain shadcn components and everything in
-  - `./client/src/components` contain my extension / customization of them
+  - `./client/src/components` contain my extension / customization of them as well as my own
 - Vite
 - React
 - React Router
 - React Query / React Context
-- ts-rest
 
 ### Server
 
 - Node
 - Express
-- ts-rest
 
 ### Database
 
@@ -92,15 +66,22 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 ## Learning Points
 
 - Docker
+
   - Containerizing both client and server separately
   - Writing separate configs for dev and prod
     - Trying to follow best practices as necessary
   - Using nginx as a reverse proxy server
   - Using docker-compose to sync app together
 
-<!-- ## Successes -->
+- Authentication
 
-<!-- ## Issues -->
+  - Differences between JWT and Session/Cookie based auth
+
+## Successes
+
+- Implemented Session/Cookie based authentication
+
+## Issues
 
 - React Query and Forms.
   - Ran into issues where default values were not updated after invalidating queries on mutation success.
@@ -108,6 +89,43 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 
 ## Roadmap
 
+### MVP Features
+
 - [x] adding **full** Docker support
-- [x] auth / middlewares
-- [] then -> full stack slices for each api endpoint
+- [x] auth MVP
+  - [x] user can sign up
+  - [x] user can sign in
+  - [x] user can sign out
+- [x] user-slice MVP
+  - [x] user can create account
+  - [x] user can update their own account details (username, email, password)
+  - [x] user can delete their own account
+- [ ] contacts-slice MVP
+  - [ ] user can add a contact
+  - [ ] user can update a contact
+  - [ ] user can delete a contact
+  - [ ] on dashboard, user gets a side panel to view contacts (like valorant, csgo, discord, etc...)
+  - [ ] dashboard should have a '+' button that shows dropdown for adding contact, task, listing, etc
+  - [ ] full contacts page
+- [ ] tasks-slice MVP
+- [ ] listings-slice MVP
+- [ ] analytics-slice MVP
+
+### Full Features
+
+- [ ] auth / user-slice
+
+  - [ ] refresh token
+  - [ ] email confirmation
+  - [ ] account recovery
+  - [ ] 2fa opt-in
+  - [ ] disable account
+  - [ ] framer-motion left/right page transitions between sign-in and sign-up
+
+- [ ] contacts-slice (depending on how other features are built out...)
+
+  - [ ] listings may show potential contacts associated
+  - [ ] certain tasks may have associated contacts
+  - [ ] sending follow up texts or emails to contacts, etc
+
+- [ ] detect purely mobile viewport and replace dialog components with [Vaul](https://github.com/emilkowalski/vaul)
