@@ -101,9 +101,10 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - [x] user can update their own account details (username, email, password)
   - [x] user can delete their own account
 - [ ] contacts-slice MVP
-  - [ ] user can add a contact
-  - [ ] user can update a contact
-  - [ ] user can delete a contact
+  - [x] user can get all related contacts
+  - [x] user can add a contact
+  - [x] user can update a contact
+  - [x] user can delete a contact
   - [ ] on dashboard, user gets a side panel to view contacts (like valorant, csgo, discord, etc...)
   - [ ] dashboard should have a '+' button that shows dropdown for adding contact, task, listing, etc
   - [ ] full contacts page

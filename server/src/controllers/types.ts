@@ -7,3 +7,6 @@ export type UserInput = {
   email: string | undefined;
   password: string | undefined;
 };
+
+// export type ContactResponse
+// export type ContactInput
