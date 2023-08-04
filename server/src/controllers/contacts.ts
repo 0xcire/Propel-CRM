@@ -39,15 +39,15 @@ export const getMyContacts = async (req: Request, res: Response) => {
 export const createContact = async (req: Request, res: Response) => {
   try {
     const id = req.user.id;
-    const { name, email, phone, address } = req.body;
+    const { name, email, phoneNumber, address } = req.body;
 
-    if (!name || !email || !phone || !address) {
+    if (!name || !email || !phoneNumber || !address) {
       return res.status(400).json({});
     }
 
     const contact: NewContact = {
       name: name,
-      phoneNumber: phone,
+      phoneNumber: phoneNumber,
       email: email,
       address: address,
     };
@@ -61,7 +61,7 @@ export const createContact = async (req: Request, res: Response) => {
       .where(
         and(
           eq(contacts.name, name),
-          eq(contacts.phoneNumber, phone),
+          eq(contacts.phoneNumber, phoneNumber),
           eq(contacts.email, email),
           eq(contacts.address, address)
         )
@@ -97,6 +97,7 @@ export const createContact = async (req: Request, res: Response) => {
     });
 
     return res.status(201).json({
+      message: `Added ${insertedContact ? insertedContact[0].name : existingContact[0].name} to your network.`,
       contact: contact,
     });
   } catch (error) {
