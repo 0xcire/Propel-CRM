@@ -5,6 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Spinner } from '@/components';
 
 import { Contact } from './Contact';
+import type { Contact as ContactData } from '../types';
 
 export function ContactList(): JSX.Element {
   const contacts = useContacts();
@@ -22,9 +23,9 @@ export function ContactList(): JSX.Element {
 
   return (
     <ScrollArea className='h-full p-4 pt-0'>
-      {contacts.data?.map((contact) => (
+      {contacts.data?.map((contact: ContactData) => (
         <Contact
-          key={contact.name}
+          key={`${contact.id}-${contact.name.split(' ')[0]}`}
           contact={contact}
         />
       ))}

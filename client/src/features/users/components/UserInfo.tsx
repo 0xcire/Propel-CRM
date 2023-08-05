@@ -75,11 +75,13 @@ export function UserInfo(): JSX.Element {
     //     }
     //   })
     // );
+
     let data;
     if (user.data) {
       data = filterFields({ newData: values, originalData: user.data });
     }
 
+    // TODO: fix this Record<string, string> type
     mutate(
       { id: user.data?.id as number, data: data as Record<string, string> },
       {

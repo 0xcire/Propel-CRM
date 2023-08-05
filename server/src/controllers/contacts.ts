@@ -28,14 +28,14 @@ export const getMyContacts = async (req: Request, res: Response) => {
   }
 };
 
-// export const getOneContact = async (req: Request, res: Response) => {
-//   try {
-//     return 0;
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({});
-//   }
-// };
+export const getSpecificContact = async (req: Request, res: Response) => {
+  try {
+    return 0;
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({});
+  }
+};
 
 export const createContact = async (req: Request, res: Response) => {
   try {
@@ -114,9 +114,11 @@ export const updateContact = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
     const { id } = req.params;
-    const { verifyPassword, name, email, phone, address } = req.body;
+    const { verifyPassword, name, email, phoneNumber, address } = req.body;
 
-    if (!name && !email && !phone && !address) {
+    console.log("updateContact", req.body);
+
+    if (!name && !email && !phoneNumber && !address) {
       return res.status(400).json({
         message: "Nothing to update.",
       });
@@ -162,9 +164,9 @@ export const updateContact = async (req: Request, res: Response) => {
               email: email,
             }
           : {}),
-        ...(phone !== contact[0].phoneNumber && phone !== undefined
+        ...(phoneNumber !== contact[0].phoneNumber && phoneNumber !== undefined
           ? {
-              phoneNumber: phone,
+              phoneNumber: phoneNumber,
             }
           : {}),
         ...(address !== contact[0].address && address !== undefined
@@ -177,7 +179,7 @@ export const updateContact = async (req: Request, res: Response) => {
       .returning({
         name: contacts.name,
         email: contacts.email,
-        phone: contacts.phoneNumber,
+        phoneNumber: contacts.phoneNumber,
         address: contacts.address,
       });
 

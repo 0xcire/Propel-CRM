@@ -16,13 +16,9 @@ import {
 } from '@/components/ui/alert-dialog';
 import { SubmitButton } from '@/components';
 
-import { type Contact } from '../api';
+import type { ContactAsProp } from '../types';
 
-type RemoveContactProps = {
-  contact: Contact;
-};
-
-export function RemoveContact({ contact }: RemoveContactProps): JSX.Element {
+export function RemoveContact({ contact }: ContactAsProp): JSX.Element {
   const [open, setOpen] = useState(false);
 
   const deleteContact = useDeleteContact();
@@ -35,13 +31,16 @@ export function RemoveContact({ contact }: RemoveContactProps): JSX.Element {
         <Trash2Icon
           className='cursor-pointer'
           size={18}
+          tabIndex={0}
         />
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            {`This action cannot be undone. This will permanently delete ${contact.name} from your network.`}
+            This action cannot be undone. This will permanently delete{' '}
+            <span className='font-black'>{contact.name} </span>
+            from your network.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

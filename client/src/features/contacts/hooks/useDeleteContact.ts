@@ -1,8 +1,10 @@
 import { type UseMutationResult, useMutation } from '@tanstack/react-query';
-import { type ContactResponse, deleteContact } from '../api';
+import { deleteContact } from '../api';
 import { queryClient } from '@/lib/react-query';
 import { useToast } from '@/components/ui/use-toast';
 import { isAPIError } from '@/utils/error';
+
+import type { ContactResponse } from '../types';
 
 export const useDeleteContact = (): UseMutationResult<
   ContactResponse,

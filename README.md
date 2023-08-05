@@ -100,14 +100,12 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - [x] user can create account
   - [x] user can update their own account details (username, email, password)
   - [x] user can delete their own account
-- [ ] contacts-slice MVP
+- [x] contacts-slice MVP
   - [x] user can get all related contacts
   - [x] user can add a contact
   - [x] user can update a contact
   - [x] user can delete a contact
-  - [ ] on dashboard, user gets a side panel to view contacts (like valorant, csgo, discord, etc...)
-  - [ ] dashboard should have a '+' button that shows dropdown for adding contact, task, listing, etc
-  - [ ] full contacts page
+  - [x] on dashboard, user gets a side panel to view contacts (like valorant, csgo, discord, etc...)
 - [ ] tasks-slice MVP
 - [ ] listings-slice MVP
 - [ ] analytics-slice MVP
@@ -126,11 +124,16 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 - [ ] contacts-slice (depending on how other features are built out...)
 
   - [ ] listings may show potential contacts associated
+  - [ ] full contacts page
   - [ ] certain tasks may have associated contacts
   - [ ] sending follow up texts or emails to contacts, etc
   - [ ] user can drag to reorder contact list
   - [ ] react-query set individual item on update
   - [ ] optimistic updates for create, delete, update
   - [ ] layout animations when deleting contact
+
+- [ ] tasks-slice
+
+  - [ ] can use something like @<Name> and autocomplete based on your contacts
 
 - [ ] detect purely mobile viewport and replace dialog components with [Vaul](https://github.com/emilkowalski/vaul)

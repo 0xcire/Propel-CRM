@@ -1,12 +1,10 @@
 import { type UseMutationResult, useMutation } from '@tanstack/react-query';
-import {
-  type ContactResponse,
-  updateContact,
-  type UpdateContactParams,
-} from '../api';
+import { updateContact, type UpdateContactParams } from '../api';
 import { queryClient } from '@/lib/react-query';
 import { useToast } from '@/components/ui/use-toast';
 import { isAPIError } from '@/utils/error';
+
+import type { ContactResponse } from '../types';
 
 export const useUpdateContact = (): UseMutationResult<
   ContactResponse,
@@ -38,6 +36,7 @@ export const useUpdateContact = (): UseMutationResult<
       //     contact.id === ctx.updatedContact.id ? ctx.updatedContact : contact
       //   );
       // });
+      console.log('invalidating');
       return queryClient.invalidateQueries({
         queryKey: ['contacts'],
       });

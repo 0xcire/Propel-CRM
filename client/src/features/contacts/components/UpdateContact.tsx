@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -29,7 +29,7 @@ import { Button } from '@/components/ui/button';
 
 import { SubmitButton, Tooltip } from '@/components';
 
-import { type NewContact, type Contact } from '../api';
+import type { NewContact, ContactAsProp } from '../types';
 
 const ContactInfoSchema = z.object({
   name: z.string(),
@@ -40,11 +40,7 @@ const ContactInfoSchema = z.object({
 });
 type ContactInfoFields = z.infer<typeof ContactInfoSchema>;
 
-type UpdateContactProps = {
-  contact: Contact;
-};
-
-export function UpdateContact({ contact }: UpdateContactProps): JSX.Element {
+export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
   const [open, setOpen] = useState(false);
   const updateContact = useUpdateContact();
 
@@ -68,6 +64,10 @@ export function UpdateContact({ contact }: UpdateContactProps): JSX.Element {
     return passwordFilled && dataChanged;
   };
 
+  useEffect(() => {
+    form.reset({ ...contact, verifyPassword: '' });
+  }, [contact, form]);
+
   function onSubmit(values: ContactInfoFields): void {
     const data: Partial<NewContact> = filterFields({
       newData: values,
@@ -77,8 +77,8 @@ export function UpdateContact({ contact }: UpdateContactProps): JSX.Element {
       { id: contact.id, data: data },
       {
         onSuccess: () => {
-          form.reset();
           setOpen(false);
+          form.reset();
         },
       }
     );
@@ -94,6 +94,7 @@ export function UpdateContact({ contact }: UpdateContactProps): JSX.Element {
           <PencilIcon
             className='cursor-pointer'
             size={18}
+            tabIndex={0}
           />
         </DialogTrigger>
       </Tooltip>
@@ -193,7 +194,12 @@ export function UpdateContact({ contact }: UpdateContactProps): JSX.Element {
           </form>
         </Form>
         <DialogFooter>
-          <Button onClick={(): void => setOpen(false)}>Cancel</Button>
+          <Button
+            variant='outline'
+            onClick={(): void => setOpen(false)}
+          >
+            Cancel
+          </Button>
           <SubmitButton
             disabled={!userHasChangedInfo()}
             form='update-contact'

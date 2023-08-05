@@ -48,11 +48,11 @@ const Protected = (): JSX.Element => {
           </div>
 
           <div className='relative col-start-10 col-end-13 row-start-1 row-end-7 rounded border shadow 2xl:col-start-11'>
-            <div className='flex items-center justify-between p-4'>
-              <span>contacts</span>
+            <div className='flex h-[60px] items-center justify-between px-4'>
+              <Typography variant='h4'>Contacts</Typography>
               <AddContact />
             </div>
-            <div className='absolute h-[calc(100%-72px)] w-full'>
+            <div className='absolute h-[calc(100%-60px)] w-full'>
               <ContactList />
             </div>
           </div>

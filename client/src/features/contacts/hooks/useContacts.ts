@@ -1,9 +1,11 @@
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
-import { getContacts, Contacts } from '../api';
+import { getContacts } from '../api';
 
 import { useToast } from '@/components/ui/use-toast';
 
 import { isAPIError } from '@/utils/error';
+
+import type { Contacts } from '../types';
 
 export const useContacts = (): UseQueryResult<Contacts, unknown> => {
   const { toast } = useToast();

@@ -27,6 +27,7 @@ import { Input } from '@/components/ui/input';
 
 import { Tooltip } from '@/components/Tooltip';
 import { SubmitButton } from '@/components';
+import { Button } from '@/components/ui/button';
 
 const AddContactSchema = z.object({
   name: z.string(),
@@ -49,6 +50,8 @@ export function AddContact(): JSX.Element {
     },
   });
 
+  const formComplete = Object.keys(form.formState.dirtyFields).length === 4;
+
   function onSubmit(values: AddContactFields): void {
     createContact.mutate(values, {
       onSuccess: () => {
@@ -67,6 +70,7 @@ export function AddContact(): JSX.Element {
           <UserPlus
             className='cursor-pointer'
             size={22}
+            tabIndex={0}
           />
         </DialogTrigger>
       </Tooltip>
@@ -144,7 +148,11 @@ export function AddContact(): JSX.Element {
           </form>
         </Form>
         <DialogFooter>
+          <DialogTrigger asChild>
+            <Button variant='outline'>Close</Button>
+          </DialogTrigger>
           <SubmitButton
+            disabled={!formComplete}
             form='add-contact'
             isLoading={createContact.isLoading}
             text='Save'

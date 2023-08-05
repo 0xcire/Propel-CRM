@@ -5,18 +5,11 @@ import { Avatar, Tooltip } from '@/components';
 import { UpdateContact } from './UpdateContact';
 import { RemoveContact } from './RemoveContact';
 
-import { type Contact as ContactInfo } from '../api';
+import type { ContactAsProp } from '../types';
 
-type ContactProps = {
-  contact: ContactInfo;
-};
-
-export function Contact({ contact }: ContactProps): JSX.Element {
+export function Contact({ contact }: ContactAsProp): JSX.Element {
   return (
-    <div
-      data-id={contact.id}
-      className='h-content my-3 flex items-center justify-between'
-    >
+    <div className='h-content my-3 flex items-center justify-between'>
       <div className='flex h-full'>
         <Avatar
           className='my-auto'
@@ -34,6 +27,7 @@ export function Contact({ contact }: ContactProps): JSX.Element {
               <AtSignIcon
                 className='cursor-pointer'
                 size={16}
+                tabIndex={0}
               />
             </Tooltip>
 
@@ -41,6 +35,7 @@ export function Contact({ contact }: ContactProps): JSX.Element {
               <PhoneIcon
                 className='mx-2 cursor-pointer'
                 size={16}
+                tabIndex={0}
               />
             </Tooltip>
 
@@ -48,6 +43,7 @@ export function Contact({ contact }: ContactProps): JSX.Element {
               <MapPinIcon
                 className='cursor-pointer'
                 size={16}
+                tabIndex={0}
               />
             </Tooltip>
           </div>
