@@ -1,6 +1,6 @@
 type FilterFieldParams = {
   newData: Record<string, string>;
-  originalData: Record<string, string>;
+  originalData: Record<string, unknown>;
 };
 
 export const filterFields = ({

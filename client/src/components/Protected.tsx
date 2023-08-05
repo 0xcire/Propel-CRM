@@ -15,7 +15,7 @@ const Protected = (): JSX.Element => {
   const navigate = useNavigate();
   return (
     <>
-      <div className='flex h-full w-full flex-col'>
+      <div className='flex h-full w-full flex-1 flex-col'>
         <div className='flex w-full items-center justify-between px-12 pt-10'>
           <Typography variant='h3'>
             Welcome, {user.data?.name as string}
@@ -23,7 +23,7 @@ const Protected = (): JSX.Element => {
           <Button className='mr-4'>Add</Button>
         </div>
         <div className='grid h-full max-h-screen flex-1 grid-cols-12 grid-rows-6 gap-4 p-12 pb-10 xl:flex-1'>
-          <div className='col-start-1 col-end-10 row-start-1 row-end-4 grid place-items-center rounded border shadow'>
+          <div className='col-start-1 col-end-10 row-start-1 row-end-4 grid place-items-center rounded border shadow 2xl:col-end-11'>
             <div>
               <p>Listings...</p>
               <div>
@@ -36,6 +36,7 @@ const Protected = (): JSX.Element => {
                       {
                         onSuccess: () => {
                           queryClient.invalidateQueries(['authenticated-user']);
+                          queryClient.clear();
                           navigate('/');
                         },
                       }
@@ -46,7 +47,7 @@ const Protected = (): JSX.Element => {
             </div>
           </div>
 
-          <div className='relative col-start-10 col-end-13 row-start-1 row-end-7 rounded border shadow'>
+          <div className='relative col-start-10 col-end-13 row-start-1 row-end-7 rounded border shadow 2xl:col-start-11'>
             <div className='flex items-center justify-between p-4'>
               <span>contacts</span>
               <AddContact />
@@ -58,7 +59,7 @@ const Protected = (): JSX.Element => {
           <div className='col-start-1 col-end-4 row-start-4 row-end-7 rounded border shadow'>
             tasks
           </div>
-          <div className='col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow'>
+          <div className='col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>
             <p>analytics</p>
           </div>
         </div>

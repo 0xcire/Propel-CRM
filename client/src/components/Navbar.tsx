@@ -86,7 +86,7 @@ function MobileSideNav({ name }: NavProps): JSX.Element {
 
 function SideNav({ name }: NavProps): JSX.Element {
   return (
-    <div className='flex h-full w-1/6 max-w-[350px] flex-col border-r-2 px-4 py-10'>
+    <div className='flex h-full w-1/6 max-w-[300px] flex-col border-r-2 px-4 py-10'>
       <Typography
         variant='h2'
         className='text-center'

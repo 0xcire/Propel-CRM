@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { db } from "../db";
 import { contacts, users, usersToContacts } from "../db/schema";
 import type { Contact, NewContact, NewUserContactRelation, UserContactRelation } from "../db/types";
@@ -15,7 +15,8 @@ export const getMyContacts = async (req: Request, res: Response) => {
       .from(usersToContacts)
       .leftJoin(contacts, eq(usersToContacts.contactID, contacts.id))
       .leftJoin(users, eq(usersToContacts.userID, users.id))
-      .where(eq(users.id, id));
+      .where(eq(users.id, id))
+      .orderBy(sql`${usersToContacts.createdAt} asc`);
 
     return res.status(200).json({
       message: "",

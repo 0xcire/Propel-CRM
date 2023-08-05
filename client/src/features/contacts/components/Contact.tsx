@@ -1,53 +1,50 @@
-// import { type NewContact } from '../api';
+import { Typography } from '@/components/ui/typography';
+import { PhoneIcon, AtSignIcon, MapPinIcon } from 'lucide-react';
 
 import { Avatar, Tooltip } from '@/components';
-import { Typography } from '@/components/ui/typography';
-import { PhoneIcon, AtSignIcon, MapPinIcon, PencilIcon } from 'lucide-react';
+import { UpdateContact } from './UpdateContact';
+import { RemoveContact } from './RemoveContact';
 
-// type ContactProps = NewContact;
+import { type Contact as ContactInfo } from '../api';
 
 type ContactProps = {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
+  contact: ContactInfo;
 };
-export function Contact({
-  name,
-  email,
-  phone,
-  address,
-}: ContactProps): JSX.Element {
+
+export function Contact({ contact }: ContactProps): JSX.Element {
   return (
-    <div className='h-content my-3 flex items-center justify-between'>
+    <div
+      data-id={contact.id}
+      className='h-content my-3 flex items-center justify-between'
+    >
       <div className='flex h-full'>
         <Avatar
           className='my-auto'
-          name={name}
+          name={contact.name}
         />
         <div className='ml-2 py-1'>
           <Typography
             className='leading-none'
             variant='p'
           >
-            {name}
+            {contact.name}
           </Typography>
           <div className='mt-1 flex w-max items-center justify-between'>
-            <Tooltip content={email}>
+            <Tooltip content={contact.email}>
               <AtSignIcon
                 className='cursor-pointer'
                 size={16}
               />
             </Tooltip>
 
-            <Tooltip content={phone}>
+            <Tooltip content={contact.phoneNumber}>
               <PhoneIcon
                 className='mx-2 cursor-pointer'
                 size={16}
               />
             </Tooltip>
 
-            <Tooltip content={address}>
+            <Tooltip content={contact.address}>
               <MapPinIcon
                 className='cursor-pointer'
                 size={16}
@@ -56,12 +53,10 @@ export function Contact({
           </div>
         </div>
       </div>
-      <Tooltip content='edit'>
-        <PencilIcon
-          className='cursor-pointer'
-          size={20}
-        />
-      </Tooltip>
+      <div>
+        <UpdateContact contact={contact} />
+        <RemoveContact contact={contact} />
+      </div>
     </div>
   );
 }

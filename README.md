@@ -128,5 +128,9 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - [ ] listings may show potential contacts associated
   - [ ] certain tasks may have associated contacts
   - [ ] sending follow up texts or emails to contacts, etc
+  - [ ] user can drag to reorder contact list
+  - [ ] react-query set individual item on update
+  - [ ] optimistic updates for create, delete, update
+  - [ ] layout animations when deleting contact
 
 - [ ] detect purely mobile viewport and replace dialog components with [Vaul](https://github.com/emilkowalski/vaul)

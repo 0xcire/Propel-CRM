@@ -27,6 +27,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { SubmitButton } from '@/components';
+import { filterFields } from '@/utils/form-data';
 
 const UserInfoSchema = z.object({
   username: z.string(),
@@ -67,16 +68,20 @@ export function UserInfo(): JSX.Element {
   }, []);
 
   function onSubmit(values: UserInfoFields): void {
-    const data = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => {
-        if (user.data) {
-          return value !== user.data[key as keyof typeof user.data];
-        }
-      })
-    );
+    // const data = Object.fromEntries(
+    //   Object.entries(values).filter(([key, value]) => {
+    //     if (user.data) {
+    //       return value !== user.data[key as keyof typeof user.data];
+    //     }
+    //   })
+    // );
+    let data;
+    if (user.data) {
+      data = filterFields({ newData: values, originalData: user.data });
+    }
 
     mutate(
-      { id: user.data?.id as number, data: data },
+      { id: user.data?.id as number, data: data as Record<string, string> },
       {
         onSuccess: () => {
           setOpen(false);

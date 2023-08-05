@@ -4,13 +4,13 @@ import { updateAccount } from '../api';
 import { isAPIError } from '@/utils/error';
 import { useToast } from '@/components/ui/use-toast';
 
-import type { UpdateAccountOptions } from '../types';
+import type { UpdateAccountParams } from '../types';
 import type { UserResponse } from '@/types';
 
 export const useUpdateAccount = (): UseMutationResult<
   UserResponse,
   unknown,
-  UpdateAccountOptions,
+  UpdateAccountParams,
   unknown
 > => {
   const { toast } = useToast();

@@ -3,18 +3,11 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useCreateContact } from '../hooks/useCreateContact';
+import { useUpdateContact } from '../hooks/useUpdateContact';
 
-import { UserPlus } from 'lucide-react';
+import { filterFields } from '@/utils/form-data';
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { PencilIcon } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -23,60 +16,95 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
-import { Tooltip } from '@/components/Tooltip';
-import { SubmitButton } from '@/components';
+import { SubmitButton, Tooltip } from '@/components';
 
-const AddContactSchema = z.object({
+import { type NewContact, type Contact } from '../api';
+
+const ContactInfoSchema = z.object({
   name: z.string(),
   email: z.string().email(),
   phoneNumber: z.string(),
   address: z.string(),
+  verifyPassword: z.string(),
 });
-type AddContactFields = z.infer<typeof AddContactSchema>;
+type ContactInfoFields = z.infer<typeof ContactInfoSchema>;
 
-export function AddContact(): JSX.Element {
+type UpdateContactProps = {
+  contact: Contact;
+};
+
+export function UpdateContact({ contact }: UpdateContactProps): JSX.Element {
   const [open, setOpen] = useState(false);
-  const createContact = useCreateContact();
-  const form = useForm<AddContactFields>({
-    resolver: zodResolver(AddContactSchema),
+  const updateContact = useUpdateContact();
+
+  const form = useForm<ContactInfoFields>({
+    resolver: zodResolver(ContactInfoSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      phoneNumber: '',
-      address: '',
+      name: contact.name,
+      email: contact.email,
+      phoneNumber: contact.phoneNumber,
+      address: contact.address,
+      verifyPassword: '',
     },
   });
 
-  function onSubmit(values: AddContactFields): void {
-    createContact.mutate(values, {
-      onSuccess: () => {
-        setOpen(false);
-        form.reset();
-      },
+  const userHasChangedInfo = (): boolean => {
+    const dirtyFields = Object.keys(form.formState.dirtyFields);
+    const fields = ['name', 'email', 'phoneNumber', 'address'];
+    const passwordFilled = dirtyFields.includes('verifyPassword');
+    const dataChanged = dirtyFields.some((field) => fields.includes(field));
+
+    return passwordFilled && dataChanged;
+  };
+
+  function onSubmit(values: ContactInfoFields): void {
+    const data: Partial<NewContact> = filterFields({
+      newData: values,
+      originalData: contact,
     });
+    updateContact.mutate(
+      { id: contact.id, data: data },
+      {
+        onSuccess: () => {
+          form.reset();
+          setOpen(false);
+        },
+      }
+    );
   }
+
   return (
     <Dialog
       open={open}
       onOpenChange={setOpen}
     >
-      <Tooltip content='Add new contact'>
+      <Tooltip content='edit'>
         <DialogTrigger asChild>
-          <UserPlus
+          <PencilIcon
             className='cursor-pointer'
-            size={22}
+            size={18}
           />
         </DialogTrigger>
       </Tooltip>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Contact</DialogTitle>
+          <DialogTitle>Update Contact</DialogTitle>
         </DialogHeader>
+
         <Form {...form}>
           <form
-            id='add-contact'
+            id='update-contact'
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormField
@@ -95,7 +123,6 @@ export function AddContact(): JSX.Element {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name='email'
@@ -107,6 +134,7 @@ export function AddContact(): JSX.Element {
                       <Input {...field} />
                     </div>
                   </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -116,12 +144,13 @@ export function AddContact(): JSX.Element {
               name='phoneNumber'
               render={({ field }): JSX.Element => (
                 <FormItem>
-                  <FormLabel>Phone</FormLabel>
+                  <FormLabel>Phone Number</FormLabel>
                   <FormControl>
                     <div className='flex items-center gap-8'>
                       <Input {...field} />
                     </div>
                   </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -137,6 +166,26 @@ export function AddContact(): JSX.Element {
                       <Input {...field} />
                     </div>
                   </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='verifyPassword'
+              render={({ field }): JSX.Element => (
+                <FormItem>
+                  <FormLabel>Your Password</FormLabel>
+                  <FormControl>
+                    <div className='flex items-center gap-8'>
+                      <Input
+                        type='password'
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -144,10 +193,12 @@ export function AddContact(): JSX.Element {
           </form>
         </Form>
         <DialogFooter>
+          <Button onClick={(): void => setOpen(false)}>Cancel</Button>
           <SubmitButton
-            form='add-contact'
-            isLoading={createContact.isLoading}
-            text='Save'
+            disabled={!userHasChangedInfo()}
+            form='update-contact'
+            isLoading={updateContact.isLoading}
+            text='Update'
           />
         </DialogFooter>
       </DialogContent>
