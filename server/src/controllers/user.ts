@@ -5,7 +5,7 @@ import {
   findUsersByID,
   findUsersByUsername,
   updateUserByID,
-} from "../db/user-queries";
+} from "../db/queries/user";
 import { checkPassword, hashPassword } from "../utils";
 import { SESSION_COOKIE_NAME } from "../config";
 

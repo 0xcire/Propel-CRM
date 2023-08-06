@@ -107,6 +107,8 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - [x] user can delete a contact
   - [x] on dashboard, user gets a side panel to view contacts (like valorant, csgo, discord, etc...)
 - [ ] tasks-slice MVP
+  - [ ] user can CRUD a task
+  - [ ] user can '@ tag' a contact and when hovering name, can see 'contact card'
 - [ ] listings-slice MVP
 - [ ] analytics-slice MVP
 
@@ -131,6 +133,7 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - [ ] react-query set individual item on update
   - [ ] optimistic updates for create, delete, update
   - [ ] layout animations when deleting contact
+  - [ ] name autocomplete
 
 - [ ] tasks-slice
 

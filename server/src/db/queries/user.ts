@@ -1,8 +1,8 @@
 import { eq, sql } from "drizzle-orm";
-import { db } from ".";
-import { users } from "./schema";
-import type { UserResponse } from "../controllers/types";
-import type { NewUser } from "./types";
+import { db } from "../";
+import { users } from "../schema";
+import type { UserResponse } from "../../controllers/types";
+import type { NewUser } from "../types";
 
 type FindUsersByEmailParams = {
   email: string;

@@ -36,7 +36,6 @@ export const useUpdateContact = (): UseMutationResult<
       //     contact.id === ctx.updatedContact.id ? ctx.updatedContact : contact
       //   );
       // });
-      console.log('invalidating');
       return queryClient.invalidateQueries({
         queryKey: ['contacts'],
       });

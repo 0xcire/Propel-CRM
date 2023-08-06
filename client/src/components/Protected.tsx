@@ -13,6 +13,11 @@ const Protected = (): JSX.Element => {
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
+
+  if (!user) {
+    navigate('/auth/signin');
+  }
+
   return (
     <>
       <div className='flex h-full w-full flex-1 flex-col'>
