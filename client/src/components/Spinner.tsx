@@ -1,5 +1,8 @@
+import { twMerge } from 'tailwind-merge';
+
 type SpinnerProps = {
   variant: keyof typeof VariantMap;
+  className?: string;
 };
 
 const VariantMap = {
@@ -9,8 +12,12 @@ const VariantMap = {
   lg: 'loading-lg',
 };
 
-export const Spinner = ({ variant }: SpinnerProps): JSX.Element => {
+export const Spinner = ({ variant, className }: SpinnerProps): JSX.Element => {
   const modifier = VariantMap[variant];
 
-  return <span className={`loading loading-spinner ${modifier}`}></span>;
+  return (
+    <span
+      className={twMerge(`loading loading-spinner ${modifier}`, className)}
+    ></span>
+  );
 };

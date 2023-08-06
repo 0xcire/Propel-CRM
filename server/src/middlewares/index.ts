@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { findUsersBySessionToken } from "../db/user-queries";
+import { findUsersBySessionToken } from "../db/queries/user";
 import { SESSION_COOKIE_NAME } from "../config";
 
 export const isAuth = async (req: Request, res: Response, next: NextFunction) => {

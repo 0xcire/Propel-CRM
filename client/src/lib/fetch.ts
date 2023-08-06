@@ -1,6 +1,6 @@
 import { API_URL } from '@/config';
 
-type FetchMethodOptions = {
+type FetchMethodParams = {
   endpoint: string;
   body?: BodyInit | undefined;
 };
@@ -20,7 +20,7 @@ export const handleAPIResponse = async <T>(response: Response): Promise<T> => {
 export const Post = ({
   endpoint,
   body,
-}: FetchMethodOptions): Promise<Response> => {
+}: FetchMethodParams): Promise<Response> => {
   return fetch(`${API_URL}/${endpoint}`, {
     headers: {
       Accept: 'application/json',
@@ -34,7 +34,7 @@ export const Post = ({
 export const Patch = ({
   endpoint,
   body,
-}: FetchMethodOptions): Promise<Response> => {
+}: FetchMethodParams): Promise<Response> => {
   return fetch(`${API_URL}/${endpoint}`, {
     headers: {
       Accept: 'application/json',
@@ -45,14 +45,14 @@ export const Patch = ({
   });
 };
 
-export const Get = ({ endpoint }: FetchMethodOptions): Promise<Response> => {
+export const Get = ({ endpoint }: FetchMethodParams): Promise<Response> => {
   return fetch(`${API_URL}/${endpoint}`);
 };
 
 export const Delete = ({
   endpoint,
   body,
-}: FetchMethodOptions): Promise<Response> => {
+}: FetchMethodParams): Promise<Response> => {
   return fetch(`${API_URL}/${endpoint}`, {
     headers: {
       Accept: 'application/json',

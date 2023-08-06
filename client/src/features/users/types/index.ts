@@ -5,7 +5,7 @@ type UpdateFields = {
   password?: string;
 };
 
-export type UpdateAccountOptions = {
+export type UpdateAccountParams = {
   id: number;
   data: UpdateFields;
 };

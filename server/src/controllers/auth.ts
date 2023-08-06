@@ -6,7 +6,7 @@ import {
   findUsersByUsername,
   insertNewUser,
   updateUsersByEmail,
-} from "../db/user-queries";
+} from "../db/queries/user";
 
 import { checkPassword, createSessionToken, hashPassword } from "../utils";
 import { SESSION_COOKIE_LENGTH, SESSION_COOKIE_NAME } from "../config";
@@ -103,7 +103,6 @@ export const signup = async (req: Request, res: Response) => {
       hashedPassword: hashedPassword,
       sessionToken: token,
     };
-    console.log(newUser);
 
     const insertedUser = await insertNewUser(newUser);
 

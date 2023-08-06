@@ -1,31 +1,27 @@
 import { eq, sql } from "drizzle-orm";
-import { db } from ".";
-import { users } from "./schema";
-import type { UserResponse } from "../controllers/types";
-import type { NewUser } from "./types";
+import { db } from "../";
+import { users } from "../schema";
+import type { UserResponse } from "../../controllers/types";
+import type { NewUser } from "../types";
 
-type FindUsersByEmailOptions = {
+type FindUsersByEmailParams = {
   email: string;
   signingIn?: boolean;
 };
 
-type FindUsersByUsernameOptions = {
-  username: string;
-};
-
-type updateUsersByEmailOptions = {
+type updateUsersByEmailParams = {
   email: string;
   token: string;
   signingIn?: boolean;
 };
 
-type FindUsersByIDOptions = {
+type FindUsersByIDParams = {
   id: number;
   requestingInfo?: boolean;
   updating?: boolean;
 };
 
-type updateUsersByIDOptions = {
+type updateUsersByIDParams = {
   id: number;
   newUsername: string | undefined;
   newEmail: string | undefined;
@@ -35,7 +31,7 @@ type updateUsersByIDOptions = {
 export const findUsersByEmail = async ({
   email,
   signingIn,
-}: FindUsersByEmailOptions): Promise<UserResponse | undefined> => {
+}: FindUsersByEmailParams): Promise<UserResponse | undefined> => {
   const user = await db
     .select({
       email: users.email,
@@ -87,7 +83,7 @@ export const findUsersBySessionToken = async (token: string): Promise<UserRespon
   return user[0];
 };
 
-export const updateUsersByEmail = async ({ email, token, signingIn }: updateUsersByEmailOptions) => {
+export const updateUsersByEmail = async ({ email, token, signingIn }: updateUsersByEmailParams) => {
   const user = await db
     .update(users)
     .set({
@@ -121,7 +117,7 @@ export const insertNewUser = async (user: NewUser) => {
   return insertedUser[0];
 };
 
-export const findUsersByID = async ({ id, requestingInfo, updating }: FindUsersByIDOptions) => {
+export const findUsersByID = async ({ id, requestingInfo, updating }: FindUsersByIDParams) => {
   const user = await db
     .select({
       id: users.id,
@@ -151,7 +147,7 @@ export const findUsersByID = async ({ id, requestingInfo, updating }: FindUsersB
   return user[0];
 };
 
-export const updateUserByID = async ({ id, newUsername, newEmail, newPassword }: updateUsersByIDOptions) => {
+export const updateUserByID = async ({ id, newUsername, newEmail, newPassword }: updateUsersByIDParams) => {
   const updatedUser = await db
     .update(users)
     .set({

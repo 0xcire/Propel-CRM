@@ -1,27 +1,26 @@
 import { type UseMutationResult, useMutation } from '@tanstack/react-query';
+import { deleteContact } from '../api';
 import { queryClient } from '@/lib/react-query';
-import { updateAccount } from '../api';
-import { isAPIError } from '@/utils/error';
 import { useToast } from '@/components/ui/use-toast';
+import { isAPIError } from '@/utils/error';
 
-import type { UpdateAccountParams } from '../types';
-import type { UserResponse } from '@/types';
+import type { ContactResponse } from '../types';
 
-export const useUpdateAccount = (): UseMutationResult<
-  UserResponse,
+export const useDeleteContact = (): UseMutationResult<
+  ContactResponse,
   unknown,
-  UpdateAccountParams,
+  number,
   unknown
 > => {
   const { toast } = useToast();
   return useMutation({
-    mutationFn: updateAccount,
+    mutationFn: deleteContact,
     onSuccess: (data) => {
       toast({
         description: data.message,
       });
       return queryClient.invalidateQueries({
-        queryKey: ['authenticated-user'],
+        queryKey: ['contacts'],
       });
     },
     onError: (error) => {
