@@ -19,3 +19,8 @@ export type ContactAsProp = {
 export interface ContactResponse extends BaseResponse {
   contacts: Contacts;
 }
+
+export type UpdateContactParams = {
+  id: number;
+  data: Partial<NewContact>;
+};

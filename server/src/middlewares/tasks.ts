@@ -15,5 +15,11 @@ export const isTaskOwner = async (req: Request, res: Response, next: NextFunctio
     });
   }
 
+  if (taskByID.length === 0) {
+    return res.status(400).json({
+      message: "Could not find task to update.",
+    });
+  }
+
   return next();
 };

@@ -22,8 +22,8 @@ export const getTasks = async (req: Request, res: Response) => {
       tasks: userTasks[0].tasks,
     });
   } catch (error) {
-    res.status(500).json({});
     console.log(error);
+    res.status(500).json({});
   }
 };
 
@@ -76,13 +76,14 @@ export const createTask = async (req: Request, res: Response) => {
   }
 };
 
+// TODO: along with auth, contacts, user, need to validate inputs against zod schema
+// sanitize data (express-validator maybe just zod?)
+// error handling
 export const updateTask = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
     const { id } = req.params;
     const { title, description, notes, dueDate, completed, status, priority } = req.body;
-
-    // TODO: along with auth, contacts, user, need to validate inputs against zod schema
 
     if (!title && !description && !notes && !dueDate && !completed && !status && !priority) {
       return res.status(400).json({
@@ -152,6 +153,7 @@ export const updateTask = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({});
   }
 };
 
@@ -176,6 +178,7 @@ export const deleteTask = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({});
   }
 };
 
