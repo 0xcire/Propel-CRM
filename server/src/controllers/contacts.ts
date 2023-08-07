@@ -118,7 +118,7 @@ export const updateContact = async (req: Request, res: Response) => {
       });
     }
 
-    const userByID = await findUsersByID({ id: Number(userID), updating: true });
+    const userByID = await findUsersByID({ id: +userID, updating: true });
 
     const passwordVerified = await checkPassword(verifyPassword, userByID?.hashedPassword as string);
 
@@ -128,7 +128,7 @@ export const updateContact = async (req: Request, res: Response) => {
       });
     }
 
-    const contact = await findContactByID(Number(id));
+    const contact = await findContactByID(+id);
 
     if (!contact) {
       return res.status(404).json({
@@ -136,7 +136,7 @@ export const updateContact = async (req: Request, res: Response) => {
       });
     }
 
-    const updatedContact = await updateContactByID({ contactID: Number(id), inputs: fields, contact: contact });
+    const updatedContact = await updateContactByID({ contactID: +id, inputs: fields, contact: contact });
 
     return res.status(200).json({
       message: "Updated successfully.",
@@ -154,16 +154,16 @@ export const deleteContact = async (req: Request, res: Response) => {
     const { id } = req.params;
     let deletedContact;
 
-    const contact = await findContactByID(Number(id));
+    const contact = await findContactByID(+id);
 
-    const relations = await getContactRelations(Number(id));
+    const relations = await getContactRelations(+id);
 
     if (relations.length === 1) {
-      const deletedRelation = await deleteUserContactRelation({ userID: userID, contactID: Number(id) });
+      const deletedRelation = await deleteUserContactRelation({ userID: userID, contactID: +id });
 
-      deletedContact = await deleteContactByID(Number(id));
+      deletedContact = await deleteContactByID(+id);
     } else {
-      const deletedRelation = await deleteUserContactRelation({ userID: userID, contactID: Number(id) });
+      const deletedRelation = await deleteUserContactRelation({ userID: userID, contactID: +id });
     }
 
     return res.status(200).json({

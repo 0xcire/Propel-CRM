@@ -40,7 +40,7 @@ export const deleteUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    const deletedUser = await deleteUserByID(Number(id));
+    const deletedUser = await deleteUserByID(+id);
 
     // TODO: in future, need to also delete all related rows in other tables
     res.clearCookie(SESSION_COOKIE_NAME as string);
@@ -67,7 +67,7 @@ export const updateUser = async (req: Request, res: Response) => {
       });
     }
 
-    const currentUser = await findUsersByID({ id: Number(id), updating: true });
+    const currentUser = await findUsersByID({ id: +id, updating: true });
 
     if (password) {
       hashedPassword = await hashPassword(password);
@@ -110,7 +110,7 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 
     const updatedUser = await updateUserByID({
-      id: Number(id),
+      id: +id,
       newUsername: username,
       newEmail: email,
       newPassword: hashedPassword,
