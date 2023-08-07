@@ -134,6 +134,8 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - [ ] optimistic updates for create, delete, update
   - [ ] layout animations when deleting contact
   - [ ] name autocomplete
+  - [ ] address autocomplete (mapbox...?)
+  - [ ] infinite scroll pagination
 
 - [ ] tasks-slice
 
