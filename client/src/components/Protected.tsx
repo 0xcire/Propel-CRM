@@ -8,7 +8,7 @@ import { SubmitButton } from './SubmitButton';
 import { Button } from './ui/button';
 import { AddContact } from '@/features/contacts/components/AddContact';
 import { ContactList } from '@/features/contacts/components/ContactList';
-import { UserPlus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 const Protected = (): JSX.Element => {
   const user = useUser();
@@ -66,9 +66,9 @@ const Protected = (): JSX.Element => {
             <div className='flex h-[60px] items-center justify-between px-4'>
               <Typography variant='h4'>Tasks</Typography>
               {/* <AddContact /> */}
-              <UserPlus
+              <Plus
                 className='cursor-pointer'
-                size={22}
+                size={20}
                 tabIndex={0}
               />
             </div>
