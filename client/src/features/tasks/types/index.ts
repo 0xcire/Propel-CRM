@@ -13,7 +13,7 @@ type Task = {
   priority: 'low' | 'medium' | 'high';
 };
 
-export type NewTask = Omit<Task, 'id'>;
+export type NewTask = Omit<Task, 'id' | 'createdAt'>;
 export type Tasks = Array<Task>;
 
 export interface TaskResponse extends BaseResponse {

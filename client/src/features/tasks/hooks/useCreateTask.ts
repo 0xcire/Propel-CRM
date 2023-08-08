@@ -5,7 +5,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { isAPIError } from '@/utils/error';
 import type { NewTask, TaskResponse } from '../types';
 
-export const useCreateContact = (): UseMutationResult<
+export const useCreateTask = (): UseMutationResult<
   TaskResponse,
   unknown,
   Partial<NewTask>,

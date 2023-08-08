@@ -7,7 +7,7 @@ import { isAPIError } from '@/utils/error';
 
 import type { Tasks } from '../types';
 
-export const useContacts = (): UseQueryResult<Tasks, unknown> => {
+export const useTasks = (): UseQueryResult<Tasks, unknown> => {
   const { toast } = useToast();
   return useQuery({
     queryKey: ['tasks'],

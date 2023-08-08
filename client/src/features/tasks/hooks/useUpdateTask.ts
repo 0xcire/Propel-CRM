@@ -6,7 +6,7 @@ import { isAPIError } from '@/utils/error';
 
 import type { TaskResponse, UpdateTaskParams } from '../types';
 
-export const useUpdateContact = (): UseMutationResult<
+export const useUpdateTasks = (): UseMutationResult<
   TaskResponse,
   unknown,
   UpdateTaskParams,

@@ -6,7 +6,7 @@ import { isAPIError } from '@/utils/error';
 
 import type { TaskResponse } from '../types';
 
-export const useDeleteContact = (): UseMutationResult<
+export const useDeleteTask = (): UseMutationResult<
   TaskResponse,
   unknown,
   number,

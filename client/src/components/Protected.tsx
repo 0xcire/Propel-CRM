@@ -8,7 +8,7 @@ import { SubmitButton } from './SubmitButton';
 import { Button } from './ui/button';
 import { AddContact } from '@/features/contacts/components/AddContact';
 import { ContactList } from '@/features/contacts/components/ContactList';
-import { Plus } from 'lucide-react';
+import { AddTask } from '@/features/tasks/components/AddTask';
 
 const Protected = (): JSX.Element => {
   const user = useUser();
@@ -65,12 +65,7 @@ const Protected = (): JSX.Element => {
           <div className='col-start-1 col-end-4 row-start-4 row-end-7 rounded border shadow'>
             <div className='flex h-[60px] items-center justify-between px-4'>
               <Typography variant='h4'>Tasks</Typography>
-              {/* <AddContact /> */}
-              <Plus
-                className='cursor-pointer'
-                size={20}
-                tabIndex={0}
-              />
+              <AddTask />
             </div>
           </div>
           <div className='col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>

@@ -29,8 +29,8 @@ export const getTasks = async (req: Request, res: Response) => {
 
 export const createTask = async (req: Request, res: Response) => {
   try {
-    const userID = req.user.id;
-    const { title, description, notes, dueDate, completed, status, priority } = req.body;
+    const authUserID = req.user.id;
+    const { userID, title, description, notes, dueDate, completed, status, priority } = req.body;
 
     // TODO: along with auth, contacts, user, need to validate inputs against zod schema
 
@@ -40,10 +40,17 @@ export const createTask = async (req: Request, res: Response) => {
       });
     }
 
+    // TODO: extract this, necessary?
+    if (authUserID !== userID) {
+      return res.status(409).json({
+        message: "Cannot complete this operation.",
+      });
+    }
+
     const user = findUsersByID({ id: userID });
 
     const task: NewTask = {
-      userID: userID,
+      userID: authUserID,
       title: title,
       description: description,
       notes: notes,
@@ -66,8 +73,9 @@ export const createTask = async (req: Request, res: Response) => {
       priority: tasks.priority,
     });
 
+    // TODO: Change message
     return res.status(201).json({
-      message: "",
+      message: `Added task ${newTask[0].id}`,
       task: newTask[0],
     });
   } catch (error) {
