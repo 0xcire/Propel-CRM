@@ -1,19 +1,13 @@
-import { useContacts } from '../hooks/useContacts';
-
 import { ScrollArea } from '@/components/ui/scroll-area';
-
+import { useTasks } from '../hooks/useTasks';
 import { Spinner } from '@/components';
-
-import { Contact } from './Contact';
+import { Task } from './Task';
 import { Typography } from '@/components/ui/typography';
 
-// TODO: potential performance optimization: when updating contact, render just that contact,
-// not re render entire list
+export function TaskList(): JSX.Element {
+  const tasks = useTasks();
 
-export function ContactList(): JSX.Element {
-  const contacts = useContacts();
-
-  if (contacts.isLoading) {
+  if (tasks.isLoading) {
     return (
       <div className='grid h-full w-full place-items-center'>
         <Spinner
@@ -24,23 +18,23 @@ export function ContactList(): JSX.Element {
     );
   }
 
-  if (contacts.data && !contacts.data[0]) {
+  if (tasks.data && !tasks.data[0]) {
     return (
       <Typography
         className='px-4 text-slate-500'
         variant='p'
       >
-        No contacts to display.
+        No tasks to display.
       </Typography>
     );
   }
 
   return (
     <ScrollArea className='h-full p-4 pt-0'>
-      {contacts.data?.map((contact) => (
-        <Contact
-          key={`${contact.id}-${contact.name.split(' ')[0]}`}
-          contact={contact}
+      {tasks.data?.map((task) => (
+        <Task
+          key={task.id}
+          task={task}
         />
       ))}
     </ScrollArea>

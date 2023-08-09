@@ -71,7 +71,7 @@ export const tasks = pgTable("tasks", {
   title: varchar("title", { length: 255 }).notNull(),
   description: varchar("description", { length: 255 }),
   notes: varchar("notes", { length: 255 }),
-  dueDate: date("due_date", { mode: "date" }),
+  dueDate: date("due_date", { mode: "string" }),
   completed: boolean("completed").default(false),
   status: text("status", { enum: ["completed", "in progress", "not started"] }),
   priority: text("priority", { enum: ["low", "medium", "high"] }),

@@ -3,23 +3,29 @@ import { findUsersByID } from "../db/queries/user";
 import { db } from "../db";
 import { tasks, users } from "../db/schema";
 import type { NewTask } from "../db/types";
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 
 export const getTasks = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
 
-    const userTasks = await db.query.users.findMany({
-      where: eq(users.id, userID),
-      columns: { id: true, name: true, username: true },
-      with: {
-        tasks: true,
-      },
+    // const userTasks = await db.query.users.findMany({
+    //   where: eq(users.id, userID),
+    //   columns: { id: true, name: true, username: true },
+    //   with: {
+    //     tasks: true,
+    //   },
+    //   orderBy: [asc(tasks.createdAt)],
+    // });
+
+    const userTasks = await db.query.tasks.findMany({
+      where: eq(tasks.userID, userID),
+      orderBy: [asc(tasks.createdAt)],
     });
 
     return res.status(200).json({
       message: "",
-      tasks: userTasks[0].tasks,
+      tasks: userTasks,
     });
   } catch (error) {
     console.log(error);
@@ -32,6 +38,8 @@ export const createTask = async (req: Request, res: Response) => {
     const authUserID = req.user.id;
     const { userID, title, description, notes, dueDate, completed, status, priority } = req.body;
 
+    console.log("THE REQUEST BODY", req.body);
+
     // TODO: along with auth, contacts, user, need to validate inputs against zod schema
 
     if (!title) {
@@ -40,6 +48,7 @@ export const createTask = async (req: Request, res: Response) => {
       });
     }
 
+    console.log("USER ID", userID);
     // TODO: extract this, necessary?
     if (authUserID !== userID) {
       return res.status(409).json({
@@ -54,7 +63,7 @@ export const createTask = async (req: Request, res: Response) => {
       title: title,
       description: description,
       notes: notes,
-      dueDate: dueDate,
+      dueDate: dueDate || undefined,
       completed: completed,
       status: status,
       priority: priority,
@@ -182,6 +191,7 @@ export const deleteTask = async (req: Request, res: Response) => {
     }
 
     return res.status(200).json({
+      message: "Deleted task",
       task: deletedTask[0],
     });
   } catch (error) {

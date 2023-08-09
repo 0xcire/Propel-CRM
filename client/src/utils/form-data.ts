@@ -11,5 +11,8 @@ export const filterFields = ({
     Object.entries(newData).filter(([key, value]) => {
       return value !== originalData[key as keyof typeof originalData];
     })
+    // .filter(([key, value]) => {
+    //   return value !== undefined;
+    // })
   );
 };

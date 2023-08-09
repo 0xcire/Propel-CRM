@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format, endOfYesterday, formatISO } from 'date-fns';
+import { format, endOfYesterday, formatISO, parseISO } from 'date-fns';
 
-import { useCreateTask } from '../hooks/useCreateTask';
+import { useUpdateTask } from '../hooks/useUpdateTask';
 import { useUser } from '@/lib/react-query-auth';
 
-import { CalendarIcon, PlusIcon } from 'lucide-react';
+import type { Task as TaskData } from '../types';
+
+import { CalendarIcon, InfoIcon } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -25,6 +27,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
@@ -43,7 +56,9 @@ import { Button } from '@/components/ui/button';
 import { SubmitButton } from '@/components';
 
 import { cn } from '@/lib/utils';
-// import { NewTask } from '../types';
+import { useDeleteTask } from '../hooks/useDeleteTask';
+// import { Trash2Icon } from 'lucide-react';
+// import { filterFields } from '@/utils/form-data';
 
 const statusOptions = ['completed', 'in progress', 'not started'] as const;
 const priorityOptions = ['low', 'medium', 'high'] as const;
@@ -62,31 +77,38 @@ const AddTaskSchema = z.object({
 });
 type AddTaskFields = z.infer<typeof AddTaskSchema>;
 
-export function AddTask(): JSX.Element {
-  const [open, setOpen] = useState(false);
+type TaskProps = {
+  task: TaskData;
+};
 
-  const createTask = useCreateTask();
+export function UpdateTask({ task }: TaskProps): JSX.Element {
+  //   console.log(task);
+  const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+
+  const updateTask = useUpdateTask();
+  const deleteTask = useDeleteTask();
 
   const user = useUser();
 
   const form = useForm<AddTaskFields>({
     resolver: zodResolver(AddTaskSchema),
     defaultValues: {
-      title: '',
-      description: '',
-      notes: '',
-      dueDate: undefined,
-      completed: false,
-      status: undefined,
-      priority: undefined,
+      title: task.title,
+      description: task.description ? task.description : '',
+      notes: task.notes ? task.notes : '',
+      dueDate: task.dueDate ? parseISO(task.dueDate) : undefined,
+      completed: task.completed,
+      status: task.status ? task.status : undefined,
+      priority: task.priority ? task.priority : undefined,
     },
   });
 
   function onSubmit(values: AddTaskFields): void {
-    // TODO : clean up
     const data = {
       userID: user.data?.id,
       title: values.title,
+      completed: values.completed,
       description: values.description,
       notes: values.notes,
       dueDate: values.dueDate && formatISO(values.dueDate),
@@ -94,19 +116,41 @@ export function AddTask(): JSX.Element {
       priority: values.priority,
       // ...values,
     };
+    // const updateData: Partial<NewTask> = filterFields({
+    //   newData: data,
+    //   originalData: task,
+    // });
     console.log('values', values);
     console.log(data);
-    createTask.mutate(data, {
-      onSuccess: () => {
-        setOpen(false);
-        form.reset();
-      },
-    });
+    updateTask.mutate(
+      { id: task.id, data: data },
+      {
+        onSuccess: () => {
+          setOpen(false);
+          form.reset();
+        },
+      }
+    );
   }
 
+  //   console.log(form.getValues().title);
+
+  // TODO: clean up
   useEffect(() => {
-    form.setValue('dueDate', undefined);
-  }, []);
+    form.reset({
+      title: task.title,
+      description: task.description ? task.description : '',
+      notes: task.notes ? task.notes : '',
+      dueDate: task.dueDate ? parseISO(task.dueDate) : undefined,
+      status: task.status ? task.status : undefined,
+      priority: task.priority ? task.priority : undefined,
+      completed: task.completed,
+    });
+  }, [task, form]);
+
+  //   useEffect(() => {
+  //     form.setValue('dueDate', undefined);
+  //   }, []);
 
   return (
     <Dialog
@@ -114,15 +158,14 @@ export function AddTask(): JSX.Element {
       onOpenChange={setOpen}
     >
       <DialogTrigger asChild>
-        <PlusIcon
+        <InfoIcon
           className='cursor-pointer'
-          size={20}
-          tabIndex={0}
+          size={18}
         />
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
-          <DialogTitle>Add Task</DialogTitle>
+          <DialogTitle>Update Task</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -284,16 +327,53 @@ export function AddTask(): JSX.Element {
           </form>
         </Form>
         <DialogFooter>
+          {/* <Button
+            variant='destructive'
+            className='mr-auto'
+          >
+            Delete
+          </Button> */}
+          <AlertDialog
+            open={openDelete}
+            onOpenChange={setOpenDelete}
+          >
+            <AlertDialogTrigger asChild>
+              <Button
+                variant='destructive'
+                className='mr-auto'
+              >
+                Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction asChild>
+                  <SubmitButton
+                    variant='destructive'
+                    text='Remove'
+                    isLoading={deleteTask.isLoading}
+                    onClick={(): void =>
+                      deleteTask.mutate(task.id, {
+                        onSuccess: () => setOpenDelete(false),
+                      })
+                    }
+                  />
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <DialogTrigger asChild>
             <Button variant='outline'>Close</Button>
           </DialogTrigger>
           <SubmitButton
-            disabled={
-              !Object.keys(form.formState.dirtyFields).includes('title')
-            }
+            disabled={!form.formState.isDirty}
             form='add-task'
-            isLoading={createTask.isLoading}
-            text='Add'
+            isLoading={updateTask.isLoading}
+            text='Save'
           />
         </DialogFooter>
       </DialogContent>

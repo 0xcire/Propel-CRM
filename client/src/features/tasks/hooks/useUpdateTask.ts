@@ -6,7 +6,7 @@ import { isAPIError } from '@/utils/error';
 
 import type { TaskResponse, UpdateTaskParams } from '../types';
 
-export const useUpdateTasks = (): UseMutationResult<
+export const useUpdateTask = (): UseMutationResult<
   TaskResponse,
   unknown,
   UpdateTaskParams,
@@ -37,7 +37,7 @@ export const useUpdateTasks = (): UseMutationResult<
       //   );
       // });
       return queryClient.invalidateQueries({
-        queryKey: ['contacts'],
+        queryKey: ['tasks'],
       });
     },
     onError: (error) => {

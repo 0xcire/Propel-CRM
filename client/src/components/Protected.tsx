@@ -9,6 +9,7 @@ import { Button } from './ui/button';
 import { AddContact } from '@/features/contacts/components/AddContact';
 import { ContactList } from '@/features/contacts/components/ContactList';
 import { AddTask } from '@/features/tasks/components/AddTask';
+import { TaskList } from '@/features/tasks/components/TaskList';
 
 const Protected = (): JSX.Element => {
   const user = useUser();
@@ -62,10 +63,13 @@ const Protected = (): JSX.Element => {
               <ContactList />
             </div>
           </div>
-          <div className='col-start-1 col-end-4 row-start-4 row-end-7 rounded border shadow'>
+          <div className='relative col-start-1 col-end-4 row-start-4 row-end-7 rounded border shadow'>
             <div className='flex h-[60px] items-center justify-between px-4'>
               <Typography variant='h4'>Tasks</Typography>
               <AddTask />
+            </div>
+            <div className='absolute h-[calc(100%-60px)] w-full'>
+              <TaskList />
             </div>
           </div>
           <div className='col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>

@@ -1,14 +1,14 @@
 import type { BaseResponse } from '@/types';
 
-type Task = {
+export type Task = {
   id: number;
-  createdAt: Date | null;
-  userID: number | null;
+  createdAt: Date | undefined;
+  userID: number | undefined;
   title: string;
-  description: string | null;
-  notes: string | null;
-  dueDate: Date | null;
-  completed: boolean | null;
+  description: string | undefined;
+  notes: string | undefined;
+  dueDate: string | undefined;
+  completed: boolean | undefined;
   status: 'completed' | 'in progress' | 'not started';
   priority: 'low' | 'medium' | 'high';
 };

@@ -9,7 +9,7 @@ import type { ContactAsProp } from '../types';
 
 export function Contact({ contact }: ContactAsProp): JSX.Element {
   return (
-    <div className='h-content my-3 flex items-center justify-between'>
+    <div className='my-3 flex h-full items-center justify-between'>
       <div className='flex h-full'>
         <Avatar
           className='my-auto'
