@@ -15,12 +15,13 @@ const taskPriorityLookup = {
   high: '!!!',
 };
 
+// TODO: extract dueDate.split('T")[0]
 export function Task({ task }: TaskProps): JSX.Element {
   let localFormat;
   if (task.dueDate) {
     localFormat = new Intl.DateTimeFormat('en-US', {
       dateStyle: 'short',
-    }).format(parseISO(task.dueDate));
+    }).format(parseISO(task.dueDate.split('T')[0]));
   }
 
   return (

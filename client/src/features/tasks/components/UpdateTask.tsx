@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format, endOfYesterday, formatISO, parseISO } from 'date-fns';
+import { format, endOfYesterday, parseISO } from 'date-fns';
 
 import { useUpdateTask } from '../hooks/useUpdateTask';
 import { useUser } from '@/lib/react-query-auth';
@@ -73,7 +73,6 @@ const AddTaskSchema = z.object({
   notes: z.string(),
   dueDate: z.union([z.date(), z.undefined()]),
   completed: z.boolean(),
-  // status: z.union([z.enum(statusOptions), z.undefined()]),
   priority: z.union([z.enum(priorityOptions), z.undefined()]),
 });
 type AddTaskFields = z.infer<typeof AddTaskSchema>;
@@ -86,7 +85,6 @@ type TaskProps = {
 // take page out of Todoist UX and change up
 
 export function UpdateTask({ task }: TaskProps): JSX.Element {
-  //   console.log(task);
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
@@ -101,9 +99,8 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
       title: task.title,
       description: task.description ? task.description : '',
       notes: task.notes ? task.notes : '',
-      dueDate: task.dueDate ? parseISO(task.dueDate) : undefined,
+      dueDate: task.dueDate ? new Date(task.dueDate.split('T')[0]) : undefined,
       completed: task.completed,
-      // status: task.status ? task.status : undefined,
       priority: task.priority ? task.priority : undefined,
     },
   });
@@ -115,8 +112,7 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
       completed: values.completed,
       description: values.description,
       notes: values.notes,
-      dueDate: values.dueDate && formatISO(values.dueDate),
-      // status: values.status,
+      dueDate: values.dueDate && format(values.dueDate, 'yyyy-MM-dd'),
       priority: values.priority,
       // ...values,
     };
@@ -131,13 +127,11 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
       {
         onSuccess: () => {
           setOpen(false);
-          form.reset();
+          // form.reset();
         },
       }
     );
   }
-
-  //   console.log(form.getValues().title);
 
   // TODO: clean up
   useEffect(() => {
@@ -145,16 +139,11 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
       title: task.title,
       description: task.description ? task.description : '',
       notes: task.notes ? task.notes : '',
-      dueDate: task.dueDate ? parseISO(task.dueDate) : undefined,
-      // status: task.status ? task.status : undefined,
+      dueDate: task.dueDate ? parseISO(task.dueDate.split('T')[0]) : undefined,
       priority: task.priority ? task.priority : undefined,
       completed: task.completed,
     });
   }, [task, form]);
-
-  //   useEffect(() => {
-  //     form.setValue('dueDate', undefined);
-  //   }, []);
 
   return (
     <Dialog
