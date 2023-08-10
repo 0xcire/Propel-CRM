@@ -5,9 +5,9 @@ const queryConfig: DefaultOptions = {
     refetchOnWindowFocus: false,
     retry: false,
   },
-  //   mutations: {
+  // mutations: {
 
-  //   }
+  // },
 };
 
 export const queryClient = new QueryClient({ defaultOptions: queryConfig });

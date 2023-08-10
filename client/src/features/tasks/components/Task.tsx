@@ -1,5 +1,5 @@
 import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
+// import { Badge } from '@/components/ui/badge';
 
 import type { Task as TaskData } from '../types';
 import { parseISO } from 'date-fns';
@@ -9,8 +9,13 @@ type TaskProps = {
   task: TaskData;
 };
 
+const taskPriorityLookup = {
+  low: '!',
+  medium: '!!',
+  high: '!!!',
+};
+
 export function Task({ task }: TaskProps): JSX.Element {
-  //   console.log(task);
   let localFormat;
   if (task.dueDate) {
     localFormat = new Intl.DateTimeFormat('en-US', {
@@ -20,15 +25,22 @@ export function Task({ task }: TaskProps): JSX.Element {
 
   return (
     <div className='my-2 flex items-center justify-between py-1'>
-      <Checkbox className='rounded-full' />
+      <Checkbox className='rounded-full outline-red-900' />
       <div className='flex w-full flex-col px-4'>
-        {task.priority && (
-          <Badge className='w-fit text-[10px]'>{task.priority}</Badge>
-        )}
-        <p>{task.title}</p>
+        <p className='line-clamp-1'>{task.title}</p>
+        {/* {task.description && (
+          <p className='line-clamp-1 text-[12px]'>{task.description}</p>
+        )} */}
         {task.dueDate && <p className='text-[12px]'>Due: {localFormat}</p>}
       </div>
-      <UpdateTask task={task} />
+      <div className='flex items-center'>
+        {task.priority && (
+          <span className='mr-1 font-bold text-red-800'>
+            {taskPriorityLookup[task.priority]}
+          </span>
+        )}
+        <UpdateTask task={task} />
+      </div>
     </div>
   );
 }

@@ -36,7 +36,7 @@ export const getTasks = async (req: Request, res: Response) => {
 export const createTask = async (req: Request, res: Response) => {
   try {
     const authUserID = req.user.id;
-    const { userID, title, description, notes, dueDate, completed, status, priority } = req.body;
+    const { userID, title, description, notes, dueDate, completed, priority } = req.body;
 
     console.log("THE REQUEST BODY", req.body);
 
@@ -65,7 +65,6 @@ export const createTask = async (req: Request, res: Response) => {
       notes: notes,
       dueDate: dueDate || undefined,
       completed: completed,
-      status: status,
       priority: priority,
     };
 
@@ -78,7 +77,6 @@ export const createTask = async (req: Request, res: Response) => {
       notes: tasks.notes,
       dueDate: tasks.dueDate,
       completed: tasks.completed,
-      status: tasks.status,
       priority: tasks.priority,
     });
 
@@ -100,9 +98,9 @@ export const updateTask = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
     const { id } = req.params;
-    const { title, description, notes, dueDate, completed, status, priority } = req.body;
+    const { title, description, notes, dueDate, completed, priority } = req.body;
 
-    if (!title && !description && !notes && !dueDate && !completed && !status && !priority) {
+    if (!title && !description && !notes && !dueDate && !completed && !priority) {
       return res.status(400).json({
         message: "Update fields.",
       });
@@ -136,11 +134,6 @@ export const updateTask = async (req: Request, res: Response) => {
               completed: completed,
             }
           : {}),
-        ...(status
-          ? {
-              status: status,
-            }
-          : {}),
         ...(priority
           ? {
               priority: priority,
@@ -155,7 +148,6 @@ export const updateTask = async (req: Request, res: Response) => {
         notes: tasks.notes,
         dueDate: tasks.dueDate,
         completed: tasks.completed,
-        status: tasks.status,
         priority: tasks.priority,
       });
 
@@ -165,7 +157,7 @@ export const updateTask = async (req: Request, res: Response) => {
       });
     }
     return res.status(200).json({
-      message: "",
+      message: "Updated task.",
       updatedTask: updatedTask[0],
     });
   } catch (error) {

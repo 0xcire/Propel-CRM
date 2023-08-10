@@ -10,11 +10,14 @@ import { AddContact } from '@/features/contacts/components/AddContact';
 import { ContactList } from '@/features/contacts/components/ContactList';
 import { AddTask } from '@/features/tasks/components/AddTask';
 import { TaskList } from '@/features/tasks/components/TaskList';
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 
 const Protected = (): JSX.Element => {
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
+
+  useDocumentTitle('Dashboard | Propel CRM');
 
   if (!user) {
     navigate('/auth/signin');

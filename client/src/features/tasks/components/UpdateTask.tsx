@@ -32,7 +32,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
+  // AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -57,13 +57,14 @@ import { SubmitButton } from '@/components';
 
 import { cn } from '@/lib/utils';
 import { useDeleteTask } from '../hooks/useDeleteTask';
+import { Textarea } from '@/components/ui/textarea';
 // import { Trash2Icon } from 'lucide-react';
 // import { filterFields } from '@/utils/form-data';
 
-const statusOptions = ['completed', 'in progress', 'not started'] as const;
+// const statusOptions = ['completed', 'in progress', 'not started'] as const;
 const priorityOptions = ['low', 'medium', 'high'] as const;
 
-type Status = (typeof statusOptions)[number];
+// type Status = (typeof statusOptions)[number];
 type Priority = (typeof priorityOptions)[number];
 
 const AddTaskSchema = z.object({
@@ -72,7 +73,7 @@ const AddTaskSchema = z.object({
   notes: z.string(),
   dueDate: z.union([z.date(), z.undefined()]),
   completed: z.boolean(),
-  status: z.union([z.enum(statusOptions), z.undefined()]),
+  // status: z.union([z.enum(statusOptions), z.undefined()]),
   priority: z.union([z.enum(priorityOptions), z.undefined()]),
 });
 type AddTaskFields = z.infer<typeof AddTaskSchema>;
@@ -80,6 +81,9 @@ type AddTaskFields = z.infer<typeof AddTaskSchema>;
 type TaskProps = {
   task: TaskData;
 };
+
+// TODO: either consolidate UpdateTask/AddTask into one TaskForm or,
+// take page out of Todoist UX and change up
 
 export function UpdateTask({ task }: TaskProps): JSX.Element {
   //   console.log(task);
@@ -99,7 +103,7 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
       notes: task.notes ? task.notes : '',
       dueDate: task.dueDate ? parseISO(task.dueDate) : undefined,
       completed: task.completed,
-      status: task.status ? task.status : undefined,
+      // status: task.status ? task.status : undefined,
       priority: task.priority ? task.priority : undefined,
     },
   });
@@ -112,7 +116,7 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
       description: values.description,
       notes: values.notes,
       dueDate: values.dueDate && formatISO(values.dueDate),
-      status: values.status,
+      // status: values.status,
       priority: values.priority,
       // ...values,
     };
@@ -142,7 +146,7 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
       description: task.description ? task.description : '',
       notes: task.notes ? task.notes : '',
       dueDate: task.dueDate ? parseISO(task.dueDate) : undefined,
-      status: task.status ? task.status : undefined,
+      // status: task.status ? task.status : undefined,
       priority: task.priority ? task.priority : undefined,
       completed: task.completed,
     });
@@ -212,118 +216,95 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
                   <FormLabel>Notes</FormLabel>
                   <FormControl>
                     <div className='flex items-center gap-8'>
-                      <Input {...field} />
+                      {/* <Input {...field} /> */}
+                      <Textarea
+                        placeholder=''
+                        className='resize-none'
+                        {...field}
+                      />
                     </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name='dueDate'
-              render={({ field }): JSX.Element => (
-                <FormItem className='flex items-center justify-between space-y-0 pt-2'>
-                  <FormLabel>Due Date</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={'outline'}
-                          className={cn(
-                            'mt-0 w-[240px] pl-3 text-left font-normal',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, 'PPP')
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className='w-auto p-0'
-                      align='start'
-                    >
-                      <Calendar
-                        mode='single'
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date): boolean => date < endOfYesterday()}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className='flex items-center justify-between pt-4'>
+              <FormField
+                control={form.control}
+                name='dueDate'
+                render={({ field }): JSX.Element => (
+                  <FormItem className='flex items-center justify-between space-y-0 pt-0'>
+                    {/* <FormLabel>Due Date</FormLabel> */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={'outline'}
+                            className={cn(
+                              'mt-0 w-[240px] pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground'
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, 'PPP')
+                            ) : (
+                              <span>Due Date</span>
+                            )}
+                            <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className='w-auto p-0'
+                        align='start'
+                      >
+                        <Calendar
+                          mode='single'
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date): boolean => date < endOfYesterday()}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name='status'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <Select
-                    onValueChange={(val): void => field.onChange(val as Status)}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Set task status' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {statusOptions.map((status) => (
-                        <SelectItem
-                          key={status}
-                          value={status}
-                        >
-                          {status}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='priority'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Priority</FormLabel>
-                  <Select
-                    onValueChange={(val): void =>
-                      field.onChange(val as Priority)
-                    }
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Set task priority' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {priorityOptions.map((priority) => (
-                        <SelectItem
-                          key={priority}
-                          value={priority}
-                        >
-                          {priority}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name='priority'
+                render={({ field }): JSX.Element => (
+                  <FormItem>
+                    {/* <FormLabel>Priority</FormLabel> */}
+                    <Select
+                      onValueChange={(val): void =>
+                        field.onChange(val as Priority)
+                      }
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder='Priority' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {priorityOptions.map((priority) => (
+                          <SelectItem
+                            key={priority}
+                            value={priority}
+                          >
+                            {priority}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </form>
         </Form>
         <DialogFooter>

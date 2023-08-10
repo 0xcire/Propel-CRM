@@ -17,7 +17,7 @@ export function Contact({ contact }: ContactAsProp): JSX.Element {
         />
         <div className='ml-2 py-1'>
           <Typography
-            className='leading-none'
+            className='line-clamp-1 leading-none'
             variant='p'
           >
             {contact.name}
