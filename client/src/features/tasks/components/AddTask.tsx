@@ -89,8 +89,6 @@ export function AddTask({
       dueDate: values.dueDate && formatISO(values.dueDate),
       priority: values.priority,
     };
-    console.log('values', values);
-    console.log(data);
     createTask.mutate(data, {
       onSuccess: () => {
         setOpen(false);
