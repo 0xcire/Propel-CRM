@@ -69,7 +69,7 @@ export function AddContact(): JSX.Element {
         <DialogTrigger asChild>
           <UserPlus
             className='cursor-pointer'
-            size={22}
+            size={20}
             tabIndex={0}
           />
         </DialogTrigger>

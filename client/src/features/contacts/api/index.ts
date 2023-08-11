@@ -1,10 +1,9 @@
 import { Get, Post, Patch, Delete, handleAPIResponse } from '@/lib/fetch';
-import type { NewContact, ContactResponse } from '../types';
-
-export type UpdateContactParams = {
-  id: number;
-  data: Partial<NewContact>;
-};
+import type {
+  NewContact,
+  ContactResponse,
+  UpdateContactParams,
+} from '../types';
 
 export const getContacts = (): Promise<ContactResponse> => {
   return Get({ endpoint: 'contacts' }).then(handleAPIResponse<ContactResponse>);

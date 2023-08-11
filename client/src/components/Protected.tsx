@@ -1,18 +1,30 @@
+// TODO: obviously this should be refactored into <Dashboard /> once everything is built out
+
 import { useNavigate } from 'react-router-dom';
 
 import { useLogout, useUser } from '@/lib/react-query-auth';
 import { queryClient } from '@/lib/react-query';
 
-import { Typography } from './ui/typography';
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+
+import { Button } from '@/components/ui/button';
+import { Typography } from '@/components/ui/typography';
+
 import { SubmitButton } from './SubmitButton';
-import { Button } from './ui/button';
+
 import { AddContact } from '@/features/contacts/components/AddContact';
 import { ContactList } from '@/features/contacts/components/ContactList';
+import { TaskList } from '@/features/tasks/components/TaskList';
+
+import { TaskDropdown } from '@/features/tasks/components/TaskDropdown';
+import { TaskProvider } from '@/features/tasks/context/TaskContext';
 
 const Protected = (): JSX.Element => {
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
+
+  useDocumentTitle('Dashboard | Propel CRM');
 
   if (!user) {
     navigate('/auth/signin');
@@ -61,8 +73,17 @@ const Protected = (): JSX.Element => {
               <ContactList />
             </div>
           </div>
-          <div className='col-start-1 col-end-4 row-start-4 row-end-7 rounded border shadow'>
-            tasks
+          <div className='relative col-start-1 col-end-4 row-start-4 row-end-7 rounded border shadow'>
+            <TaskProvider>
+              <div className='flex h-[60px] items-center justify-between px-4'>
+                <Typography variant='h4'>Tasks</Typography>
+
+                <TaskDropdown />
+              </div>
+              <div className='absolute h-[calc(100%-60px)] w-full'>
+                <TaskList />
+              </div>
+            </TaskProvider>
           </div>
           <div className='col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>
             <p>analytics</p>

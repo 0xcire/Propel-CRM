@@ -5,7 +5,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Spinner } from '@/components';
 
 import { Contact } from './Contact';
-import type { Contact as ContactData } from '../types';
 import { Typography } from '@/components/ui/typography';
 
 // TODO: potential performance optimization: when updating contact, render just that contact,
@@ -38,7 +37,7 @@ export function ContactList(): JSX.Element {
 
   return (
     <ScrollArea className='h-full p-4 pt-0'>
-      {contacts.data?.map((contact: ContactData) => (
+      {contacts.data?.map((contact) => (
         <Contact
           key={`${contact.id}-${contact.name.split(' ')[0]}`}
           contact={contact}

@@ -22,6 +22,20 @@
       "when": 1690974141845,
       "tag": "0002_wise_whiplash",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1691373037215,
+      "tag": "0003_icy_tarantula",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1691615666279,
+      "tag": "0004_nice_jocasta",
+      "breakpoints": true
     }
   ]
 }

@@ -40,10 +40,7 @@ export const getUsersContacts = async (id: number) => {
 };
 
 export const findContactByID = async (id: number) => {
-  const contact: Array<Contact> = await db
-    .select()
-    .from(contacts)
-    .where(eq(contacts.id, Number(id)));
+  const contact: Array<Contact> = await db.select().from(contacts).where(eq(contacts.id, +id));
 
   if (!contact[0]) {
     return undefined;
