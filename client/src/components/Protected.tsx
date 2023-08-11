@@ -3,16 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import { useLogout, useUser } from '@/lib/react-query-auth';
 import { queryClient } from '@/lib/react-query';
 
-import { Typography } from './ui/typography';
-import { SubmitButton } from './SubmitButton';
-import { Button } from './ui/button';
-import { AddContact } from '@/features/contacts/components/AddContact';
-import { ContactList } from '@/features/contacts/components/ContactList';
-import { AddTask } from '@/features/tasks/components/AddTask';
-import { TaskList } from '@/features/tasks/components/TaskList';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 
+import { Button } from '@/components/ui/button';
+import { Typography } from '@/components/ui/typography';
+
+import { SubmitButton } from './SubmitButton';
+
+import { AddContact } from '@/features/contacts/components/AddContact';
+import { ContactList } from '@/features/contacts/components/ContactList';
+import { TaskList } from '@/features/tasks/components/TaskList';
+
+import { TaskDropdown } from '@/features/tasks/components/TaskDropdown';
+import { useState } from 'react';
+
 const Protected = (): JSX.Element => {
+  // TODO: extract into context prov.
+  const [showCompleted, setShowCompleted] = useState(false);
+
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
@@ -69,10 +77,14 @@ const Protected = (): JSX.Element => {
           <div className='relative col-start-1 col-end-4 row-start-4 row-end-7 rounded border shadow'>
             <div className='flex h-[60px] items-center justify-between px-4'>
               <Typography variant='h4'>Tasks</Typography>
-              <AddTask />
+
+              <TaskDropdown
+                showCompleted={showCompleted}
+                setShowCompleted={setShowCompleted}
+              />
             </div>
             <div className='absolute h-[calc(100%-60px)] w-full'>
-              <TaskList />
+              <TaskList showCompleted={showCompleted} />
             </div>
           </div>
           <div className='col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>

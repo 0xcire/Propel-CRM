@@ -8,6 +8,7 @@ import { and, asc, eq } from "drizzle-orm";
 export const getTasks = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
+    const { completed } = req.query;
 
     // const userTasks = await db.query.users.findMany({
     //   where: eq(users.id, userID),
@@ -19,9 +20,11 @@ export const getTasks = async (req: Request, res: Response) => {
     // });
 
     const userTasks = await db.query.tasks.findMany({
-      where: eq(tasks.userID, userID),
+      where: and(eq(tasks.userID, userID), eq(tasks.completed, JSON.parse(completed as string))),
       orderBy: [asc(tasks.createdAt)],
     });
+
+    // console.log(userTasks);
 
     return res.status(200).json({
       message: "",
@@ -98,9 +101,12 @@ export const updateTask = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
     const { id } = req.params;
-    const { title, description, notes, dueDate, completed, priority } = req.body;
 
-    if (!title && !description && !notes && !dueDate && !completed && !priority) {
+    const { title, description, notes, dueDate, completed, priority } = req.body;
+    console.log(req.body);
+    console.log(typeof completed);
+
+    if (Object.keys(req.body).length === 0) {
       return res.status(400).json({
         message: "Update fields.",
       });
@@ -129,7 +135,7 @@ export const updateTask = async (req: Request, res: Response) => {
               dueDate: dueDate,
             }
           : {}),
-        ...(completed
+        ...(completed || completed === false
           ? {
               completed: completed,
             }

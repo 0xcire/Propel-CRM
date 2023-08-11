@@ -15,27 +15,12 @@ export const useUpdateTask = (): UseMutationResult<
   const { toast } = useToast();
   return useMutation({
     mutationFn: updateTask,
-    // onMutate: async (updatedContact) => {
-    //   console.log(updatedContact);
-    //   // await queryClient.cancelQueries({
-    //   //   queryKey: ['contacts'],
-    //   // });
 
-    //   const { contacts } = queryClient.getQueryData([
-    //     'contacts',
-    //   ]) as ContactResponse;
-
-    //   return { contacts, updatedContact };
-    // },
     onSuccess: (data) => {
       toast({
         description: data.message,
       });
-      // queryClient.setQueryData(['contacts'], () => {
-      //   return ctx?.contacts?.map((contact) =>
-      //     contact.id === ctx.updatedContact.id ? ctx.updatedContact : contact
-      //   );
-      // });
+
       return queryClient.invalidateQueries({
         queryKey: ['tasks'],
       });

@@ -27,17 +27,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  // AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+
 import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
@@ -56,16 +46,13 @@ import { Button } from '@/components/ui/button';
 import { SubmitButton } from '@/components';
 
 import { cn } from '@/lib/utils';
-import { useDeleteTask } from '../hooks/useDeleteTask';
+
 import { Textarea } from '@/components/ui/textarea';
-// import { Trash2Icon } from 'lucide-react';
 // import { filterFields } from '@/utils/form-data';
 
-// const statusOptions = ['completed', 'in progress', 'not started'] as const;
-const priorityOptions = ['low', 'medium', 'high'] as const;
-
-// type Status = (typeof statusOptions)[number];
-type Priority = (typeof priorityOptions)[number];
+import { priorityOptions } from '@/config';
+import type { Priority } from '../types';
+import { DeleteTask } from './DeleteTask';
 
 const AddTaskSchema = z.object({
   title: z.string(),
@@ -86,10 +73,8 @@ type TaskProps = {
 
 export function UpdateTask({ task }: TaskProps): JSX.Element {
   const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
 
   const updateTask = useUpdateTask();
-  const deleteTask = useDeleteTask();
 
   const user = useUser();
 
@@ -120,14 +105,11 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
     //   newData: data,
     //   originalData: task,
     // });
-    console.log('values', values);
-    console.log(data);
     updateTask.mutate(
       { id: task.id, data: data },
       {
         onSuccess: () => {
           setOpen(false);
-          // form.reset();
         },
       }
     );
@@ -153,7 +135,7 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
       <DialogTrigger asChild>
         <InfoIcon
           className='cursor-pointer'
-          size={18}
+          size={16}
         />
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
@@ -205,7 +187,6 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
                   <FormLabel>Notes</FormLabel>
                   <FormControl>
                     <div className='flex items-center gap-8'>
-                      {/* <Input {...field} /> */}
                       <Textarea
                         placeholder=''
                         className='resize-none'
@@ -266,7 +247,6 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
                 name='priority'
                 render={({ field }): JSX.Element => (
                   <FormItem>
-                    {/* <FormLabel>Priority</FormLabel> */}
                     <Select
                       onValueChange={(val): void =>
                         field.onChange(val as Priority)
@@ -297,45 +277,8 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
           </form>
         </Form>
         <DialogFooter>
-          {/* <Button
-            variant='destructive'
-            className='mr-auto'
-          >
-            Delete
-          </Button> */}
-          <AlertDialog
-            open={openDelete}
-            onOpenChange={setOpenDelete}
-          >
-            <AlertDialogTrigger asChild>
-              <Button
-                variant='destructive'
-                className='mr-auto'
-              >
-                Delete
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction asChild>
-                  <SubmitButton
-                    variant='destructive'
-                    text='Remove'
-                    isLoading={deleteTask.isLoading}
-                    onClick={(): void =>
-                      deleteTask.mutate(task.id, {
-                        onSuccess: () => setOpenDelete(false),
-                      })
-                    }
-                  />
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <DeleteTask id={task.id} />
+
           <DialogTrigger asChild>
             <Button variant='outline'>Close</Button>
           </DialogTrigger>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type Dispatch, type SetStateAction, useEffect } from 'react';
 
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -8,7 +8,9 @@ import { format, endOfYesterday, formatISO } from 'date-fns';
 import { useCreateTask } from '../hooks/useCreateTask';
 import { useUser } from '@/lib/react-query-auth';
 
-import { CalendarIcon, PlusIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+import { CalendarIcon } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -18,7 +20,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import {
-  Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -38,19 +39,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { SubmitButton } from '@/components';
 
-import { cn } from '@/lib/utils';
-import { Textarea } from '@/components/ui/textarea';
-// import { NewTask } from '../types';
-
-// const statusOptions = ['completed', 'in progress', 'not started'] as const;
-const priorityOptions = ['low', 'medium', 'high'] as const;
-
-// type Status = (typeof statusOptions)[number];
-type Priority = (typeof priorityOptions)[number];
+import { priorityOptions } from '@/config';
+import type { Priority } from '../types';
 
 const AddTaskSchema = z.object({
   title: z.string(),
@@ -58,14 +53,15 @@ const AddTaskSchema = z.object({
   notes: z.string(),
   dueDate: z.union([z.date(), z.undefined()]),
   completed: z.boolean(),
-  // status: z.union([z.enum(statusOptions), z.undefined()]),
   priority: z.union([z.enum(priorityOptions), z.undefined()]),
 });
 type AddTaskFields = z.infer<typeof AddTaskSchema>;
 
-export function AddTask(): JSX.Element {
-  const [open, setOpen] = useState(false);
-
+export function AddTask({
+  setOpen,
+}: {
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}): JSX.Element {
   const createTask = useCreateTask();
 
   const user = useUser();
@@ -78,20 +74,19 @@ export function AddTask(): JSX.Element {
       notes: '',
       dueDate: undefined,
       completed: false,
-      // status: undefined,
       priority: undefined,
     },
   });
 
   function onSubmit(values: AddTaskFields): void {
     // TODO : clean up
+
     const data = {
       userID: user.data?.id,
       title: values.title,
       description: values.description,
       notes: values.notes,
       dueDate: values.dueDate && formatISO(values.dueDate),
-      // status: values.status,
       priority: values.priority,
       // ...values,
     };
@@ -110,17 +105,7 @@ export function AddTask(): JSX.Element {
   }, []);
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={setOpen}
-    >
-      <DialogTrigger asChild>
-        <PlusIcon
-          className='cursor-pointer'
-          size={20}
-          tabIndex={0}
-        />
-      </DialogTrigger>
+    <>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>Add Task</DialogTitle>
@@ -170,7 +155,6 @@ export function AddTask(): JSX.Element {
                   <FormLabel>Notes</FormLabel>
                   <FormControl>
                     <div className='flex items-center gap-8'>
-                      {/* <Input {...field} /> */}
                       <Textarea
                         placeholder=''
                         className='resize-none'
@@ -188,7 +172,6 @@ export function AddTask(): JSX.Element {
                 name='dueDate'
                 render={({ field }): JSX.Element => (
                   <FormItem className='flex items-center justify-between space-y-0 pt-0'>
-                    {/* <FormLabel>Due Date</FormLabel> */}
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -231,7 +214,6 @@ export function AddTask(): JSX.Element {
                 name='priority'
                 render={({ field }): JSX.Element => (
                   <FormItem>
-                    {/* <FormLabel>Priority</FormLabel> */}
                     <Select
                       onValueChange={(val): void =>
                         field.onChange(val as Priority)
@@ -275,6 +257,6 @@ export function AddTask(): JSX.Element {
           />
         </DialogFooter>
       </DialogContent>
-    </Dialog>
+    </>
   );
 }
