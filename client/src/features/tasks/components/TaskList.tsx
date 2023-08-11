@@ -1,17 +1,19 @@
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { useTasks } from '../hooks/useTasks';
-import { Spinner } from '@/components';
-import { Task } from './Task';
-import { Typography } from '@/components/ui/typography';
-import { CompletedTask } from './CompletedTasks';
 
-export function TaskList({
-  showCompleted,
-}: {
-  showCompleted: boolean;
-}): JSX.Element {
+import { useTaskContext } from '../context/TaskContext';
+
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Typography } from '@/components/ui/typography';
+
+import { Spinner } from '@/components';
+
+import { Task } from './Task';
+import { CompletedTasks } from './CompletedTasks';
+
+export function TaskList(): JSX.Element {
   const incompleteTasks = useTasks('false');
-  const completeTasks = useTasks('true');
+
+  const { state: showCompleted } = useTaskContext();
 
   if (incompleteTasks.isLoading) {
     return (
@@ -45,13 +47,7 @@ export function TaskList({
           />
         ))}
 
-        {showCompleted &&
-          completeTasks.data?.map((task) => (
-            <Task
-              key={task.id}
-              task={task}
-            />
-          ))}
+        {showCompleted && <CompletedTasks />}
       </>
     </ScrollArea>
   );

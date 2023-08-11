@@ -88,7 +88,6 @@ export function AddTask({
       notes: values.notes,
       dueDate: values.dueDate && formatISO(values.dueDate),
       priority: values.priority,
-      // ...values,
     };
     console.log('values', values);
     console.log(data);

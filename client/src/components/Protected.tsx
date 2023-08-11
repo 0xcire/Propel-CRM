@@ -1,3 +1,5 @@
+// TODO: obviously this should be refactored into <Dashboard /> once everything is built out
+
 import { useNavigate } from 'react-router-dom';
 
 import { useLogout, useUser } from '@/lib/react-query-auth';
@@ -15,12 +17,9 @@ import { ContactList } from '@/features/contacts/components/ContactList';
 import { TaskList } from '@/features/tasks/components/TaskList';
 
 import { TaskDropdown } from '@/features/tasks/components/TaskDropdown';
-import { useState } from 'react';
+import { TaskProvider } from '@/features/tasks/context/TaskContext';
 
 const Protected = (): JSX.Element => {
-  // TODO: extract into context prov.
-  const [showCompleted, setShowCompleted] = useState(false);
-
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
@@ -75,17 +74,16 @@ const Protected = (): JSX.Element => {
             </div>
           </div>
           <div className='relative col-start-1 col-end-4 row-start-4 row-end-7 rounded border shadow'>
-            <div className='flex h-[60px] items-center justify-between px-4'>
-              <Typography variant='h4'>Tasks</Typography>
+            <TaskProvider>
+              <div className='flex h-[60px] items-center justify-between px-4'>
+                <Typography variant='h4'>Tasks</Typography>
 
-              <TaskDropdown
-                showCompleted={showCompleted}
-                setShowCompleted={setShowCompleted}
-              />
-            </div>
-            <div className='absolute h-[calc(100%-60px)] w-full'>
-              <TaskList showCompleted={showCompleted} />
-            </div>
+                <TaskDropdown />
+              </div>
+              <div className='absolute h-[calc(100%-60px)] w-full'>
+                <TaskList />
+              </div>
+            </TaskProvider>
           </div>
           <div className='col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>
             <p>analytics</p>

@@ -1,17 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+import clsx from 'clsx';
 
 import { parseISO } from 'date-fns';
 
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-} from '@/components/ui/form';
+import { useUpdateTask } from '../hooks/useUpdateTask';
+import { removeTimeZone } from '@/utils/date';
+
+import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import { Typography } from '@/components/ui/typography';
@@ -20,9 +17,7 @@ import { UpdateTask } from './UpdateTask';
 
 import type { Task as TaskData } from '../types';
 
-import { CheckedState } from '@radix-ui/react-checkbox';
-import { useUpdateTask } from '../hooks/useUpdateTask';
-import clsx from 'clsx';
+import { type CheckedState } from '@radix-ui/react-checkbox';
 
 type TaskProps = {
   task: TaskData;
@@ -40,7 +35,6 @@ const CompletedTaskSchema = z.object({
 
 type CompletedTaskFields = z.infer<typeof CompletedTaskSchema>;
 
-// TODO: extract dueDate.split('T")[0]
 export function Task({ task }: TaskProps): JSX.Element {
   const updateTask = useUpdateTask();
 
@@ -59,7 +53,7 @@ export function Task({ task }: TaskProps): JSX.Element {
   if (task.dueDate) {
     localFormat = new Intl.DateTimeFormat('en-US', {
       dateStyle: 'short',
-    }).format(parseISO(task.dueDate.split('T')[0]));
+    }).format(parseISO(removeTimeZone(task.dueDate)));
   }
 
   return (

@@ -1,8 +1,9 @@
-import { Spinner } from '@/components';
 import { useTasks } from '../hooks/useTasks';
+
+import { Spinner } from '@/components';
 import { Task } from './Task';
 
-export function CompletedTask(): JSX.Element {
+export function CompletedTasks(): JSX.Element {
   const completedTasks = useTasks('true');
 
   if (completedTasks.isLoading) {
@@ -11,9 +12,12 @@ export function CompletedTask(): JSX.Element {
 
   return (
     <>
-      {completedTasks.data?.map((task) => {
-        <Task task={task} />;
-      })}
+      {completedTasks.data?.map((task) => (
+        <Task
+          key={task.id}
+          task={task}
+        />
+      ))}
     </>
   );
 }

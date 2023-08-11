@@ -51,7 +51,6 @@ export const createTask = async (req: Request, res: Response) => {
       });
     }
 
-    console.log("USER ID", userID);
     // TODO: extract this, necessary?
     if (authUserID !== userID) {
       return res.status(409).json({
@@ -103,8 +102,6 @@ export const updateTask = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     const { title, description, notes, dueDate, completed, priority } = req.body;
-    console.log(req.body);
-    console.log(typeof completed);
 
     if (Object.keys(req.body).length === 0) {
       return res.status(400).json({

@@ -7,6 +7,7 @@ import { format, endOfYesterday, parseISO } from 'date-fns';
 
 import { useUpdateTask } from '../hooks/useUpdateTask';
 import { useUser } from '@/lib/react-query-auth';
+import { removeTimeZone } from '@/utils/date';
 
 import type { Task as TaskData } from '../types';
 
@@ -48,7 +49,6 @@ import { SubmitButton } from '@/components';
 import { cn } from '@/lib/utils';
 
 import { Textarea } from '@/components/ui/textarea';
-// import { filterFields } from '@/utils/form-data';
 
 import { priorityOptions } from '@/config';
 import type { Priority } from '../types';
@@ -84,7 +84,9 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
       title: task.title,
       description: task.description ? task.description : '',
       notes: task.notes ? task.notes : '',
-      dueDate: task.dueDate ? new Date(task.dueDate.split('T')[0]) : undefined,
+      dueDate: task.dueDate
+        ? new Date(removeTimeZone(task.dueDate))
+        : undefined,
       completed: task.completed,
       priority: task.priority ? task.priority : undefined,
     },
@@ -99,12 +101,8 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
       notes: values.notes,
       dueDate: values.dueDate && format(values.dueDate, 'yyyy-MM-dd'),
       priority: values.priority,
-      // ...values,
     };
-    // const updateData: Partial<NewTask> = filterFields({
-    //   newData: data,
-    //   originalData: task,
-    // });
+
     updateTask.mutate(
       { id: task.id, data: data },
       {
@@ -121,7 +119,9 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
       title: task.title,
       description: task.description ? task.description : '',
       notes: task.notes ? task.notes : '',
-      dueDate: task.dueDate ? parseISO(task.dueDate.split('T')[0]) : undefined,
+      dueDate: task.dueDate
+        ? parseISO(removeTimeZone(task.dueDate))
+        : undefined,
       priority: task.priority ? task.priority : undefined,
       completed: task.completed,
     });
@@ -204,7 +204,6 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
                 name='dueDate'
                 render={({ field }): JSX.Element => (
                   <FormItem className='flex items-center justify-between space-y-0 pt-0'>
-                    {/* <FormLabel>Due Date</FormLabel> */}
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>

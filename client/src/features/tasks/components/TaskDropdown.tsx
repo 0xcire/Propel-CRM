@@ -1,5 +1,7 @@
-import { type Dispatch, type SetStateAction } from 'react';
+import { useState } from 'react';
+import { useTaskContext } from '../context/TaskContext';
 
+import { MoreVerticalIcon, PlusIcon, CheckCircleIcon } from 'lucide-react';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import {
   DropdownMenu,
@@ -9,17 +11,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { AddTask } from '@/features/tasks/components/AddTask';
-import { MoreVerticalIcon, PlusIcon } from 'lucide-react';
-import { useState } from 'react';
 
-export function TaskDropdown({
-  showCompleted,
-  setShowCompleted,
-}: {
-  showCompleted: boolean;
-  setShowCompleted: Dispatch<SetStateAction<boolean>>;
-}): JSX.Element {
+export function TaskDropdown(): JSX.Element {
   const [open, setOpen] = useState(false);
+  const { state: showCompleted, setState: setShowCompleted } = useTaskContext();
 
   return (
     <Dialog
@@ -47,7 +42,14 @@ export function TaskDropdown({
             onClick={(): void => setShowCompleted(!showCompleted)}
             className='cursor-pointer'
           >
-            Show Completed
+            <>
+              <CheckCircleIcon
+                tabIndex={0}
+                size={18}
+                className='mr-1 cursor-pointer'
+              />
+              {showCompleted ? 'Hide Completed' : 'Show Completed'}
+            </>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
