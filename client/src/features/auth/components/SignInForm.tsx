@@ -8,6 +8,8 @@ import { z } from 'zod';
 import { useLogin } from '@/lib/react-query-auth';
 import { queryClient } from '@/lib/react-query';
 
+import { verifyPassword } from '@/config';
+
 import {
   Form,
   FormControl,
@@ -25,7 +27,7 @@ import { isAPIError } from '@/utils/error';
 
 const signInSchema = z.object({
   email: z.string().email(),
-  password: z.string(),
+  password: verifyPassword,
 });
 
 export type SignInFields = z.infer<typeof signInSchema>;

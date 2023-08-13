@@ -6,6 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useUser } from '@/lib/react-query-auth';
 import { useUpdateAccount } from '../hooks/useUpdateAccount';
 
+import { username, verifyPassword } from '@/config';
+
 import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,12 +29,12 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { SubmitButton } from '@/components';
-import { filterFields } from '@/utils/form-data';
+import { filterEqualFields } from '@/utils/form-data';
 
 const UserInfoSchema = z.object({
-  username: z.string(),
+  username: username,
   email: z.string().email(),
-  verifyPassword: z.string(),
+  verifyPassword: verifyPassword,
 });
 type UserInfoFields = z.infer<typeof UserInfoSchema>;
 
@@ -68,17 +70,9 @@ export function UserInfo(): JSX.Element {
   }, []);
 
   function onSubmit(values: UserInfoFields): void {
-    // const data = Object.fromEntries(
-    //   Object.entries(values).filter(([key, value]) => {
-    //     if (user.data) {
-    //       return value !== user.data[key as keyof typeof user.data];
-    //     }
-    //   })
-    // );
-
     let data;
     if (user.data) {
-      data = filterFields({ newData: values, originalData: user.data });
+      data = filterEqualFields({ newData: values, originalData: user.data });
     }
 
     // TODO: fix this Record<string, string> type

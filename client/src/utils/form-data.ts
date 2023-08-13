@@ -3,7 +3,7 @@ type FilterFieldParams = {
   originalData: Record<string, unknown>;
 };
 
-export const filterFields = ({
+export const filterEqualFields = ({
   newData,
   originalData,
 }: FilterFieldParams): Record<string, string> => {
@@ -12,4 +12,12 @@ export const filterFields = ({
       return value !== originalData[key as keyof typeof originalData];
     })
   );
+};
+
+export const filterUndefined = (data: Record<string, unknown>): void => {
+  Object.keys(data).forEach((key) => {
+    if (data[key] === undefined) {
+      delete data[key];
+    }
+  });
 };

@@ -53,11 +53,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { priorityOptions } from '@/config';
 import type { Priority } from '../types';
 import { DeleteTask } from './DeleteTask';
+import { filterUndefined } from '@/utils/form-data';
 
 const AddTaskSchema = z.object({
-  title: z.string(),
-  description: z.string(),
-  notes: z.string(),
+  title: z.string().min(1).max(255),
+  description: z.string().max(255),
+  notes: z.string().max(255),
   dueDate: z.union([z.date(), z.undefined()]),
   completed: z.boolean(),
   priority: z.union([z.enum(priorityOptions), z.undefined()]),
@@ -82,13 +83,13 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
     resolver: zodResolver(AddTaskSchema),
     defaultValues: {
       title: task.title,
-      description: task.description ? task.description : '',
-      notes: task.notes ? task.notes : '',
+      description: task.description && task.description,
+      notes: task.notes && task.notes,
       dueDate: task.dueDate
         ? new Date(removeTimeZone(task.dueDate))
         : undefined,
       completed: task.completed,
-      priority: task.priority ? task.priority : undefined,
+      priority: task.priority && task.priority,
     },
   });
 
@@ -102,6 +103,8 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
       dueDate: values.dueDate && format(values.dueDate, 'yyyy-MM-dd'),
       priority: values.priority,
     };
+
+    filterUndefined(data);
 
     updateTask.mutate(
       { id: task.id, data: data },
