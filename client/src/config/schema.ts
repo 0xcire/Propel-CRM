@@ -10,7 +10,7 @@ export const name = z
     'Name can only contain letters'
   )
   .refine(
-    (value) => /^[A-Z][a-z]+\s(?:[A-Z]\s)?[A-Z][a-z]+$/.test(value),
+    (value) => /^[A-Z][a-zA-Z]*(?:\s[A-Z][a-zA-Z]*)?$/.test(value),
     'Please enter your full name as First M Last.'
   );
 

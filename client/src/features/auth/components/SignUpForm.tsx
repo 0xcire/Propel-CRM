@@ -23,6 +23,7 @@ import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from '@/components';
 import { isAPIError } from '@/utils/error';
+import { fieldsAreDirty } from '@/utils/form-data';
 
 const signUpSchema = z.object({
   name: name,
@@ -60,7 +61,8 @@ export function SignUpForm(): JSX.Element {
       password: '',
     },
   });
-  const formNotFilledIn = form.getValues().password === '';
+
+  const passwordIsDirty = fieldsAreDirty<SignUpFields>(form, 'password');
 
   const onSubmit: SubmitHandler<SignUpFields> = (values: SignUpFields) => {
     register.mutate(values);
@@ -142,7 +144,7 @@ export function SignUpForm(): JSX.Element {
             />
             <SubmitButton
               text='Sign Up'
-              disabled={formNotFilledIn}
+              disabled={!passwordIsDirty}
               isLoading={register.isLoading}
             />
           </form>

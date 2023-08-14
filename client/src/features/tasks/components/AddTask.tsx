@@ -46,7 +46,7 @@ import { SubmitButton } from '@/components';
 
 import { priorityOptions } from '@/config';
 import type { Priority } from '../types';
-import { filterUndefined } from '@/utils/form-data';
+import { fieldsAreDirty, filterUndefined } from '@/utils/form-data';
 
 const AddTaskSchema = z.object({
   title: z.string().min(1).max(255),
@@ -78,6 +78,8 @@ export function AddTask({
       priority: undefined,
     },
   });
+
+  const titleIsEmpty = fieldsAreDirty<AddTaskFields>(form, 'title');
 
   function onSubmit(values: AddTaskFields): void {
     // TODO : clean up
@@ -246,9 +248,7 @@ export function AddTask({
             <Button variant='outline'>Close</Button>
           </DialogTrigger>
           <SubmitButton
-            disabled={
-              !Object.keys(form.formState.dirtyFields).includes('title')
-            }
+            disabled={!titleIsEmpty}
             form='add-task'
             isLoading={createTask.isLoading}
             text='Add'

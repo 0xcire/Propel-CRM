@@ -7,7 +7,7 @@ import { useUpdateContact } from '../hooks/useUpdateContact';
 
 import { name, mobilePhone, verifyPassword } from '@/config';
 
-import { filterEqualFields } from '@/utils/form-data';
+import { fieldsAreDirty, filterEqualFields } from '@/utils/form-data';
 
 import { PencilIcon } from 'lucide-react';
 import {
@@ -58,10 +58,16 @@ export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
   });
 
   const userHasChangedInfo = (): boolean => {
-    const dirtyFields = Object.keys(form.formState.dirtyFields);
-    const fields = ['name', 'email', 'phoneNumber', 'address'];
-    const passwordFilled = dirtyFields.includes('verifyPassword');
-    const dataChanged = dirtyFields.some((field) => fields.includes(field));
+    const passwordFilled = fieldsAreDirty<ContactInfoFields>(
+      form,
+      'verifyPassword'
+    );
+    const dataChanged = fieldsAreDirty<ContactInfoFields>(form, [
+      'name',
+      'email',
+      'phoneNumber',
+      'address',
+    ]);
 
     return passwordFilled && dataChanged;
   };

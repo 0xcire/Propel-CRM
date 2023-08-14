@@ -55,6 +55,7 @@ import type { Priority } from '../types';
 import { DeleteTask } from './DeleteTask';
 import { filterUndefined } from '@/utils/form-data';
 
+// TODO: may consolidate add/update forms
 const AddTaskSchema = z.object({
   title: z.string().min(1).max(255),
   description: z.string().max(255),

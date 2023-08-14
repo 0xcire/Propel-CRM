@@ -29,7 +29,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { SubmitButton } from '@/components';
-import { filterEqualFields } from '@/utils/form-data';
+import { fieldsAreDirty, filterEqualFields } from '@/utils/form-data';
 
 const UserInfoSchema = z.object({
   username: username,
@@ -48,9 +48,10 @@ export function UserInfo(): JSX.Element {
     resolver: zodResolver(UserInfoSchema),
   });
 
-  const userHasChangedInfo = Object.keys(form.formState.dirtyFields).some(
-    (field) => field === 'username' || field === 'email'
-  );
+  const userFieldsAreEmpty = fieldsAreDirty<UserInfoFields>(form, [
+    'username',
+    'email',
+  ]);
 
   const handleEditToggle = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -187,7 +188,7 @@ export function UserInfo(): JSX.Element {
                 <SubmitButton
                   form='user-info'
                   isLoading={isLoading}
-                  disabled={!userHasChangedInfo}
+                  disabled={!userFieldsAreEmpty}
                   text='Save Changes'
                 />
               </DialogFooter>
