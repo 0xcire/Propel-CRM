@@ -106,9 +106,9 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - [x] user can update a contact
   - [x] user can delete a contact
   - [x] on dashboard, user gets a side panel to view contacts (like valorant, csgo, discord, etc...)
-- [ ] tasks-slice MVP
+- [x] tasks-slice MVP
   - [x] user can CRUD a task
-  - [ ] user can '@ tag' a contact and when hovering name, can see 'contact card'
+  - [x] user can toggle showing completed tasks
 - [ ] listings-slice MVP
 - [ ] analytics-slice MVP
 
@@ -141,6 +141,6 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 
 - [ ] tasks-slice
 
-  - [ ] can use something like @<Name> and autocomplete based on your contacts
+  - [ ] can use something like @<Name> and autocomplete based on your contacts in notes section
 
 - [ ] detect purely mobile viewport and replace dialog components with [Vaul](https://github.com/emilkowalski/vaul)

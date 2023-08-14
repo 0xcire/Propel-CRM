@@ -5,6 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useCreateContact } from '../hooks/useCreateContact';
 
+import { name, mobilePhone } from '@/config';
+
 import { UserPlus } from 'lucide-react';
 
 import {
@@ -30,16 +32,19 @@ import { SubmitButton } from '@/components';
 import { Button } from '@/components/ui/button';
 
 const AddContactSchema = z.object({
-  name: z.string(),
+  name: name,
   email: z.string().email(),
-  phoneNumber: z.string(),
-  address: z.string(),
+  phoneNumber: mobilePhone,
+  // TODO: basic validation for now. will have autocomplete from mapbox in future
+  address: z.string().min(12).max(255),
 });
 type AddContactFields = z.infer<typeof AddContactSchema>;
 
 export function AddContact(): JSX.Element {
   const [open, setOpen] = useState(false);
+
   const createContact = useCreateContact();
+
   const form = useForm<AddContactFields>({
     resolver: zodResolver(AddContactSchema),
     defaultValues: {

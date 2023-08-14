@@ -5,7 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useUpdateContact } from '../hooks/useUpdateContact';
 
-import { filterFields } from '@/utils/form-data';
+import { name, mobilePhone, verifyPassword } from '@/config';
+
+import { fieldsAreDirty, filterEqualFields } from '@/utils/form-data';
 
 import { PencilIcon } from 'lucide-react';
 import {
@@ -32,11 +34,11 @@ import { SubmitButton, Tooltip } from '@/components';
 import type { NewContact, ContactAsProp } from '../types';
 
 const ContactInfoSchema = z.object({
-  name: z.string(),
+  name: name,
   email: z.string().email(),
-  phoneNumber: z.string(),
-  address: z.string(),
-  verifyPassword: z.string(),
+  phoneNumber: mobilePhone,
+  address: z.string().min(12).max(255),
+  verifyPassword: verifyPassword,
 });
 type ContactInfoFields = z.infer<typeof ContactInfoSchema>;
 
@@ -56,10 +58,16 @@ export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
   });
 
   const userHasChangedInfo = (): boolean => {
-    const dirtyFields = Object.keys(form.formState.dirtyFields);
-    const fields = ['name', 'email', 'phoneNumber', 'address'];
-    const passwordFilled = dirtyFields.includes('verifyPassword');
-    const dataChanged = dirtyFields.some((field) => fields.includes(field));
+    const passwordFilled = fieldsAreDirty<ContactInfoFields>(
+      form,
+      'verifyPassword'
+    );
+    const dataChanged = fieldsAreDirty<ContactInfoFields>(form, [
+      'name',
+      'email',
+      'phoneNumber',
+      'address',
+    ]);
 
     return passwordFilled && dataChanged;
   };
@@ -69,7 +77,7 @@ export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
   }, [contact, form]);
 
   function onSubmit(values: ContactInfoFields): void {
-    const data: Partial<NewContact> = filterFields({
+    const data: Partial<NewContact> = filterEqualFields({
       newData: values,
       originalData: contact,
     });

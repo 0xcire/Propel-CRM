@@ -18,10 +18,12 @@ import { SubmitButton } from '@/components';
 
 import type { ContactAsProp } from '../types';
 
+// TODO: change this to normal dialog?
 export function RemoveContact({ contact }: ContactAsProp): JSX.Element {
   const [open, setOpen] = useState(false);
 
   const deleteContact = useDeleteContact();
+
   return (
     <AlertDialog
       open={open}
@@ -50,7 +52,11 @@ export function RemoveContact({ contact }: ContactAsProp): JSX.Element {
               variant='destructive'
               text='Remove'
               isLoading={deleteContact.isLoading}
-              onClick={(): void => deleteContact.mutate(contact.id)}
+              onClick={(): void =>
+                deleteContact.mutate(contact.id, {
+                  onSuccess: () => setOpen(false),
+                })
+              }
             />
           </AlertDialogAction>
         </AlertDialogFooter>

@@ -8,6 +8,8 @@ import { z } from 'zod';
 import { useLogin } from '@/lib/react-query-auth';
 import { queryClient } from '@/lib/react-query';
 
+import { verifyPassword } from '@/config';
+
 import {
   Form,
   FormControl,
@@ -22,10 +24,11 @@ import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from '@/components';
 import { isAPIError } from '@/utils/error';
+import { fieldsAreDirty } from '@/utils/form-data';
 
 const signInSchema = z.object({
   email: z.string().email(),
-  password: z.string(),
+  password: verifyPassword,
 });
 
 export type SignInFields = z.infer<typeof signInSchema>;
@@ -55,7 +58,8 @@ export function SignInForm(): JSX.Element {
       password: '',
     },
   });
-  const formNotFilledIn = form.getValues().password === '';
+
+  const passwordIsDirty = fieldsAreDirty<SignInFields>(form, 'password');
 
   const onSubmit: SubmitHandler<SignInFields> = (values: SignInFields) => {
     login.mutate(values);
@@ -105,7 +109,7 @@ export function SignInForm(): JSX.Element {
             />
             <SubmitButton
               text={'Sign In'}
-              disabled={formNotFilledIn}
+              disabled={!passwordIsDirty}
               isLoading={login.isLoading}
             />
           </form>

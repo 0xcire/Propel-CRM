@@ -16,6 +16,7 @@ import {
 
 import { SubmitButton } from '@/components';
 
+// TODO: may need to change to regular dialog
 export function DeleteTask({ id }: { id: number }): JSX.Element {
   const [open, setOpen] = useState(false);
   const deleteTask = useDeleteTask();

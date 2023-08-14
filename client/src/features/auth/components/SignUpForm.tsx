@@ -7,6 +7,8 @@ import { z } from 'zod';
 import { useRegister } from '@/lib/react-query-auth';
 import { queryClient } from '@/lib/react-query';
 
+import { name, signUpPassword, username } from '@/config';
+
 import {
   Form,
   FormControl,
@@ -21,14 +23,13 @@ import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from '@/components';
 import { isAPIError } from '@/utils/error';
+import { fieldsAreDirty } from '@/utils/form-data';
 
 const signUpSchema = z.object({
-  name: z.string(),
-  username: z.string(),
+  name: name,
+  username: username,
   email: z.string().email(),
-  password: z.string().min(8, {
-    message: 'Must be greater than 8 characters',
-  }),
+  password: signUpPassword,
 });
 
 export type SignUpFields = z.infer<typeof signUpSchema>;
@@ -60,7 +61,8 @@ export function SignUpForm(): JSX.Element {
       password: '',
     },
   });
-  const formNotFilledIn = form.getValues().password === '';
+
+  const passwordIsDirty = fieldsAreDirty<SignUpFields>(form, 'password');
 
   const onSubmit: SubmitHandler<SignUpFields> = (values: SignUpFields) => {
     register.mutate(values);
@@ -83,7 +85,7 @@ export function SignUpForm(): JSX.Element {
                   <FormLabel>{field.name}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder='John Deere'
+                      placeholder='First M Last'
                       {...field}
                     />
                   </FormControl>
@@ -115,7 +117,7 @@ export function SignUpForm(): JSX.Element {
                   <FormLabel>{field.name}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder='email@email.domain'
+                      placeholder='email@email.com'
                       {...field}
                     />
                   </FormControl>
@@ -142,7 +144,7 @@ export function SignUpForm(): JSX.Element {
             />
             <SubmitButton
               text='Sign Up'
-              disabled={formNotFilledIn}
+              disabled={!passwordIsDirty}
               isLoading={register.isLoading}
             />
           </form>

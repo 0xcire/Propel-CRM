@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction, useEffect } from 'react';
+import { type Dispatch, type SetStateAction } from 'react';
 
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -46,11 +46,12 @@ import { SubmitButton } from '@/components';
 
 import { priorityOptions } from '@/config';
 import type { Priority } from '../types';
+import { fieldsAreDirty, filterUndefined } from '@/utils/form-data';
 
 const AddTaskSchema = z.object({
-  title: z.string(),
-  description: z.string(),
-  notes: z.string(),
+  title: z.string().min(1).max(255),
+  description: z.union([z.string().max(255), z.undefined()]),
+  notes: z.union([z.string().max(255), z.undefined()]),
   dueDate: z.union([z.date(), z.undefined()]),
   completed: z.boolean(),
   priority: z.union([z.enum(priorityOptions), z.undefined()]),
@@ -70,13 +71,15 @@ export function AddTask({
     resolver: zodResolver(AddTaskSchema),
     defaultValues: {
       title: '',
-      description: '',
-      notes: '',
+      description: undefined,
+      notes: undefined,
       dueDate: undefined,
       completed: false,
       priority: undefined,
     },
   });
+
+  const titleIsEmpty = fieldsAreDirty<AddTaskFields>(form, 'title');
 
   function onSubmit(values: AddTaskFields): void {
     // TODO : clean up
@@ -89,6 +92,9 @@ export function AddTask({
       dueDate: values.dueDate && formatISO(values.dueDate),
       priority: values.priority,
     };
+
+    filterUndefined(data);
+
     createTask.mutate(data, {
       onSuccess: () => {
         setOpen(false);
@@ -96,10 +102,6 @@ export function AddTask({
       },
     });
   }
-
-  useEffect(() => {
-    form.setValue('dueDate', undefined);
-  }, []);
 
   return (
     <>
@@ -112,6 +114,7 @@ export function AddTask({
             id='add-task'
             onSubmit={form.handleSubmit(onSubmit)}
           >
+            {/* TODO: ControllerProps<TFieldValues, TName> */}
             <FormField
               control={form.control}
               name='title'
@@ -245,9 +248,7 @@ export function AddTask({
             <Button variant='outline'>Close</Button>
           </DialogTrigger>
           <SubmitButton
-            disabled={
-              !Object.keys(form.formState.dirtyFields).includes('title')
-            }
+            disabled={!titleIsEmpty}
             form='add-task'
             isLoading={createTask.isLoading}
             text='Add'
