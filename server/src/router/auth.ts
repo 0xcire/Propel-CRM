@@ -1,9 +1,11 @@
 import { Router } from "express";
-import { isAuth } from "../middlewares";
+import { isAuth, validateRequest } from "../middlewares";
 import { signup, signin, signout } from "../controllers/auth";
 
+import { cookieSchema, signinSchema, signupSchema } from "../db/drizzle-zod";
+
 export default (router: Router) => {
-  router.post("/auth/signup", signup);
-  router.post("/auth/signin", signin);
-  router.post("/auth/signout", isAuth, signout);
+  router.post("/auth/signup", validateRequest({ body: signupSchema }), signup);
+  router.post("/auth/signin", validateRequest({ body: signinSchema, cookies: cookieSchema }), signin);
+  router.post("/auth/signout", validateRequest({ cookies: cookieSchema }), isAuth, signout);
 };

@@ -9,9 +9,9 @@ export const createSessionToken = () => {
 };
 
 export const hashPassword = async (password: string) => {
-  return bcrypt.hash(password, Number(SALT_ROUNDS));
+  return bcrypt.hash(password.trim(), Number(SALT_ROUNDS));
 };
 
 export const checkPassword = async (password: string, storedPassword: string) => {
-  return bcrypt.compare(password, storedPassword);
+  return bcrypt.compare(password.trim(), storedPassword);
 };

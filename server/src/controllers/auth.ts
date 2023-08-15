@@ -14,8 +14,10 @@ import { SESSION_COOKIE_LENGTH, SESSION_COOKIE_NAME } from "../config";
 import type { NewUser } from "../db/types";
 import type { UserInput } from "./types";
 
-// [] add email verification later
-// [] add account recovery later
+// TODO: add email verification later
+// TODO: add account recovery later
+
+// TODO: signin = async(req,res): Promise<PropelResponse>
 
 export const signin = async (req: Request, res: Response) => {
   try {
