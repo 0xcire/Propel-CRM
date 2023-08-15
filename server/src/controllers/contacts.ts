@@ -16,6 +16,7 @@ import {
 import { checkPassword } from "../utils";
 
 import type { NewContact } from "../db/types";
+import { Console } from "console";
 
 export const getMyContacts = async (req: Request, res: Response) => {
   try {
@@ -99,6 +100,9 @@ export const updateContact = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { verifyPassword, name, email, phoneNumber, address } = req.body;
 
+    console.log("THESE ARE THE REQ.PARAMS", req.params);
+    console.log("THESE ARE THE VALUE TYPE", typeof req.params.id);
+
     const fields = {
       name: name,
       email: email,
@@ -152,6 +156,7 @@ export const deleteContact = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
     const { id } = req.params;
+
     let deletedContact;
 
     const contact = await findContactByID(+id);

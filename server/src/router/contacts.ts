@@ -6,14 +6,30 @@ import {
   deleteContact,
   getSpecificContact,
 } from "../controllers/contacts";
-import { isAuth } from "../middlewares";
+import { isAuth, validateRequest } from "../middlewares";
+import { cookieSchema, createContactSchema, paramSchema, updateContactSchema } from "../db/drizzle-zod";
 
 export default (router: Router) => {
-  router.get("/contacts", isAuth, getMyContacts);
+  router.get("/contacts", validateRequest({ cookies: cookieSchema }), isAuth, getMyContacts);
 
-  router.get("/contacts/:id", getSpecificContact);
+  // router.get("/contacts/:id", getSpecificContact);
 
-  router.post("/contacts", isAuth, createContact);
-  router.patch("/contacts/:id", isAuth, updateContact);
-  router.delete("/contacts/:id", isAuth, deleteContact);
+  router.post(
+    "/contacts",
+    validateRequest({ body: createContactSchema, cookies: cookieSchema }),
+    isAuth,
+    createContact
+  );
+  router.patch(
+    "/contacts/:id",
+    validateRequest({ body: updateContactSchema, cookies: cookieSchema, params: paramSchema }),
+    isAuth,
+    updateContact
+  );
+  router.delete(
+    "/contacts/:id",
+    validateRequest({ cookies: cookieSchema, params: paramSchema }),
+    isAuth,
+    deleteContact
+  );
 };
