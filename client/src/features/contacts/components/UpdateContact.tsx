@@ -81,6 +81,7 @@ export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
       newData: values,
       originalData: contact,
     });
+
     updateContact.mutate(
       { id: contact.id, data: data },
       {

@@ -100,9 +100,6 @@ export const updateContact = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { verifyPassword, name, email, phoneNumber, address } = req.body;
 
-    console.log("THESE ARE THE REQ.PARAMS", req.params);
-    console.log("THESE ARE THE VALUE TYPE", typeof req.params.id);
-
     const fields = {
       name: name,
       email: email,
@@ -132,18 +129,10 @@ export const updateContact = async (req: Request, res: Response) => {
       });
     }
 
-    const contact = await findContactByID(+id);
-
-    if (!contact) {
-      return res.status(404).json({
-        message: "Could not find contact",
-      });
-    }
-
-    const updatedContact = await updateContactByID({ contactID: +id, inputs: fields, contact: contact });
+    const updatedContact = await updateContactByID({ contactID: +id, inputs: fields });
 
     return res.status(200).json({
-      message: "Updated successfully.",
+      message: `Updated ${req.contact.name} successfully.`,
       contact: updatedContact,
     });
   } catch (error) {
@@ -159,8 +148,6 @@ export const deleteContact = async (req: Request, res: Response) => {
 
     let deletedContact;
 
-    const contact = await findContactByID(+id);
-
     const relations = await getContactRelations(+id);
 
     if (relations.length === 1) {
@@ -172,7 +159,7 @@ export const deleteContact = async (req: Request, res: Response) => {
     }
 
     return res.status(200).json({
-      message: `Successfully removed ${contact?.name} from your network.`,
+      message: `Successfully removed ${req.contact.name} from your network.`,
     });
   } catch (error) {
     console.log(error);

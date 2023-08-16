@@ -6,7 +6,6 @@ import type { Contact, NewContact, NewUserContactRelation, UserContactRelation }
 type UpdateContactByIDParams = {
   contactID: number;
   inputs: Partial<NewContact>;
-  contact: Contact;
 };
 
 type FindContactByDetailsParams = NewContact;
@@ -49,26 +48,26 @@ export const findContactByID = async (id: number) => {
   return contact[0];
 };
 
-export const updateContactByID = async ({ contactID, inputs, contact }: UpdateContactByIDParams) => {
+export const updateContactByID = async ({ contactID, inputs }: UpdateContactByIDParams) => {
   const updatedContact = await db
     .update(contacts)
     .set({
-      ...(inputs.name !== contact.name && inputs.name !== undefined
+      ...(inputs.name
         ? {
             name: inputs.name,
           }
         : {}),
-      ...(inputs.email !== contact.email && inputs.email !== undefined
+      ...(inputs.email
         ? {
             email: inputs.email,
           }
         : {}),
-      ...(inputs.phoneNumber !== contact.phoneNumber && inputs.phoneNumber !== undefined
+      ...(inputs.phoneNumber
         ? {
             phoneNumber: inputs.phoneNumber,
           }
         : {}),
-      ...(inputs.address !== contact.address && inputs.address !== undefined
+      ...(inputs.address
         ? {
             address: inputs.address,
           }

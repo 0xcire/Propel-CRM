@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { AnyZodObject, ZodEffects, ZodError } from "zod";
 import { objectNotEmpty } from "../utils";
+import { getRequestBodies } from "../config";
 
 type SchemaParams = {
   body?: ZodEffects<ZodEffects<AnyZodObject>> | ZodEffects<AnyZodObject>;
@@ -12,24 +13,7 @@ type SchemaParams = {
 export const validateRequest = (schema: SchemaParams) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requestBodies = [
-        {
-          source: "body",
-          data: req.body,
-        },
-        {
-          source: "cookies",
-          data: req.cookies,
-        },
-        {
-          source: "query",
-          data: req.query,
-        },
-        {
-          source: "params",
-          data: req.params,
-        },
-      ];
+      const requestBodies = getRequestBodies(req);
 
       for (let body of requestBodies) {
         if (schema[body.source as keyof SchemaParams] && objectNotEmpty(body.data)) {
