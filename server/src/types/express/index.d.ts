@@ -4,5 +4,9 @@ declare namespace Express {
       id: number;
       username: string;
     };
+    task: {};
+    contact: {
+      name: string;
+    };
   }
 }

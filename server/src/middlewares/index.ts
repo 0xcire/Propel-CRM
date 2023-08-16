@@ -1,6 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import { findUsersBySessionToken } from "../db/queries/user";
 import { SESSION_COOKIE_NAME } from "../config";
+import { AnyZodObject, ZodEffects, ZodError } from "zod";
+import { objectNotEmpty } from "../utils";
 
 export const isAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -19,6 +21,12 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
         message: "Can't find user.",
       });
     }
+
+    // if (userByToken.sessionToken !== sessionToken) {
+    //   return res.status(403).json({
+    //     message: "Invalid session.",
+    //   });
+    // }
 
     if (userByToken.id && userByToken.username) {
       req.user = {

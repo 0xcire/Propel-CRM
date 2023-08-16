@@ -28,6 +28,8 @@ export const createTask = async (req: Request, res: Response) => {
 
     // TODO: along with auth, contacts, user, need to validate inputs against zod schema
 
+    // TODO: should i be requiring userID on req body?
+
     if (!title) {
       return res.status(400).json({
         message: "Tasks require at least a title.",
@@ -41,7 +43,7 @@ export const createTask = async (req: Request, res: Response) => {
     //   });
     // }
 
-    const user = findUsersByID({ id: userID });
+    const user = findUsersByID({ id: authUserID });
 
     const task: NewTask = {
       userID: authUserID,
