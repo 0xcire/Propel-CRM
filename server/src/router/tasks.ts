@@ -1,11 +1,18 @@
 import { Router } from "express";
 import { getTasks, createTask, updateTask, deleteTask } from "../controllers/tasks";
-import { isAuth, validateRequest } from "../middlewares";
+import { isAuth } from "../middlewares";
+import { validateRequest } from "../middlewares/validate-input";
 import { isTaskOwner } from "../middlewares/tasks";
-import { cookieSchema, paramSchema, createTaskSchema, updateTaskSchema } from "../db/drizzle-zod";
+import {
+  cookieSchema,
+  paramSchema,
+  createTaskSchema,
+  updateTaskSchema,
+  taskQuerySchema,
+} from "../db/validation-schema";
 
 export default (router: Router) => {
-  router.get("/tasks", validateRequest({ cookies: cookieSchema }), isAuth, getTasks);
+  router.get("/tasks", validateRequest({ query: taskQuerySchema, cookies: cookieSchema }), isAuth, getTasks);
 
   router.post("/tasks", validateRequest({ body: createTaskSchema, cookies: cookieSchema }), isAuth, createTask);
 

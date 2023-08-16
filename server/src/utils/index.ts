@@ -15,3 +15,7 @@ export const hashPassword = async (password: string) => {
 export const checkPassword = async (password: string, storedPassword: string) => {
   return bcrypt.compare(password.trim(), storedPassword);
 };
+
+export const objectNotEmpty = (object: Record<string, unknown>) => {
+  return Object.keys(object).length > 0;
+};

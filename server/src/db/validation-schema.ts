@@ -1,12 +1,37 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { users, contacts, tasks } from "../db/schema";
-import { AnyZodObject, ZodEffects, z } from "zod";
+import { users, contacts, tasks } from "./schema";
+import { z } from "zod";
 import isEmail from "validator/lib/isEmail.js";
 
+// TODO:
+// user-validation
+// task-validation
+// contact-validation
+// listing-validation
+// analytics-validation
+
 const password = z.object({ password: z.string().max(255) });
+
 const verifyPassword = z.object({
   verifyPassword: z.string().max(255),
 });
+
+// TODO: cookie and param schema may become more specific in future but for now can stay here
+export const cookieSchema = z
+  .object({
+    "propel-session": z.string().min(1),
+  })
+  .transform((cookie) => ({
+    "propel-session": cookie["propel-session"].trim(),
+  }));
+
+export const paramSchema = z
+  .object({
+    id: z.string(),
+  })
+  .transform((param) => ({
+    id: param.id.trim(),
+  }));
 
 export const signupSchema = createInsertSchema(users)
   .pick({
@@ -51,24 +76,6 @@ export const signinSchema = createInsertSchema(users)
     password: user.password.trim(),
   }));
 
-// move this
-// or just move entire file into middleware dir, makes more sense
-export const cookieSchema = z
-  .object({
-    "propel-session": z.string().min(1),
-  })
-  .transform((cookie) => ({
-    "propel-session": cookie["propel-session"].trim(),
-  }));
-
-export const paramSchema = z
-  .object({
-    id: z.string(),
-  })
-  .transform((param) => ({
-    id: param.id.trim(),
-  }));
-
 export const createContactSchema = createInsertSchema(contacts)
   .omit({
     id: true,
@@ -80,6 +87,7 @@ export const createContactSchema = createInsertSchema(contacts)
     phoneNumber: contact.phoneNumber.trim(),
     address: contact.address.trim(),
   }));
+
 export const updateContactSchema = createInsertSchema(contacts)
   .omit({
     id: true,
@@ -93,6 +101,14 @@ export const updateContactSchema = createInsertSchema(contacts)
     phoneNumber: contact.phoneNumber?.trim(),
     address: contact.address?.trim(),
     verifyPassword: contact.verifyPassword.trim(),
+  }));
+
+export const taskQuerySchema = z
+  .object({
+    completed: z.enum(["true", "false"]),
+  })
+  .transform((task) => ({
+    completed: task.completed.trim(),
   }));
 
 export const createTaskSchema = createInsertSchema(tasks)
@@ -110,7 +126,7 @@ export const createTaskSchema = createInsertSchema(tasks)
 export const updateTaskSchema = createInsertSchema(tasks)
   .omit({ id: true, userID: true, createdAt: true })
   .partial()
-  .refine(({ completed }) => completed instanceof Boolean)
+  .refine(({ completed }) => (completed ? completed instanceof Boolean : true))
   .transform((task) => ({
     title: task.title?.trim(),
     description: task.description?.trim(),

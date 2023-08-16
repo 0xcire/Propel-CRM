@@ -6,8 +6,9 @@ import {
   deleteContact,
   getSpecificContact,
 } from "../controllers/contacts";
-import { isAuth, validateRequest } from "../middlewares";
-import { cookieSchema, createContactSchema, paramSchema, updateContactSchema } from "../db/drizzle-zod";
+import { isAuth } from "../middlewares";
+import { validateRequest } from "../middlewares/validate-input";
+import { cookieSchema, createContactSchema, paramSchema, updateContactSchema } from "../db/validation-schema";
 
 export default (router: Router) => {
   router.get("/contacts", validateRequest({ cookies: cookieSchema }), isAuth, getMyContacts);

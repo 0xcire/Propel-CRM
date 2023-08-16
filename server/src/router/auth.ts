@@ -1,15 +1,9 @@
 import { Router } from "express";
-import { isAuth, validateRequest } from "../middlewares";
+import { isAuth } from "../middlewares";
+import { validateRequest } from "../middlewares/validate-input";
 import { signup, signin, signout } from "../controllers/auth";
 
-import { cookieSchema, signinSchema, signupSchema } from "../db/drizzle-zod";
-
-// const authValidateSchema = {
-//   body: signupSchema,
-//   cookies: cookieSchema,
-//   queries: undefined,
-//   params: undefined
-// };
+import { cookieSchema, signinSchema, signupSchema } from "../db/validation-schema";
 
 export default (router: Router) => {
   router.post("/auth/signup", validateRequest({ body: signupSchema }), signup);

@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { deleteUser, getMyInfo, updateUser } from "../controllers/user";
-import { isAuth, isOwner, validateRequest } from "../middlewares";
-import { cookieSchema, paramSchema, updateUserSchema } from "../db/drizzle-zod";
+import { isAuth, isOwner } from "../middlewares";
+import { validateRequest } from "../middlewares/validate-input";
+import { cookieSchema, paramSchema, updateUserSchema } from "../db/validation-schema";
 
 export default (router: Router) => {
   router.get("/user/me", validateRequest({ cookies: cookieSchema }), isAuth, getMyInfo);
