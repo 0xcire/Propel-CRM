@@ -9,14 +9,8 @@ import { name, mobilePhone } from '@/config';
 
 import { UserPlus } from 'lucide-react';
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form } from '@/components/ui/form';
+import { FormTextInput } from '@/components/FormTextInput';
 import {
   Dialog,
   DialogContent,
@@ -25,7 +19,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 
 import { Tooltip } from '@/components/Tooltip';
 import { SubmitButton } from '@/components';
@@ -88,67 +81,25 @@ export function AddContact(): JSX.Element {
             id='add-contact'
             onSubmit={form.handleSubmit(onSubmit)}
           >
-            <FormField
-              control={form.control}
+            <FormTextInput
               name='name'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
+              placeholder='John Doe'
               control={form.control}
+            />
+            <FormTextInput
               name='email'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
+              placeholder='email@email.com'
               control={form.control}
+            />
+            <FormTextInput
               name='phoneNumber'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
+              placeholder='555-555-5555'
               control={form.control}
+            />
+            <FormTextInput
               name='address'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              placeholder='123 Name St. Seattle, WA 01234'
+              control={form.control}
             />
           </form>
         </Form>

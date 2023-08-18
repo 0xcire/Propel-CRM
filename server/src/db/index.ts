@@ -9,4 +9,4 @@ import { PG_URL } from "../config";
 const queryClient = postgres(`${PG_URL}`);
 // : PostgresJsDatabase
 export const db = drizzle(queryClient, { schema: schema });
-migrate(db, { migrationsFolder: "drizzle" });
+// migrate(db, { migrationsFolder: "drizzle" });

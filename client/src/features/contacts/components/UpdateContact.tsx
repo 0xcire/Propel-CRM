@@ -18,20 +18,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Form } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 
 import { SubmitButton, Tooltip } from '@/components';
 
 import type { NewContact, ContactAsProp } from '../types';
+import { FormTextInput } from '@/components/FormTextInput';
 
 const ContactInfoSchema = z.object({
   name: name,
@@ -117,88 +110,31 @@ export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
             id='update-contact'
             onSubmit={form.handleSubmit(onSubmit)}
           >
-            <FormField
-              control={form.control}
+            <FormTextInput
               name='name'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
+              labelContent='Name'
               control={form.control}
+            />
+            <FormTextInput
               name='email'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
+              labelContent='Email'
               control={form.control}
+            />
+            <FormTextInput
               name='phoneNumber'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
+              labelContent='Phone Number'
               control={form.control}
+            />
+            <FormTextInput
               name='address'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
+              labelContent='Address'
               control={form.control}
+            />
+            <FormTextInput
               name='verifyPassword'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Your Password</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input
-                        type='password'
-                        {...field}
-                      />
-                    </div>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
+              labelContent='Your Password'
+              type='password'
+              control={form.control}
             />
           </form>
         </Form>

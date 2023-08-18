@@ -79,7 +79,7 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 
 ## Successes
 
-- Implemented Session/Cookie based authentication
+- Implemented Session/Cookie based user authentication
 
 ## Issues
 

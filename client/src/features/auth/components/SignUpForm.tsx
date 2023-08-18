@@ -1,4 +1,3 @@
-import { ReactElement } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, type SubmitHandler } from 'react-hook-form';
@@ -9,22 +8,14 @@ import { queryClient } from '@/lib/react-query';
 
 import { name, signUpPassword, username } from '@/config';
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Form } from '@/components/ui/form';
+import { FormTextInput } from '@/components/FormTextInput';
 import { useToast } from '@/components/ui/use-toast';
 import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from '@/components';
 import { isAPIError } from '@/utils/error';
 import { fieldsAreDirty } from '@/utils/form-data';
-import { FormTextInput } from '@/components/FormTextInput';
 
 const signUpSchema = z.object({
   name: name,
@@ -79,22 +70,22 @@ export function SignUpForm(): JSX.Element {
             className='mt-6 space-y-3'
           >
             <FormTextInput<SignUpFields>
-              inputName='name'
+              name='name'
               placeholder='First M Last'
               control={form.control}
             />
             <FormTextInput<SignUpFields>
-              inputName='username'
+              name='username'
               placeholder='jdeere123'
               control={form.control}
             />
             <FormTextInput<SignUpFields>
-              inputName='email'
+              name='email'
               placeholder='email@email.com'
               control={form.control}
             />
             <FormTextInput<SignUpFields>
-              inputName='password'
+              name='password'
               placeholder='password123'
               type='password'
               control={form.control}

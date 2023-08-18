@@ -10,6 +10,7 @@ import { queryClient } from '@/lib/react-query';
 import { verifyPassword } from '@/config';
 
 import { Form } from '@/components/ui/form';
+import { FormTextInput } from '@/components/FormTextInput';
 
 import { useToast } from '@/components/ui/use-toast';
 import { Typography } from '@/components/ui/typography';
@@ -17,7 +18,6 @@ import { Typography } from '@/components/ui/typography';
 import { SubmitButton } from '@/components';
 import { isAPIError } from '@/utils/error';
 import { fieldsAreDirty } from '@/utils/form-data';
-import { FormTextInput } from '@/components/FormTextInput';
 
 const signInSchema = z.object({
   email: z.string().email(),
@@ -67,13 +67,13 @@ export function SignInForm(): JSX.Element {
             onSubmit={form.handleSubmit(onSubmit)}
             className='mt-6 space-y-3'
           >
-            <FormTextInput<SignInFields>
-              inputName='email'
+            <FormTextInput
+              name='email'
               placeholder='email@email.com'
               control={form.control}
             />
             <FormTextInput<SignInFields>
-              inputName='password'
+              name='password'
               type='password'
               placeholder='password123'
               control={form.control}

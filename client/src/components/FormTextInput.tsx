@@ -17,21 +17,23 @@ import { Input } from './ui/input';
 interface FormTextInputProps<TFieldValues extends FieldValues>
   extends ComponentProps<'input'> {
   control: Control<TFieldValues>;
-  inputName: Path<TFieldValues>;
+  name: Path<TFieldValues>;
+  labelContent?: string;
 }
 
 export function FormTextInput<TFieldValues extends FieldValues>({
-  inputName,
+  name,
+  labelContent,
   control,
   ...props
 }: FormTextInputProps<TFieldValues>): JSX.Element {
   return (
     <FormField
       control={control}
-      name={inputName}
+      name={name}
       render={({ field }): ReactElement => (
         <FormItem>
-          <FormLabel>{field.name}</FormLabel>
+          <FormLabel>{labelContent ? labelContent : field.name}</FormLabel>
           <FormControl>
             <Input
               type={props.type}
