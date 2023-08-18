@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 const PORT = 1337;
 const server = app.listen(PORT, () => {
   if (process.env.NODE_ENV === "development") {
-    console.log(`access app via http://localhost:8080`);
+    console.log(`DOCKER: http://localhost:8080 \n NON-DOCKER: http://localhost:5173`);
   } else {
     console.log("running in prod");
   }

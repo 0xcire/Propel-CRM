@@ -7,4 +7,5 @@
     "allowSyntheticDefaultImports": true
   },
   "include": ["vite.config.ts"]
+  // "exclude": ["./src/componets/ui/*.tsx"]
 }

@@ -1,4 +1,3 @@
-import { ReactElement } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,21 +9,15 @@ import { queryClient } from '@/lib/react-query';
 
 import { verifyPassword } from '@/config';
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Form } from '@/components/ui/form';
+
 import { useToast } from '@/components/ui/use-toast';
 import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from '@/components';
 import { isAPIError } from '@/utils/error';
 import { fieldsAreDirty } from '@/utils/form-data';
+import { FormTextInput } from '@/components/FormTextInput';
 
 const signInSchema = z.object({
   email: z.string().email(),
@@ -74,38 +67,16 @@ export function SignInForm(): JSX.Element {
             onSubmit={form.handleSubmit(onSubmit)}
             className='mt-6 space-y-3'
           >
-            <FormField
+            <FormTextInput<SignInFields>
+              inputName='email'
+              placeholder='email@email.com'
               control={form.control}
-              name='email'
-              render={({ field }): ReactElement => (
-                <FormItem>
-                  <FormLabel>{field.name}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='email@email.domain'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
-            <FormField
+            <FormTextInput<SignInFields>
+              inputName='password'
+              type='password'
+              placeholder='password123'
               control={form.control}
-              name='password'
-              render={({ field }): ReactElement => (
-                <FormItem>
-                  <FormLabel>{field.name}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='password123'
-                      type='password'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className='pointer-events-none' />
-                </FormItem>
-              )}
             />
             <SubmitButton
               text={'Sign In'}

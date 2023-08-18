@@ -24,6 +24,7 @@ import { Typography } from '@/components/ui/typography';
 import { SubmitButton } from '@/components';
 import { isAPIError } from '@/utils/error';
 import { fieldsAreDirty } from '@/utils/form-data';
+import { FormTextInput } from '@/components/FormTextInput';
 
 const signUpSchema = z.object({
   name: name,
@@ -77,71 +78,28 @@ export function SignUpForm(): JSX.Element {
             onSubmit={form.handleSubmit(onSubmit)}
             className='mt-6 space-y-3'
           >
-            <FormField
+            <FormTextInput<SignUpFields>
+              inputName='name'
+              placeholder='First M Last'
               control={form.control}
-              name='name'
-              render={({ field }): ReactElement => (
-                <FormItem>
-                  <FormLabel>{field.name}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='First M Last'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
-            <FormField
+            <FormTextInput<SignUpFields>
+              inputName='username'
+              placeholder='jdeere123'
               control={form.control}
-              name='username'
-              render={({ field }): ReactElement => (
-                <FormItem>
-                  <FormLabel>{field.name}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='jdeere123'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
-            <FormField
+            <FormTextInput<SignUpFields>
+              inputName='email'
+              placeholder='email@email.com'
               control={form.control}
-              name='email'
-              render={({ field }): ReactElement => (
-                <FormItem>
-                  <FormLabel>{field.name}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='email@email.com'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
-            <FormField
+            <FormTextInput<SignUpFields>
+              inputName='password'
+              placeholder='password123'
+              type='password'
               control={form.control}
-              name='password'
-              render={({ field }): ReactElement => (
-                <FormItem>
-                  <FormLabel>{field.name}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='password123'
-                      type='password'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className='pointer-events-none' />
-                </FormItem>
-              )}
             />
+
             <SubmitButton
               text='Sign Up'
               disabled={!passwordIsDirty}

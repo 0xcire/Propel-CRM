@@ -65,7 +65,7 @@ export const updateUserSchema = createInsertSchema(users)
   }));
 
 export const signinSchema = createInsertSchema(users)
-  .strict()
+  // .strict()
   .pick({
     email: true,
   })

@@ -10,6 +10,12 @@ import { Typography } from '@/components/ui/typography';
 // TODO: potential performance optimization: when updating contact, render just that contact,
 // not re render entire list
 
+// TODO: FOR SHADCN-REFACTOR
+// reusable dialog or ContactDialog, AuthDialog, etc...
+// ContactDialog
+// ContactForm - AddContact | CreateContact
+// DeleteContactDialog
+
 export function ContactList(): JSX.Element {
   const contacts = useContacts();
 
