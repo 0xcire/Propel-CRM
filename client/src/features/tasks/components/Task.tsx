@@ -1,23 +1,27 @@
+import { useCallback } from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import clsx from 'clsx';
 
 import { parseISO } from 'date-fns';
+
+import clsx from 'clsx';
 
 import { useUpdateTask } from '../hooks/useUpdateTask';
 import { removeTimeZone } from '@/utils/date';
 
-import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
+import { Form } from '@/components/ui/form';
+import { type CheckedChangeParams, FormCheckboxInput } from '@/components/FormCheckboxInput';
 
-import { Checkbox } from '@/components/ui/checkbox';
 import { Typography } from '@/components/ui/typography';
 
 import { UpdateTask } from './UpdateTask';
 
+
+
 import type { Task as TaskData } from '../types';
 
-import { type CheckedState } from '@radix-ui/react-checkbox';
 
 type TaskProps = {
   task: TaskData;
@@ -45,6 +49,16 @@ export function Task({ task }: TaskProps): JSX.Element {
     },
   });
 
+  const handleOnCheckedChange = useCallback(({ field, checked }: CheckedChangeParams<CompletedTaskFields>): void => {
+    field.onChange(checked as boolean)
+    updateTask.mutate({
+      id: task.id,
+      data: {
+        completed: checked as boolean,
+      },
+    });
+  }, [])
+
   const onSubmit = (values: CompletedTaskFields): void => {
     console.log(values);
   };
@@ -60,28 +74,10 @@ export function Task({ task }: TaskProps): JSX.Element {
     <div className='my-2 flex w-full py-1'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
+          <FormCheckboxInput
+            handleOnCheckedChange={handleOnCheckedChange}
             name='completed'
-            render={({ field }): JSX.Element => (
-              <FormItem>
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={(checked: CheckedState): void => {
-                      field.onChange(checked as boolean);
-                      updateTask.mutate({
-                        id: task.id,
-                        data: {
-                          completed: checked as boolean,
-                        },
-                      });
-                    }}
-                    className='mt-[5px] rounded-full outline-red-900'
-                  />
-                </FormControl>
-              </FormItem>
-            )}
+            control={form.control}
           />
         </form>
       </Form>

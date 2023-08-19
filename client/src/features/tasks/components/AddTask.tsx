@@ -47,6 +47,7 @@ import { SubmitButton } from '@/components';
 import { priorityOptions } from '@/config';
 import type { Priority } from '../types';
 import { fieldsAreDirty, filterUndefined } from '@/utils/form-data';
+import { FormTextInput } from '@/components/FormTextInput';
 
 const AddTaskSchema = z.object({
   title: z.string().min(1).max(255),
@@ -115,38 +116,20 @@ export function AddTask({
             onSubmit={form.handleSubmit(onSubmit)}
           >
             {/* TODO: ControllerProps<TFieldValues, TName> */}
-            <FormField
-              control={form.control}
+            <FormTextInput
               name='title'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
+              labelContent='Title'
               control={form.control}
-              name='description'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
+
+            <FormTextInput
+              name='description'
+              labelContent='Description'
+              control={form.control}
+            />
+
+
+
             <FormField
               control={form.control}
               name='notes'
