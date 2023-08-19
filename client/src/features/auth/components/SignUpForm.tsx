@@ -69,22 +69,22 @@ export function SignUpForm(): JSX.Element {
             onSubmit={form.handleSubmit(onSubmit)}
             className='mt-6 space-y-3'
           >
-            <FormTextInput<SignUpFields>
+            <FormTextInput
               name='name'
               placeholder='First M Last'
               control={form.control}
             />
-            <FormTextInput<SignUpFields>
+            <FormTextInput
               name='username'
               placeholder='jdeere123'
               control={form.control}
             />
-            <FormTextInput<SignUpFields>
+            <FormTextInput
               name='email'
               placeholder='email@email.com'
               control={form.control}
             />
-            <FormTextInput<SignUpFields>
+            <FormTextInput
               name='password'
               placeholder='password123'
               type='password'

@@ -32,10 +32,11 @@ export function FormTextInput<TFieldValues extends FieldValues>({
       control={control}
       name={name}
       render={({ field }): ReactElement => (
-        <FormItem>
+        <FormItem className='w-full'>
           <FormLabel>{labelContent ? labelContent : field.name}</FormLabel>
           <FormControl>
             <Input
+              disabled={props.disabled}
               type={props.type}
               placeholder={props.placeholder}
               {...field}

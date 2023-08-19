@@ -10,15 +10,8 @@ import { username, verifyPassword } from '@/config';
 
 import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form } from '@/components/ui/form';
+import { FormTextInput } from '@/components/FormTextInput';
 import {
   Dialog,
   DialogContent,
@@ -56,11 +49,11 @@ export function UserInfo(): JSX.Element {
   const handleEditToggle = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.preventDefault();
-      const previousInput = e.currentTarget
-        .previousElementSibling as HTMLInputElement;
-      const isDisabled = previousInput?.disabled;
+      const previousEl = e.currentTarget.previousElementSibling
+        ?.children[1] as HTMLInputElement;
+      const isDisabled = previousEl?.disabled;
 
-      previousInput.disabled = !isDisabled;
+      previousEl.disabled = !isDisabled;
     },
     []
   );
@@ -68,7 +61,7 @@ export function UserInfo(): JSX.Element {
   useEffect(() => {
     form.setValue('username', user.data?.username as string);
     form.setValue('email', user.data?.email as string);
-  }, []);
+  }, [form, user.data]);
 
   function onSubmit(values: UserInfoFields): void {
     let data;
@@ -96,58 +89,24 @@ export function UserInfo(): JSX.Element {
           id='user-info'
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <FormField
-            control={form.control}
-            name='username'
-            render={({ field }): JSX.Element => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <div className='flex items-center gap-8'>
-                    <Input
-                      disabled={true}
-                      {...field}
-                      value={field.value ?? user.data?.username}
-                    />
-                    <Button
-                      variant='default'
-                      onClick={(e): void => handleEditToggle(e)}
-                    >
-                      Edit
-                    </Button>
-                  </div>
-                </FormControl>
+          <div className='input-wrap flex items-end justify-between gap-8'>
+            <FormTextInput
+              name='username'
+              disabled={true}
+              control={form.control}
+            />
+            <Button onClick={(e): void => handleEditToggle(e)}>Edit</Button>
+          </div>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className='input-wrap flex items-end justify-between gap-8'>
+            <FormTextInput
+              name='email'
+              disabled={true}
+              control={form.control}
+            />
+            <Button onClick={(e): void => handleEditToggle(e)}>Edit</Button>
+          </div>
 
-          <FormField
-            control={form.control}
-            name='email'
-            render={({ field }): JSX.Element => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <div className='flex items-center gap-8'>
-                    <Input
-                      disabled={true}
-                      {...field}
-                      value={field.value ?? user.data?.email}
-                    />
-                    <Button
-                      variant='default'
-                      onClick={(e): void => handleEditToggle(e)}
-                    >
-                      Edit
-                    </Button>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <Dialog
             open={open}
             onOpenChange={setOpen}
@@ -163,25 +122,12 @@ export function UserInfo(): JSX.Element {
                 </DialogDescription>
               </DialogHeader>
               <div className='grid gap-4 py-4'>
-                <FormField
-                  control={form.control}
+                <FormTextInput
+                  placeholder='password123'
+                  labelContent='Verify Password'
+                  type='password'
                   name='verifyPassword'
-                  render={({ field }): JSX.Element => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <>
-                          <Input
-                            type='password'
-                            placeholder='password123'
-                            {...field}
-                            value={field.value ?? ''}
-                          />
-                        </>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  control={form.control}
                 />
               </div>
               <DialogFooter>

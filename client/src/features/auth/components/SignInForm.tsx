@@ -72,7 +72,7 @@ export function SignInForm(): JSX.Element {
               placeholder='email@email.com'
               control={form.control}
             />
-            <FormTextInput<SignInFields>
+            <FormTextInput
               name='password'
               type='password'
               placeholder='password123'
