@@ -12,16 +12,16 @@ import { useUpdateTask } from '../hooks/useUpdateTask';
 import { removeTimeZone } from '@/utils/date';
 
 import { Form } from '@/components/ui/form';
-import { type CheckedChangeParams, FormCheckboxInput } from '@/components/FormCheckboxInput';
+import {
+  type CheckedChangeParams,
+  FormCheckboxInput,
+} from '@/components/FormCheckboxInput';
 
 import { Typography } from '@/components/ui/typography';
 
 import { UpdateTask } from './UpdateTask';
 
-
-
 import type { Task as TaskData } from '../types';
-
 
 type TaskProps = {
   task: TaskData;
@@ -49,15 +49,18 @@ export function Task({ task }: TaskProps): JSX.Element {
     },
   });
 
-  const handleOnCheckedChange = useCallback(({ field, checked }: CheckedChangeParams<CompletedTaskFields>): void => {
-    field.onChange(checked as boolean)
-    updateTask.mutate({
-      id: task.id,
-      data: {
-        completed: checked as boolean,
-      },
-    });
-  }, [])
+  const handleOnCheckedChange = useCallback(
+    ({ checked }: CheckedChangeParams): void => {
+      // field.onChange(checked as boolean);
+      updateTask.mutate({
+        id: task.id,
+        data: {
+          completed: checked as boolean,
+        },
+      });
+    },
+    []
+  );
 
   const onSubmit = (values: CompletedTaskFields): void => {
     console.log(values);

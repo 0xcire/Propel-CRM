@@ -112,27 +112,27 @@ export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
           >
             <FormTextInput
               name='name'
-              labelContent='Name'
+              label='Name'
               control={form.control}
             />
             <FormTextInput
               name='email'
-              labelContent='Email'
+              label='Email'
               control={form.control}
             />
             <FormTextInput
               name='phoneNumber'
-              labelContent='Phone Number'
+              label='Phone Number'
               control={form.control}
             />
             <FormTextInput
               name='address'
-              labelContent='Address'
+              label='Address'
               control={form.control}
             />
             <FormTextInput
               name='verifyPassword'
-              labelContent='Your Password'
+              label='Your Password'
               type='password'
               control={form.control}
             />

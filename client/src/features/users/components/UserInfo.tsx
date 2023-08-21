@@ -124,7 +124,7 @@ export function UserInfo(): JSX.Element {
               <div className='grid gap-4 py-4'>
                 <FormTextInput
                   placeholder='password123'
-                  labelContent='Verify Password'
+                  label='Verify Password'
                   type='password'
                   name='verifyPassword'
                   control={form.control}

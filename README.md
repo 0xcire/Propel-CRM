@@ -79,6 +79,8 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 
 ## Successes
 
+<!-- - Combine my knowledge of front end development -->
+
 - Implemented Session/Cookie based user authentication
 
 ## Issues

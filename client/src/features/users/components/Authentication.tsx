@@ -97,21 +97,21 @@ export function Authentication(): JSX.Element {
                 <FormTextInput
                   name='verifyPassword'
                   type='password'
-                  labelContent='Old Password'
+                  label='Old Password'
                   placeholder='oldpassword123'
                   control={form.control}
                 />
                 <FormTextInput
                   name='password'
                   type='password'
-                  labelContent='New Password'
+                  label='New Password'
                   placeholder='password123'
                   control={form.control}
                 />
                 <FormTextInput
                   name='confirmPassword'
                   type='password'
-                  labelContent='Confirm Password'
+                  label='Confirm Password'
                   placeholder='password123'
                   control={form.control}
                 />

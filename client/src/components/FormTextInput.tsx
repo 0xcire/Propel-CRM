@@ -18,12 +18,12 @@ interface FormTextInputProps<TFieldValues extends FieldValues>
   extends ComponentProps<'input'> {
   control: Control<TFieldValues>;
   name: Path<TFieldValues>;
-  labelContent?: string;
+  label?: string;
 }
 
 export function FormTextInput<TFieldValues extends FieldValues>({
   name,
-  labelContent,
+  label,
   control,
   ...props
 }: FormTextInputProps<TFieldValues>): JSX.Element {
@@ -33,7 +33,7 @@ export function FormTextInput<TFieldValues extends FieldValues>({
       name={name}
       render={({ field }): ReactElement => (
         <FormItem className='w-full'>
-          <FormLabel>{labelContent ? labelContent : field.name}</FormLabel>
+          <FormLabel>{label ? label : field.name}</FormLabel>
           <FormControl>
             <Input
               disabled={props.disabled}

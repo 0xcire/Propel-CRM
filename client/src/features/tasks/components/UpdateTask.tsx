@@ -3,23 +3,17 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format, endOfYesterday, parseISO } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 import { useUpdateTask } from '../hooks/useUpdateTask';
 import { useUser } from '@/lib/react-query-auth';
-import { removeTimeZone } from '@/utils/date';
 
-import type { Task as TaskData } from '../types';
-
-import { CalendarIcon, InfoIcon } from 'lucide-react';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { InfoIcon } from 'lucide-react';
+import { Form } from '@/components/ui/form';
+import { FormTextInput } from '@/components/FormTextInput';
+import { FormTextAreaInput } from '@/components/FormTextAreaInput';
+import { FormDateInput } from '@/components/FormDateInput';
+import { FormSelectInput } from '@/components/FormSelectInput';
 import {
   Dialog,
   DialogContent,
@@ -28,32 +22,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-
-import { Calendar } from '@/components/ui/calendar';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+
 import { SubmitButton } from '@/components';
+import { DeleteTask } from './DeleteTask';
 
-import { cn } from '@/lib/utils';
-
-import { Textarea } from '@/components/ui/textarea';
+import { removeTimeZone } from '@/utils/date';
+import { filterUndefined } from '@/utils/form-data';
 
 import { priorityOptions } from '@/config';
 import type { Priority } from '../types';
-import { DeleteTask } from './DeleteTask';
-import { filterUndefined } from '@/utils/form-data';
+import type { Task as TaskData } from '../types';
 
 // TODO: may consolidate add/update forms
 const AddTaskSchema = z.object({
@@ -151,130 +130,36 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
             id='add-task'
             onSubmit={form.handleSubmit(onSubmit)}
           >
-            <FormField
-              control={form.control}
+            <FormTextInput
               name='title'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
+              label='Title'
+              control={form.control}
             />
 
-            <FormField
-              control={form.control}
+            <FormTextInput
               name='description'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
+              label='Description'
               control={form.control}
-              name='notes'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Notes</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Textarea
-                        placeholder=''
-                        className='resize-none'
-                        {...field}
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
+
+            <FormTextAreaInput
+              name='notes'
+              label='Notes'
+              control={form.control}
+            />
+
             <div className='flex items-center justify-between pt-4'>
-              <FormField
-                control={form.control}
+              <FormDateInput
                 name='dueDate'
-                render={({ field }): JSX.Element => (
-                  <FormItem className='flex items-center justify-between space-y-0 pt-0'>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={'outline'}
-                            className={cn(
-                              'mt-0 w-[240px] pl-3 text-left font-normal',
-                              !field.value && 'text-muted-foreground'
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, 'PPP')
-                            ) : (
-                              <span>Due Date</span>
-                            )}
-                            <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        className='w-auto p-0'
-                        align='start'
-                      >
-                        <Calendar
-                          mode='single'
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date): boolean => date < endOfYesterday()}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label='Due Date'
+                control={form.control}
               />
 
-              <FormField
-                control={form.control}
+              <FormSelectInput<AddTaskFields, Priority, typeof priorityOptions>
                 name='priority'
-                render={({ field }): JSX.Element => (
-                  <FormItem>
-                    <Select
-                      onValueChange={(val): void =>
-                        field.onChange(val as Priority)
-                      }
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder='Priority' />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {priorityOptions.map((priority) => (
-                          <SelectItem
-                            key={priority}
-                            value={priority}
-                          >
-                            {priority}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                placeholder='Priority'
+                options={priorityOptions}
+                control={form.control}
               />
             </div>
           </form>
