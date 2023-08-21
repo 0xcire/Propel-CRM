@@ -9,7 +9,10 @@ import { useCreateTask } from '../hooks/useCreateTask';
 import { useUser } from '@/lib/react-query-auth';
 
 import { Form } from '@/components/ui/form';
-import { FormTextInput } from '@/components/FormTextInput';
+import { TextInput } from '@/components/form';
+import { TextAreaInput } from '@/components/form';
+import { SelectInput } from '@/components/form';
+import { DateInput } from '@/components/form';
 import {
   DialogContent,
   DialogFooter,
@@ -24,9 +27,6 @@ import { SubmitButton } from '@/components';
 import { priorityOptions } from '@/config';
 import type { Priority } from '../types';
 import { fieldsAreDirty, filterUndefined } from '@/utils/form-data';
-import { FormTextAreaInput } from '@/components/FormTextAreaInput';
-import { FormSelectInput } from '@/components/FormSelectInput';
-import { FormDateInput } from '@/components/FormDateInput';
 
 const AddTaskSchema = z.object({
   title: z.string().min(1).max(255),
@@ -94,21 +94,21 @@ export function AddTask({
             id='add-task'
             onSubmit={form.handleSubmit(onSubmit)}
           >
-            <FormTextInput
+            <TextInput
               name='title'
               label='Title'
               placeholder='wash the dog'
               control={form.control}
             />
 
-            <FormTextInput
+            <TextInput
               name='description'
               label='Description'
               placeholder='and the cat'
               control={form.control}
             />
 
-            <FormTextAreaInput
+            <TextAreaInput
               name='notes'
               label='Notes'
               placeholder='theyre both allergic to soap'
@@ -116,13 +116,13 @@ export function AddTask({
             />
 
             <div className='flex items-center justify-between pt-4'>
-              <FormDateInput
+              <DateInput
                 name='dueDate'
                 label='Due Date'
                 control={form.control}
               />
 
-              <FormSelectInput<AddTaskFields, Priority, typeof priorityOptions>
+              <SelectInput<AddTaskFields, Priority, typeof priorityOptions>
                 name='priority'
                 options={priorityOptions}
                 control={form.control}

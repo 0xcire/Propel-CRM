@@ -24,7 +24,7 @@ import { Button } from '@/components/ui/button';
 import { SubmitButton, Tooltip } from '@/components';
 
 import type { NewContact, ContactAsProp } from '../types';
-import { FormTextInput } from '@/components/FormTextInput';
+import { TextInput } from '@/components/form';
 
 const ContactInfoSchema = z.object({
   name: name,
@@ -110,27 +110,27 @@ export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
             id='update-contact'
             onSubmit={form.handleSubmit(onSubmit)}
           >
-            <FormTextInput
+            <TextInput
               name='name'
               label='Name'
               control={form.control}
             />
-            <FormTextInput
+            <TextInput
               name='email'
               label='Email'
               control={form.control}
             />
-            <FormTextInput
+            <TextInput
               name='phoneNumber'
               label='Phone Number'
               control={form.control}
             />
-            <FormTextInput
+            <TextInput
               name='address'
               label='Address'
               control={form.control}
             />
-            <FormTextInput
+            <TextInput
               name='verifyPassword'
               label='Your Password'
               type='password'

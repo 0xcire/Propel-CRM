@@ -11,7 +11,7 @@ import { signUpPassword, verifyPassword } from '@/config';
 import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import { FormTextInput } from '@/components/FormTextInput';
+import { TextInput } from '@/components/form';
 import {
   Dialog,
   DialogContent,
@@ -94,21 +94,21 @@ export function Authentication(): JSX.Element {
                 </DialogDescription>
               </DialogHeader>
               <div className='grid gap-4 py-4'>
-                <FormTextInput
+                <TextInput
                   name='verifyPassword'
                   type='password'
                   label='Old Password'
                   placeholder='oldpassword123'
                   control={form.control}
                 />
-                <FormTextInput
+                <TextInput
                   name='password'
                   type='password'
                   label='New Password'
                   placeholder='password123'
                   control={form.control}
                 />
-                <FormTextInput
+                <TextInput
                   name='confirmPassword'
                   type='password'
                   label='Confirm Password'

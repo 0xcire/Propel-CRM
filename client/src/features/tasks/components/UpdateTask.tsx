@@ -10,10 +10,10 @@ import { useUser } from '@/lib/react-query-auth';
 
 import { InfoIcon } from 'lucide-react';
 import { Form } from '@/components/ui/form';
-import { FormTextInput } from '@/components/FormTextInput';
-import { FormTextAreaInput } from '@/components/FormTextAreaInput';
-import { FormDateInput } from '@/components/FormDateInput';
-import { FormSelectInput } from '@/components/FormSelectInput';
+import { TextInput } from '@/components/form';
+import { TextAreaInput } from '@/components/form';
+import { DateInput } from '@/components/form';
+import { SelectInput } from '@/components/form';
 import {
   Dialog,
   DialogContent,
@@ -130,32 +130,32 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
             id='add-task'
             onSubmit={form.handleSubmit(onSubmit)}
           >
-            <FormTextInput
+            <TextInput
               name='title'
               label='Title'
               control={form.control}
             />
 
-            <FormTextInput
+            <TextInput
               name='description'
               label='Description'
               control={form.control}
             />
 
-            <FormTextAreaInput
+            <TextAreaInput
               name='notes'
               label='Notes'
               control={form.control}
             />
 
             <div className='flex items-center justify-between pt-4'>
-              <FormDateInput
+              <DateInput
                 name='dueDate'
                 label='Due Date'
                 control={form.control}
               />
 
-              <FormSelectInput<AddTaskFields, Priority, typeof priorityOptions>
+              <SelectInput<AddTaskFields, Priority, typeof priorityOptions>
                 name='priority'
                 placeholder='Priority'
                 options={priorityOptions}

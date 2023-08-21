@@ -10,7 +10,7 @@ import { queryClient } from '@/lib/react-query';
 import { verifyPassword } from '@/config';
 
 import { Form } from '@/components/ui/form';
-import { FormTextInput } from '@/components/FormTextInput';
+import { TextInput } from '@/components/form';
 
 import { useToast } from '@/components/ui/use-toast';
 import { Typography } from '@/components/ui/typography';
@@ -67,12 +67,12 @@ export function SignInForm(): JSX.Element {
             onSubmit={form.handleSubmit(onSubmit)}
             className='mt-6 space-y-3'
           >
-            <FormTextInput
+            <TextInput
               name='email'
               placeholder='email@email.com'
               control={form.control}
             />
-            <FormTextInput
+            <TextInput
               name='password'
               type='password'
               placeholder='password123'

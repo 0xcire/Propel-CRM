@@ -9,7 +9,7 @@ import { queryClient } from '@/lib/react-query';
 import { name, signUpPassword, username } from '@/config';
 
 import { Form } from '@/components/ui/form';
-import { FormTextInput } from '@/components/FormTextInput';
+import { TextInput } from '@/components/form';
 import { useToast } from '@/components/ui/use-toast';
 import { Typography } from '@/components/ui/typography';
 
@@ -69,22 +69,22 @@ export function SignUpForm(): JSX.Element {
             onSubmit={form.handleSubmit(onSubmit)}
             className='mt-6 space-y-3'
           >
-            <FormTextInput
+            <TextInput
               name='name'
               placeholder='First M Last'
               control={form.control}
             />
-            <FormTextInput
+            <TextInput
               name='username'
               placeholder='jdeere123'
               control={form.control}
             />
-            <FormTextInput
+            <TextInput
               name='email'
               placeholder='email@email.com'
               control={form.control}
             />
-            <FormTextInput
+            <TextInput
               name='password'
               placeholder='password123'
               type='password'

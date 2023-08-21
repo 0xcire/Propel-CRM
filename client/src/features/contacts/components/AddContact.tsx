@@ -10,7 +10,7 @@ import { name, mobilePhone } from '@/config';
 import { UserPlus } from 'lucide-react';
 
 import { Form } from '@/components/ui/form';
-import { FormTextInput } from '@/components/FormTextInput';
+import { TextInput } from '@/components/form';
 import {
   Dialog,
   DialogContent,
@@ -81,22 +81,22 @@ export function AddContact(): JSX.Element {
             id='add-contact'
             onSubmit={form.handleSubmit(onSubmit)}
           >
-            <FormTextInput
+            <TextInput
               name='name'
               placeholder='John Doe'
               control={form.control}
             />
-            <FormTextInput
+            <TextInput
               name='email'
               placeholder='email@email.com'
               control={form.control}
             />
-            <FormTextInput
+            <TextInput
               name='phoneNumber'
               placeholder='555-555-5555'
               control={form.control}
             />
-            <FormTextInput
+            <TextInput
               name='address'
               placeholder='123 Name St. Seattle, WA 01234'
               control={form.control}

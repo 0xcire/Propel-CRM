@@ -12,15 +12,13 @@ import { useUpdateTask } from '../hooks/useUpdateTask';
 import { removeTimeZone } from '@/utils/date';
 
 import { Form } from '@/components/ui/form';
-import {
-  type CheckedChangeParams,
-  FormCheckboxInput,
-} from '@/components/FormCheckboxInput';
+import { CheckboxInput } from '@/components/form';
 
 import { Typography } from '@/components/ui/typography';
 
 import { UpdateTask } from './UpdateTask';
 
+import type { CheckedChangeParams } from '@/components/form/CheckboxInput';
 import type { Task as TaskData } from '../types';
 
 type TaskProps = {
@@ -77,7 +75,7 @@ export function Task({ task }: TaskProps): JSX.Element {
     <div className='my-2 flex w-full py-1'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormCheckboxInput
+          <CheckboxInput
             handleOnCheckedChange={handleOnCheckedChange}
             name='completed'
             control={form.control}

@@ -1,15 +1,15 @@
 import { ComponentProps } from 'react';
 import type { Control, FieldValues, Path, PathValue } from 'react-hook-form';
-import { FormControl, FormField, FormItem, FormMessage } from './ui/form';
+import { FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './ui/select';
+} from '../ui/select';
 
-interface FormSelectInputProps<
+interface SelectInputProps<
   TFieldValues extends FieldValues,
   OptionType extends PathValue<TFieldValues, Path<TFieldValues>>,
   OptionTypeArray extends Readonly<Array<OptionType>>
@@ -20,7 +20,7 @@ interface FormSelectInputProps<
   placeholder: string;
 }
 
-export function FormSelectInput<
+export function SelectInput<
   TFieldValues extends FieldValues,
   OptionType extends PathValue<TFieldValues, Path<TFieldValues>>,
   OptionTypeArray extends Readonly<Array<OptionType>>
@@ -29,11 +29,7 @@ export function FormSelectInput<
   name,
   options,
   placeholder,
-}: FormSelectInputProps<
-  TFieldValues,
-  OptionType,
-  OptionTypeArray
->): JSX.Element {
+}: SelectInputProps<TFieldValues, OptionType, OptionTypeArray>): JSX.Element {
   return (
     <FormField
       control={control}

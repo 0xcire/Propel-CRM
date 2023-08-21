@@ -1,27 +1,27 @@
 import { endOfYesterday, format } from 'date-fns';
 
 import { CalendarIcon } from 'lucide-react';
-import { FormControl, FormField, FormItem, FormMessage } from './ui/form';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { Calendar } from './ui/calendar';
-import { Button } from './ui/button';
+import { FormControl, FormField, FormItem, FormMessage } from '../ui/form';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Calendar } from '../ui/calendar';
+import { Button } from '../ui/button';
 
 import { cn } from '@/lib/utils';
 
-import type { CalendarProps } from './ui/calendar';
+import type { CalendarProps } from '../ui/calendar';
 import type { Control, FieldValues, Path, PathValue } from 'react-hook-form';
 
-type FormDateInputProps<TFieldValues extends FieldValues> = {
+type DateInputProps<TFieldValues extends FieldValues> = {
   control: Control<TFieldValues>;
   name: Path<TFieldValues>;
   label: string;
 } & CalendarProps;
 
-export function FormDateInput<TFieldValues extends FieldValues>({
+export function DateInput<TFieldValues extends FieldValues>({
   control,
   name,
   label,
-}: FormDateInputProps<TFieldValues>): JSX.Element {
+}: DateInputProps<TFieldValues>): JSX.Element {
   return (
     <FormField
       control={control}

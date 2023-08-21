@@ -5,23 +5,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from './ui/form';
-import { Textarea } from './ui/textarea';
+} from '../ui/form';
+import { Textarea } from '../ui/textarea';
 import type { Control, FieldValues, Path } from 'react-hook-form';
 
-interface FormTextAreaProps<TFieldValues extends FieldValues>
+interface TextAreaProps<TFieldValues extends FieldValues>
   extends ComponentProps<'textarea'> {
   control: Control<TFieldValues>;
   name: Path<TFieldValues>;
   label: string;
 }
 
-export function FormTextAreaInput<TFieldValues extends FieldValues>({
+export function TextAreaInput<TFieldValues extends FieldValues>({
   control,
   name,
   label,
   ...props
-}: FormTextAreaProps<TFieldValues>): JSX.Element {
+}: TextAreaProps<TFieldValues>): JSX.Element {
   return (
     <FormField
       control={control}
