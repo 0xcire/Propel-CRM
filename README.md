@@ -82,6 +82,8 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 <!-- - Combine my knowledge of front end development -->
 
 - Implemented Session/Cookie based user authentication
+- Creating generic Shadcn (Radix) and React Hook Form Input components
+  - text, textarea, select, date, etc
 
 ## Issues
 

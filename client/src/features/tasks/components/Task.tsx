@@ -11,15 +11,14 @@ import clsx from 'clsx';
 import { useUpdateTask } from '../hooks/useUpdateTask';
 import { removeTimeZone } from '@/utils/date';
 
+import { Typography } from '@/components/ui/typography';
 import { Form } from '@/components/ui/form';
 import { CheckboxInput } from '@/components/form';
 
-import { Typography } from '@/components/ui/typography';
-
 import { UpdateTask } from './UpdateTask';
 
-import type { CheckedChangeParams } from '@/components/form/CheckboxInput';
 import type { Task as TaskData } from '../types';
+import type { CheckedState } from '@radix-ui/react-checkbox';
 
 type TaskProps = {
   task: TaskData;
@@ -47,18 +46,14 @@ export function Task({ task }: TaskProps): JSX.Element {
     },
   });
 
-  const handleOnCheckedChange = useCallback(
-    ({ checked }: CheckedChangeParams): void => {
-      // field.onChange(checked as boolean);
-      updateTask.mutate({
-        id: task.id,
-        data: {
-          completed: checked as boolean,
-        },
-      });
-    },
-    []
-  );
+  const handleOnCheckedChange = useCallback((checked: CheckedState): void => {
+    updateTask.mutate({
+      id: task.id,
+      data: {
+        completed: checked as boolean,
+      },
+    });
+  }, []);
 
   const onSubmit = (values: CompletedTaskFields): void => {
     console.log(values);

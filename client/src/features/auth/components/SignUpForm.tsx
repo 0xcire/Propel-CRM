@@ -1,30 +1,17 @@
+import { useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, type SubmitHandler } from 'react-hook-form';
-import { z } from 'zod';
+
+import { type SubmitHandler, DeepPartial } from 'react-hook-form';
 
 import { useRegister } from '@/lib/react-query-auth';
 import { queryClient } from '@/lib/react-query';
 
-import { name, signUpPassword, username } from '@/config';
-
-import { Form } from '@/components/ui/form';
-import { TextInput } from '@/components/form';
 import { useToast } from '@/components/ui/use-toast';
 import { Typography } from '@/components/ui/typography';
 
-import { SubmitButton } from '@/components';
+import { AuthForm, type SignUpFields } from './AuthForm';
+
 import { isAPIError } from '@/utils/error';
-import { fieldsAreDirty } from '@/utils/form-data';
-
-const signUpSchema = z.object({
-  name: name,
-  username: username,
-  email: z.string().email(),
-  password: signUpPassword,
-});
-
-export type SignUpFields = z.infer<typeof signUpSchema>;
 
 export function SignUpForm(): JSX.Element {
   const { toast } = useToast();
@@ -43,61 +30,31 @@ export function SignUpForm(): JSX.Element {
     },
     useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
   });
-
-  const form = useForm<SignUpFields>({
-    resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      name: '',
-      username: '',
-      email: '',
-      password: '',
-    },
-  });
-
-  const passwordIsDirty = fieldsAreDirty<SignUpFields>(form, 'password');
-
-  const onSubmit: SubmitHandler<SignUpFields> = (values: SignUpFields) => {
-    register.mutate(values);
+  const defaultValues: DeepPartial<SignUpFields> = {
+    name: '',
+    username: '',
+    email: '',
+    password: '',
   };
+
+  const onSubmit: SubmitHandler<SignUpFields> = useCallback(
+    (values: SignUpFields) => {
+      register.mutate(values);
+    },
+    []
+  );
 
   return (
     <>
       <div className='mx-auto w-3/4 max-w-[500px]'>
         <Typography variant='h1'>Sign Up</Typography>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className='mt-6 space-y-3'
-          >
-            <TextInput
-              name='name'
-              placeholder='First M Last'
-              control={form.control}
-            />
-            <TextInput
-              name='username'
-              placeholder='jdeere123'
-              control={form.control}
-            />
-            <TextInput
-              name='email'
-              placeholder='email@email.com'
-              control={form.control}
-            />
-            <TextInput
-              name='password'
-              placeholder='password123'
-              type='password'
-              control={form.control}
-            />
+        <AuthForm
+          isCreate={true}
+          isLoading={register.isLoading}
+          onSubmit={onSubmit}
+          defaultValues={defaultValues}
+        />
 
-            <SubmitButton
-              text='Sign Up'
-              disabled={!passwordIsDirty}
-              isLoading={register.isLoading}
-            />
-          </form>
-        </Form>
         <Link
           to='/auth/signin'
           className='text-sm text-slate-900'

@@ -1,5 +1,5 @@
 import type { ToasterToast } from '@/components/ui/use-toast';
-import type { Control, FieldValues, Path } from 'react-hook-form';
+// import type { Control, FieldValues, Path } from 'react-hook-form';
 
 export type Toast = {
   id: string;
@@ -24,9 +24,13 @@ export interface UserResponse extends BaseResponse {
   user?: User;
 }
 
-export interface RHFCustomInput<TFieldValues extends FieldValues> {
-  control: Control<TFieldValues>;
-  name: Path<TFieldValues>;
+export interface FormMode {
+  isCreate: boolean;
 }
+
+// export interface RHFCustomInput<TFieldValues extends FieldValues> {
+//   control: Control<TFieldValues>;
+//   name: Path<TFieldValues>;
+// }
 
 // TODO: export interface ComponentWithChildren
