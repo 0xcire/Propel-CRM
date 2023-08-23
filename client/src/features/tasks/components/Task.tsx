@@ -64,7 +64,7 @@ export function Task({ task }: TaskProps): JSX.Element {
       >
         <p
           className={clsx(
-            'line-clamp-1 pb-1 align-middle leading-none',
+            'line-clamp-1 align-middle leading-tight',
             task.completed && 'line-through'
           )}
         >
@@ -80,7 +80,7 @@ export function Task({ task }: TaskProps): JSX.Element {
         )}
         {task.dueDate && <p className='text-[12px]'>Due: {localFormat}</p>}
       </div>
-      <div className='flex items-start pt-[2px]'>
+      <div className='flex items-start pt-[3px]'>
         {task.priority && (
           <span className='mr-1 font-bold leading-none text-red-800'>
             {taskPriorityLookup[task.priority]}

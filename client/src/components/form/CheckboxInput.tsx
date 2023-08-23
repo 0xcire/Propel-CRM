@@ -20,7 +20,7 @@ export function CheckboxInput<TFieldValues extends FieldValues>({
       control={control}
       name={name}
       render={({ field }): JSX.Element => (
-        <FormItem className='mt-[2px] flex h-full space-y-0'>
+        <FormItem className='mt-[3px] flex h-full space-y-0'>
           <FormControl>
             <Checkbox
               checked={field.value}
