@@ -7,7 +7,7 @@ import { type CheckedState } from '@radix-ui/react-checkbox';
 type CheckboxInputProps<TFieldValues extends FieldValues> = {
   control: Control<TFieldValues>;
   name: Path<TFieldValues>;
-  handleOnCheckedChange: (checked: CheckedState) => void;
+  handleOnCheckedChange?: (checked: CheckedState) => void;
 };
 
 export function CheckboxInput<TFieldValues extends FieldValues>({
@@ -28,7 +28,9 @@ export function CheckboxInput<TFieldValues extends FieldValues>({
                 field.onChange(
                   checked as PathValue<TFieldValues, Path<TFieldValues>>
                 );
-                handleOnCheckedChange(checked);
+                if (handleOnCheckedChange) {
+                  handleOnCheckedChange(checked);
+                }
               }}
               className='mt-[5px] rounded-full outline-red-900'
             />

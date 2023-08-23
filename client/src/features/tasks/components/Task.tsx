@@ -1,21 +1,17 @@
 import { useCallback } from 'react';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-
 import { parseISO } from 'date-fns';
 
 import clsx from 'clsx';
 
 import { useUpdateTask } from '../hooks/useUpdateTask';
-import { removeTimeZone } from '@/utils/date';
 
 import { Typography } from '@/components/ui/typography';
-import { Form } from '@/components/ui/form';
-import { CheckboxInput } from '@/components/form';
 
+import { TaskForm } from './TaskForm';
 import { UpdateTask } from './UpdateTask';
+
+import { removeTimeZone } from '@/utils/date';
 
 import type { Task as TaskData } from '../types';
 import type { CheckedState } from '@radix-ui/react-checkbox';
@@ -30,21 +26,8 @@ const taskPriorityLookup = {
   high: '!!!',
 };
 
-const CompletedTaskSchema = z.object({
-  completed: z.boolean(),
-});
-
-type CompletedTaskFields = z.infer<typeof CompletedTaskSchema>;
-
 export function Task({ task }: TaskProps): JSX.Element {
   const updateTask = useUpdateTask();
-
-  const form = useForm<CompletedTaskFields>({
-    resolver: zodResolver(CompletedTaskSchema),
-    defaultValues: {
-      completed: task.completed,
-    },
-  });
 
   const handleOnCheckedChange = useCallback((checked: CheckedState): void => {
     updateTask.mutate({
@@ -55,10 +38,6 @@ export function Task({ task }: TaskProps): JSX.Element {
     });
   }, []);
 
-  const onSubmit = (values: CompletedTaskFields): void => {
-    console.log(values);
-  };
-
   let localFormat;
   if (task.dueDate) {
     localFormat = new Intl.DateTimeFormat('en-US', {
@@ -68,15 +47,14 @@ export function Task({ task }: TaskProps): JSX.Element {
 
   return (
     <div className='my-2 flex w-full py-1'>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CheckboxInput
-            handleOnCheckedChange={handleOnCheckedChange}
-            name='completed'
-            control={form.control}
-          />
-        </form>
-      </Form>
+      <TaskForm
+        isCheckbox={true}
+        isLoading={updateTask.isLoading}
+        handleOnCheckedChange={handleOnCheckedChange}
+        defaultValues={{
+          completed: task.completed,
+        }}
+      />
       <div
         className={clsx(
           'flex w-full flex-col px-4',
