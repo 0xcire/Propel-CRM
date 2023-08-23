@@ -19,3 +19,9 @@ export const privateRoutes: Array<RouteObject> = [
     ],
   },
 ];
+
+// dashboard || app
+// // listings/{:id}
+// // contacts/{:id}
+// // tasks/{:id}
+// // analytics/

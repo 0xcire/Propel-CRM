@@ -1,23 +1,20 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import clsx from 'clsx';
+import { useCallback } from 'react';
 
 import { parseISO } from 'date-fns';
 
+import clsx from 'clsx';
+
 import { useUpdateTask } from '../hooks/useUpdateTask';
-import { removeTimeZone } from '@/utils/date';
 
-import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
-
-import { Checkbox } from '@/components/ui/checkbox';
 import { Typography } from '@/components/ui/typography';
 
+import { TaskForm } from './TaskForm';
 import { UpdateTask } from './UpdateTask';
 
-import type { Task as TaskData } from '../types';
+import { removeTimeZone } from '@/utils/date';
 
-import { type CheckedState } from '@radix-ui/react-checkbox';
+import type { Task as TaskData } from '../types';
+import type { CheckedState } from '@radix-ui/react-checkbox';
 
 type TaskProps = {
   task: TaskData;
@@ -29,25 +26,17 @@ const taskPriorityLookup = {
   high: '!!!',
 };
 
-const CompletedTaskSchema = z.object({
-  completed: z.boolean(),
-});
-
-type CompletedTaskFields = z.infer<typeof CompletedTaskSchema>;
-
 export function Task({ task }: TaskProps): JSX.Element {
   const updateTask = useUpdateTask();
 
-  const form = useForm<CompletedTaskFields>({
-    resolver: zodResolver(CompletedTaskSchema),
-    defaultValues: {
-      completed: task.completed,
-    },
-  });
-
-  const onSubmit = (values: CompletedTaskFields): void => {
-    console.log(values);
-  };
+  const handleOnCheckedChange = useCallback((checked: CheckedState): void => {
+    updateTask.mutate({
+      id: task.id,
+      data: {
+        completed: checked as boolean,
+      },
+    });
+  }, []);
 
   let localFormat;
   if (task.dueDate) {
@@ -58,33 +47,15 @@ export function Task({ task }: TaskProps): JSX.Element {
 
   return (
     <div className='my-2 flex w-full py-1'>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name='completed'
-            render={({ field }): JSX.Element => (
-              <FormItem>
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={(checked: CheckedState): void => {
-                      field.onChange(checked as boolean);
-                      updateTask.mutate({
-                        id: task.id,
-                        data: {
-                          completed: checked as boolean,
-                        },
-                      });
-                    }}
-                    className='mt-[5px] rounded-full outline-red-900'
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </form>
-      </Form>
+      <TaskForm
+        isCheckbox={true}
+        isCreate={true}
+        isLoading={updateTask.isLoading}
+        handleOnCheckedChange={handleOnCheckedChange}
+        defaultValues={{
+          completed: task.completed,
+        }}
+      />
       <div
         className={clsx(
           'flex w-full flex-col px-4',
@@ -93,7 +64,7 @@ export function Task({ task }: TaskProps): JSX.Element {
       >
         <p
           className={clsx(
-            'line-clamp-1 align-middle',
+            'line-clamp-1 pb-1 align-middle leading-none',
             task.completed && 'line-through'
           )}
         >
@@ -102,14 +73,14 @@ export function Task({ task }: TaskProps): JSX.Element {
         {task.description && (
           <Typography
             variant='p'
-            className=' line-clamp-1 text-[12px]'
+            className='line-clamp-1 text-[12px]'
           >
             {task.description}
           </Typography>
         )}
         {task.dueDate && <p className='text-[12px]'>Due: {localFormat}</p>}
       </div>
-      <div className='flex items-start pt-1'>
+      <div className='flex items-start pt-[2px]'>
         {task.priority && (
           <span className='mr-1 font-bold leading-none text-red-800'>
             {taskPriorityLookup[task.priority]}

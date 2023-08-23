@@ -1,82 +1,36 @@
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import type { DeepPartial } from 'react-hook-form';
 
 import { useUpdateContact } from '../hooks/useUpdateContact';
 
-import { name, mobilePhone, verifyPassword } from '@/config';
-
-import { fieldsAreDirty, filterEqualFields } from '@/utils/form-data';
-
 import { PencilIcon } from 'lucide-react';
+import { Tooltip } from '@/components';
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { ContactForm, type UpdateContactFields } from './ContactForm';
 
-import { SubmitButton, Tooltip } from '@/components';
+import { filterEqualFields } from '@/utils/form-data';
 
 import type { NewContact, ContactAsProp } from '../types';
-
-const ContactInfoSchema = z.object({
-  name: name,
-  email: z.string().email(),
-  phoneNumber: mobilePhone,
-  address: z.string().min(12).max(255),
-  verifyPassword: verifyPassword,
-});
-type ContactInfoFields = z.infer<typeof ContactInfoSchema>;
 
 export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
   const [open, setOpen] = useState(false);
   const updateContact = useUpdateContact();
 
-  const form = useForm<ContactInfoFields>({
-    resolver: zodResolver(ContactInfoSchema),
-    defaultValues: {
-      name: contact.name,
-      email: contact.email,
-      phoneNumber: contact.phoneNumber,
-      address: contact.address,
-      verifyPassword: '',
-    },
-  });
-
-  const userHasChangedInfo = (): boolean => {
-    const passwordFilled = fieldsAreDirty<ContactInfoFields>(
-      form,
-      'verifyPassword'
-    );
-    const dataChanged = fieldsAreDirty<ContactInfoFields>(form, [
-      'name',
-      'email',
-      'phoneNumber',
-      'address',
-    ]);
-
-    return passwordFilled && dataChanged;
+  const defaultValues: DeepPartial<UpdateContactFields> = {
+    name: contact.name,
+    email: contact.email,
+    phoneNumber: contact.phoneNumber,
+    address: contact.address,
+    verifyPassword: '',
   };
 
-  useEffect(() => {
-    form.reset({ ...contact, verifyPassword: '' });
-  }, [contact, form]);
-
-  function onSubmit(values: ContactInfoFields): void {
+  function onSubmit(values: UpdateContactFields): void {
     const data: Partial<NewContact> = filterEqualFields({
       newData: values,
       originalData: contact,
@@ -87,7 +41,6 @@ export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
       {
         onSuccess: () => {
           setOpen(false);
-          form.reset();
         },
       }
     );
@@ -112,110 +65,13 @@ export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
           <DialogTitle>Update Contact</DialogTitle>
         </DialogHeader>
 
-        <Form {...form}>
-          <form
-            id='update-contact'
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
-            <FormField
-              control={form.control}
-              name='name'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='email'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='phoneNumber'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='address'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input {...field} />
-                    </div>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='verifyPassword'
-              render={({ field }): JSX.Element => (
-                <FormItem>
-                  <FormLabel>Your Password</FormLabel>
-                  <FormControl>
-                    <div className='flex items-center gap-8'>
-                      <Input
-                        type='password'
-                        {...field}
-                      />
-                    </div>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
-        <DialogFooter>
-          <Button
-            variant='outline'
-            onClick={(): void => setOpen(false)}
-          >
-            Cancel
-          </Button>
-          <SubmitButton
-            disabled={!userHasChangedInfo()}
-            form='update-contact'
-            isLoading={updateContact.isLoading}
-            text='Update'
-          />
-        </DialogFooter>
+        <ContactForm
+          isCreate={false}
+          setOpen={setOpen}
+          isLoading={updateContact.isLoading}
+          onSubmit={onSubmit}
+          defaultValues={defaultValues}
+        />
       </DialogContent>
     </Dialog>
   );

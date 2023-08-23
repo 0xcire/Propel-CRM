@@ -65,7 +65,7 @@ export const updateUserSchema = createInsertSchema(users)
   }));
 
 export const signinSchema = createInsertSchema(users)
-  .strict()
+  // .strict()
   .pick({
     email: true,
   })
@@ -126,7 +126,7 @@ export const createTaskSchema = createInsertSchema(tasks)
 export const updateTaskSchema = createInsertSchema(tasks)
   .omit({ id: true, userID: true, createdAt: true })
   .partial()
-  .refine(({ completed }) => (completed ? completed instanceof Boolean : true))
+  // .refine(({ completed }) => (completed ? completed instanceof Boolean : true))
   .transform((task) => ({
     title: task.title?.trim(),
     description: task.description?.trim(),

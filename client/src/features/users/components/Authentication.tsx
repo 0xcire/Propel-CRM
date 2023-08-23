@@ -6,17 +6,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useUser } from '@/lib/react-query-auth';
 import { useUpdateAccount } from '../hooks/useUpdateAccount';
 
+import { signUpPassword, verifyPassword } from '@/lib/validations/schema';
+
 import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form } from '@/components/ui/form';
+import { TextInput } from '@/components/form';
 import {
   Dialog,
   DialogContent,
@@ -32,9 +27,9 @@ import { toast } from '@/components/ui/use-toast';
 import type { Toast } from '@/types';
 
 const PasswordSchema = z.object({
-  verifyPassword: z.string(),
-  password: z.string(),
-  confirmPassword: z.string(),
+  verifyPassword: verifyPassword,
+  password: signUpPassword,
+  confirmPassword: signUpPassword,
 });
 
 type PasswordFields = z.infer<typeof PasswordSchema>;
@@ -99,62 +94,26 @@ export function Authentication(): JSX.Element {
                 </DialogDescription>
               </DialogHeader>
               <div className='grid gap-4 py-4'>
-                <FormField
-                  control={form.control}
+                <TextInput
                   name='verifyPassword'
-                  render={({ field }): JSX.Element => (
-                    <FormItem>
-                      <FormLabel>Old Password</FormLabel>
-                      <FormControl>
-                        <>
-                          <Input
-                            type='password'
-                            placeholder='password123'
-                            {...field}
-                          />
-                        </>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
+                  type='password'
+                  label='Old Password'
+                  placeholder='oldpassword123'
                   control={form.control}
+                />
+                <TextInput
                   name='password'
-                  render={({ field }): JSX.Element => (
-                    <FormItem>
-                      <FormLabel>New Password</FormLabel>
-                      <FormControl>
-                        <>
-                          <Input
-                            type='password'
-                            placeholder='password123'
-                            {...field}
-                          />
-                        </>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
+                  type='password'
+                  label='New Password'
+                  placeholder='password123'
                   control={form.control}
+                />
+                <TextInput
                   name='confirmPassword'
-                  render={({ field }): JSX.Element => (
-                    <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
-                      <FormControl>
-                        <>
-                          <Input
-                            type='password'
-                            placeholder='password123'
-                            {...field}
-                          />
-                        </>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  type='password'
+                  label='Confirm Password'
+                  placeholder='password123'
+                  control={form.control}
                 />
               </div>
               <DialogFooter>

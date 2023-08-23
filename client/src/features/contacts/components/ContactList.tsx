@@ -7,9 +7,6 @@ import { Spinner } from '@/components';
 import { Contact } from './Contact';
 import { Typography } from '@/components/ui/typography';
 
-// TODO: potential performance optimization: when updating contact, render just that contact,
-// not re render entire list
-
 export function ContactList(): JSX.Element {
   const contacts = useContacts();
 
