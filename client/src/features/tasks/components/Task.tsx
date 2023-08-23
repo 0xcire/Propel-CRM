@@ -49,6 +49,7 @@ export function Task({ task }: TaskProps): JSX.Element {
     <div className='my-2 flex w-full py-1'>
       <TaskForm
         isCheckbox={true}
+        isCreate={true}
         isLoading={updateTask.isLoading}
         handleOnCheckedChange={handleOnCheckedChange}
         defaultValues={{
@@ -63,7 +64,7 @@ export function Task({ task }: TaskProps): JSX.Element {
       >
         <p
           className={clsx(
-            'line-clamp-1 align-middle',
+            'line-clamp-1 pb-1 align-middle leading-none',
             task.completed && 'line-through'
           )}
         >
@@ -72,14 +73,14 @@ export function Task({ task }: TaskProps): JSX.Element {
         {task.description && (
           <Typography
             variant='p'
-            className=' line-clamp-1 text-[12px]'
+            className='line-clamp-1 text-[12px]'
           >
             {task.description}
           </Typography>
         )}
         {task.dueDate && <p className='text-[12px]'>Due: {localFormat}</p>}
       </div>
-      <div className='flex items-start pt-1'>
+      <div className='flex items-start pt-[2px]'>
         {task.priority && (
           <span className='mr-1 font-bold leading-none text-red-800'>
             {taskPriorityLookup[task.priority]}

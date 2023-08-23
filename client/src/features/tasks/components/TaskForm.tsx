@@ -20,6 +20,7 @@ import { SubmitButton } from '@/components';
 
 import { DeleteTask } from './DeleteTask';
 
+import { taskSchema, checkboxSchema } from '@/lib/validations/tasks';
 import { priorityOptions } from '@/config';
 
 import { removeTimeZone } from '@/utils/date';
@@ -31,30 +32,16 @@ import type { CheckedState } from '@radix-ui/react-checkbox';
 
 interface TaskFormProps extends FormMode {
   isCheckbox?: boolean;
-  isLoading: boolean;
   task?: Task;
   defaultValues: DeepPartial<CreateTask | Checkbox>;
   onSubmit?: (values: CreateTaskFields) => void;
   handleOnCheckedChange?: (checked: CheckedState) => void;
 }
 
-const createTaskSchema = z
-  .object({
-    title: z.string().min(1).max(255),
-    description: z.union([z.string().max(255), z.undefined()]),
-    notes: z.union([z.string().max(255), z.undefined()]),
-    dueDate: z.union([z.date(), z.undefined()]),
-    priority: z.union([z.enum(priorityOptions), z.undefined()]),
-  })
-  .partial();
-export type CreateTaskFields = z.infer<typeof createTaskSchema>;
+export type CreateTaskFields = z.infer<typeof taskSchema>;
 type CreateTask = {
   completed: never;
 } & CreateTaskFields;
-
-const checkboxSchema = z.object({
-  completed: z.boolean(),
-});
 
 export type CheckboxSchema = z.infer<typeof checkboxSchema>;
 type Checkbox = {
@@ -75,7 +62,7 @@ export function TaskForm({
   handleOnCheckedChange,
 }: TaskFormProps): JSX.Element {
   const form = useForm<CreateTaskFields>({
-    resolver: zodResolver(createTaskSchema),
+    resolver: zodResolver(taskSchema),
     defaultValues: defaultValues,
   });
 

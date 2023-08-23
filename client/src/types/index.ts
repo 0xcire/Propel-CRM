@@ -26,6 +26,7 @@ export interface UserResponse extends BaseResponse {
 
 export interface FormMode {
   isCreate?: boolean;
+  isLoading: boolean;
 }
 
 // export interface RHFCustomInput<TFieldValues extends FieldValues> {

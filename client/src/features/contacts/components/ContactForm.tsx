@@ -10,32 +10,23 @@ import { Button } from '@/components/ui/button';
 import { TextInput } from '@/components/form';
 import { SubmitButton } from '@/components';
 
-import { mobilePhone, name, verifyPassword } from '@/config';
+import { contactSchema } from '@/lib/validations/contacts';
 
 import type { FormMode } from '@/types';
 
 import { fieldsAreDirty } from '@/utils/form-data';
 
 interface ContactFormProps extends FormMode {
-  isLoading: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   onSubmit: (values: UpdateContactFields | CreateContact) => void;
   defaultValues: DeepPartial<UpdateContactFields | CreateContact>;
 }
 
-const updateContactSchema = z.object({
-  name: name,
-  email: z.string().email(),
-  phoneNumber: mobilePhone,
-  address: z.string().min(12).max(255),
-  verifyPassword: verifyPassword,
-});
-
-const createContactSchema = updateContactSchema.omit({
+const createContactSchema = contactSchema.omit({
   verifyPassword: true,
 });
 
-export type UpdateContactFields = z.infer<typeof updateContactSchema>;
+export type UpdateContactFields = z.infer<typeof contactSchema>;
 export type CreateContactFields = z.infer<typeof createContactSchema>;
 export type CreateContact = {
   verifyPassword: never;
@@ -51,7 +42,7 @@ export function ContactForm({
   const form = useForm<UpdateContactFields | CreateContact>({
     resolver: isCreate
       ? zodResolver(createContactSchema)
-      : zodResolver(updateContactSchema),
+      : zodResolver(contactSchema),
     defaultValues: defaultValues,
   });
 

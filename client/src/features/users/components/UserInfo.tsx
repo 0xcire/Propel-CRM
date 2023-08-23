@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useUser } from '@/lib/react-query-auth';
 import { useUpdateAccount } from '../hooks/useUpdateAccount';
 
-import { username, verifyPassword } from '@/config';
+import { username, verifyPassword } from '@/lib/validations/schema';
 
 import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';

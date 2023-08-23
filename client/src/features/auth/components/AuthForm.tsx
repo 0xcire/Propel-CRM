@@ -6,27 +6,14 @@ import { Form } from '@/components/ui/form';
 import { TextInput } from '@/components/form';
 import { SubmitButton } from '@/components';
 
-import { name, signUpPassword, username, verifyPassword } from '@/config';
+import { signInSchema, signUpSchema } from '@/lib/validations/auth';
 import { fieldsAreDirty } from '@/utils/form-data';
-import { type FormMode } from '@/types';
+import type { FormMode } from '@/types';
 
 interface AuthFormProps extends FormMode {
-  isLoading: boolean;
   onSubmit: (values: SignIn | SignUpFields) => void;
   defaultValues: DeepPartial<SignInFields | SignUpFields>;
 }
-
-const signInSchema = z.object({
-  email: z.string().email(),
-  password: verifyPassword,
-});
-
-const signUpSchema = z.object({
-  name: name,
-  username: username,
-  email: z.string().email(),
-  password: signUpPassword,
-});
 
 export type SignInFields = z.infer<typeof signInSchema>;
 type SignIn = {
