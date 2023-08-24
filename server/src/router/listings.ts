@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { createListing, getAllListings, deleteListing, updateListing } from "../controllers/listings";
 import { validateRequest } from "../middlewares/validate-input";
-import { cookieSchema, createListingSchema, paramSchema, updateListingSchema } from "../db/validation-schema";
 import { isAuth } from "../middlewares";
+import { isListingOwner } from "../middlewares/listings";
+
+import { cookieSchema, createListingSchema, paramSchema, updateListingSchema } from "../db/validation-schema";
 
 export default (router: Router) => {
   // router.get("/listings/:id", getListing)
@@ -20,7 +22,7 @@ export default (router: Router) => {
     "/listings/:id",
     validateRequest({ body: updateListingSchema, cookies: cookieSchema, params: paramSchema }),
     isAuth,
-    // isListingOwner,
+    isListingOwner,
     updateListing
   );
 
@@ -28,7 +30,7 @@ export default (router: Router) => {
     "/listings/:id",
     validateRequest({ cookies: cookieSchema, params: paramSchema }),
     isAuth,
-    // isListingOwner,
+    isListingOwner,
     deleteListing
   );
 };

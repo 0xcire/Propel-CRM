@@ -19,7 +19,7 @@ const verifyPassword = z.object({
 // TODO: cookie and param schema may become more specific in future but for now can stay here
 export const cookieSchema = z
   .object({
-    "propel-session": z.string().min(1),
+    "propel-session": z.string().min(1).endsWith("=="),
   })
   .transform((cookie) => ({
     "propel-session": cookie["propel-session"].trim(),
@@ -160,16 +160,17 @@ export const updateListingSchema = createInsertSchema(listings, {
   // price: (listings) => listings.price.transform((v) => +v),
   // TODO: address price
   price: (listings) => listings?.price,
-  bedrooms: (listings) => listings?.bedrooms.nonnegative().int().safe(),
+  bedrooms: (listings) => listings?.bedrooms.nonnegative().int().finite(),
   baths: (listings) => listings?.baths.positive(),
-  squareFeet: (listings) => listings?.squareFeet.positive().int().safe(),
+  squareFeet: (listings) => listings?.squareFeet.positive().int().finite(),
 })
   .omit({
     id: true,
     createdAt: true,
     userID: true,
   })
-  .partial();
+  .partial()
+  .strict();
 
 // export const createListingSchema = createInsertSchema(listings)
 //   .omit({
