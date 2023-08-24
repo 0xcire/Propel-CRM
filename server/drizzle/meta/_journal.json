@@ -40,22 +40,8 @@
     {
       "idx": 5,
       "version": "5",
-      "when": 1692804092598,
-      "tag": "0005_flimsy_synch",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1692804542236,
-      "tag": "0006_rainy_ravenous",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "5",
-      "when": 1692805031385,
-      "tag": "0007_gorgeous_big_bertha",
+      "when": 1692872943611,
+      "tag": "0005_messy_wolverine",
       "breakpoints": true
     }
   ]

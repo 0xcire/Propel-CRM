@@ -26,8 +26,6 @@ export const createTask = async (req: Request, res: Response) => {
     const authUserID = req.user.id;
     const { userID, title, description, notes, dueDate, completed, priority } = req.body;
 
-    // TODO: along with auth, contacts, user, need to validate inputs against zod schema
-
     // TODO: should i be requiring userID on req body?
 
     if (!title) {

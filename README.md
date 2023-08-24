@@ -147,13 +147,14 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 
   - [ ] can use something like @<Name> and autocomplete based on your contacts in notes section
   - [ ] mapbox address auto fill
-  - [ ] can tag listings?
+  - [ ] can 'assign task to listing'
 
 - [ ] listings-slice
 
   - [ ] tag interested contacts to listings
   - [ ] image upload, s3
   - [ ] mapbox address auto fill
+  - [ ] tag contacts to listings
   - [ ] suggest contacts based on proximity?
 
 - [ ] detect purely mobile viewport and replace dialog components with [Vaul](https://github.com/emilkowalski/vaul)

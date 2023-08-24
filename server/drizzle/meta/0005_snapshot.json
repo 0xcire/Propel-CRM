@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "c4e85869-b7a2-4650-9c1d-31a4506a67b4",
+  "id": "5d28e4b7-2bea-4935-976c-add2335babf8",
   "prevId": "71abb1b1-739e-440a-9d0e-7f59acd43f8c",
   "tables": {
     "contacts": {
@@ -48,7 +48,8 @@
       },
       "indexes": {},
       "foreignKeys": {},
-      "compositePrimaryKeys": {}
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
     },
     "listings": {
       "name": "listings",
@@ -80,7 +81,7 @@
         },
         "price": {
           "name": "price",
-          "type": "numeric(0, 0)",
+          "type": "numeric(11, 2)",
           "primaryKey": false,
           "notNull": true
         },
@@ -132,7 +133,8 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {}
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
     },
     "listings_to_contacts": {
       "name": "listings_to_contacts",
@@ -188,7 +190,8 @@
             "contact_id"
           ]
         }
-      }
+      },
+      "uniqueConstraints": {}
     },
     "tasks": {
       "name": "tasks",
@@ -202,6 +205,12 @@
         },
         "user_id": {
           "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "listing_id": {
+          "name": "listing_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -265,9 +274,23 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "tasks_listing_id_listings_id_fk": {
+          "name": "tasks_listing_id_listings_id_fk",
+          "tableFrom": "tasks",
+          "tableTo": "listings",
+          "columnsFrom": [
+            "listing_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {}
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
     },
     "users": {
       "name": "users",
@@ -333,7 +356,8 @@
       },
       "indexes": {},
       "foreignKeys": {},
-      "compositePrimaryKeys": {}
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
     },
     "user_to_contacts": {
       "name": "user_to_contacts",
@@ -396,7 +420,8 @@
             "contact_id"
           ]
         }
-      }
+      },
+      "uniqueConstraints": {}
     }
   },
   "enums": {},

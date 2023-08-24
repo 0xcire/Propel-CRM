@@ -1,5 +1,5 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { users, contacts, tasks } from "./schema";
+import { users, contacts, tasks, listings } from "./schema";
 import { z } from "zod";
 import isEmail from "validator/lib/isEmail.js";
 
@@ -133,5 +133,57 @@ export const updateTaskSchema = createInsertSchema(tasks)
     notes: task.notes?.trim(),
     dueDate: task.dueDate?.trim(),
     completed: task.completed,
-    priority: task.priority,
+    priority: task.priority?.trim(),
   }));
+
+// TODO: unknowingly created schemas based on old package, go back and rewrite to match below
+export const createListingSchema = createInsertSchema(listings, {
+  address: (listings) => listings.address.trim(),
+  description: (listings) => listings.description.trim(),
+  propertyType: (listings) => listings.propertyType.trim(),
+  // price: (listings) => listings.price.transform((v) => +v),
+  // TODO: address price
+  price: (listings) => listings.price.trim(),
+  bedrooms: (listings) => listings.bedrooms.nonnegative().int().finite(),
+  baths: (listings) => listings.baths.positive(),
+  squareFeet: (listings) => listings.squareFeet.positive().int().finite(),
+}).omit({
+  id: true,
+  userID: true,
+  createdAt: true,
+});
+
+export const updateListingSchema = createInsertSchema(listings, {
+  address: (listings) => listings?.address.trim(),
+  description: (listings) => listings?.description.trim(),
+  propertyType: (listings) => listings?.propertyType.trim(),
+  // price: (listings) => listings.price.transform((v) => +v),
+  // TODO: address price
+  price: (listings) => listings?.price,
+  bedrooms: (listings) => listings?.bedrooms.nonnegative().int().safe(),
+  baths: (listings) => listings?.baths.positive(),
+  squareFeet: (listings) => listings?.squareFeet.positive().int().safe(),
+})
+  .omit({
+    id: true,
+    createdAt: true,
+    userID: true,
+  })
+  .partial();
+
+// export const createListingSchema = createInsertSchema(listings)
+//   .omit({
+//     id: true,
+//     createdAt: true,
+//     userID: true,
+//   })
+//   .refine(({ bedrooms }) => bedrooms > 0)
+//   .transform((listing) => ({
+//     address: listing.address?.trim(),
+//     description: listing.description?.trim(),
+//     propertyType: listing.propertyType?.trim(),
+//     price: listing.price?.trim(),
+//     bedrooms: listing.bedrooms,
+//     baths: listing.baths,
+//     sqaureFeet: listing.squareFeet,
+//   }));
