@@ -102,6 +102,9 @@ export const tasksRelations = relations(tasks, ({ one }) => ({
   }),
 }));
 
+// TODO: propertyType
+// single family, apartment, townhome, condo, duplex, etc..
+
 export const listings = pgTable("listings", {
   id: serial("id").primaryKey(),
   userID: integer("user_id").references(() => users.id),
