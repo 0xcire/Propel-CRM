@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 
 import { filterUndefined } from '@/utils/form-data';
-import { CreateTaskFields, TaskForm } from './TaskForm';
+import { type CreateTaskFields, TaskForm } from './TaskForm';
 
 export function AddTask({
   setOpen,

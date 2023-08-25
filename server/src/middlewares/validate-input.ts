@@ -21,7 +21,6 @@ export const validateRequest = (schema: SchemaParams) => {
           body.data = validatedBody;
         }
       }
-      console.log("REQUEST BODY", req.body);
 
       return next();
     } catch (error) {

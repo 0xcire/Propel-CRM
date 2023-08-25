@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { NewListing } from "../db/types";
 import { db } from "../db";
 import { listings } from "../db/schema";
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 
 // getListing
 // one to many user to listings
@@ -18,11 +18,12 @@ export const getAllListings = async (req: Request, res: Response) => {
 
     const usersListings = await db.query.listings.findMany({
       where: eq(listings.userID, userID),
+      orderBy: [asc(listings.createdAt)],
     });
 
     return res.status(200).json({
       message: "",
-      data: usersListings,
+      listings: usersListings,
     });
   } catch (error) {
     console.log(error);
