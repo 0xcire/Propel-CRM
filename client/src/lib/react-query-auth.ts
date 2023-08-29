@@ -2,8 +2,8 @@ import { configureAuth } from 'react-query-auth';
 
 import { getMe, signin, signup, signout } from '@/features/auth';
 
-import type { SignInFields as LoginCredentials } from '@/features/auth/components/SignInForm';
-import type { SignUpFields as SignUpCredentials } from '@/features/auth/components/SignUpForm';
+import type { SignInFields as LoginCredentials } from '@/features/auth/components/AuthForm';
+import type { SignUpFields as SignUpCredentials } from '@/features/auth/components/AuthForm';
 import type { User } from '@/types';
 
 const userFn = async (): Promise<User | undefined> => {

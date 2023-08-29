@@ -1,19 +1,24 @@
-import { type DeepPartial, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { type DeepPartial, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Form } from '@/components/ui/form';
-import { SelectInput, TextAreaInput, TextInput } from '@/components/form';
+import { DeleteListing } from './DeleteListing';
 
-import { listingSchema } from '@/lib/validations/listings';
-import type { FormMode } from '@/types';
-import { DialogFooter, DialogTrigger } from '@/components/ui/dialog';
-import { SubmitButton } from '@/components';
 import { Button } from '@/components/ui/button';
+import { DialogFooter, DialogTrigger } from '@/components/ui/dialog';
+import { Form } from '@/components/ui/form';
+
+import { SelectInput, TextAreaInput, TextInput } from '@/components/form';
+import { SubmitButton } from '@/components';
+
+import { FormListing, listingSchema } from '@/lib/validations/listings';
+
+import type { FormMode } from '@/types';
 
 interface ListingFormProps extends FormMode {
   defaultValues: DeepPartial<ListingFields>;
-  onSubmit: (values: ListingFields) => void;
+  onSubmit: (values: FormListing) => void;
+  listingID?: number;
 }
 
 export type ListingFields = z.infer<typeof listingSchema>;
@@ -50,6 +55,7 @@ type Rooms = (typeof rooms)[number];
 export function ListingForm({
   isCreate,
   isLoading,
+  listingID,
   defaultValues,
   onSubmit,
 }: ListingFormProps): JSX.Element {
@@ -57,6 +63,8 @@ export function ListingForm({
     resolver: zodResolver(listingSchema),
     defaultValues: defaultValues,
   });
+
+  console.log(form.getValues());
   return (
     <>
       <Form {...form}>
@@ -116,15 +124,15 @@ export function ListingForm({
       </Form>
 
       <DialogFooter>
-        {/* {!isCreate && <DeleteTask id={task?.id as number} />} */}
+        {!isCreate && listingID && <DeleteListing listingID={listingID} />}
         <DialogTrigger asChild>
           <Button variant='outline'>Close</Button>
         </DialogTrigger>
         <SubmitButton
-          //   disabled={isCreate ? titleIsEmpty : !form.formState.isDirty}
+          disabled={!form.formState.isDirty}
           form={isCreate ? 'add-listing' : 'update-listing'}
           isLoading={isLoading}
-          text='Add'
+          text={isCreate ? 'Add' : 'Save'}
         />
       </DialogFooter>
     </>

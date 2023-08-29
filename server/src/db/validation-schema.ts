@@ -171,20 +171,3 @@ export const updateListingSchema = createInsertSchema(listings, {
   })
   .partial()
   .strict();
-
-// export const createListingSchema = createInsertSchema(listings)
-//   .omit({
-//     id: true,
-//     createdAt: true,
-//     userID: true,
-//   })
-//   .refine(({ bedrooms }) => bedrooms > 0)
-//   .transform((listing) => ({
-//     address: listing.address?.trim(),
-//     description: listing.description?.trim(),
-//     propertyType: listing.propertyType?.trim(),
-//     price: listing.price?.trim(),
-//     bedrooms: listing.bedrooms,
-//     baths: listing.baths,
-//     sqaureFeet: listing.squareFeet,
-//   }));

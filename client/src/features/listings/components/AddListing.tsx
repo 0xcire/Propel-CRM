@@ -1,16 +1,19 @@
-import { Tooltip } from '@/components';
-import { Dialog, DialogTrigger } from '@/components/ui/dialog';
-import { PlusIcon } from 'lucide-react';
-import { type ListingFields, ListingForm } from './ListingForm';
+import { useState } from 'react';
 
+import { useUser } from '@/lib/react-query-auth';
+import { useCreateListing } from '../hooks/useCreateListing';
+
+import { PlusIcon } from 'lucide-react';
+import { Tooltip } from '@/components';
 import {
+  Dialog,
+  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useCreateListing } from '../hooks/useCreateListing';
-import { useUser } from '@/lib/react-query-auth';
-import { useState } from 'react';
+
+import { type ListingFields, ListingForm } from './ListingForm';
 
 export function AddListing(): JSX.Element {
   const [open, setOpen] = useState(false);
@@ -59,7 +62,7 @@ export function AddListing(): JSX.Element {
             price: '',
             bedrooms: undefined,
             baths: undefined,
-            squareFeet: 0,
+            squareFeet: undefined,
           }}
         />
       </DialogContent>

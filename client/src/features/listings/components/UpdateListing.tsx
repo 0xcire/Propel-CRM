@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Listing } from '../types';
+
 import { useUpdateListing } from '../hooks/useUpdateListing';
-import { ListingFields, ListingForm } from './ListingForm';
-// import { DeepPartial } from 'react-hook-form';
-import { filterEqualFields } from '@/utils/form-data';
+
+import { PencilIcon } from 'lucide-react';
+import { Tooltip } from '@/components';
 import {
   Dialog,
   DialogContent,
@@ -11,21 +11,27 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Tooltip } from '@/components';
-import { PencilIcon } from 'lucide-react';
+
+import { type ListingFields, ListingForm } from './ListingForm';
+
+import { filterEqualFields } from '@/utils/form-data';
+
+import type { Listing } from '../types';
 
 export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
   const [open, setOpen] = useState(false);
   const updateListing = useUpdateListing();
+
+  console.log(listing);
 
   const defaultValues = {
     address: listing.address,
     description: listing.description,
     propertyType: listing.propertyType,
     price: listing.price,
-    bedrooms: listing.bedrooms.toString(),
-    baths: listing.baths.toString(),
-    squareFeet: listing.squareFeet.toString(),
+    bedrooms: listing.bedrooms,
+    baths: listing.baths,
+    squareFeet: listing.squareFeet,
   };
 
   function onSubmit(values: ListingFields): void {
@@ -60,12 +66,12 @@ export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
       </Tooltip>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Update Contact</DialogTitle>
+          <DialogTitle>Update Listing</DialogTitle>
         </DialogHeader>
 
         <ListingForm
           isCreate={false}
-          //   setOpen={setOpen}
+          listingID={listing.id}
           isLoading={updateListing.isLoading}
           onSubmit={onSubmit}
           defaultValues={defaultValues}

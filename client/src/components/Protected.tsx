@@ -2,6 +2,7 @@
 // TODO: and also obviously need to refactor out layout components and
 // <Tasks />, <Contacts /> etc etc
 // TODO: fix mobile navbar trigger position
+// TODO: layout components, grid item -> header wrapper
 
 import { useNavigate } from 'react-router-dom';
 
@@ -61,10 +62,10 @@ const Protected = (): JSX.Element => {
         <div className='grid h-full max-h-screen flex-1 grid-cols-12 grid-rows-6 gap-4 p-12 pb-10 xl:flex-1'>
           <div className='relative col-start-1 col-end-10 row-start-1 row-end-4 rounded border shadow 2xl:col-end-11'>
             <div className='flex h-[60px] items-center justify-between px-4'>
-              <Typography variant='h4'>Listings</Typography>
+              <Typography variant='h4'>Recent Listings</Typography>
               <AddListing />
             </div>
-            <div className='absolute w-full'>
+            <div className='absolute h-[calc(100%-60px)] w-full'>
               <ListingList />
             </div>
           </div>
@@ -91,7 +92,12 @@ const Protected = (): JSX.Element => {
             </TaskProvider>
           </div>
           <div className='col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>
-            <p>analytics</p>
+            <div className='flex h-[60px] items-center justify-between px-4'>
+              <Typography variant='h4'>Analytics</Typography>
+              {/* default ytd */}
+              {/* filter for quarterly */}
+              {/* filter for monthly */}
+            </div>
           </div>
         </div>
       </div>

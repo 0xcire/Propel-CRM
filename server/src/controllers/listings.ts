@@ -1,29 +1,17 @@
 import { Request, Response } from "express";
-import { NewListing } from "../db/types";
-import { db } from "../db";
-import { listings } from "../db/schema";
-import { and, asc, eq } from "drizzle-orm";
 
-// getListing
-// one to many user to listings
-// many to many listing to contacts
-// one to many listing to task
-
-// getListingsTasks
-// getListingsContacts
+import { deleteListingByID, findAllListings, insertNewListing, updateListingByID } from "../db/queries/listings";
+import type { NewListing } from "../db/types";
 
 export const getAllListings = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
 
-    const usersListings = await db.query.listings.findMany({
-      where: eq(listings.userID, userID),
-      orderBy: [asc(listings.createdAt)],
-    });
+    const userListings = await findAllListings(userID);
 
     return res.status(200).json({
       message: "",
-      listings: usersListings,
+      listings: userListings,
     });
   } catch (error) {
     console.log(error);
@@ -42,13 +30,11 @@ export const createListing = async (req: Request, res: Response) => {
 
     const listing: NewListing = { ...req.body, userID: userID };
 
-    const newListing = await db.insert(listings).values(listing).returning({
-      id: listings.id,
-    });
+    const newListing = await insertNewListing(listing);
 
     return res.status(201).json({
       message: "Listing added",
-      data: newListing[0],
+      data: newListing,
     });
   } catch (error) {
     console.log(error);
@@ -67,60 +53,11 @@ export const updateListing = async (req: Request, res: Response) => {
       return res.status(400).json({});
     }
 
-    const updatedListing = await db
-      .update(listings)
-      .set({
-        ...(address
-          ? {
-              address: address,
-            }
-          : {}),
-        ...(baths
-          ? {
-              baths: baths,
-            }
-          : {}),
-        ...(bedrooms
-          ? {
-              bedrooms: bedrooms,
-            }
-          : {}),
-        ...(description
-          ? {
-              description: description,
-            }
-          : {}),
-        ...(price
-          ? {
-              price: price,
-            }
-          : {}),
-        ...(propertyType
-          ? {
-              propertyType: propertyType,
-            }
-          : {}),
-        ...(squareFeet
-          ? {
-              squareFeet: squareFeet,
-            }
-          : {}),
-      })
-      .where(and(eq(listings.id, +id), eq(listings.userID, userID)))
-      .returning({
-        id: listings.id,
-        address: listings.address,
-        baths: listings.baths,
-        bedrooms: listings.bedrooms,
-        description: listings.description,
-        price: listings.price,
-        propertyType: listings.propertyType,
-        squareFeet: listings.squareFeet,
-      });
+    const updatedListingByID = await updateListingByID({ listing: req.body, listingID: +id, userID: userID });
 
     return res.status(200).json({
       message: "Updated listing.",
-      data: updatedListing[0],
+      data: updatedListingByID,
     });
   } catch (error) {
     console.log(error);
@@ -133,15 +70,10 @@ export const deleteListing = async (req: Request, res: Response) => {
     const userID = req.user.id;
     const { id } = req.params;
 
-    const deletedListing = await db
-      .delete(listings)
-      .where(and(eq(listings.id, +id), eq(listings.userID, userID)))
-      .returning({
-        id: listings.id,
-      });
+    const deletedListingByID = await deleteListingByID(+id, userID);
 
     return res.status(200).json({
-      message: `Deleted listing: ${deletedListing[0].id}`,
+      message: `Deleted listing: ${deletedListingByID.id}`,
     });
   } catch (error) {
     console.log(error);

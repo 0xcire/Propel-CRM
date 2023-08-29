@@ -152,3 +152,6 @@ export const listingsToContactsRelations = relations(listingsToContacts, ({ one 
     references: [contacts.id],
   }),
 }));
+
+// table: soldListing
+// references: listingID ( property details ), contactID ( buyer details ), userID ( agent details )

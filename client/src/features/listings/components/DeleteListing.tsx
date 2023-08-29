@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
-import { Trash2Icon } from 'lucide-react';
+import { useDeleteListing } from '../hooks/useDeleteListing';
+
+import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,8 +14,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+
 import { SubmitButton } from '@/components';
-import { useDeleteListing } from '../hooks/useDeleteListing';
 
 export function DeleteListing({
   listingID,
@@ -29,11 +31,12 @@ export function DeleteListing({
       onOpenChange={setOpen}
     >
       <AlertDialogTrigger asChild>
-        <Trash2Icon
-          className='cursor-pointer'
-          size={18}
-          tabIndex={0}
-        />
+        <Button
+          className='mr-auto'
+          variant='destructive'
+        >
+          Delete
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

@@ -11,12 +11,9 @@ export const listingSchema = z
     description: z.string().min(1).max(500),
     propertyType: z.string().min(1).max(50),
     price: priceString,
-    bedrooms: z.string(),
-    baths: z.string(),
-    squareFeet: z.string(),
-    // bedrooms: z.number().nonnegative().finite(),
-    // baths: z.number().positive().finite(),
-    // squareFeet: z.number().positive().finite(),
+    bedrooms: z.string().trim(),
+    baths: z.string().trim(),
+    squareFeet: z.string().trim(),
   })
   .transform((schema) => ({
     address: schema.address,
@@ -27,3 +24,5 @@ export const listingSchema = z
     baths: +schema.baths,
     squareFeet: +schema.squareFeet,
   }));
+
+export type FormListing = z.infer<typeof listingSchema>;

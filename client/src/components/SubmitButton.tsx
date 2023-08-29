@@ -28,7 +28,7 @@ export const SubmitButton = ({
       type='submit'
     >
       {isLoading && <Spinner variant='xs' />}
-      {text}
+      <span className={isLoading ? 'ml-1' : ''}>{text}</span>
     </Button>
   );
 };
