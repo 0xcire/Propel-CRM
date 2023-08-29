@@ -18,11 +18,15 @@ module.exports = {
       padding: '2rem',
       screens: {
         '2xl': '1400px',
+        '3xl': '1900px',
       },
     },
     extend: {
       fontFamily: {
         sans: ['Satoshi', ...defaultTheme.fontFamily.sans],
+      },
+      screens: {
+        '3xl': '1900px',
       },
       keyframes: {
         'accordion-down': {

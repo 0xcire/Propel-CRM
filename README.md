@@ -112,8 +112,8 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - [x] on dashboard, user gets a side panel to view contacts (like valorant, csgo, discord, etc...)
 - [x] tasks-slice MVP
   - [x] user can CRUD a task
-  - [x] user can toggle showing completed tasks
 - [ ] listings-slice MVP
+  - [ ] user can CRUD a listing
 - [ ] analytics-slice MVP
 
 ### Full Features
@@ -146,5 +146,15 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 - [ ] tasks-slice
 
   - [ ] can use something like @<Name> and autocomplete based on your contacts in notes section
+  - [ ] mapbox address auto fill
+  - [ ] can 'assign task to listing'
+
+- [ ] listings-slice
+
+  - [ ] tag interested contacts to listings
+  - [ ] image upload, s3
+  - [ ] mapbox address auto fill
+  - [ ] tag contacts to listings
+  - [ ] suggest contacts based on proximity?
 
 - [ ] detect purely mobile viewport and replace dialog components with [Vaul](https://github.com/emilkowalski/vaul)

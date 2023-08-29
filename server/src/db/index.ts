@@ -6,6 +6,8 @@ import * as schema from "./schema";
 
 import { PG_URL } from "../config";
 
+// TODO: close connection after each query
+
 const queryClient = postgres(`${PG_URL}`);
 // : PostgresJsDatabase
 export const db = drizzle(queryClient, { schema: schema });

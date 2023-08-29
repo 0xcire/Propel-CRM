@@ -38,7 +38,11 @@ export function SelectInput<
         <FormItem>
           <Select
             onValueChange={(val): void => field.onChange(val as OptionType)}
-            defaultValue={field.value}
+            defaultValue={
+              typeof field.value === 'number'
+                ? field.value.toString()
+                : field.value
+            }
           >
             <FormControl>
               <SelectTrigger>
@@ -49,7 +53,9 @@ export function SelectInput<
               {options.map((option) => (
                 <SelectItem
                   key={option}
-                  value={option}
+                  value={
+                    typeof option === 'number' ? option.toString() : option
+                  }
                 >
                   {option}
                 </SelectItem>

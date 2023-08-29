@@ -16,7 +16,6 @@ import {
 import { checkPassword } from "../utils";
 
 import type { NewContact } from "../db/types";
-import { Console } from "console";
 
 export const getMyContacts = async (req: Request, res: Response) => {
   try {

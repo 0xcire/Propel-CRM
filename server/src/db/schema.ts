@@ -5,7 +5,18 @@
 // analytics
 
 import { relations } from "drizzle-orm";
-import { boolean, date, integer, pgTable, primaryKey, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  date,
+  integer,
+  numeric,
+  pgTable,
+  primaryKey,
+  serial,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -22,6 +33,7 @@ export const users = pgTable("users", {
 export const usersRelations = relations(users, ({ many }) => ({
   usersToContacts: many(usersToContacts),
   tasks: many(tasks),
+  listings: many(listings),
 }));
 
 export const contacts = pgTable("contacts", {
@@ -35,6 +47,7 @@ export const contacts = pgTable("contacts", {
 
 export const contactsRelations = relations(contacts, ({ many }) => ({
   usersToContacts: many(usersToContacts),
+  listingsToContacts: many(listingsToContacts),
 }));
 
 export const usersToContacts = pgTable(
@@ -68,6 +81,7 @@ export const usersToContactsRelations = relations(usersToContacts, ({ one }) => 
 export const tasks = pgTable("tasks", {
   id: serial("id").primaryKey(),
   userID: integer("user_id").references(() => users.id),
+  listingID: integer("listing_id").references(() => listings.id),
   title: varchar("title", { length: 255 }).notNull(),
   description: varchar("description", { length: 255 }),
   notes: varchar("notes", { length: 255 }),
@@ -82,4 +96,62 @@ export const tasksRelations = relations(tasks, ({ one }) => ({
     fields: [tasks.userID],
     references: [users.id],
   }),
+  listing: one(listings, {
+    fields: [tasks.listingID],
+    references: [listings.id],
+  }),
 }));
+
+// TODO: propertyType
+// single family, apartment, townhome, condo, duplex, etc..
+
+export const listings = pgTable("listings", {
+  id: serial("id").primaryKey(),
+  userID: integer("user_id").references(() => users.id),
+  address: varchar("address", { length: 255 }).notNull(),
+  propertyType: varchar("property_type", { length: 255 }).notNull(),
+  price: numeric("price", { precision: 11, scale: 2 }).notNull(),
+  bedrooms: integer("bedrooms").notNull(),
+  baths: integer("baths").notNull(),
+  squareFeet: integer("sq_ft").notNull(),
+  description: text("description").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+export const listingsRelations = relations(listings, ({ one, many }) => ({
+  user: one(users, {
+    fields: [listings.userID],
+    references: [users.id],
+  }),
+  tasks: many(tasks),
+  listingsToContacts: many(listingsToContacts),
+}));
+
+export const listingsToContacts = pgTable(
+  "listings_to_contacts",
+  {
+    listingID: integer("listing_id")
+      .notNull()
+      .references(() => listings.id),
+    contactID: integer("contact_id")
+      .notNull()
+      .references(() => contacts.id),
+  },
+  (t) => ({
+    pk: primaryKey(t.listingID, t.contactID),
+  })
+);
+
+export const listingsToContactsRelations = relations(listingsToContacts, ({ one }) => ({
+  listing: one(listings, {
+    fields: [listingsToContacts.listingID],
+    references: [listings.id],
+  }),
+  contact: one(contacts, {
+    fields: [listingsToContacts.contactID],
+    references: [contacts.id],
+  }),
+}));
+
+// table: soldListing
+// references: listingID ( property details ), contactID ( buyer details ), userID ( agent details )

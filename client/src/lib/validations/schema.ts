@@ -21,6 +21,12 @@ export const mobilePhone = z
     'Be sure your number starts with a valid US area code. Ex. 617-555-5555'
   );
 
+export const priceString = z
+  .string()
+  .min(6)
+  .max(12)
+  .refine((value) => /[0-9]+/.test(value));
+
 export const verifyPassword = z.string().min(8).max(255);
 
 export const signUpPassword = z

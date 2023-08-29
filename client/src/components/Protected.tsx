@@ -1,4 +1,8 @@
 // TODO: obviously this should be refactored into <Dashboard /> once everything is built out
+// TODO: and also obviously need to refactor out layout components and
+// <Tasks />, <Contacts /> etc etc
+// TODO: fix mobile navbar trigger position
+// TODO: layout components, grid item -> header wrapper
 
 import { useNavigate } from 'react-router-dom';
 
@@ -7,7 +11,6 @@ import { queryClient } from '@/lib/react-query';
 
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 
-import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from './SubmitButton';
@@ -18,6 +21,8 @@ import { TaskList } from '@/features/tasks/components/TaskList';
 
 import { TaskDropdown } from '@/features/tasks/components/TaskDropdown';
 import { TaskProvider } from '@/features/tasks/context/TaskContext';
+import { AddListing } from '@/features/listings/components/AddListing';
+import { ListingList } from '@/features/listings/components/ListingList';
 
 const Protected = (): JSX.Element => {
   const user = useUser();
@@ -37,30 +42,31 @@ const Protected = (): JSX.Element => {
           <Typography variant='h3'>
             Welcome, {user.data?.name as string}
           </Typography>
-          <Button className='mr-4'>Add</Button>
+          <SubmitButton
+            text='Logout'
+            isLoading={logout.isLoading}
+            onClick={(): void =>
+              logout.mutate(
+                {},
+                {
+                  onSuccess: () => {
+                    queryClient.invalidateQueries(['authenticated-user']);
+                    queryClient.clear();
+                    navigate('/');
+                  },
+                }
+              )
+            }
+          />
         </div>
         <div className='grid h-full max-h-screen flex-1 grid-cols-12 grid-rows-6 gap-4 p-12 pb-10 xl:flex-1'>
-          <div className='col-start-1 col-end-10 row-start-1 row-end-4 grid place-items-center rounded border shadow 2xl:col-end-11'>
-            <div>
-              <p>Listings...</p>
-              <div>
-                <SubmitButton
-                  text='Logout'
-                  isLoading={logout.isLoading}
-                  onClick={(): void =>
-                    logout.mutate(
-                      {},
-                      {
-                        onSuccess: () => {
-                          queryClient.invalidateQueries(['authenticated-user']);
-                          queryClient.clear();
-                          navigate('/');
-                        },
-                      }
-                    )
-                  }
-                />
-              </div>
+          <div className='relative col-start-1 col-end-10 row-start-1 row-end-4 rounded border shadow 2xl:col-end-11'>
+            <div className='flex h-[60px] items-center justify-between px-4'>
+              <Typography variant='h4'>Recent Listings</Typography>
+              <AddListing />
+            </div>
+            <div className='absolute h-[calc(100%-60px)] w-full'>
+              <ListingList />
             </div>
           </div>
 
@@ -86,7 +92,12 @@ const Protected = (): JSX.Element => {
             </TaskProvider>
           </div>
           <div className='col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>
-            <p>analytics</p>
+            <div className='flex h-[60px] items-center justify-between px-4'>
+              <Typography variant='h4'>Analytics</Typography>
+              {/* default ytd */}
+              {/* filter for quarterly */}
+              {/* filter for monthly */}
+            </div>
           </div>
         </div>
       </div>

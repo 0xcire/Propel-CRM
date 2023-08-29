@@ -4,13 +4,11 @@ import { objectNotEmpty } from "../utils";
 import { getRequestBodies } from "../config";
 
 type SchemaParams = {
-  body?: ZodEffects<ZodEffects<AnyZodObject>> | ZodEffects<AnyZodObject>;
+  body?: AnyZodObject | ZodEffects<ZodEffects<AnyZodObject>> | ZodEffects<AnyZodObject>;
   cookies?: ZodEffects<AnyZodObject>;
   query?: ZodEffects<AnyZodObject>;
   params?: ZodEffects<AnyZodObject>;
 };
-
-
 
 export const validateRequest = (schema: SchemaParams) => {
   return async (req: Request, res: Response, next: NextFunction) => {

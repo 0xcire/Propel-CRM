@@ -1,14 +1,20 @@
-import { InferModel } from "drizzle-orm";
-import { users, contacts, usersToContacts, tasks } from "./schema";
+import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
+import { users, contacts, usersToContacts, tasks, listings, listingsToContacts } from "./schema";
 
-export type User = InferModel<typeof users, "select">;
-export type NewUser = InferModel<typeof users, "insert">;
+export type User = InferSelectModel<typeof users>;
+export type NewUser = InferInsertModel<typeof users>;
 
-export type Contact = InferModel<typeof contacts, "select">;
-export type NewContact = InferModel<typeof contacts, "insert">;
+export type Contact = InferSelectModel<typeof contacts>;
+export type NewContact = InferInsertModel<typeof contacts>;
 
-export type UserContactRelation = InferModel<typeof usersToContacts, "select">;
-export type NewUserContactRelation = InferModel<typeof usersToContacts, "insert">;
+export type UserContactRelation = InferSelectModel<typeof usersToContacts>;
+export type NewUserContactRelation = InferInsertModel<typeof usersToContacts>;
 
-export type Task = InferModel<typeof tasks, "select">;
-export type NewTask = InferModel<typeof tasks, "insert">;
+export type Task = InferSelectModel<typeof tasks>;
+export type NewTask = InferInsertModel<typeof tasks>;
+
+export type Listing = InferSelectModel<typeof listings>;
+export type NewListing = InferInsertModel<typeof listings>;
+
+export type ListingContactRelation = InferSelectModel<typeof listingsToContacts>;
+export type NewListingContactRelation = InferInsertModel<typeof listingsToContacts>;

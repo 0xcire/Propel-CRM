@@ -1,14 +1,14 @@
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
 type FilterFieldParams = {
-  newData: Record<string, string>;
+  newData: Record<string, unknown>;
   originalData: Record<string, unknown>;
 };
 
 export const filterEqualFields = ({
   newData,
   originalData,
-}: FilterFieldParams): Record<string, string> => {
+}: FilterFieldParams): Record<string, unknown> => {
   return Object.fromEntries(
     Object.entries(newData).filter(([key, value]) => {
       return value !== originalData[key as keyof typeof originalData];

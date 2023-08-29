@@ -22,6 +22,7 @@ export default (router: Router) => {
     isAuth,
     createContact
   );
+
   router.patch(
     "/contacts/:id",
     validateRequest({ body: updateContactSchema, cookies: cookieSchema, params: paramSchema }),
@@ -29,6 +30,7 @@ export default (router: Router) => {
     isContactOwner,
     updateContact
   );
+
   router.delete(
     "/contacts/:id",
     validateRequest({ cookies: cookieSchema, params: paramSchema }),

@@ -1,5 +1,5 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { users, contacts, tasks } from "./schema";
+import { users, contacts, tasks, listings } from "./schema";
 import { z } from "zod";
 import isEmail from "validator/lib/isEmail.js";
 
@@ -19,7 +19,7 @@ const verifyPassword = z.object({
 // TODO: cookie and param schema may become more specific in future but for now can stay here
 export const cookieSchema = z
   .object({
-    "propel-session": z.string().min(1),
+    "propel-session": z.string().min(1).endsWith("=="),
   })
   .transform((cookie) => ({
     "propel-session": cookie["propel-session"].trim(),
@@ -133,5 +133,41 @@ export const updateTaskSchema = createInsertSchema(tasks)
     notes: task.notes?.trim(),
     dueDate: task.dueDate?.trim(),
     completed: task.completed,
-    priority: task.priority,
+    priority: task.priority?.trim(),
   }));
+
+// TODO: unknowingly created schemas based on old package, go back and rewrite to match below
+export const createListingSchema = createInsertSchema(listings, {
+  address: (listings) => listings.address.trim(),
+  description: (listings) => listings.description.trim(),
+  propertyType: (listings) => listings.propertyType.trim(),
+  // price: (listings) => listings.price.transform((v) => +v),
+  // TODO: address price
+  price: (listings) => listings.price.trim(),
+  bedrooms: (listings) => listings.bedrooms.nonnegative().int().finite(),
+  baths: (listings) => listings.baths.positive(),
+  squareFeet: (listings) => listings.squareFeet.positive().int().finite(),
+}).omit({
+  id: true,
+  userID: true,
+  createdAt: true,
+});
+
+export const updateListingSchema = createInsertSchema(listings, {
+  address: (listings) => listings?.address.trim(),
+  description: (listings) => listings?.description.trim(),
+  propertyType: (listings) => listings?.propertyType.trim(),
+  // price: (listings) => listings.price.transform((v) => +v),
+  // TODO: address price
+  price: (listings) => listings?.price,
+  bedrooms: (listings) => listings?.bedrooms.nonnegative().int().finite(),
+  baths: (listings) => listings?.baths.positive(),
+  squareFeet: (listings) => listings?.squareFeet.positive().int().finite(),
+})
+  .omit({
+    id: true,
+    createdAt: true,
+    userID: true,
+  })
+  .partial()
+  .strict();
