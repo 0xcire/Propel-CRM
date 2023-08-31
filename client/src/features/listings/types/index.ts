@@ -1,4 +1,5 @@
 import { BaseResponse } from '@/types';
+import { ListingHTMLFormInputs } from '../components/ListingForm';
 
 export type Listing = {
   id: number;
@@ -23,5 +24,5 @@ export interface ListingResponse extends BaseResponse {
 
 export type UpdateListingParams = {
   id: number;
-  data: Partial<NewListing>;
+  data: Partial<ListingHTMLFormInputs>;
 };

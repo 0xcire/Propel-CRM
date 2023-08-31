@@ -1,6 +1,6 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, isNull, not } from "drizzle-orm";
 import { db } from "..";
-import { listings } from "../schema";
+import { listings, soldListings } from "../schema";
 import type { NewListing } from "../types";
 
 type updateListingByIDParams = {
@@ -9,11 +9,24 @@ type updateListingByIDParams = {
   userID: number;
 };
 
+// findUsersListingsOnMarket
+// findUsersSoldListings
+
 export const findAllListings = async (userID: number) => {
-  const userListings = await db.query.listings.findMany({
-    where: eq(listings.userID, userID),
-    orderBy: [desc(listings.createdAt)],
-  });
+  // TODO: can see issues with performance if larger amt of data?
+  // change this to dashboard/listings endpoint?
+  // normal /listings endpoint should return all, with pagination support etc
+
+  const userListings = (
+    await db
+      .select()
+      .from(listings)
+      .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
+      .where(isNull(soldListings.listingID))
+      .orderBy(desc(listings.createdAt))
+      .limit(10)
+  ).map((listingJoin) => listingJoin.listings);
+
   return userListings;
 };
 

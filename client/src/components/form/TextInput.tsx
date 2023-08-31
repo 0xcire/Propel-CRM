@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactElement } from 'react';
+import type { ComponentProps, ReactElement, ChangeEvent } from 'react';
 import type { Control, FieldValues, Path } from 'react-hook-form';
 import {
   FormControl,
@@ -34,7 +34,15 @@ export function TextInput<TFieldValues extends FieldValues>({
               disabled={props.disabled}
               type={props.type}
               placeholder={props.placeholder}
-              {...field}
+              onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                const value = e.target.value;
+                field.onChange(typeof value === 'number' ? e.toString() : e);
+              }}
+              value={field.value}
+              onBlur={field.onBlur}
+              ref={field.ref}
+              name={field.name}
+              // {...field}
             />
           </FormControl>
           <FormMessage />

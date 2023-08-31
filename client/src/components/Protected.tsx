@@ -23,6 +23,20 @@ import { TaskDropdown } from '@/features/tasks/components/TaskDropdown';
 import { TaskProvider } from '@/features/tasks/context/TaskContext';
 import { AddListing } from '@/features/listings/components/AddListing';
 import { ListingList } from '@/features/listings/components/ListingList';
+import { SelectInput } from './form';
+
+// remove all of the following
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Form } from './ui/form';
+const analyticsFilterOptions = ['annual', 'quarterly', 'monthly'] as const;
+type AnalyticsFilterOptions = (typeof analyticsFilterOptions)[number];
+
+const schema = z.object({
+  filter: z.enum(analyticsFilterOptions),
+});
+type Schema = z.infer<typeof schema>;
 
 const Protected = (): JSX.Element => {
   const user = useUser();
@@ -34,6 +48,17 @@ const Protected = (): JSX.Element => {
   if (!user) {
     navigate('/auth/signin');
   }
+
+  // remove this
+  const form = useForm<Schema>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      filter: undefined,
+    },
+  });
+  const onSubmit = (values: Schema): void => {
+    console.log(values);
+  };
 
   return (
     <>
@@ -93,7 +118,23 @@ const Protected = (): JSX.Element => {
           </div>
           <div className='col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>
             <div className='flex h-[60px] items-center justify-between px-4'>
-              <Typography variant='h4'>Analytics</Typography>
+              {/* Analytics */}
+              <Typography variant='h4'>YTD Performance</Typography>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                  <SelectInput<
+                    Schema,
+                    AnalyticsFilterOptions,
+                    typeof analyticsFilterOptions
+                  >
+                    control={form.control}
+                    name='filter'
+                    placeholder='Filter By Time Frame'
+                    options={analyticsFilterOptions}
+                  />
+                </form>
+              </Form>
+
               {/* default ytd */}
               {/* filter for quarterly */}
               {/* filter for monthly */}
