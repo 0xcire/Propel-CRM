@@ -22,7 +22,7 @@ export const findAllListings = async (userID: number) => {
       .select()
       .from(listings)
       .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
-      .where(isNull(soldListings.listingID))
+      .where(and(eq(listings.userID, userID), isNull(soldListings.listingID)))
       .orderBy(desc(listings.createdAt))
       .limit(10)
   ).map((listingJoin) => listingJoin.listings);

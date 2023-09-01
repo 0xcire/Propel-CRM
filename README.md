@@ -91,6 +91,12 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - Ran into issues where default values were not updated after invalidating queries on mutation success.
   - [this TK Dodo article](https://tkdodo.eu/blog/react-query-and-forms) really helped me out
 
+## Notes
+
+- Demo account listings are mostly seeded with data from faker js.
+  - please see `/server/src/lib/faker.ts` to see how that was done
+  - data in analytics and some listing details may not make 100% sense
+
 ## Roadmap
 
 ### MVP Features

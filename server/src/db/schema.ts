@@ -163,24 +163,6 @@ export const listingsToContactsRelations = relations(listingsToContacts, ({ one 
   }),
 }));
 
-// table: soldListing
-// references: listingID ( property details ), contactID ( buyer details ), userID ( agent details )
-
-// Table Name: SoldListings
-
-// Columns:
-// - id (Primary Key, Auto-increment)
-// - listing_id (Foreign Key referencing the main Listings table)
-// - sale_date (Date, when the property was sold)
-// - sale_price (Decimal, the price at which the property was sold)
-// - buyer_name (String, name of the buyer)
-// - buyer_contact (String, contact information of the buyer)
-// - buyer_agent (String, name of the buyer's agent)
-// - buyer_agent_contact (String, contact information of the buyer's agent)
-// - other_details (Text, additional details about the sale)
-// - created_at (Timestamp, when the record was created)
-// - updated_at (Timestamp, when the record was last updated)
-
 // pgTable: leadsOnListing??
 // for interested contacts on listing
 
