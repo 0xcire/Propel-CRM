@@ -4,6 +4,7 @@ import user from "./user";
 import contacts from "./contacts";
 import tasks from "./tasks";
 import listings from "./listings";
+import analytics from "./analytics";
 
 const router = Router();
 
@@ -13,6 +14,7 @@ export default (): Router => {
   contacts(router);
   tasks(router);
   listings(router);
+  analytics(router);
 
   return router;
 };
