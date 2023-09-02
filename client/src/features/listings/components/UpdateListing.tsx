@@ -22,8 +22,6 @@ export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
   const [open, setOpen] = useState(false);
   const updateListing = useUpdateListing();
 
-  console.log(listing);
-
   const defaultValues = {
     address: listing.address,
     description: listing.description,

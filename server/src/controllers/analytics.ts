@@ -45,7 +45,7 @@ export const getPeriodicSalesVolume = async (req: Request, res: Response) => {
 
   return res.status(200).json({
     message: "",
-    data: usersListingsSalesVolume,
+    analytics: usersListingsSalesVolume,
   });
 };
 

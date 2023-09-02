@@ -30,6 +30,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form } from './ui/form';
+import { SalesVolumeChart } from '@/features/analytics/components/SalesVolumeChart';
 const analyticsFilterOptions = ['annual', 'quarterly', 'monthly'] as const;
 type AnalyticsFilterOptions = (typeof analyticsFilterOptions)[number];
 
@@ -116,7 +117,7 @@ const Protected = (): JSX.Element => {
               </div>
             </TaskProvider>
           </div>
-          <div className='col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>
+          <div className='relative col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>
             <div className='flex h-[60px] items-center justify-between px-4'>
               {/* Analytics */}
               <Typography variant='h4'>YTD Performance</Typography>
@@ -138,6 +139,9 @@ const Protected = (): JSX.Element => {
               {/* default ytd */}
               {/* filter for quarterly */}
               {/* filter for monthly */}
+            </div>
+            <div className='absolute h-[calc(100%-60px)] w-full'>
+              <SalesVolumeChart />
             </div>
           </div>
         </div>
