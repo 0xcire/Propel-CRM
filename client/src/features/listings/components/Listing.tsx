@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { UpdateListing } from './UpdateListing';
 
 import { Typography } from '@/components/ui/typography';
@@ -7,20 +5,11 @@ import { Separator } from '@/components/ui/separator';
 
 import { Avatar } from '@/components';
 
+import { currency, number } from '@/utils/intl';
+
 import type { Listing } from '../types';
 
 export function Listing({ listing }: { listing: Listing }): JSX.Element {
-  const currency = useMemo(
-    () =>
-      new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }),
-    []
-  );
-
-  const number = useMemo(() => new Intl.NumberFormat(), []);
-
   // TODO: will need to better address responsiveness for listings. after seeding data,
   // look into creating a carousel instead?
   // max-w-[225px]

@@ -1,20 +1,7 @@
 import type { Request, Response } from "express";
 import { db } from "../db";
 import { listings, soldListings } from "../db/schema";
-import { and, asc, between, eq, gt, isNotNull, sql } from "drizzle-orm";
-
-// format:
-// [
-//   {
-//     month: 'month-name',
-//     volume: 34525
-//   },
-//   {
-//     month: 'month-name',
-//     volume: 34525
-//   },
-//   ...
-// ]
+import { and, between, eq, isNotNull, sql } from "drizzle-orm";
 
 export const getPeriodicSalesVolume = async (req: Request, res: Response) => {
   const userID = req.user.id;
@@ -24,12 +11,13 @@ export const getPeriodicSalesVolume = async (req: Request, res: Response) => {
   // TODO: need to update schema to allow user ( agent ) to update sale price
   // also attach contact id to soldListings table to include additional info
 
-  const month = sql`DATE_TRUNC('month', ${soldListings.soldAt})`;
+  const month = sql`TO_CHAR(${soldListings.soldAt} AT TIME ZONE 'UTC', 'Mon')`;
+  const monthNumberFromName = sql`EXTRACT(MONTH FROM ${soldListings.soldAt})`;
 
-  const usersListingsSalesVolume = await db
+  const usersSalesVolume = await db
     .select({
       month: month,
-      monthVolume: sql<number>`sum(${listings.price})`,
+      volume: sql<number>`sum(${listings.price})`,
     })
     .from(listings)
     .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
@@ -40,12 +28,12 @@ export const getPeriodicSalesVolume = async (req: Request, res: Response) => {
         between(soldListings.soldAt, new Date("1-1-2023"), new Date("12-31-2023"))
       )
     )
-    .groupBy(month)
-    .orderBy(month);
+    .groupBy(month, monthNumberFromName)
+    .orderBy(monthNumberFromName);
 
   return res.status(200).json({
     message: "",
-    analytics: usersListingsSalesVolume,
+    analytics: usersSalesVolume,
   });
 };
 

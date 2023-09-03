@@ -2,7 +2,7 @@ import { BaseResponse } from '@/types';
 
 export type SalesVolume = Array<{
   month: string;
-  monthVolume: number;
+  volume: number;
 }>;
 
 export interface AnalyticsResponse extends BaseResponse {
