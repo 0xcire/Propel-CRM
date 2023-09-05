@@ -5,6 +5,12 @@ export type SalesVolume = Array<{
   volume: number;
 }>;
 
-export interface AnalyticsResponse extends BaseResponse {
+export type Years = Array<string>;
+
+export interface AnalyticsDataResponse extends BaseResponse {
   analytics: SalesVolume;
+}
+
+export interface AnalyticsYearsResponse extends BaseResponse {
+  years: Years;
 }

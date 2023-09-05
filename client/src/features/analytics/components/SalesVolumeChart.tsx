@@ -21,18 +21,31 @@ import type {
   ValueType,
   NameType,
 } from 'recharts/types/component/DefaultTooltipContent';
+import { useAnalyticsContext } from '../context/AnalyticsContext';
+
+const timeFrameMap = {
+  Q1: [0, 3],
+  Q2: [3, 6],
+  Q3: [6, 9],
+  Q4: [9, 12],
+};
 
 export function SalesVolumeChart(): JSX.Element {
   const salesVolume = useSalesVolume();
 
+  const { state: currentTimeFrame } = useAnalyticsContext();
+
   const minmax = useMemo(() => {
-    if (salesVolume.isFetched) {
-      const volumeArray = salesVolume.data?.map(
-        (data) => data.volume
-      ) as Array<number>;
+    if (salesVolume.isFetched && salesVolume.data) {
+      const volumeArray = salesVolume.data?.map((data) => data.volume);
       return [Math.min(...volumeArray), Math.max(...volumeArray)] as const;
     }
   }, [salesVolume]);
+
+  const filter =
+    currentTimeFrame === 'YTD'
+      ? salesVolume.data
+      : salesVolume.data?.slice(...timeFrameMap[currentTimeFrame]);
 
   if (salesVolume.isLoading) {
     return (
@@ -67,7 +80,7 @@ export function SalesVolumeChart(): JSX.Element {
           left: 20,
           bottom: 5,
         }}
-        data={salesVolume.data}
+        data={filter}
       >
         <XAxis dataKey={'month'} />
         <YAxis

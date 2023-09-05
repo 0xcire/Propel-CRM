@@ -2,7 +2,7 @@ import { Router } from "express";
 import { isAuth } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
 import { cookieSchema } from "../db/validation-schema";
-import { getPeriodicSalesVolume } from "../controllers/analytics";
+import { getExistingSalesYears, getPeriodicSalesVolume } from "../controllers/analytics";
 
 // sales bar graph
 // GCI - gross commission income line graph
@@ -10,6 +10,8 @@ import { getPeriodicSalesVolume } from "../controllers/analytics";
 // year, quarterly, monthly views via search params
 export default (router: Router) => {
   router.get("/analytics/sales", validateRequest({ cookies: cookieSchema }), isAuth, getPeriodicSalesVolume);
+
+  router.get("/analytics/years", validateRequest({ cookies: cookieSchema }), isAuth, getExistingSalesYears);
 
   router.get("/analytics/gci", validateRequest({ cookies: cookieSchema }), isAuth, () => "yo");
 };

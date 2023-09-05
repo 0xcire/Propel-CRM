@@ -16,9 +16,12 @@ interface SelectInputProps<
 > extends ComponentProps<'select'> {
   control: Control<TFieldValues>;
   name: Path<TFieldValues>;
-  options: OptionTypeArray;
+  options: OptionTypeArray | undefined;
   placeholder: string;
 }
+
+// TODO: how can i potentially reduce the complexity here?
+// also ensure typesafety when using <SelectInput<FormSchema, Type, Type> />?
 
 export function SelectInput<
   TFieldValues extends FieldValues,
@@ -37,7 +40,9 @@ export function SelectInput<
       render={({ field }): JSX.Element => (
         <FormItem>
           <Select
-            onValueChange={(val): void => field.onChange(val as OptionType)}
+            onValueChange={(val): void => {
+              field.onChange(val as OptionType);
+            }}
             defaultValue={
               typeof field.value === 'number'
                 ? field.value.toString()
@@ -50,16 +55,20 @@ export function SelectInput<
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {options.map((option) => (
-                <SelectItem
-                  key={option}
-                  value={
-                    typeof option === 'number' ? option.toString() : option
-                  }
-                >
-                  {option}
-                </SelectItem>
-              ))}
+              {options ? (
+                options.map((option) => (
+                  <SelectItem
+                    key={option}
+                    value={
+                      typeof option === 'number' ? option.toString() : option
+                    }
+                  >
+                    {option}
+                  </SelectItem>
+                ))
+              ) : (
+                <></>
+              )}
             </SelectContent>
           </Select>
           <FormMessage />

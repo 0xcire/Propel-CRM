@@ -14,6 +14,7 @@ import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from './SubmitButton';
+import { Select } from './Select';
 
 import { AddContact } from '@/features/contacts/components/AddContact';
 import { ContactList } from '@/features/contacts/components/ContactList';
@@ -21,45 +22,37 @@ import { TaskList } from '@/features/tasks/components/TaskList';
 
 import { TaskDropdown } from '@/features/tasks/components/TaskDropdown';
 import { TaskProvider } from '@/features/tasks/context/TaskContext';
+
 import { AddListing } from '@/features/listings/components/AddListing';
 import { ListingList } from '@/features/listings/components/ListingList';
-import { SelectInput } from './form';
 
-// remove all of the following
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { Form } from './ui/form';
+import {
+  AnalyticsProvider,
+  useAnalyticsContext,
+} from '@/features/analytics/context/AnalyticsContext';
 import { SalesVolumeChart } from '@/features/analytics/components/SalesVolumeChart';
-const analyticsFilterOptions = ['annual', 'quarterly', 'monthly'] as const;
-type AnalyticsFilterOptions = (typeof analyticsFilterOptions)[number];
+import { AnalyticsHeader } from '@/features/analytics/components/AnalyticsHeader';
 
-const schema = z.object({
-  filter: z.enum(analyticsFilterOptions),
-});
-type Schema = z.infer<typeof schema>;
+// TODO: for analytics page view,
+// when filtering by year, maybe just listen for normal select change and fire useQuery when change
 
 const Protected = (): JSX.Element => {
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
 
+  // const { state: currentTimeFrame, setState: setCurrentTimeFrame } =
+  //   useAnalyticsContext();
+
+  const handleSelectChange = (val: string): void => {
+    console.log(val);
+  };
+
   useDocumentTitle('Dashboard | Propel CRM');
 
   if (!user) {
     navigate('/auth/signin');
   }
-
-  // remove this
-  const form = useForm<Schema>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      filter: undefined,
-    },
-  });
-  const onSubmit = (values: Schema): void => {
-    console.log(values);
-  };
 
   return (
     <>
@@ -118,31 +111,19 @@ const Protected = (): JSX.Element => {
             </TaskProvider>
           </div>
           <div className='relative col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>
-            <div className='flex h-[60px] items-center justify-between px-4'>
-              {/* Analytics */}
-              <Typography variant='h4'>YTD Performance</Typography>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)}>
-                  <SelectInput<
-                    Schema,
-                    AnalyticsFilterOptions,
-                    typeof analyticsFilterOptions
-                  >
-                    control={form.control}
-                    name='filter'
-                    placeholder='Filter By Time Frame'
-                    options={analyticsFilterOptions}
-                  />
-                </form>
-              </Form>
+            <AnalyticsProvider>
+              <div className='flex h-[60px] items-center justify-between px-4'>
+                {/* Analytics */}
+                <AnalyticsHeader />
 
-              {/* default ytd */}
-              {/* filter for quarterly */}
-              {/* filter for monthly */}
-            </div>
-            <div className='absolute h-[calc(100%-60px)] w-full'>
-              <SalesVolumeChart />
-            </div>
+                {/* default ytd */}
+                {/* filter for quarterly */}
+              </div>
+
+              <div className='absolute h-[calc(100%-60px)] w-full'>
+                <SalesVolumeChart />
+              </div>
+            </AnalyticsProvider>
           </div>
         </div>
       </div>

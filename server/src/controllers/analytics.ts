@@ -7,6 +7,7 @@ export const getPeriodicSalesVolume = async (req: Request, res: Response) => {
   const userID = req.user.id;
   // const {range} = req.query
   // range = 1-1-2023
+  console.log("GET PERIODIC SALES VOLUME", req.query);
 
   // TODO: need to update schema to allow user ( agent ) to update sale price
   // also attach contact id to soldListings table to include additional info
@@ -34,6 +35,17 @@ export const getPeriodicSalesVolume = async (req: Request, res: Response) => {
   return res.status(200).json({
     message: "",
     analytics: usersSalesVolume,
+  });
+};
+
+export const getExistingSalesYears = async (req: Request, res: Response) => {
+  const years = (
+    await db.selectDistinct({ year: sql`EXTRACT(YEAR FROM ${soldListings.soldAt})` }).from(soldListings)
+  ).map((data) => data.year);
+
+  return res.status(200).json({
+    message: "",
+    years: years,
   });
 };
 
