@@ -14,7 +14,6 @@ import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from './SubmitButton';
-import { Select } from './Select';
 
 import { AddContact } from '@/features/contacts/components/AddContact';
 import { ContactList } from '@/features/contacts/components/ContactList';
@@ -26,10 +25,7 @@ import { TaskProvider } from '@/features/tasks/context/TaskContext';
 import { AddListing } from '@/features/listings/components/AddListing';
 import { ListingList } from '@/features/listings/components/ListingList';
 
-import {
-  AnalyticsProvider,
-  useAnalyticsContext,
-} from '@/features/analytics/context/AnalyticsContext';
+import { AnalyticsProvider } from '@/features/analytics/context/AnalyticsContext';
 import { SalesVolumeChart } from '@/features/analytics/components/SalesVolumeChart';
 import { AnalyticsHeader } from '@/features/analytics/components/AnalyticsHeader';
 
@@ -40,13 +36,6 @@ const Protected = (): JSX.Element => {
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
-
-  // const { state: currentTimeFrame, setState: setCurrentTimeFrame } =
-  //   useAnalyticsContext();
-
-  const handleSelectChange = (val: string): void => {
-    console.log(val);
-  };
 
   useDocumentTitle('Dashboard | Propel CRM');
 
