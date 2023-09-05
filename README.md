@@ -91,70 +91,96 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - Ran into issues where default values were not updated after invalidating queries on mutation success.
   - [this TK Dodo article](https://tkdodo.eu/blog/react-query-and-forms) really helped me out
 
+## Notes
+
+- Demo account listings are mostly seeded with data from faker js.
+  - please see `/server/src/lib/faker.ts` to see how that was done
+  - data in analytics and some listing details may not make 100% sense
+
 ## Roadmap
 
 ### MVP Features
 
 - [x] adding **full** Docker support
-- [x] auth MVP
-  - [x] user can sign up
-  - [x] user can sign in
-  - [x] user can sign out
-- [x] user-slice MVP
-  - [x] user can create account
-  - [x] user can update their own account details (username, email, password)
-  - [x] user can delete their own account
-- [x] contacts-slice MVP
-  - [x] user can get all related contacts
-  - [x] user can add a contact
-  - [x] user can update a contact
-  - [x] user can delete a contact
-  - [x] on dashboard, user gets a side panel to view contacts (like valorant, csgo, discord, etc...)
-- [x] tasks-slice MVP
+- auth MVP
+  - [x] user can sign up, sign in, sign out
+- user-slice MVP
+  - [x] user can perform CRUD actions on their account data
+- contacts-slice MVP
+  - [x] user can perform basic CRUD actions on their associated contacts
+  - [x] on dashboard, displayed on entire right column, similar to common game ui's
+- tasks-slice MVP
   - [x] user can CRUD a task
-- [ ] listings-slice MVP
-  - [ ] user can CRUD a listing
+- listings-slice MVP
+  - [x] user can CRUD a listing
 - [ ] analytics-slice MVP
+  - [ ] filterable performance analytics for listings sold by year, quarter, month
 
 ### Full Features
 
-- [ ] auth / user-slice
+- animations
+
+  - [ ] <-> page transition between <Public /> routes
+  - [ ] contact, task, listing layout animation
+  - [ ] page transition layout animation between dashboard and individual pages
+  - [ ] any not from-center chart animations
+
+- React Query
+
+  - [ ] optimistic UI
+
+- Resend (Email Service)
+
+  - [ ] Account recovery, email verification, sending pdf reports, etc
+
+- MapBox
+
+  - [ ] address autocomplete
+
+- Amazon S3
+
+  - [ ] Avatar image upload
+  - [ ] listing images upload
+
+- auth / user-slice
 
   - [ ] refresh token
   - [ ] email confirmation
   - [ ] account recovery
   - [ ] 2fa opt-in
   - [ ] disable account
-  - [ ] framer-motion left/right page transitions between sign-in and sign-up
 
-- [ ] contacts-slice (depending on how other features are built out...)
+- contacts-slice
 
-  - [ ] listings may show potential contacts associated
-  - [ ] full contacts page
+  - [ ] full contacts page, grid layout, also like some game's ui
   - [ ] certain tasks may have associated contacts
   - [ ] sending follow up texts or emails to contacts, etc
-  - [ ] react-query set individual item on update
-  - [ ] optimistic updates for create, delete, update
-  - [ ] layout animations when deleting contact
-  - [ ] name autocomplete
-  - [ ] address autocomplete (mapbox...?)
+
   - [ ] members of same team can send contacts to eachother
   - [ ] infinite scroll pagination
-  - [ ] filter sort my date added, alphabetical,
+  - [ ] filter sort by date added, alphabetical, etc
   - [ ] search for contacts
 
-- [ ] tasks-slice
+- tasks-slice
 
   - [ ] can use something like @<Name> and autocomplete based on your contacts in notes section
-  - [ ] mapbox address auto fill
-  - [ ] can 'assign task to listing'
+  - [ ] can tag listing by listingID
+  - [ ] can tag contact by name or contactID
 
-- [ ] listings-slice
+- listings-slice
 
   - [ ] tag interested contacts to listings
   - [ ] image upload, s3
-  - [ ] mapbox address auto fill
   - [ ] tag contacts to listings
   - [ ] suggest contacts based on proximity?
 
-- [ ] detect purely mobile viewport and replace dialog components with [Vaul](https://github.com/emilkowalski/vaul)
+- analytics-slice
+
+  - [ ] generate pdf reports with email functionality ( resend )
+  - [ ] lead conversion rates
+  - [ ] avg days on market
+  - [ ] price trends / fluctuations (hmm...)
+  - [ ] # of listings handled, avg time to close lead, overall sales vol.
+
+- mobile dialog components
+  - [ ] detect purely mobile viewport and replace dialog components with [Vaul](https://github.com/emilkowalski/vaul)

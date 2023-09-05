@@ -34,6 +34,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   usersToContacts: many(usersToContacts),
   tasks: many(tasks),
   listings: many(listings),
+  soldListings: many(soldListings),
 }));
 
 export const contacts = pgTable("contacts", {
@@ -105,6 +106,9 @@ export const tasksRelations = relations(tasks, ({ one }) => ({
 // TODO: propertyType
 // single family, apartment, townhome, condo, duplex, etc..
 
+// status: 'sold' | 'market'
+// sold_at: Date
+
 export const listings = pgTable("listings", {
   id: serial("id").primaryKey(),
   userID: integer("user_id").references(() => users.id),
@@ -115,6 +119,8 @@ export const listings = pgTable("listings", {
   baths: integer("baths").notNull(),
   squareFeet: integer("sq_ft").notNull(),
   description: text("description").notNull(),
+  // isSold: boolean("is_sold").default(false),
+  // soldAt: timestamp("sold_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
@@ -125,6 +131,10 @@ export const listingsRelations = relations(listings, ({ one, many }) => ({
   }),
   tasks: many(tasks),
   listingsToContacts: many(listingsToContacts),
+  soldListings: one(soldListings, {
+    fields: [listings.id],
+    references: [soldListings.listingID],
+  }),
 }));
 
 export const listingsToContacts = pgTable(
@@ -153,5 +163,19 @@ export const listingsToContactsRelations = relations(listingsToContacts, ({ one 
   }),
 }));
 
-// table: soldListing
-// references: listingID ( property details ), contactID ( buyer details ), userID ( agent details )
+// pgTable: leadsOnListing??
+// for interested contacts on listing
+
+export const soldListings = pgTable("sold_listings", {
+  id: serial("id").primaryKey(),
+  listingID: integer("listing_id").references(() => listings.id),
+  userID: integer("user_id").references(() => users.id),
+  soldAt: timestamp("sold_at", { withTimezone: true }).defaultNow(),
+});
+
+export const soldListingsRelations = relations(soldListings, ({ one }) => ({
+  user: one(users, {
+    fields: [soldListings.userID],
+    references: [users.id],
+  }),
+}));

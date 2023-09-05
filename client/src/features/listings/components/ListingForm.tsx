@@ -11,13 +11,24 @@ import { Form } from '@/components/ui/form';
 import { SelectInput, TextAreaInput, TextInput } from '@/components/form';
 import { SubmitButton } from '@/components';
 
-import { FormListing, listingSchema } from '@/lib/validations/listings';
+import { listingSchema } from '@/lib/validations/listings';
 
 import type { FormMode } from '@/types';
 
+// TODO: need to reduce complexity here.
+export type ListingHTMLFormInputs = {
+  address: string;
+  description: string;
+  propertyType: string;
+  price: string;
+  bedrooms: string;
+  baths: string;
+  squareFeet: string;
+};
+
 interface ListingFormProps extends FormMode {
-  defaultValues: DeepPartial<ListingFields>;
-  onSubmit: (values: FormListing) => void;
+  defaultValues: DeepPartial<ListingHTMLFormInputs>;
+  onSubmit: (values: ListingHTMLFormInputs) => void;
   listingID?: number;
 }
 
@@ -59,12 +70,11 @@ export function ListingForm({
   defaultValues,
   onSubmit,
 }: ListingFormProps): JSX.Element {
-  const form = useForm<ListingFields>({
+  const form = useForm<ListingHTMLFormInputs>({
     resolver: zodResolver(listingSchema),
     defaultValues: defaultValues,
   });
 
-  console.log(form.getValues());
   return (
     <>
       <Form {...form}>
@@ -99,20 +109,24 @@ export function ListingForm({
           </div>
 
           <div className='flex items-center justify-between pt-2'>
-            <SelectInput<ListingFields, PropertyTypes, typeof propertyTypes>
+            <SelectInput<
+              ListingHTMLFormInputs,
+              PropertyTypes,
+              typeof propertyTypes
+            >
               name='propertyType'
               options={propertyTypes}
               placeholder='Property Type'
               control={form.control}
             />
             <div className='flex items-center gap-2'>
-              <SelectInput<ListingFields, Rooms, typeof rooms>
+              <SelectInput<ListingHTMLFormInputs, Rooms, typeof rooms>
                 name='bedrooms'
                 options={rooms}
                 placeholder='Bedrooms'
                 control={form.control}
               />
-              <SelectInput<ListingFields, Rooms, typeof rooms>
+              <SelectInput<ListingHTMLFormInputs, Rooms, typeof rooms>
                 name='baths'
                 options={rooms}
                 placeholder='Baths'

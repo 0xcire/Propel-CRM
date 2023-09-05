@@ -19,3 +19,7 @@
 - [Express / MongoDB Auth API](https://github.com/0xcire/typescript_api)
 - [Express / Postgres / Knex Auth](https://gist.github.com/laurenfazah/f9343ae8577999d301334fc68179b485)
 - [cookie based auth](https://stackoverflow.com/questions/17769011/how-does-cookie-based-authentication-work)
+
+## SQL
+
+- [joins reference](https://stackoverflow.com/questions/25685545/how-to-return-rows-from-left-table-not-found-in-right-table)

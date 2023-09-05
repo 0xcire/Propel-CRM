@@ -14,6 +14,7 @@ import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from './SubmitButton';
+import { Select } from './Select';
 
 import { AddContact } from '@/features/contacts/components/AddContact';
 import { ContactList } from '@/features/contacts/components/ContactList';
@@ -21,13 +22,31 @@ import { TaskList } from '@/features/tasks/components/TaskList';
 
 import { TaskDropdown } from '@/features/tasks/components/TaskDropdown';
 import { TaskProvider } from '@/features/tasks/context/TaskContext';
+
 import { AddListing } from '@/features/listings/components/AddListing';
 import { ListingList } from '@/features/listings/components/ListingList';
+
+import {
+  AnalyticsProvider,
+  useAnalyticsContext,
+} from '@/features/analytics/context/AnalyticsContext';
+import { SalesVolumeChart } from '@/features/analytics/components/SalesVolumeChart';
+import { AnalyticsHeader } from '@/features/analytics/components/AnalyticsHeader';
+
+// TODO: for analytics page view,
+// when filtering by year, maybe just listen for normal select change and fire useQuery when change
 
 const Protected = (): JSX.Element => {
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
+
+  // const { state: currentTimeFrame, setState: setCurrentTimeFrame } =
+  //   useAnalyticsContext();
+
+  const handleSelectChange = (val: string): void => {
+    console.log(val);
+  };
 
   useDocumentTitle('Dashboard | Propel CRM');
 
@@ -91,13 +110,16 @@ const Protected = (): JSX.Element => {
               </div>
             </TaskProvider>
           </div>
-          <div className='col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>
-            <div className='flex h-[60px] items-center justify-between px-4'>
-              <Typography variant='h4'>Analytics</Typography>
-              {/* default ytd */}
-              {/* filter for quarterly */}
-              {/* filter for monthly */}
-            </div>
+          <div className='relative col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>
+            <AnalyticsProvider>
+              <div className='flex h-[60px] items-center justify-between px-4'>
+                <AnalyticsHeader />
+              </div>
+
+              <div className='absolute h-[calc(100%-60px)] w-full'>
+                <SalesVolumeChart />
+              </div>
+            </AnalyticsProvider>
           </div>
         </div>
       </div>

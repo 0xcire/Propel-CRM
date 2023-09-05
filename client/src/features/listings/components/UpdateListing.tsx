@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { type ListingFields, ListingForm } from './ListingForm';
+import { ListingForm, ListingHTMLFormInputs } from './ListingForm';
 
 import { filterEqualFields } from '@/utils/form-data';
 
@@ -22,20 +22,18 @@ export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
   const [open, setOpen] = useState(false);
   const updateListing = useUpdateListing();
 
-  console.log(listing);
-
   const defaultValues = {
     address: listing.address,
     description: listing.description,
     propertyType: listing.propertyType,
     price: listing.price,
-    bedrooms: listing.bedrooms,
-    baths: listing.baths,
-    squareFeet: listing.squareFeet,
+    bedrooms: listing.bedrooms.toString(),
+    baths: listing.baths.toString(),
+    squareFeet: listing.squareFeet.toString(),
   };
 
-  function onSubmit(values: ListingFields): void {
-    const data: Partial<ListingFields> = filterEqualFields({
+  function onSubmit(values: ListingHTMLFormInputs): void {
+    const data: Partial<ListingHTMLFormInputs> = filterEqualFields({
       newData: values,
       originalData: listing,
     });

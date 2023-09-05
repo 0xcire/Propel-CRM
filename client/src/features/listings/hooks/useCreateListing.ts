@@ -5,12 +5,13 @@ import { createListing } from '../api';
 import { useToast } from '@/components/ui/use-toast';
 
 import { isAPIError } from '@/utils/error';
-import type { ListingResponse, NewListing } from '../types';
+import type { ListingResponse } from '../types';
+import { ListingHTMLFormInputs } from '../components/ListingForm';
 
 export const useCreateListing = (): UseMutationResult<
   ListingResponse,
   unknown,
-  NewListing,
+  ListingHTMLFormInputs,
   unknown
 > => {
   const { toast } = useToast();
