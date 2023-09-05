@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { ToasterToast } from '@/components/ui/use-toast';
 // import type { Control, FieldValues, Path } from 'react-hook-form';
 
@@ -35,3 +36,7 @@ export interface FormMode {
 // }
 
 // TODO: export interface ComponentWithChildren
+
+export interface ComponentWithChild {
+  children: ReactNode;
+}

@@ -28,6 +28,9 @@ import { ListingList } from '@/features/listings/components/ListingList';
 import { AnalyticsProvider } from '@/features/analytics/context/AnalyticsContext';
 import { SalesVolumeChart } from '@/features/analytics/components/SalesVolumeChart';
 import { AnalyticsHeader } from '@/features/analytics/components/AnalyticsHeader';
+import { DashboardItemHeader } from './Layout/DashboardItemHeader';
+import { DashboardGridItem } from './Layout/DashboardGridItem';
+import { DashboardItemContent } from './Layout/DashboardItemContent';
 
 // TODO: for analytics page view,
 // when filtering by year, maybe just listen for normal select change and fire useQuery when change
@@ -68,48 +71,54 @@ const Protected = (): JSX.Element => {
           />
         </div>
         <div className='grid h-full max-h-screen flex-1 grid-cols-12 grid-rows-6 gap-4 p-12 pb-10 xl:flex-1'>
-          <div className='relative col-start-1 col-end-10 row-start-1 row-end-4 rounded border shadow 2xl:col-end-11'>
-            <div className='flex h-[60px] items-center justify-between px-4'>
-              <Typography variant='h4'>Recent Listings</Typography>
-              <AddListing />
-            </div>
-            <div className='absolute h-[calc(100%-60px)] w-full'>
-              <ListingList />
-            </div>
-          </div>
+          <DashboardGridItem className='col-start-1 col-end-10 row-start-1 row-end-4 2xl:col-end-11'>
+            <>
+              <DashboardItemHeader>
+                <Typography variant='h4'>Recent Listings</Typography>
+                <AddListing />
+              </DashboardItemHeader>
 
-          <div className='relative col-start-10 col-end-13 row-start-1 row-end-7 rounded border shadow 2xl:col-start-11'>
-            <div className='flex h-[60px] items-center justify-between px-4'>
+              <DashboardItemContent>
+                <ListingList />
+              </DashboardItemContent>
+            </>
+          </DashboardGridItem>
+
+          <DashboardGridItem className='col-start-10 col-end-13 row-start-1 row-end-7 2xl:col-start-11'>
+            <DashboardItemHeader>
               <Typography variant='h4'>Contacts</Typography>
               <AddContact />
-            </div>
-            <div className='absolute h-[calc(100%-60px)] w-full'>
+            </DashboardItemHeader>
+
+            <DashboardItemContent>
               <ContactList />
-            </div>
-          </div>
-          <div className='relative col-start-1 col-end-4 row-start-4 row-end-7 rounded border shadow'>
+            </DashboardItemContent>
+          </DashboardGridItem>
+
+          <DashboardGridItem className='col-start-1 col-end-4 row-start-4 row-end-7'>
             <TaskProvider>
-              <div className='flex h-[60px] items-center justify-between px-4'>
+              <DashboardItemHeader>
                 <Typography variant='h4'>Tasks</Typography>
-
                 <TaskDropdown />
-              </div>
-              <div className='absolute h-[calc(100%-60px)] w-full'>
-                <TaskList />
-              </div>
-            </TaskProvider>
-          </div>
-          <div className='relative col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>
-            <AnalyticsProvider>
-              <div className='flex h-[60px] items-center justify-between px-4'>
-                <AnalyticsHeader />
-              </div>
+              </DashboardItemHeader>
 
-              <div className='absolute h-[calc(100%-60px)] w-full'>
+              <DashboardItemContent>
+                <TaskList />
+              </DashboardItemContent>
+            </TaskProvider>
+          </DashboardGridItem>
+
+          <DashboardGridItem className='col-start-4 col-end-10 row-start-4 row-end-7 2xl:col-end-11'>
+            <AnalyticsProvider>
+              <DashboardItemHeader>
+                <AnalyticsHeader />
+              </DashboardItemHeader>
+
+              <DashboardItemContent>
                 <SalesVolumeChart />
-              </div>
+              </DashboardItemContent>
             </AnalyticsProvider>
-          </div>
+          </DashboardGridItem>
         </div>
       </div>
     </>
