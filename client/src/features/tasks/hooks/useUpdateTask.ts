@@ -1,6 +1,9 @@
-import { type UseMutationResult, useMutation } from '@tanstack/react-query';
+import {
+  type UseMutationResult,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { updateTask } from '../api';
-import { queryClient } from '@/lib/react-query';
 import { useToast } from '@/components/ui/use-toast';
 import { isAPIError } from '@/utils/error';
 
@@ -13,6 +16,7 @@ export const useUpdateTask = (): UseMutationResult<
   unknown
 > => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateTask,
 

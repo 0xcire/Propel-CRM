@@ -1,5 +1,8 @@
-import { type UseMutationResult, useMutation } from '@tanstack/react-query';
-import { queryClient } from '@/lib/react-query';
+import {
+  type UseMutationResult,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import { updateListing } from '../api';
 
@@ -15,6 +18,7 @@ export const useUpdateListing = (): UseMutationResult<
   unknown
 > => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateListing,
     onSuccess: (data) => {

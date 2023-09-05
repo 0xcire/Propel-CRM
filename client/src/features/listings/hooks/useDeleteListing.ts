@@ -1,5 +1,8 @@
-import { type UseMutationResult, useMutation } from '@tanstack/react-query';
-import { queryClient } from '@/lib/react-query';
+import {
+  type UseMutationResult,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { deleteListing } from '../api';
 
 import { useToast } from '@/components/ui/use-toast';
@@ -14,6 +17,7 @@ export const useDeleteListing = (): UseMutationResult<
   unknown
 > => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: deleteListing,

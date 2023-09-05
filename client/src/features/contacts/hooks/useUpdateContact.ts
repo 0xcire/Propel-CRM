@@ -1,10 +1,13 @@
-import { type UseMutationResult, useMutation } from '@tanstack/react-query';
-import { updateContact, type UpdateContactParams } from '../api';
-import { queryClient } from '@/lib/react-query';
+import {
+  type UseMutationResult,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { updateContact } from '../api';
 import { useToast } from '@/components/ui/use-toast';
 import { isAPIError } from '@/utils/error';
 
-import type { ContactResponse } from '../types';
+import type { ContactResponse, UpdateContactParams } from '../types';
 
 export const useUpdateContact = (): UseMutationResult<
   ContactResponse,
@@ -13,6 +16,7 @@ export const useUpdateContact = (): UseMutationResult<
   unknown
 > => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateContact,
     // onMutate: async (updatedContact) => {

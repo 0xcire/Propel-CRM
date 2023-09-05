@@ -6,8 +6,8 @@
 
 import { useNavigate } from 'react-router-dom';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useLogout, useUser } from '@/lib/react-query-auth';
-import { queryClient } from '@/lib/react-query';
 
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 
@@ -39,6 +39,7 @@ const Protected = (): JSX.Element => {
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   useDocumentTitle('Dashboard | Propel CRM');
 

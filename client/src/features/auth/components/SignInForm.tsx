@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { type SubmitHandler } from 'react-hook-form';
 
 import { useLogin } from '@/lib/react-query-auth';
-import { queryClient } from '@/lib/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { useToast } from '@/components/ui/use-toast';
 import { Typography } from '@/components/ui/typography';
@@ -15,6 +15,7 @@ import { isAPIError } from '@/utils/error';
 
 export function SignInForm(): JSX.Element {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const login = useLogin({
     onSuccess: () => {
