@@ -8,7 +8,6 @@ import { isAPIError } from '@/utils/error';
 
 import type { SalesVolume } from '../types';
 
-// TODO: add filter params to queryKey
 export const useSalesVolume = (): UseQueryResult<SalesVolume, unknown> => {
   const { toast } = useToast();
   return useQuery({

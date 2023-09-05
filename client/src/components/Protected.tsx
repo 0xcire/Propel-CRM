@@ -113,11 +113,7 @@ const Protected = (): JSX.Element => {
           <div className='relative col-start-4 col-end-10 row-start-4 row-end-7 rounded border shadow 2xl:col-end-11'>
             <AnalyticsProvider>
               <div className='flex h-[60px] items-center justify-between px-4'>
-                {/* Analytics */}
                 <AnalyticsHeader />
-
-                {/* default ytd */}
-                {/* filter for quarterly */}
               </div>
 
               <div className='absolute h-[calc(100%-60px)] w-full'>

@@ -36,11 +36,11 @@ export function SalesVolumeChart(): JSX.Element {
   const { state: currentTimeFrame } = useAnalyticsContext();
 
   const minmax = useMemo(() => {
-    if (salesVolume.isFetched && salesVolume.data) {
+    if (salesVolume.data) {
       const volumeArray = salesVolume.data?.map((data) => data.volume);
       return [Math.min(...volumeArray), Math.max(...volumeArray)] as const;
     }
-  }, [salesVolume]);
+  }, [salesVolume.data]);
 
   const filter =
     currentTimeFrame === 'YTD'

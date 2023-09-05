@@ -2,35 +2,18 @@ import type { Request, Response } from "express";
 import { db } from "../db";
 import { listings, soldListings } from "../db/schema";
 import { and, between, eq, isNotNull, sql } from "drizzle-orm";
+import { getExistingYears, getSalesDataByYear } from "../db/queries/analytics";
 
 export const getPeriodicSalesVolume = async (req: Request, res: Response) => {
   const userID = req.user.id;
-  // const {range} = req.query
-  // range = 1-1-2023
-  console.log("GET PERIODIC SALES VOLUME", req.query);
+  // const {year} = req.query
+  // year = 2023
 
   // TODO: need to update schema to allow user ( agent ) to update sale price
   // also attach contact id to soldListings table to include additional info
+  // for additional analytics features
 
-  const month = sql`TO_CHAR(${soldListings.soldAt} AT TIME ZONE 'UTC', 'Mon')`;
-  const monthNumberFromName = sql`EXTRACT(MONTH FROM ${soldListings.soldAt})`;
-
-  const usersSalesVolume = await db
-    .select({
-      month: month,
-      volume: sql<number>`sum(${listings.price})`,
-    })
-    .from(listings)
-    .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
-    .where(
-      and(
-        eq(listings.userID, userID),
-        isNotNull(soldListings.listingID),
-        between(soldListings.soldAt, new Date("1-1-2023"), new Date("12-31-2023"))
-      )
-    )
-    .groupBy(month, monthNumberFromName)
-    .orderBy(monthNumberFromName);
+  const usersSalesVolume = await getSalesDataByYear(userID);
 
   return res.status(200).json({
     message: "",
@@ -39,9 +22,9 @@ export const getPeriodicSalesVolume = async (req: Request, res: Response) => {
 };
 
 export const getExistingSalesYears = async (req: Request, res: Response) => {
-  const years = (
-    await db.selectDistinct({ year: sql`EXTRACT(YEAR FROM ${soldListings.soldAt})` }).from(soldListings)
-  ).map((data) => data.year);
+  const userID = req.user.id;
+
+  const years = await getExistingYears(userID);
 
   return res.status(200).json({
     message: "",
