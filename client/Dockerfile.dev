@@ -1,4 +1,7 @@
-FROM node:20-bullseye-slim
+# TODO: revert to node:20 when possible
+# look out for TypeError: Cannot redefine property: File
+
+FROM node:18-bullseye-slim
 
 WORKDIR /usr/src/app
 COPY package*.json package-lock*.json ./
