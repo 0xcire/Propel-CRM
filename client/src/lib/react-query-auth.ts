@@ -6,6 +6,10 @@ import type { SignInFields as LoginCredentials } from '@/features/auth/component
 import type { SignUpFields as SignUpCredentials } from '@/features/auth/components/AuthForm';
 import type { User } from '@/types';
 
+// TODO: just implement this myself, overwrite default onError to not display toast
+// currently on initial page load toast displaying with: Session does not exist
+// bad UX
+
 const userFn = async (): Promise<User | undefined> => {
   const { user } = await getMe();
   return user;

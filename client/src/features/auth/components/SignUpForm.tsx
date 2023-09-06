@@ -6,15 +6,11 @@ import { type SubmitHandler, DeepPartial } from 'react-hook-form';
 import { useRegister } from '@/lib/react-query-auth';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { useToast } from '@/components/ui/use-toast';
 import { Typography } from '@/components/ui/typography';
 
 import { AuthForm, type SignUpFields } from './AuthForm';
 
-import { isAPIError } from '@/utils/error';
-
 export function SignUpForm(): JSX.Element {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const register = useRegister({
@@ -22,14 +18,6 @@ export function SignUpForm(): JSX.Element {
       queryClient.invalidateQueries(['authenticated-user']);
       navigate('/protected');
     },
-    onError: (error) => {
-      if (isAPIError(error)) {
-        return toast({
-          description: error.message,
-        });
-      }
-    },
-    useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
   });
   const defaultValues: DeepPartial<SignUpFields> = {
     name: '',

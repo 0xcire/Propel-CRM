@@ -34,6 +34,5 @@ export const useDeleteTask = (): UseMutationResult<
         });
       }
     },
-    useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
   });
 };

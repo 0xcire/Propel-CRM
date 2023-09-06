@@ -28,7 +28,10 @@ export function TaskDropdown(): JSX.Element {
             className='cursor-pointer'
           />
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent
+          align='end'
+          data-align='start'
+        >
           <DialogTrigger asChild>
             <DropdownMenuItem className='cursor-pointer'>
               <>

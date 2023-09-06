@@ -6,15 +6,11 @@ import { type SubmitHandler } from 'react-hook-form';
 import { useLogin } from '@/lib/react-query-auth';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { useToast } from '@/components/ui/use-toast';
 import { Typography } from '@/components/ui/typography';
 
 import { type SignInFields, AuthForm } from './AuthForm';
 
-import { isAPIError } from '@/utils/error';
-
 export function SignInForm(): JSX.Element {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const login = useLogin({
@@ -22,14 +18,6 @@ export function SignInForm(): JSX.Element {
       queryClient.invalidateQueries(['authenticated-user']);
       navigate('/protected');
     },
-    onError: (error) => {
-      if (isAPIError(error)) {
-        return toast({
-          description: `${error.message}`,
-        });
-      }
-    },
-    useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
   });
 
   const defaultValues = {

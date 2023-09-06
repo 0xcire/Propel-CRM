@@ -36,6 +36,5 @@ export const useUpdateTask = (): UseMutationResult<
         });
       }
     },
-    useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
   });
 };

@@ -15,6 +15,10 @@ import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from './SubmitButton';
 
+import { DashboardItemHeader } from './Layout/DashboardItemHeader';
+import { DashboardGridItem } from './Layout/DashboardGridItem';
+import { DashboardItemContent } from './Layout/DashboardItemContent';
+
 import { AddContact } from '@/features/contacts/components/AddContact';
 import { ContactList } from '@/features/contacts/components/ContactList';
 import { TaskList } from '@/features/tasks/components/TaskList';
@@ -28,9 +32,6 @@ import { ListingList } from '@/features/listings/components/ListingList';
 import { AnalyticsProvider } from '@/features/analytics/context/AnalyticsContext';
 import { SalesVolumeChart } from '@/features/analytics/components/SalesVolumeChart';
 import { AnalyticsHeader } from '@/features/analytics/components/AnalyticsHeader';
-import { DashboardItemHeader } from './Layout/DashboardItemHeader';
-import { DashboardGridItem } from './Layout/DashboardGridItem';
-import { DashboardItemContent } from './Layout/DashboardItemContent';
 
 // TODO: for analytics page view,
 // when filtering by year, maybe just listen for normal select change and fire useQuery when change
@@ -62,7 +63,6 @@ const Protected = (): JSX.Element => {
                 {},
                 {
                   onSuccess: () => {
-                    queryClient.invalidateQueries(['authenticated-user']);
                     queryClient.clear();
                     navigate('/');
                   },

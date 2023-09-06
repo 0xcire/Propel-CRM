@@ -37,6 +37,5 @@ export const useCreateListing = (): UseMutationResult<
         });
       }
     },
-    useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
   });
 };
