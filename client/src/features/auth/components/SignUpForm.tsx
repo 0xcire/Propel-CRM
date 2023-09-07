@@ -1,24 +1,16 @@
 import { useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { type SubmitHandler, DeepPartial } from 'react-hook-form';
 
 import { useRegister } from '@/lib/react-query-auth';
-import { useQueryClient } from '@tanstack/react-query';
 
 import { Typography } from '@/components/ui/typography';
 
 import { AuthForm, type SignUpFields } from './AuthForm';
 
 export function SignUpForm(): JSX.Element {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const register = useRegister({
-    onSuccess: () => {
-      queryClient.invalidateQueries(['authenticated-user']);
-      navigate('/protected');
-    },
-  });
+  const register = useRegister();
   const defaultValues: DeepPartial<SignUpFields> = {
     name: '',
     username: '',

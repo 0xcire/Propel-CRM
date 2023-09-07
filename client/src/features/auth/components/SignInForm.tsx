@@ -1,25 +1,16 @@
 import { useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { type SubmitHandler } from 'react-hook-form';
 
 import { useLogin } from '@/lib/react-query-auth';
-import { useQueryClient } from '@tanstack/react-query';
 
 import { Typography } from '@/components/ui/typography';
 
 import { type SignInFields, AuthForm } from './AuthForm';
 
 export function SignInForm(): JSX.Element {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const login = useLogin();
-  // {
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries(['authenticated-user']);
-  //     navigate('/protected');
-  //   },
-  // }
 
   const defaultValues = {
     email: '',

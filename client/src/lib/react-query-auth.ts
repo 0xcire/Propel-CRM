@@ -1,25 +1,24 @@
-// import { configureAuth } from 'react-query-auth';
+// from: https://github.com/alan2207/react-query-auth/blob/master/src/index.tsx
+// had issue preventing default onError cb from firing in queryConfig
+
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { getMe, signin, signup, signout } from '@/features/auth';
+
+import {
+  type UseMutationResult,
+  type UseQueryResult,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import type {
   SignInFields,
   SignUpFields,
 } from '@/features/auth/components/AuthForm';
 import type { User } from '@/types';
-import {
-  UseMutationResult,
-  UseQueryResult,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-// TODO: just implement this myself, overwrite default onError to not display toast
-// currently on initial page load toast displaying with: Session does not exist
-// bad UX
 
 const userFn = async (): Promise<User | undefined> => {
   const { user } = await getMe();
@@ -44,14 +43,6 @@ const logoutFn = async (): Promise<void> => {
   await signout();
 };
 
-// export const { useUser, useLogin, useRegister, useLogout, AuthLoader } =
-//   configureAuth({
-//     userFn,
-//     loginFn,
-//     registerFn,
-//     logoutFn,
-//   });
-
 export const useUser = (): UseQueryResult<User | undefined, unknown> => {
   const queryClient = useQueryClient();
 
@@ -66,7 +57,7 @@ export const useUser = (): UseQueryResult<User | undefined, unknown> => {
     queryKey: ['user'],
     queryFn: userFn,
     retry: false,
-    // staleTime:
+    staleTime: 30 * 60 * 1000, // 30 min
     onSuccess: (data) => {
       setUser(data);
     },
@@ -83,20 +74,11 @@ export const useLogin = (): UseMutationResult<
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const setUser = useCallback(
-    (data: User | undefined) => {
-      queryClient.setQueryData(['user'], data);
-    },
-    [queryClient]
-  );
-
   return useMutation({
     mutationFn: loginFn,
-    onSuccess: async (data) => {
-      //   setUser(data.user);
+    onSuccess: () => {
       queryClient.invalidateQueries(['user']);
       navigate('/protected');
-      //   return queryClient.invalidateQueries(['user']);
     },
     onError: () => undefined,
   });
@@ -109,19 +91,13 @@ export const useRegister = (): UseMutationResult<
   unknown
 > => {
   const queryClient = useQueryClient();
-
-  const setUser = useCallback(
-    (data: User | undefined) => {
-      queryClient.setQueryData(['user'], data);
-    },
-    [queryClient]
-  );
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: registerFn,
-    onSuccess: (data) => {
-      setUser(data);
-      //   queryClient.invalidateQueries(['user']);
+    onSuccess: () => {
+      queryClient.invalidateQueries(['user']);
+      navigate('/protected');
     },
   });
 };
@@ -133,20 +109,13 @@ export const useLogout = (): UseMutationResult<
   unknown
 > => {
   const queryClient = useQueryClient();
-
-  const setUser = useCallback(
-    (data: User | undefined) => {
-      queryClient.setQueryData(['user'], data);
-    },
-    [queryClient]
-  );
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: logoutFn,
     onSuccess: () => {
-      // setUser(undefined);
       queryClient.clear();
-      //   queryClient.invalidateQueries(['user']);
+      navigate('/auth/signin');
     },
   });
 };

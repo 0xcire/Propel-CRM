@@ -17,7 +17,6 @@ import { ListingForm, ListingHTMLFormInputs } from './ListingForm';
 
 export function AddListing(): JSX.Element {
   const [open, setOpen] = useState(false);
-  // TODO: replace useUser with custom hook, context, or etc
   const user = useUser();
   const createListing = useCreateListing();
 

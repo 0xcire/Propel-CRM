@@ -1,12 +1,9 @@
 // TODO: obviously this should be refactored into <Dashboard /> once everything is built out
-// TODO: and also obviously need to refactor out layout components and
-// <Tasks />, <Contacts /> etc etc
+// TODO: and also obviously need to refactor out <TaskDashboardView />, <ContactsDashboardView /> etc etc
 // TODO: fix mobile navbar trigger position
-// TODO: layout components, grid item -> header wrapper
 
 import { useNavigate } from 'react-router-dom';
 
-import { useQueryClient } from '@tanstack/react-query';
 import { useLogout, useUser } from '@/lib/react-query-auth';
 
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
@@ -40,7 +37,6 @@ const Protected = (): JSX.Element => {
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   useDocumentTitle('Dashboard | Propel CRM');
 
@@ -58,17 +54,7 @@ const Protected = (): JSX.Element => {
           <SubmitButton
             text='Logout'
             isLoading={logout.isLoading}
-            onClick={(): void =>
-              logout.mutate(
-                {},
-                {
-                  onSuccess: () => {
-                    queryClient.clear();
-                    navigate('/');
-                  },
-                }
-              )
-            }
+            onClick={(): void => logout.mutate()}
           />
         </div>
         <div className='grid h-full max-h-screen flex-1 grid-cols-12 grid-rows-6 gap-4 p-12 pb-10 xl:flex-1'>
