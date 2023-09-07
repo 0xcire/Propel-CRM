@@ -13,12 +13,13 @@ import { type SignInFields, AuthForm } from './AuthForm';
 export function SignInForm(): JSX.Element {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const login = useLogin({
-    onSuccess: () => {
-      queryClient.invalidateQueries(['authenticated-user']);
-      navigate('/protected');
-    },
-  });
+  const login = useLogin();
+  // {
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(['authenticated-user']);
+  //     navigate('/protected');
+  //   },
+  // }
 
   const defaultValues = {
     email: '',

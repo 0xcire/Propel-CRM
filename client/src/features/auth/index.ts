@@ -1,2 +1,2 @@
 export { getMe, signin, signup, signout } from './api';
-export type { SigninCredentials, SignupCredentials } from './types';
+export type { SignInFields, SignUpFields } from './types';

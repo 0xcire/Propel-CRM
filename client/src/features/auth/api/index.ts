@@ -1,4 +1,4 @@
-import type { SigninCredentials, SignupCredentials } from '@/features/auth';
+import type { SignInFields, SignUpFields } from '@/features/auth';
 import { Get, Post, handleAPIResponse } from '@/lib/fetch';
 
 import type { UserResponse } from '@/types';
@@ -8,7 +8,7 @@ export const getMe = async (): Promise<UserResponse> => {
 };
 
 export const signin = async (
-  credentials: SigninCredentials
+  credentials: SignInFields
 ): Promise<UserResponse> => {
   return Post({
     endpoint: 'auth/signin',
@@ -17,7 +17,7 @@ export const signin = async (
 };
 
 export const signup = async (
-  credentials: SignupCredentials
+  credentials: SignUpFields
 ): Promise<UserResponse> => {
   return Post({
     endpoint: 'auth/signup',

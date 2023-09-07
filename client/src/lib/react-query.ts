@@ -4,7 +4,7 @@ import { QueryClient, type DefaultOptions } from '@tanstack/react-query';
 
 const queryConfig: DefaultOptions = {
   queries: {
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
     retry: false,
     // TODO: implement react query auth myself to revert this comment
     // onError: (error) => {

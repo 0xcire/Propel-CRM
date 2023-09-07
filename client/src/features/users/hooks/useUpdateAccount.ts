@@ -4,7 +4,6 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { updateAccount } from '../api';
-import { isAPIError } from '@/utils/error';
 import { useToast } from '@/components/ui/use-toast';
 
 import type { UpdateAccountParams } from '../types';
@@ -27,13 +26,6 @@ export const useUpdateAccount = (): UseMutationResult<
       return queryClient.invalidateQueries({
         queryKey: ['authenticated-user'],
       });
-    },
-    onError: (error) => {
-      if (isAPIError(error)) {
-        return toast({
-          description: `${error.message}`,
-        });
-      }
     },
   });
 };

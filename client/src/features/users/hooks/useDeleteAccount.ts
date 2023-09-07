@@ -6,7 +6,6 @@ import {
 } from '@tanstack/react-query';
 
 import { deleteAccount } from '../api';
-import { isAPIError } from '@/utils/error';
 
 import { useToast } from '@/components/ui/use-toast';
 
@@ -30,13 +29,5 @@ export const useDeleteAccount = (): UseMutationResult<
       });
       navigate('/auth/signup');
     },
-    onError: (error) => {
-      if (isAPIError(error)) {
-        return toast({
-          description: `${error.message}`,
-        });
-      }
-    },
-    useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
   });
 };
