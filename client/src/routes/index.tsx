@@ -1,9 +1,11 @@
-import { type RouteObject, useRoutes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import { useUser } from '@/lib/react-query-auth';
 import { publicRoutes } from './public';
 import { privateRoutes } from './private';
 import { Welcome, NotFound } from '@/features/misc';
 // import { Spinner } from '@/components';
+
+import type { RouteObject } from 'react-router-dom';
 
 export const Routes = (): JSX.Element => {
   const user = useUser();

@@ -20,24 +20,22 @@ export const useDeleteContact = (): UseMutationResult<
   return useMutation({
     mutationFn: deleteContact,
     onMutate: async (deletedContactID) => {
-      console.log(deletedContactID);
       await queryClient.cancelQueries(['contacts']);
 
       const { contacts: previousContacts } = queryClient.getQueryData([
         'contacts',
       ]) as ContactResponse;
 
-      queryClient.setQueryData(
-        ['contacts'],
-        (old: ContactResponse | undefined) => {
-          return {
-            message: '',
-            contacts: old?.contacts?.filter(
-              (contact) => contact.id !== deletedContactID
-            ),
-          };
-        }
+      const optimisticContacts = previousContacts.filter(
+        (contact) => contact.id !== deletedContactID
       );
+
+      queryClient.setQueryData(['contacts'], () => {
+        return {
+          message: '',
+          contacts: optimisticContacts,
+        };
+      });
 
       return { previousContacts };
     },

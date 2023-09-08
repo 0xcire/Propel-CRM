@@ -133,12 +133,6 @@ export const deleteContact = async (req: Request, res: Response) => {
 
     let deletedContact;
 
-    if (id) {
-      return res.status(400).json({
-        message: "Error deleting contact.",
-      });
-    }
-
     const relations = await getContactRelations(+id);
 
     if (relations.length === 1) {

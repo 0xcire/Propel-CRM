@@ -1,9 +1,10 @@
 import { BaseResponse } from '@/types';
 import { ListingHTMLFormInputs } from '../components/ListingForm';
 
+// TODO: kind of bad type due to react query
 export type Listing = {
-  id: number;
-  createdAt: Date | null;
+  id?: number;
+  createdAt?: Date | null;
   address: string;
   userID: number | null;
   propertyType: string;

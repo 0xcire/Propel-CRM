@@ -24,13 +24,13 @@ export const useCreateContact = (
         'contacts',
       ]) as ContactResponse;
 
-      const newContacts = previousContacts?.map((contact) => contact);
-      newContacts?.unshift(newContact);
+      const optimisticContacts = previousContacts.map((contact) => contact);
+      optimisticContacts.unshift(newContact);
 
       queryClient.setQueryData(['contacts'], () => {
         return {
           message: '',
-          contacts: newContacts,
+          contacts: optimisticContacts,
         };
       });
 

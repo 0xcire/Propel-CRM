@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { type DeepPartial, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { DeleteListing } from './DeleteListing';
@@ -13,6 +13,7 @@ import { SubmitButton } from '@/components';
 
 import { listingSchema } from '@/lib/validations/listings';
 
+import type { DeepPartial } from 'react-hook-form';
 import type { FormMode } from '@/types';
 
 // TODO: need to reduce complexity here.
@@ -26,9 +27,10 @@ export type ListingHTMLFormInputs = {
   squareFeet: string;
 };
 
+//
 interface ListingFormProps extends FormMode {
   defaultValues: DeepPartial<ListingHTMLFormInputs>;
-  onSubmit: (values: ListingHTMLFormInputs) => void;
+  onSubmit: (values: ListingFields) => void;
   listingID?: number;
 }
 

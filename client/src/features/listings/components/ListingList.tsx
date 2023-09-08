@@ -3,6 +3,9 @@ import { useListings } from '../hooks/useListings';
 import { Spinner } from '@/components';
 
 import { Listing } from './Listing';
+// import { memo } from 'react';
+
+// const MemoizedListing = memo(Listing);
 
 export function ListingList(): JSX.Element {
   const listings = useListings();

@@ -1,5 +1,6 @@
 import type { BaseResponse } from '@/types';
 
+// TODO: fix. no createdAt field
 export type Contact = {
   id?: number;
   name: string;
@@ -17,7 +18,7 @@ export type ContactAsProp = {
 };
 
 export interface ContactResponse extends BaseResponse {
-  contacts: Contacts | undefined;
+  contacts: Contacts;
 }
 
 export type UpdateContactParams = {

@@ -23,19 +23,23 @@ export const useUpdateContact = (
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateContact,
-    onMutate: async (updatedContact) => {
+    onMutate: async (updateData) => {
       await queryClient.cancelQueries(['contacts']);
 
       setOpen(false);
 
-      const updatedData = {
-        ...updatedContact.data,
-        id: updatedContact.id,
+      const updatedContact = {
+        ...updateData.data,
+        id: updateData.id,
       };
 
       const { contacts: previousContacts } = queryClient.getQueryData([
         'contacts',
       ]) as ContactResponse;
+
+      const optimisticContacts = previousContacts.map((contact) => {
+        return contact.id === updatedContact.id ? updatedContact : contact;
+      });
 
       // TODO: figure out undo logic, pause mutation and set toast duration length
 
@@ -49,20 +53,14 @@ export const useUpdateContact = (
       //   setTimeout(() => {
       //     resolve();
       //   }, 1000);
-      // });
+      // })
 
-      // TODO: type Contact should not be optional.
-      queryClient.setQueryData(
-        ['contacts'],
-        (old: ContactResponse | undefined) => {
-          return {
-            message: '',
-            contacts: old?.contacts?.map((contact) => {
-              return contact.id === updatedData.id ? updatedData : contact;
-            }),
-          };
-        }
-      );
+      queryClient.setQueryData(['contacts'], () => {
+        return {
+          message: '',
+          contacts: optimisticContacts,
+        };
+      });
 
       return { previousContacts, updatedContact };
     },

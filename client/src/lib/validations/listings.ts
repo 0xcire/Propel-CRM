@@ -24,5 +24,3 @@ export const listingSchema = z
     baths: +schema.baths,
     squareFeet: +schema.squareFeet,
   }));
-
-export type FormListing = z.infer<typeof listingSchema>;
