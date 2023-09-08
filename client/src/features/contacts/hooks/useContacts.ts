@@ -3,7 +3,10 @@ import { getContacts } from '../api';
 
 import type { Contacts } from '../types';
 
-export const useContacts = (): UseQueryResult<Contacts, unknown> => {
+export const useContacts = (): UseQueryResult<
+  Contacts | undefined,
+  unknown
+> => {
   return useQuery({
     queryKey: ['contacts'],
     queryFn: getContacts,

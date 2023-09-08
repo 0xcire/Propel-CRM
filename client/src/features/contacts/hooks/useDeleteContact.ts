@@ -19,20 +19,47 @@ export const useDeleteContact = (): UseMutationResult<
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteContact,
+    onMutate: async (deletedContactID) => {
+      console.log(deletedContactID);
+      await queryClient.cancelQueries(['contacts']);
+
+      const { contacts: previousContacts } = queryClient.getQueryData([
+        'contacts',
+      ]) as ContactResponse;
+
+      queryClient.setQueryData(
+        ['contacts'],
+        (old: ContactResponse | undefined) => {
+          return {
+            message: '',
+            contacts: old?.contacts?.filter(
+              (contact) => contact.id !== deletedContactID
+            ),
+          };
+        }
+      );
+
+      return { previousContacts };
+    },
     onSuccess: (data) => {
       toast({
         description: data.message,
       });
-      return queryClient.invalidateQueries({
-        queryKey: ['contacts'],
-      });
     },
-    onError: (error) => {
+    onError: (error, deletedContactID, context) => {
       if (isAPIError(error)) {
         return toast({
           description: `${error.message}`,
         });
       }
+
+      queryClient.setQueryData(['contacts'], {
+        message: '',
+        contacts: context?.previousContacts,
+      });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(['contacts']);
     },
   });
 };

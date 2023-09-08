@@ -5,6 +5,8 @@ type FilterFieldParams = {
   originalData: Record<string, unknown>;
 };
 
+// TODO: due to optimistic ui logic,
+// consider removing all instances of this, and mmoving logic to sql
 export const filterEqualFields = ({
   newData,
   originalData,

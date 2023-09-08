@@ -1,7 +1,7 @@
 import type { BaseResponse } from '@/types';
 
 export type Contact = {
-  id: number;
+  id?: number;
   name: string;
   email: string;
   phoneNumber: string;
@@ -17,10 +17,10 @@ export type ContactAsProp = {
 };
 
 export interface ContactResponse extends BaseResponse {
-  contacts: Contacts;
+  contacts: Contacts | undefined;
 }
 
 export type UpdateContactParams = {
   id: number;
-  data: Partial<NewContact>;
+  data: NewContact;
 };

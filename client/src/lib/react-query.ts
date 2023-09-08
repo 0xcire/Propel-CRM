@@ -6,14 +6,13 @@ const queryConfig: DefaultOptions = {
   queries: {
     refetchOnWindowFocus: false,
     retry: false,
-    // TODO: implement react query auth myself to revert this comment
-    // onError: (error) => {
-    //   if (isAPIError(error)) {
-    //     return toast({
-    //       description: `${error.message}`,
-    //     });
-    //   }
-    // },
+    onError: (error) => {
+      if (isAPIError(error)) {
+        return toast({
+          description: `${error.message}`,
+        });
+      }
+    },
     useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
   },
   mutations: {

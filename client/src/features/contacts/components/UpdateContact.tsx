@@ -14,30 +14,23 @@ import {
 } from '@/components/ui/dialog';
 import { ContactForm, type UpdateContactFields } from './ContactForm';
 
-import { filterEqualFields } from '@/utils/form-data';
-
-import type { NewContact, ContactAsProp } from '../types';
+import type { ContactAsProp } from '../types';
 
 export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
   const [open, setOpen] = useState(false);
-  const updateContact = useUpdateContact();
+  const updateContact = useUpdateContact(setOpen);
 
   const defaultValues: DeepPartial<UpdateContactFields> = {
     name: contact.name,
     email: contact.email,
     phoneNumber: contact.phoneNumber,
     address: contact.address,
-    verifyPassword: '',
   };
 
   function onSubmit(values: UpdateContactFields): void {
-    const data: Partial<NewContact> = filterEqualFields({
-      newData: values,
-      originalData: contact,
-    });
-
     updateContact.mutate(
-      { id: contact.id, data: data },
+      // TODO: come back and address this type cast
+      { id: contact.id as number, data: values },
       {
         onSuccess: () => {
           setOpen(false);
