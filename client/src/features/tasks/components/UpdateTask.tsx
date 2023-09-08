@@ -29,7 +29,7 @@ type TaskProps = {
 export function UpdateTask({ task }: TaskProps): JSX.Element {
   const [open, setOpen] = useState(false);
 
-  const updateTask = useUpdateTask();
+  const updateTask = useUpdateTask(setOpen);
 
   const user = useUser();
 

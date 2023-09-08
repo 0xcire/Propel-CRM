@@ -2,8 +2,8 @@ import { priorityOptions } from '@/config';
 import type { BaseResponse } from '@/types';
 
 export type Task = {
-  id: number;
-  createdAt: Date | undefined;
+  id?: number;
+  createdAt?: Date | undefined;
   userID: number | undefined;
   title: string;
   description: string | undefined;
