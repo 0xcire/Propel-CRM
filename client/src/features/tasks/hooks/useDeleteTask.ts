@@ -4,15 +4,13 @@ import { useToast } from '@/components/ui/use-toast';
 import { isAPIError } from '@/utils/error';
 
 import type { UseMutationResult } from '@tanstack/react-query';
-import type { TaskResponse, Tasks } from '../types';
+import type { TaskContext, TaskResponse } from '../types';
 
 export const useDeleteTask = (): UseMutationResult<
   TaskResponse,
   unknown,
   number,
-  {
-    previousTasks: Tasks;
-  }
+  TaskContext
 > => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -22,17 +20,17 @@ export const useDeleteTask = (): UseMutationResult<
     onMutate: async (deletedTaskID) => {
       await queryClient.cancelQueries(['tasks', { completed: 'false' }]);
 
-      // TODO: common logic. extract
-      const { tasks: previousTasks } = queryClient.getQueryData([
+      const taskQueryData = queryClient.getQueryData<TaskResponse>([
         'tasks',
         { completed: 'false' },
-      ]) as TaskResponse;
+      ]);
 
-      const optimisticTasks = previousTasks.filter(
+      const previousTasks = taskQueryData?.tasks;
+
+      const optimisticTasks = previousTasks?.filter(
         (task) => task.id !== deletedTaskID
       );
 
-      // TODO: common logic. extract
       queryClient.setQueryData(['tasks', { completed: 'false' }], () => {
         return {
           message: '',

@@ -6,13 +6,10 @@ import { useToast } from '@/components/ui/use-toast';
 
 import { isAPIError } from '@/utils/error';
 
-import type { Dispatch, SetStateAction } from 'react';
 import type { UseMutationResult } from '@tanstack/react-query';
 import type { ListingResponse, UpdateListingParams } from '../types';
 
-export const useUpdateListing = (
-  setOpen: Dispatch<SetStateAction<boolean>>
-): UseMutationResult<
+export const useUpdateListing = (): UseMutationResult<
   ListingResponse,
   unknown,
   UpdateListingParams,
@@ -23,57 +20,19 @@ export const useUpdateListing = (
   return useMutation({
     mutationFn: updateListing,
 
-    onMutate: async (updateData) => {
-      await queryClient.cancelQueries(['listings']);
-
-      setOpen(false);
-
-      const updatedListing = {
-        ...updateData.data,
-        id: updateData.id,
-      };
-
-      const { listings: previousListings } = queryClient.getQueryData([
-        'listings',
-      ]) as ListingResponse;
-
-      const optimisticListings = previousListings.map((listing) => {
-        return listing.id === updatedListing.id ? updatedListing : listing;
-      });
-
-      queryClient.setQueryData(['listings'], () => {
-        return {
-          message: '',
-          listings: optimisticListings,
-        };
-      });
-
-      return { previousListings };
-    },
-
     onSuccess: (data) => {
       toast({
         description: data.message,
       });
+      queryClient.invalidateQueries(['listings']);
     },
 
-    onError: (error, updateData, previousListings) => {
+    onError: (error) => {
       if (isAPIError(error)) {
         return toast({
           description: `${error.message}`,
         });
       }
-
-      queryClient.setQueryData(['listings'], () => {
-        return {
-          message: '',
-          listings: previousListings,
-        };
-      });
-    },
-
-    onSettled: () => {
-      queryClient.invalidateQueries(['listings']);
     },
   });
 };

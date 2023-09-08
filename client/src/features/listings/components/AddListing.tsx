@@ -21,7 +21,7 @@ export function AddListing(): JSX.Element {
   const [open, setOpen] = useState(false);
 
   const user = useUser();
-  const createListing = useCreateListing(setOpen);
+  const createListing = useCreateListing();
 
   const onSubmit = (values: ListingFields): void => {
     const data = {

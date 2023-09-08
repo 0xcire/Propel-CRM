@@ -20,7 +20,7 @@ export function AddTask({
 }: {
   setOpen: Dispatch<SetStateAction<boolean>>;
 }): JSX.Element {
-  const createTask = useCreateTask();
+  const createTask = useCreateTask(setOpen);
 
   const user = useUser();
 
@@ -47,7 +47,6 @@ export function AddTask({
     createTask.mutate(data, {
       onSuccess: () => {
         setOpen(false);
-        // form.reset();
       },
     });
   }

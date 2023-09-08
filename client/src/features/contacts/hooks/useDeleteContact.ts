@@ -30,6 +30,19 @@ export const useDeleteContact = (): UseMutationResult<
         (contact) => contact.id !== deletedContactID
       );
 
+      // TODO: figure out undo logic, pause mutation and set toast duration length
+
+      // toast({
+      //   title: `Updating ${updatedData.name}`,
+      //   description: 'Undo? You can ignore this message.',
+      //   action: <ToastAction altText='Undo'>Undo</ToastAction>,
+      // });
+
+      // await new Promise<void>((resolve) => {
+      //   setTimeout(() => {
+      //     resolve();
+      //   },
+
       queryClient.setQueryData(['contacts'], () => {
         return {
           message: '',

@@ -15,10 +15,11 @@ import {
 import { ListingForm, ListingHTMLFormInputs } from './ListingForm';
 
 import type { Listing } from '../types';
+import { filterEqualFields } from '@/utils/form-data';
 
 export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
   const [open, setOpen] = useState(false);
-  const updateListing = useUpdateListing(setOpen);
+  const updateListing = useUpdateListing();
 
   const defaultValues = {
     address: listing.address,
@@ -31,14 +32,13 @@ export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
   };
 
   function onSubmit(values: ListingHTMLFormInputs): void {
-    // TODO: another area, bring this logic server side
-    // const data: Partial<ListingHTMLFormInputs> = filterEqualFields({
-    //   newData: values,
-    //   originalData: listing,
-    // });
+    const data: Partial<ListingHTMLFormInputs> = filterEqualFields({
+      newData: values,
+      originalData: listing,
+    });
 
     updateListing.mutate(
-      { id: listing.id as number, data: values },
+      { id: listing.id as number, data: data },
       {
         onSuccess: () => {
           setOpen(false);

@@ -151,7 +151,7 @@ export function TaskForm({
           <Button variant='outline'>Close</Button>
         </DialogTrigger>
         <SubmitButton
-          disabled={isCreate ? titleIsEmpty : !form.formState.isDirty}
+          disabled={isCreate ? !titleIsEmpty : !form.formState.isDirty}
           form={isCreate ? 'add-task' : 'update-task'}
           isLoading={isLoading}
           text='Add'

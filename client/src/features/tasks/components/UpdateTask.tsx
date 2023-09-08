@@ -35,13 +35,14 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
 
   const defaultValues: DeepPartial<CreateTaskFields> = {
     title: task.title,
-    description: task.description,
-    notes: task.notes,
+    description: task.description ?? undefined,
+    notes: task.notes ?? undefined,
     dueDate: task.dueDate ? new Date(removeTimeZone(task.dueDate)) : undefined,
-    priority: task.priority,
+    priority: task.priority ?? undefined,
   };
 
   function onSubmit(values: CreateTaskFields): void {
+    console.log(values);
     const data = {
       userID: user.data?.id,
       title: values.title,

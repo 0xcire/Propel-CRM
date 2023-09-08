@@ -49,6 +49,12 @@ export const updateListing = async (req: Request, res: Response) => {
 
     const { address, baths, bedrooms, description, price, propertyType, squareFeet }: Partial<NewListing> = req.body;
 
+    if (description) {
+      return res.status(400).json({
+        message: "error processing request. try again",
+      });
+    }
+
     if (Object.keys(req.body).length === 0) {
       return res.status(400).json({});
     }
@@ -69,6 +75,12 @@ export const deleteListing = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
     const { id } = req.params;
+
+    if (id) {
+      return res.status(400).json({
+        message: "error processing request. try again",
+      });
+    }
 
     const deletedListingByID = await deleteListingByID(+id, userID);
 

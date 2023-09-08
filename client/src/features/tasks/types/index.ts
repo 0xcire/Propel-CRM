@@ -4,14 +4,14 @@ import type { BaseResponse } from '@/types';
 export type Task = {
   id?: number;
   createdAt?: Date | undefined;
-  userID: number | undefined;
-  title: string;
-  description: string | undefined;
-  notes: string | undefined;
-  dueDate: string | undefined;
-  completed: boolean | undefined;
-  status: 'completed' | 'in progress' | 'not started';
-  priority: 'low' | 'medium' | 'high';
+  userID?: number | undefined;
+  title?: string;
+  description?: string | undefined;
+  notes?: string | undefined;
+  dueDate?: string | undefined;
+  completed?: boolean | undefined;
+  status?: 'completed' | 'in progress' | 'not started';
+  priority?: 'low' | 'medium' | 'high';
 };
 
 export type NewTask = Omit<Task, 'id' | 'createdAt'>;
@@ -27,3 +27,7 @@ export type UpdateTaskParams = {
 };
 
 export type Priority = (typeof priorityOptions)[number];
+
+export type TaskContext = {
+  previousTasks: Tasks | undefined;
+};
