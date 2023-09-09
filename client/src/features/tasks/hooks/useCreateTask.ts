@@ -4,13 +4,13 @@ import { useToast } from '@/components/ui/use-toast';
 import { isAPIError } from '@/utils/error';
 
 import type { UseMutationResult } from '@tanstack/react-query';
-import type { Task, TaskContext, TaskResponse } from '../types';
+import type { NewTask, TaskResponse } from '../types';
 
 export const useCreateTask = (): UseMutationResult<
   TaskResponse,
   unknown,
-  Task,
-  TaskContext
+  NewTask,
+  unknown
 > => {
   const { toast } = useToast();
   const queryClient = useQueryClient();

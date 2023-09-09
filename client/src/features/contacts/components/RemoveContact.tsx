@@ -18,7 +18,6 @@ import { SubmitButton } from '@/components';
 
 import type { ContactAsProp } from '../types';
 
-// TODO: change this to normal dialog?
 export function RemoveContact({ contact }: ContactAsProp): JSX.Element {
   const [open, setOpen] = useState(false);
 

@@ -16,20 +16,8 @@ import { listingSchema } from '@/lib/validations/listings';
 import type { DeepPartial } from 'react-hook-form';
 import type { FormMode } from '@/types';
 
-// TODO: need to reduce complexity here.
-export type ListingHTMLFormInputs = {
-  address: string;
-  description: string;
-  propertyType: string;
-  price: string;
-  bedrooms: string;
-  baths: string;
-  squareFeet: string;
-};
-
-//
 interface ListingFormProps extends FormMode {
-  defaultValues: DeepPartial<ListingHTMLFormInputs>;
+  defaultValues: DeepPartial<ListingFields>;
   onSubmit: (values: ListingFields) => void;
   listingID?: number;
 }
@@ -72,7 +60,7 @@ export function ListingForm({
   defaultValues,
   onSubmit,
 }: ListingFormProps): JSX.Element {
-  const form = useForm<ListingHTMLFormInputs>({
+  const form = useForm<ListingFields>({
     resolver: zodResolver(listingSchema),
     defaultValues: defaultValues,
   });
@@ -111,24 +99,20 @@ export function ListingForm({
           </div>
 
           <div className='flex items-center justify-between pt-2'>
-            <SelectInput<
-              ListingHTMLFormInputs,
-              PropertyTypes,
-              typeof propertyTypes
-            >
+            <SelectInput<ListingFields, PropertyTypes, typeof propertyTypes>
               name='propertyType'
               options={propertyTypes}
               placeholder='Property Type'
               control={form.control}
             />
             <div className='flex items-center gap-2'>
-              <SelectInput<ListingHTMLFormInputs, Rooms, typeof rooms>
+              <SelectInput<ListingFields, Rooms, typeof rooms>
                 name='bedrooms'
                 options={rooms}
                 placeholder='Bedrooms'
                 control={form.control}
               />
-              <SelectInput<ListingHTMLFormInputs, Rooms, typeof rooms>
+              <SelectInput<ListingFields, Rooms, typeof rooms>
                 name='baths'
                 options={rooms}
                 placeholder='Baths'

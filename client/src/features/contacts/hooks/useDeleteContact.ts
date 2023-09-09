@@ -7,13 +7,13 @@ import { deleteContact } from '../api';
 import { useToast } from '@/components/ui/use-toast';
 import { isAPIError } from '@/utils/error';
 
-import type { ContactResponse } from '../types';
+import type { ContactContext, ContactResponse } from '../types';
 
 export const useDeleteContact = (): UseMutationResult<
   ContactResponse,
   unknown,
   number,
-  unknown
+  ContactContext
 > => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -22,11 +22,13 @@ export const useDeleteContact = (): UseMutationResult<
     onMutate: async (deletedContactID) => {
       await queryClient.cancelQueries(['contacts']);
 
-      const { contacts: previousContacts } = queryClient.getQueryData([
+      const contactQueryData = queryClient.getQueryData<ContactResponse>([
         'contacts',
-      ]) as ContactResponse;
+      ]);
 
-      const optimisticContacts = previousContacts.filter(
+      const previousContacts = contactQueryData?.contacts;
+
+      const optimisticContacts = previousContacts?.filter(
         (contact) => contact.id !== deletedContactID
       );
 
@@ -43,10 +45,10 @@ export const useDeleteContact = (): UseMutationResult<
       //     resolve();
       //   },
 
-      queryClient.setQueryData(['contacts'], () => {
+      queryClient.setQueryData<ContactResponse>(['contacts'], () => {
         return {
           message: '',
-          contacts: optimisticContacts,
+          contacts: optimisticContacts ?? [],
         };
       });
 

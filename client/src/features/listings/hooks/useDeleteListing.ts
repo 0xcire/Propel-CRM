@@ -6,13 +6,13 @@ import { useToast } from '@/components/ui/use-toast';
 import { isAPIError } from '@/utils/error';
 
 import type { UseMutationResult } from '@tanstack/react-query';
-import type { ListingResponse } from '../types';
+import type { ListingContext, ListingResponse } from '../types';
 
 export const useDeleteListing = (): UseMutationResult<
   ListingResponse,
   unknown,
   number,
-  unknown
+  ListingContext
 > => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -22,18 +22,20 @@ export const useDeleteListing = (): UseMutationResult<
     onMutate: async (deletedListingID) => {
       await queryClient.cancelQueries(['listings']);
 
-      const { listings: previousListings } = queryClient.getQueryData([
+      const listingQueryData = queryClient.getQueryData<ListingResponse>([
         'listings',
-      ]) as ListingResponse;
+      ]);
 
-      const optimisticListings = previousListings.filter(
+      const previousListings = listingQueryData?.listings;
+
+      const optimisticListings = previousListings?.filter(
         (listing) => listing.id !== deletedListingID
       );
 
-      queryClient.setQueryData(['listings'], () => {
+      queryClient.setQueryData<ListingResponse>(['listings'], () => {
         return {
           message: '',
-          listings: optimisticListings,
+          listings: optimisticListings ?? [],
         };
       });
 

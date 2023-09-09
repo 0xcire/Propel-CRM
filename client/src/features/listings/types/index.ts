@@ -1,9 +1,7 @@
 import { BaseResponse } from '@/types';
-import { ListingHTMLFormInputs } from '../components/ListingForm';
 
-// TODO: kind of bad type due to react query
 export type Listing = {
-  id?: number;
+  id: number;
   createdAt?: Date | null;
   address: string;
   userID: number | null;
@@ -25,5 +23,9 @@ export interface ListingResponse extends BaseResponse {
 
 export type UpdateListingParams = {
   id: number;
-  data: Partial<ListingHTMLFormInputs>;
+  data: Partial<NewListing>;
+};
+
+export type ListingContext = {
+  previousListings: Listings | undefined;
 };

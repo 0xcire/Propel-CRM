@@ -6,15 +6,13 @@ import { useToast } from '@/components/ui/use-toast';
 import { isAPIError } from '@/utils/error';
 
 import type { UseMutationResult } from '@tanstack/react-query';
-import type { ListingResponse, Listings, NewListing } from '../types';
+import type { ListingResponse, NewListing } from '../types';
 
 export const useCreateListing = (): UseMutationResult<
   ListingResponse,
   unknown,
   NewListing,
-  {
-    previousListings: Listings;
-  }
+  unknown
 > => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -28,6 +26,7 @@ export const useCreateListing = (): UseMutationResult<
       });
       queryClient.invalidateQueries(['listings']);
     },
+
     onError: (error) => {
       if (isAPIError(error)) {
         return toast({

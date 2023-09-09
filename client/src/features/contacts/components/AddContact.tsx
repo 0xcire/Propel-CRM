@@ -19,7 +19,7 @@ import type { CreateContactFields } from './ContactForm';
 export function AddContact(): JSX.Element {
   const [open, setOpen] = useState(false);
 
-  const createContact = useCreateContact(setOpen);
+  const createContact = useCreateContact();
 
   const defaultValues: DeepPartial<CreateContactFields> = {
     name: '',
