@@ -9,9 +9,8 @@ export type Task = {
   description: string | undefined;
   notes: string | undefined;
   dueDate: string | undefined;
-  completed: boolean | undefined;
-  status: 'completed' | 'in progress' | 'not started';
-  priority: 'low' | 'medium' | 'high';
+  completed?: boolean | undefined;
+  priority: 'low' | 'medium' | 'high' | undefined;
 };
 
 export type NewTask = Omit<Task, 'id' | 'createdAt'>;
@@ -27,3 +26,7 @@ export type UpdateTaskParams = {
 };
 
 export type Priority = (typeof priorityOptions)[number];
+
+export type TaskContext = {
+  previousTasks: Tasks | undefined;
+};

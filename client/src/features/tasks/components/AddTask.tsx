@@ -1,6 +1,3 @@
-import { type Dispatch, type SetStateAction } from 'react';
-
-import { DeepPartial } from 'react-hook-form';
 import { formatISO } from 'date-fns';
 
 import { useCreateTask } from '../hooks/useCreateTask';
@@ -12,8 +9,13 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
+import { TaskForm } from './TaskForm';
+
 import { filterUndefined } from '@/utils/form-data';
-import { type CreateTaskFields, TaskForm } from './TaskForm';
+
+import type { Dispatch, SetStateAction } from 'react';
+import type { DeepPartial } from 'react-hook-form';
+import { type CreateTaskFields } from './TaskForm';
 
 export function AddTask({
   setOpen,
@@ -47,7 +49,6 @@ export function AddTask({
     createTask.mutate(data, {
       onSuccess: () => {
         setOpen(false);
-        // form.reset();
       },
     });
   }

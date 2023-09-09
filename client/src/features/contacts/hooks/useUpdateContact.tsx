@@ -1,35 +1,35 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-import { updateListing } from '../api';
-
+import {
+  type UseMutationResult,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { updateContact } from '../api';
 import { useToast } from '@/components/ui/use-toast';
-
 import { isAPIError } from '@/utils/error';
 
-import type { UseMutationResult } from '@tanstack/react-query';
-import type { ListingResponse, UpdateListingParams } from '../types';
+import type { ContactResponse, UpdateContactParams } from '../types';
 
-export const useUpdateListing = (): UseMutationResult<
-  ListingResponse,
+export const useUpdateContact = (): UseMutationResult<
+  ContactResponse,
   unknown,
-  UpdateListingParams,
+  UpdateContactParams,
   unknown
 > => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: updateListing,
+    mutationFn: updateContact,
 
     onSuccess: (data) => {
       toast({
         description: data.message,
       });
-      queryClient.invalidateQueries(['listings']);
+      queryClient.invalidateQueries(['contacts']);
     },
-
     onError: (error) => {
       if (isAPIError(error)) {
-        return toast({
+        toast({
+          title: 'Error updating contact.',
           description: `${error.message}`,
         });
       }

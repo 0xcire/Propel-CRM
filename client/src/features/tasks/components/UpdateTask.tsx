@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import type { DeepPartial } from 'react-hook-form';
 import { format } from 'date-fns';
 
 import { useUpdateTask } from '../hooks/useUpdateTask';
@@ -16,11 +15,14 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
+import { TaskForm } from './TaskForm';
+
 import { removeTimeZone } from '@/utils/date';
 import { filterUndefined } from '@/utils/form-data';
 
+import type { DeepPartial } from 'react-hook-form';
 import type { Task as TaskData } from '../types';
-import { CreateTaskFields, TaskForm } from './TaskForm';
+import type { CreateTaskFields } from './TaskForm';
 
 type TaskProps = {
   task: TaskData;
@@ -35,10 +37,10 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
 
   const defaultValues: DeepPartial<CreateTaskFields> = {
     title: task.title,
-    description: task.description,
-    notes: task.notes,
+    description: task.description ?? undefined,
+    notes: task.notes ?? undefined,
     dueDate: task.dueDate ? new Date(removeTimeZone(task.dueDate)) : undefined,
-    priority: task.priority,
+    priority: task.priority ?? undefined,
   };
 
   function onSubmit(values: CreateTaskFields): void {

@@ -1,35 +1,69 @@
-import { type UseMutationResult, useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteTask } from '../api';
-import { queryClient } from '@/lib/react-query';
 import { useToast } from '@/components/ui/use-toast';
 import { isAPIError } from '@/utils/error';
 
-import type { TaskResponse } from '../types';
+import type { UseMutationResult } from '@tanstack/react-query';
+import type { TaskContext, TaskResponse } from '../types';
 
 export const useDeleteTask = (): UseMutationResult<
   TaskResponse,
   unknown,
   number,
-  unknown
+  TaskContext
 > => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteTask,
+
+    onMutate: async (deletedTaskID) => {
+      await queryClient.cancelQueries(['tasks', { completed: 'false' }]);
+
+      const taskQueryData = queryClient.getQueryData<TaskResponse>([
+        'tasks',
+        { completed: 'false' },
+      ]);
+
+      const previousTasks = taskQueryData?.tasks;
+
+      const optimisticTasks = previousTasks?.filter(
+        (task) => task.id !== deletedTaskID
+      );
+
+      queryClient.setQueryData(['tasks', { completed: 'false' }], () => {
+        return {
+          message: '',
+          tasks: optimisticTasks,
+        };
+      });
+
+      return { previousTasks };
+    },
+
     onSuccess: (data) => {
       toast({
         description: data.message,
       });
-      return queryClient.invalidateQueries({
-        queryKey: ['tasks'],
-      });
     },
-    onError: (error) => {
+
+    onError: (error, deletedTaskID, context) => {
       if (isAPIError(error)) {
         return toast({
           description: `${error.message}`,
         });
       }
+
+      queryClient.setQueryData(['tasks', { completed: 'false' }], () => {
+        return {
+          message: '',
+          tasks: context?.previousTasks,
+        };
+      });
     },
-    useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
+
+    onSettled: () => {
+      queryClient.invalidateQueries(['tasks', { completed: 'false' }]);
+    },
   });
 };

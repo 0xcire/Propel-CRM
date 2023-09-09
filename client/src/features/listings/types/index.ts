@@ -1,9 +1,8 @@
 import { BaseResponse } from '@/types';
-import { ListingHTMLFormInputs } from '../components/ListingForm';
 
 export type Listing = {
   id: number;
-  createdAt: Date | null;
+  createdAt?: Date | null;
   address: string;
   userID: number | null;
   propertyType: string;
@@ -24,5 +23,9 @@ export interface ListingResponse extends BaseResponse {
 
 export type UpdateListingParams = {
   id: number;
-  data: Partial<ListingHTMLFormInputs>;
+  data: Partial<NewListing>;
+};
+
+export type ListingContext = {
+  previousListings: Listings | undefined;
 };

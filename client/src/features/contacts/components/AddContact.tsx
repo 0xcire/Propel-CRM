@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import type { DeepPartial } from 'react-hook-form';
 
 import { useCreateContact } from '../hooks/useCreateContact';
 
@@ -12,7 +11,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { ContactForm, type CreateContactFields } from './ContactForm';
+import { ContactForm } from './ContactForm';
+
+import type { DeepPartial } from 'react-hook-form';
+import type { CreateContactFields } from './ContactForm';
 
 export function AddContact(): JSX.Element {
   const [open, setOpen] = useState(false);

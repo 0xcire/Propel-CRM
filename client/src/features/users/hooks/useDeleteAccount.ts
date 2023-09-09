@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { type UseMutationResult, useMutation } from '@tanstack/react-query';
-import { queryClient } from '@/lib/react-query';
+import {
+  type UseMutationResult,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import { deleteAccount } from '../api';
-import { isAPIError } from '@/utils/error';
 
 import { useToast } from '@/components/ui/use-toast';
 
@@ -17,6 +19,7 @@ export const useDeleteAccount = (): UseMutationResult<
 > => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteAccount,
     onSuccess: (data) => {
@@ -26,13 +29,5 @@ export const useDeleteAccount = (): UseMutationResult<
       });
       navigate('/auth/signup');
     },
-    onError: (error) => {
-      if (isAPIError(error)) {
-        return toast({
-          description: `${error.message}`,
-        });
-      }
-    },
-    useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
   });
 };

@@ -1,18 +1,19 @@
-import { type UseMutationResult, useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateTask } from '../api';
-import { queryClient } from '@/lib/react-query';
 import { useToast } from '@/components/ui/use-toast';
 import { isAPIError } from '@/utils/error';
 
-import type { TaskResponse, UpdateTaskParams } from '../types';
+import type { UseMutationResult } from '@tanstack/react-query';
+import type { TaskContext, TaskResponse, UpdateTaskParams } from '../types';
 
 export const useUpdateTask = (): UseMutationResult<
   TaskResponse,
   unknown,
   UpdateTaskParams,
-  unknown
+  TaskContext
 > => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateTask,
 
@@ -20,11 +21,9 @@ export const useUpdateTask = (): UseMutationResult<
       toast({
         description: data.message,
       });
-
-      return queryClient.invalidateQueries({
-        queryKey: ['tasks'],
-      });
+      queryClient.invalidateQueries(['tasks', { completed: 'false' }]);
     },
+
     onError: (error) => {
       if (isAPIError(error)) {
         return toast({
@@ -32,6 +31,5 @@ export const useUpdateTask = (): UseMutationResult<
         });
       }
     },
-    useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
   });
 };

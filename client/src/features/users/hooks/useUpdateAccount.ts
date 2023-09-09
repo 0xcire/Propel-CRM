@@ -1,7 +1,9 @@
-import { type UseMutationResult, useMutation } from '@tanstack/react-query';
-import { queryClient } from '@/lib/react-query';
+import {
+  type UseMutationResult,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { updateAccount } from '../api';
-import { isAPIError } from '@/utils/error';
 import { useToast } from '@/components/ui/use-toast';
 
 import type { UpdateAccountParams } from '../types';
@@ -14,6 +16,7 @@ export const useUpdateAccount = (): UseMutationResult<
   unknown
 > => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateAccount,
     onSuccess: (data) => {
@@ -24,13 +27,5 @@ export const useUpdateAccount = (): UseMutationResult<
         queryKey: ['authenticated-user'],
       });
     },
-    onError: (error) => {
-      if (isAPIError(error)) {
-        return toast({
-          description: `${error.message}`,
-        });
-      }
-    },
-    useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
   });
 };

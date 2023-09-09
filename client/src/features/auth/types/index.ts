@@ -1,2 +1,1 @@
-export type { SignInFields as SigninCredentials } from '../components/SignInForm';
-export type { SignUpFields as SignupCredentials } from '../components/SignUpForm';
+export type { SignInFields, SignUpFields } from '../components/AuthForm';

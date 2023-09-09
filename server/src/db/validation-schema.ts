@@ -94,13 +94,11 @@ export const updateContactSchema = createInsertSchema(contacts)
     createdAt: true,
   })
   .partial()
-  .merge(verifyPassword)
   .transform((contact) => ({
     name: contact.name?.trim(),
     email: contact.email?.trim(),
     phoneNumber: contact.phoneNumber?.trim(),
     address: contact.address?.trim(),
-    verifyPassword: contact.verifyPassword.trim(),
   }));
 
 export const taskQuerySchema = z

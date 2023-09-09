@@ -1,5 +1,5 @@
-import { useEffect, type Dispatch, type SetStateAction } from 'react';
-import { type DeepPartial, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -12,25 +12,18 @@ import { SubmitButton } from '@/components';
 
 import { contactSchema } from '@/lib/validations/contacts';
 
+import type { Dispatch, SetStateAction } from 'react';
+import type { DeepPartial } from 'react-hook-form';
 import type { FormMode } from '@/types';
-
-import { fieldsAreDirty } from '@/utils/form-data';
 
 interface ContactFormProps extends FormMode {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  onSubmit: (values: UpdateContactFields | CreateContact) => void;
-  defaultValues: DeepPartial<UpdateContactFields | CreateContact>;
+  onSubmit: (values: UpdateContactFields | CreateContactFields) => void;
+  defaultValues: DeepPartial<UpdateContactFields | CreateContactFields>;
 }
 
-const createContactSchema = contactSchema.omit({
-  verifyPassword: true,
-});
-
 export type UpdateContactFields = z.infer<typeof contactSchema>;
-export type CreateContactFields = z.infer<typeof createContactSchema>;
-export type CreateContact = {
-  verifyPassword: never;
-} & CreateContactFields;
+export type CreateContactFields = z.infer<typeof contactSchema>;
 
 export function ContactForm({
   isLoading,
@@ -39,29 +32,14 @@ export function ContactForm({
   onSubmit,
   defaultValues,
 }: ContactFormProps): JSX.Element {
-  const form = useForm<UpdateContactFields | CreateContact>({
+  const form = useForm<UpdateContactFields | CreateContactFields>({
     resolver: isCreate
-      ? zodResolver(createContactSchema)
+      ? zodResolver(contactSchema)
       : zodResolver(contactSchema),
     defaultValues: defaultValues,
   });
 
   const formComplete = Object.keys(form.formState.dirtyFields).length === 4;
-
-  const userHasChangedInfo = (): boolean => {
-    const passwordFilled = fieldsAreDirty<UpdateContactFields>(
-      form,
-      'verifyPassword'
-    );
-    const dataChanged = fieldsAreDirty<UpdateContactFields>(form, [
-      'name',
-      'email',
-      'phoneNumber',
-      'address',
-    ]);
-
-    return passwordFilled && dataChanged;
-  };
 
   useEffect(() => {
     form.reset();
@@ -95,14 +73,6 @@ export function ContactForm({
             control={form.control}
           />
         </form>
-        {!isCreate && (
-          <TextInput
-            name='verifyPassword'
-            label='Your Password'
-            type='password'
-            control={form.control}
-          />
-        )}
       </Form>
       <DialogFooter>
         <Button
@@ -112,7 +82,7 @@ export function ContactForm({
           Cancel
         </Button>
         <SubmitButton
-          disabled={isCreate ? !formComplete : !userHasChangedInfo()}
+          disabled={isCreate ? !formComplete : !form.formState.isDirty}
           form={isCreate ? 'add-contact' : 'update-contact'}
           isLoading={isLoading}
           text='Update'

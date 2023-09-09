@@ -14,6 +14,7 @@ export function Listing({ listing }: { listing: Listing }): JSX.Element {
   // look into creating a carousel instead?
   // max-w-[225px]
   // add flex basis {X}px if going carousel route
+
   return (
     <div className='w-content flex h-full flex-1 basis-[31%] flex-col rounded-sm border shadow 2xl:basis-[20%] 3xl:basis-[18%]'>
       {/* img placeholder  */}

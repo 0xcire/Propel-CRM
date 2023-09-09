@@ -1,19 +1,20 @@
 // TODO: obviously this should be refactored into <Dashboard /> once everything is built out
-// TODO: and also obviously need to refactor out layout components and
-// <Tasks />, <Contacts /> etc etc
+// TODO: and also obviously need to refactor out <TaskDashboardView />, <ContactsDashboardView /> etc etc
 // TODO: fix mobile navbar trigger position
-// TODO: layout components, grid item -> header wrapper
 
 import { useNavigate } from 'react-router-dom';
 
 import { useLogout, useUser } from '@/lib/react-query-auth';
-import { queryClient } from '@/lib/react-query';
 
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 
 import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from './SubmitButton';
+
+import { DashboardItemHeader } from './Layout/DashboardItemHeader';
+import { DashboardGridItem } from './Layout/DashboardGridItem';
+import { DashboardItemContent } from './Layout/DashboardItemContent';
 
 import { AddContact } from '@/features/contacts/components/AddContact';
 import { ContactList } from '@/features/contacts/components/ContactList';
@@ -28,9 +29,6 @@ import { ListingList } from '@/features/listings/components/ListingList';
 import { AnalyticsProvider } from '@/features/analytics/context/AnalyticsContext';
 import { SalesVolumeChart } from '@/features/analytics/components/SalesVolumeChart';
 import { AnalyticsHeader } from '@/features/analytics/components/AnalyticsHeader';
-import { DashboardItemHeader } from './Layout/DashboardItemHeader';
-import { DashboardGridItem } from './Layout/DashboardGridItem';
-import { DashboardItemContent } from './Layout/DashboardItemContent';
 
 // TODO: for analytics page view,
 // when filtering by year, maybe just listen for normal select change and fire useQuery when change
@@ -56,18 +54,7 @@ const Protected = (): JSX.Element => {
           <SubmitButton
             text='Logout'
             isLoading={logout.isLoading}
-            onClick={(): void =>
-              logout.mutate(
-                {},
-                {
-                  onSuccess: () => {
-                    queryClient.invalidateQueries(['authenticated-user']);
-                    queryClient.clear();
-                    navigate('/');
-                  },
-                }
-              )
-            }
+            onClick={(): void => logout.mutate()}
           />
         </div>
         <div className='grid h-full max-h-screen flex-1 grid-cols-12 grid-rows-6 gap-4 p-12 pb-10 xl:flex-1'>

@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { useUser } from '@/lib/react-query-auth';
+
 import { useUpdateListing } from '../hooks/useUpdateListing';
 
 import { PencilIcon } from 'lucide-react';
@@ -12,14 +14,15 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { ListingForm, ListingHTMLFormInputs } from './ListingForm';
+import { ListingFields, ListingForm } from './ListingForm';
 
 import { filterEqualFields } from '@/utils/form-data';
 
-import type { Listing } from '../types';
+import type { Listing, NewListing } from '../types';
 
 export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
   const [open, setOpen] = useState(false);
+  const user = useUser();
   const updateListing = useUpdateListing();
 
   const defaultValues = {
@@ -32,9 +35,20 @@ export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
     squareFeet: listing.squareFeet.toString(),
   };
 
-  function onSubmit(values: ListingHTMLFormInputs): void {
-    const data: Partial<ListingHTMLFormInputs> = filterEqualFields({
-      newData: values,
+  function onSubmit(values: ListingFields): void {
+    const transformedData: NewListing = {
+      userID: user.data?.id as number,
+      address: values.address,
+      description: values.description,
+      propertyType: values.propertyType,
+      price: values.price,
+      bedrooms: +values.bedrooms,
+      baths: +values.baths,
+      squareFeet: +values.squareFeet,
+    };
+
+    const data: Partial<NewListing> = filterEqualFields({
+      newData: transformedData,
       originalData: listing,
     });
 

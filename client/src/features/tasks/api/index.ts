@@ -1,4 +1,5 @@
 import { Get, Post, Patch, Delete, handleAPIResponse } from '@/lib/fetch';
+
 import type { NewTask, TaskResponse, UpdateTaskParams } from '../types';
 
 export const getTasks = (completed: string): Promise<TaskResponse> => {
@@ -7,7 +8,7 @@ export const getTasks = (completed: string): Promise<TaskResponse> => {
   );
 };
 
-export const createTask = (data: Partial<NewTask>): Promise<TaskResponse> => {
+export const createTask = (data: NewTask): Promise<TaskResponse> => {
   return Post({ endpoint: 'tasks', body: JSON.stringify(data) }).then(
     handleAPIResponse<TaskResponse>
   );

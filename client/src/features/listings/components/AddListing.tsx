@@ -13,21 +13,29 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-import { ListingForm, ListingHTMLFormInputs } from './ListingForm';
+import { ListingForm } from './ListingForm';
+
+import type { ListingFields } from './ListingForm';
+import type { NewListing } from '../types';
 
 export function AddListing(): JSX.Element {
   const [open, setOpen] = useState(false);
-  // TODO: replace useUser with custom hook, context, or etc
+
   const user = useUser();
   const createListing = useCreateListing();
 
-  const onSubmit = (values: ListingHTMLFormInputs): void => {
-    console.log(values);
-
-    const data = {
-      ...values,
+  const onSubmit = (values: ListingFields): void => {
+    const data: NewListing = {
       userID: user.data?.id as number,
+      address: values.address,
+      description: values.description,
+      propertyType: values.propertyType,
+      price: values.price,
+      bedrooms: +values.bedrooms,
+      baths: +values.baths,
+      squareFeet: +values.squareFeet,
     };
+
     createListing.mutate(data, {
       onSuccess: () => setOpen(false),
     });

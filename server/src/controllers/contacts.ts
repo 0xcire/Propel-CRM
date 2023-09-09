@@ -13,7 +13,6 @@ import {
   insertNewRelation,
   updateContactByID,
 } from "../db/queries/contacts";
-import { checkPassword } from "../utils";
 
 import type { NewContact } from "../db/types";
 
@@ -49,6 +48,10 @@ export const createContact = async (req: Request, res: Response) => {
 
     if (!name || !email || !phoneNumber || !address) {
       return res.status(400).json({});
+    }
+
+    if (name) {
+      return res.status(400).json({ message: "error adding contact to your network" });
     }
 
     const contact: NewContact = {
@@ -90,14 +93,11 @@ export const createContact = async (req: Request, res: Response) => {
   }
 };
 
-// TODO: check for changed fields happpens client side.
-// form can't be submitted unless fields change so not checking here for now
-// imagine will need to write checks here when writing unit tests, however...
 export const updateContact = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
     const { id } = req.params;
-    const { verifyPassword, name, email, phoneNumber, address } = req.body;
+    const { name, email, phoneNumber, address } = req.body;
 
     const fields = {
       name: name,
@@ -112,21 +112,7 @@ export const updateContact = async (req: Request, res: Response) => {
       });
     }
 
-    if (!verifyPassword) {
-      return res.status(401).json({
-        message: "Verify password to confirm changes.",
-      });
-    }
-
     const userByID = await findUsersByID({ id: +userID, updating: true });
-
-    const passwordVerified = await checkPassword(verifyPassword, userByID?.hashedPassword as string);
-
-    if (!passwordVerified) {
-      return res.status(409).json({
-        message: "Enter your password correctly to confirm changes.",
-      });
-    }
 
     const updatedContact = await updateContactByID({ contactID: +id, inputs: fields });
 

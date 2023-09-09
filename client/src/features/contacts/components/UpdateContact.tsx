@@ -14,9 +14,8 @@ import {
 } from '@/components/ui/dialog';
 import { ContactForm, type UpdateContactFields } from './ContactForm';
 
+import type { ContactAsProp, NewContact } from '../types';
 import { filterEqualFields } from '@/utils/form-data';
-
-import type { NewContact, ContactAsProp } from '../types';
 
 export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
   const [open, setOpen] = useState(false);
@@ -27,7 +26,6 @@ export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
     email: contact.email,
     phoneNumber: contact.phoneNumber,
     address: contact.address,
-    verifyPassword: '',
   };
 
   function onSubmit(values: UpdateContactFields): void {

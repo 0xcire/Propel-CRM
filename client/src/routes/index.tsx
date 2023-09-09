@@ -1,15 +1,15 @@
-import { type RouteObject, useRoutes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import { useUser } from '@/lib/react-query-auth';
 import { publicRoutes } from './public';
 import { privateRoutes } from './private';
 import { Welcome, NotFound } from '@/features/misc';
+// import { Spinner } from '@/components';
+
+import type { RouteObject } from 'react-router-dom';
 
 export const Routes = (): JSX.Element => {
-  const user = useUser({
-    retry: false,
-  });
+  const user = useUser();
 
-  // TODO: figure out a better flow. User is logged in and coming back to site, should just be redirected to app. Issue with BrowserRouter, though.
   const welcome: Array<RouteObject> = [
     { path: '/', element: <Welcome /> },
     { path: '*', element: <NotFound /> },
@@ -18,5 +18,15 @@ export const Routes = (): JSX.Element => {
   const routes = user.data ? privateRoutes : publicRoutes;
 
   const element = useRoutes([...welcome, ...routes]);
+
+  // TODO: yet another place to replace
+  // if (user.isLoading) {
+  //   return (
+  //     <div className='grid h-screen place-items-center'>
+  //       <Spinner variant='md' />
+  //     </div>
+  //   );
+  // }
+
   return <>{element}</>;
 };

@@ -1,35 +1,16 @@
 import { useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { type SubmitHandler, DeepPartial } from 'react-hook-form';
 
 import { useRegister } from '@/lib/react-query-auth';
-import { queryClient } from '@/lib/react-query';
 
-import { useToast } from '@/components/ui/use-toast';
 import { Typography } from '@/components/ui/typography';
 
 import { AuthForm, type SignUpFields } from './AuthForm';
 
-import { isAPIError } from '@/utils/error';
-
 export function SignUpForm(): JSX.Element {
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const register = useRegister({
-    onSuccess: () => {
-      queryClient.invalidateQueries(['authenticated-user']);
-      navigate('/protected');
-    },
-    onError: (error) => {
-      if (isAPIError(error)) {
-        return toast({
-          description: error.message,
-        });
-      }
-    },
-    useErrorBoundary: (error) => isAPIError(error) && error.status >= 500,
-  });
+  const register = useRegister();
   const defaultValues: DeepPartial<SignUpFields> = {
     name: '',
     username: '',
