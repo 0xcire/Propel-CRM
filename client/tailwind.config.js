@@ -1,15 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 
-// const defaultTheme = require('tailwindcss/defaultTheme');
 import defaultTheme from 'tailwindcss/defaultTheme';
-// const defaultTheme = import('tailwindcss/defaultTheme');
 
-module.exports = {
-  darkMode: ['class'],
+import daisyui from 'daisyui';
+import tailwindcssAnimate from 'tailwindcss-animate';
+
+export default {
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
   ],
   theme: {
@@ -44,5 +41,12 @@ module.exports = {
       },
     },
   },
-  plugins: [require('daisyui'), require('tailwindcss-animate')],
+  plugins: [daisyui, tailwindcssAnimate],
+  daisyui: {
+    themes: [],
+    base: false,
+    styled: false,
+    utils: false,
+    logs: false,
+  }
 };
