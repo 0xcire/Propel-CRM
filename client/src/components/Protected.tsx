@@ -33,7 +33,7 @@ import { AnalyticsHeader } from '@/features/analytics/components/AnalyticsHeader
 // TODO: for analytics page view,
 // when filtering by year, maybe just listen for normal select change and fire useQuery when change
 
-const Protected = (): JSX.Element => {
+export const Protected = (): JSX.Element => {
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
@@ -111,5 +111,3 @@ const Protected = (): JSX.Element => {
     </>
   );
 };
-
-export default Protected;

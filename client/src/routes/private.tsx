@@ -5,10 +5,22 @@
 // tasks
 // analytics
 
-import { RouteObject } from 'react-router-dom';
-import Protected from '@/components/Protected';
-import { Profile } from '@/features/users/routes/Profile';
-import { AppLayout } from '@/components/Layout/AppLayout';
+import { lazyImport } from '@/utils/lazyImport';
+
+const { Protected } = lazyImport(
+  () => import('@/components/Protected'),
+  'Protected'
+);
+const { Profile } = lazyImport(
+  () => import('@/features/users/routes/Profile'),
+  'Profile'
+);
+const { AppLayout } = lazyImport(
+  () => import('@/components/Layout/AppLayout'),
+  'AppLayout'
+);
+
+import type { RouteObject } from 'react-router-dom';
 
 export const privateRoutes: Array<RouteObject> = [
   {
