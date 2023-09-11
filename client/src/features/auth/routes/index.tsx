@@ -1,6 +1,9 @@
-import { RouteObject } from 'react-router-dom';
-import { SignIn } from './SignIn';
-import { SignUp } from './Signup';
+import { lazyImport } from '@/utils/lazyImport';
+
+const { SignIn } = lazyImport(() => import('./SignIn'), 'SignIn');
+const { SignUp } = lazyImport(() => import('./Signup'), 'SignUp');
+
+import type { RouteObject } from 'react-router-dom';
 
 export const authRoutes: Array<RouteObject> = [
   {
