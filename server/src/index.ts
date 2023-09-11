@@ -1,15 +1,19 @@
 import express from "express";
-import cookieParser from "cookie-parser";
-import compression from "compression";
-import dotenv from "dotenv";
+
 import cors from "cors";
 import helmet from "helmet";
+
+import cookieParser from "cookie-parser";
+import compression from "compression";
+
+import dotenv from "dotenv";
 
 import { sql } from "drizzle-orm";
 
 import router from "./router";
 
 dotenv.config();
+
 const app = express();
 
 app.use(helmet());
