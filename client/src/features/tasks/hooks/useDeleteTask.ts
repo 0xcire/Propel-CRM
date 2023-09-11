@@ -47,7 +47,7 @@ export const useDeleteTask = (): UseMutationResult<
       });
     },
 
-    onError: (error, deletedTaskID, context) => {
+    onError: (error, _deletedTaskID, context) => {
       if (isAPIError(error)) {
         return toast({
           description: `${error.message}`,

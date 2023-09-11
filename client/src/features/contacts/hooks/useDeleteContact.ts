@@ -59,7 +59,7 @@ export const useDeleteContact = (): UseMutationResult<
         description: data.message,
       });
     },
-    onError: (error, deletedContactID, context) => {
+    onError: (error, _deletedContactID, context) => {
       if (isAPIError(error)) {
         return toast({
           description: `${error.message}`,

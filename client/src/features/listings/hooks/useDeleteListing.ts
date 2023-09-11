@@ -47,7 +47,7 @@ export const useDeleteListing = (): UseMutationResult<
         description: data.message,
       });
     },
-    onError: (error, deletedListingID, context) => {
+    onError: (error, _deletedListingID, context) => {
       if (isAPIError(error)) {
         return toast({
           description: `${error.message}`,
