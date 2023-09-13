@@ -78,7 +78,7 @@ export const useLogin = (): UseMutationResult<
     mutationFn: loginFn,
     onSuccess: () => {
       queryClient.invalidateQueries(['user']);
-      navigate('/protected');
+      navigate('/dashboard');
     },
     onError: () => undefined,
   });
@@ -97,7 +97,7 @@ export const useRegister = (): UseMutationResult<
     mutationFn: registerFn,
     onSuccess: () => {
       queryClient.invalidateQueries(['user']);
-      navigate('/protected');
+      navigate('/dashboard');
     },
   });
 };
