@@ -16,16 +16,12 @@ import { DashboardItemHeader } from '@/components/Layout/DashboardItemHeader';
 import { DashboardGridItem } from '@/components/Layout/DashboardGridItem';
 import { DashboardItemContent } from '@/components/Layout/DashboardItemContent';
 
-import { TaskList } from '@/features/tasks/components/TaskList';
-
-import { TaskDropdown } from '@/features/tasks/components/TaskDropdown';
-import { TaskProvider } from '@/features/tasks/context/TaskContext';
-
 import { AnalyticsProvider } from '@/features/analytics/context/AnalyticsContext';
 import { SalesVolumeChart } from '@/features/analytics/components/SalesVolumeChart';
 import { AnalyticsHeader } from '@/features/analytics/components/AnalyticsHeader';
 import { DashboardListingView } from '@/features/listings/components/dashboard/DashboardListingView';
 import { DashboardContactsView } from '@/features/contacts/components/dashboard/DashboardContactsView';
+import { DashboardTasksView } from '@/features/tasks/components/dashboard/DashboardTasksView';
 
 export const Dashboard = (): JSX.Element => {
   const user = useUser();
@@ -62,17 +58,7 @@ export const Dashboard = (): JSX.Element => {
           </DashboardGridItem>
 
           <DashboardGridItem className='col-start-1 col-end-4 row-start-4 row-end-7'>
-            <TaskProvider>
-              {/* <DashboardTasksView /> */}
-              <DashboardItemHeader>
-                <Typography variant='h4'>Tasks</Typography>
-                <TaskDropdown />
-              </DashboardItemHeader>
-
-              <DashboardItemContent>
-                <TaskList />
-              </DashboardItemContent>
-            </TaskProvider>
+            <DashboardTasksView />
           </DashboardGridItem>
 
           <DashboardGridItem className='col-start-4 col-end-10 row-start-4 row-end-7 2xl:col-end-11'>

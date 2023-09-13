@@ -1,22 +1,21 @@
-import { useTasks } from '../hooks/useTasks';
+import { useDashboardTasks } from '../../hooks/useDashboardTasks';
 
-import { useTaskContext } from '../context/TaskContext';
+import { useTaskContext } from '../../context/TaskContext';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Typography } from '@/components/ui/typography';
 
 import { Spinner } from '@/components';
 
-import { Task } from './Task';
-import { CompletedTasks } from './CompletedTasks';
+import { Task } from '../Task';
+import { CompletedTasks } from '../CompletedTasks';
 
-export function TaskList(): JSX.Element {
-  const incompleteTasks = useTasks('false');
-
-  // pagination, filtering, etc etc
+export function DashboardTasks(): JSX.Element {
+  const incompleteTasks = useDashboardTasks('false');
 
   const { state: showCompleted } = useTaskContext();
 
+  // extract this
   if (incompleteTasks.isLoading) {
     return (
       <div className='grid h-full w-full place-items-center'>
@@ -28,6 +27,7 @@ export function TaskList(): JSX.Element {
     );
   }
 
+  // extract this
   if (incompleteTasks.data && !incompleteTasks.data[0]) {
     return (
       <Typography

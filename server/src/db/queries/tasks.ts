@@ -29,6 +29,16 @@ export const findTaskByID = async (id: number) => {
   return task[0];
 };
 
+export const getUserDashboardTasks = async ({ userID, completed }: FindUserTasksParams) => {
+  const userTasks = await db.query.tasks.findMany({
+    where: and(eq(tasks.userID, userID), eq(tasks.completed, JSON.parse(completed as string))),
+    orderBy: [asc(tasks.createdAt)],
+    limit: 25,
+  });
+
+  return userTasks;
+};
+
 export const findUserTasks = async ({ userID, completed }: FindUserTasksParams) => {
   const userTasks = await db.query.tasks.findMany({
     where: and(eq(tasks.userID, userID), eq(tasks.completed, JSON.parse(completed as string))),

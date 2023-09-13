@@ -1,8 +1,31 @@
 import type { Request, Response } from "express";
 import { findUsersByID } from "../db/queries/user";
-import { deleteTaskByID, findUserTasks, insertNewTask, updateTaskByID } from "../db/queries/tasks";
+import {
+  deleteTaskByID,
+  findUserTasks,
+  getUserDashboardTasks,
+  insertNewTask,
+  updateTaskByID,
+} from "../db/queries/tasks";
 
 import type { NewTask } from "../db/types";
+
+export const getDashboardTasks = async (req: Request, res: Response) => {
+  try {
+    const userID = req.user.id;
+    const { completed } = req.query;
+
+    const userDashboardTasks = getUserDashboardTasks({ userID: userID, completed: completed as string });
+
+    return res.status(200).json({
+      message: "",
+      tasks: userDashboardTasks,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({});
+  }
+};
 
 export const getTasks = async (req: Request, res: Response) => {
   try {
