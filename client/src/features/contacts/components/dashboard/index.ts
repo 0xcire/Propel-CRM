@@ -1,0 +1,1 @@
+export { DashboardContactsView } from './DashboardContactsView';

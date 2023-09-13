@@ -12,16 +12,12 @@ import { Typography } from '@/components/ui/typography';
 
 import { SubmitButton } from '@/components/SubmitButton';
 
-import { DashboardItemHeader } from '@/components/Layout/DashboardItemHeader';
 import { DashboardGridItem } from '@/components/Layout/DashboardGridItem';
-import { DashboardItemContent } from '@/components/Layout/DashboardItemContent';
 
-import { AnalyticsProvider } from '@/features/analytics/context/AnalyticsContext';
-import { SalesVolumeChart } from '@/features/analytics/components/SalesVolumeChart';
-import { AnalyticsHeader } from '@/features/analytics/components/AnalyticsHeader';
-import { DashboardListingView } from '@/features/listings/components/dashboard/DashboardListingView';
-import { DashboardContactsView } from '@/features/contacts/components/dashboard/DashboardContactsView';
-import { DashboardTasksView } from '@/features/tasks/components/dashboard/DashboardTasksView';
+import { DashboardListingView } from '@/features/listings/components/dashboard';
+import { DashboardContactsView } from '@/features/contacts/components/dashboard';
+import { DashboardTasksView } from '@/features/tasks/components/dashboard';
+import { DashboardAnalyticsView } from '@/features/analytics/components/dashboard';
 
 export const Dashboard = (): JSX.Element => {
   const user = useUser();
@@ -62,16 +58,7 @@ export const Dashboard = (): JSX.Element => {
           </DashboardGridItem>
 
           <DashboardGridItem className='col-start-4 col-end-10 row-start-4 row-end-7 2xl:col-end-11'>
-            {/* <DashboardAnalyticsView /> */}
-            <AnalyticsProvider>
-              <DashboardItemHeader>
-                <AnalyticsHeader />
-              </DashboardItemHeader>
-
-              <DashboardItemContent>
-                <SalesVolumeChart />
-              </DashboardItemContent>
-            </AnalyticsProvider>
+            <DashboardAnalyticsView />
           </DashboardGridItem>
         </div>
       </div>
