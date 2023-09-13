@@ -1,23 +1,44 @@
 import { Request, Response } from "express";
 
-import { deleteListingByID, findAllListings, insertNewListing, updateListingByID } from "../db/queries/listings";
+import {
+  deleteListingByID,
+  getAllUserListings,
+  getUserDashboardListings,
+  insertNewListing,
+  updateListingByID,
+} from "../db/queries/listings";
 import type { NewListing } from "../db/types";
 
-export const getAllListings = async (req: Request, res: Response) => {
+export const getDashboardListings = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-
-    const userListings = await findAllListings(userID);
+    const userDashboardListings = await getUserDashboardListings(userID);
 
     return res.status(200).json({
       message: "",
-      listings: userListings,
+      listings: userDashboardListings,
     });
   } catch (error) {
     console.log(error);
     return res.status(500).json({});
   }
 };
+
+// export const getAllListings = async (req: Request, res: Response) => {
+//   try {
+//     const userID = req.user.id;
+
+//     const userListings = await getListings(userID);
+
+//     return res.status(200).json({
+//       message: "",
+//       listings: userListings,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({});
+//   }
+// };
 
 export const createListing = async (req: Request, res: Response) => {
   try {

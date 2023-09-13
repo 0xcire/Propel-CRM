@@ -23,12 +23,10 @@ import { TaskList } from '@/features/tasks/components/TaskList';
 import { TaskDropdown } from '@/features/tasks/components/TaskDropdown';
 import { TaskProvider } from '@/features/tasks/context/TaskContext';
 
-import { AddListing } from '@/features/listings/components/AddListing';
-import { ListingList } from '@/features/listings/components/ListingList';
-
 import { AnalyticsProvider } from '@/features/analytics/context/AnalyticsContext';
 import { SalesVolumeChart } from '@/features/analytics/components/SalesVolumeChart';
 import { AnalyticsHeader } from '@/features/analytics/components/AnalyticsHeader';
+import { DashboardListingView } from '@/features/listings/components/dashboard/DashboardListingView';
 
 export const Dashboard = (): JSX.Element => {
   const user = useUser();
@@ -56,16 +54,8 @@ export const Dashboard = (): JSX.Element => {
         </div>
 
         <div className='grid h-full max-h-screen flex-1 grid-cols-12 grid-rows-6 gap-4 p-10 pb-0  xl:flex-1'>
-          {/* <DashboardListingView /> */}
           <DashboardGridItem className='col-start-1 col-end-10 row-start-1 row-end-4 2xl:col-end-11'>
-            <DashboardItemHeader>
-              <Typography variant='h4'>Recent Listings</Typography>
-              <AddListing />
-            </DashboardItemHeader>
-
-            <DashboardItemContent>
-              <ListingList />
-            </DashboardItemContent>
+            <DashboardListingView />
           </DashboardGridItem>
 
           <DashboardGridItem className='col-start-10 col-end-13 row-start-1 row-end-7 2xl:col-start-11'>

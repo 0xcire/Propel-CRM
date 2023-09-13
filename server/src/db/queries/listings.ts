@@ -12,7 +12,7 @@ type updateListingByIDParams = {
 // findUsersListingsOnMarket
 // findUsersSoldListings
 
-export const findAllListings = async (userID: number) => {
+export const getUserDashboardListings = async (userID: number) => {
   // TODO: can see issues with performance if larger amt of data?
   // change this to dashboard/listings endpoint?
   // normal /listings endpoint should return all, with pagination support etc
@@ -24,10 +24,16 @@ export const findAllListings = async (userID: number) => {
       .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
       .where(and(eq(listings.userID, userID), isNull(soldListings.listingID)))
       .orderBy(desc(listings.createdAt))
-      .limit(10)
+      .limit(6)
   ).map((listingJoin) => listingJoin.listings);
 
   return userListings;
+};
+
+export const getAllUserListings = async (userID: number) => {
+  //support pagination
+  //filter sold/not sold
+  //filter by create date, etc
 };
 
 export const insertNewListing = async (listing: NewListing) => {

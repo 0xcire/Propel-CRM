@@ -1,5 +1,11 @@
 import { Router } from "express";
-import { createListing, getAllListings, deleteListing, updateListing } from "../controllers/listings";
+import {
+  createListing,
+  // getAllListings,
+  deleteListing,
+  updateListing,
+  getDashboardListings,
+} from "../controllers/listings";
 import { validateRequest } from "../middlewares/validate-input";
 import { isAuth } from "../middlewares";
 import { isListingOwner } from "../middlewares/listings";
@@ -9,7 +15,9 @@ import { cookieSchema, createListingSchema, paramSchema, updateListingSchema } f
 export default (router: Router) => {
   // router.get("/listings/:id", getListing)
 
-  router.get("/listings", validateRequest({ cookies: cookieSchema }), isAuth, getAllListings);
+  router.get("/dashboard/listings", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardListings);
+
+  // router.get("/listings", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardListings);
 
   router.post(
     "/listings",

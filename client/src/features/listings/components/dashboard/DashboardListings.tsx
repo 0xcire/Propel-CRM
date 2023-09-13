@@ -1,14 +1,11 @@
-import { useListings } from '../hooks/useListings';
+import { useDashboardListings } from '../../hooks/useDashboardListings';
 
 import { Spinner } from '@/components';
 
-import { Listing } from './Listing';
-// import { memo } from 'react';
+import { Listing } from '../Listing';
 
-// const MemoizedListing = memo(Listing);
-
-export function ListingList(): JSX.Element {
-  const listings = useListings();
+export function DashboardListings(): JSX.Element {
+  const listings = useDashboardListings();
 
   // TODO: common. extract.
   if (listings.isLoading) {
@@ -22,6 +19,8 @@ export function ListingList(): JSX.Element {
     );
   }
 
+  // TODO: potentially also common
+  // extract when creating full listing page
   if (listings.data?.length === 0) {
     return (
       <div className='grid h-full w-full place-items-center'>
