@@ -29,7 +29,7 @@ export const Typography = ({
       return (
         <h2
           className={twMerge(
-            'scroll-m-20 pb-2 text-3xl font-bold tracking-tight transition-colors first:mt-0',
+            'scroll-m-20 text-3xl font-bold tracking-tight transition-colors first:mt-0',
             className
           )}
         >

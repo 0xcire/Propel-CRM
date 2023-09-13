@@ -2,6 +2,12 @@ import { Get, Post, Patch, Delete, handleAPIResponse } from '@/lib/fetch';
 
 import type { NewTask, TaskResponse, UpdateTaskParams } from '../types';
 
+export const getDashboardTasks = (completed: string): Promise<TaskResponse> => {
+  return Get({ endpoint: `tasks?completed=${completed}` }).then(
+    handleAPIResponse<TaskResponse>
+  );
+};
+
 export const getTasks = (completed: string): Promise<TaskResponse> => {
   return Get({ endpoint: `tasks?completed=${completed}` }).then(
     handleAPIResponse<TaskResponse>

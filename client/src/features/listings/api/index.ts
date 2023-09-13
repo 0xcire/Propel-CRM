@@ -5,6 +5,12 @@ import type {
   UpdateListingParams,
 } from '../types';
 
+export const getDashboardListings = (): Promise<ListingResponse> => {
+  return Get({ endpoint: 'dashboard/listings' }).then(
+    handleAPIResponse<ListingResponse>
+  );
+};
+
 export const getListings = (): Promise<ListingResponse> => {
   return Get({ endpoint: 'listings' }).then(handleAPIResponse<ListingResponse>);
 };

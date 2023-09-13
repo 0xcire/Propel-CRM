@@ -1,7 +1,9 @@
-import { ButtonProps, buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components';
 import { cn } from '@/lib/utils';
+
+import type { ButtonProps } from '@/components/ui/button';
 
 interface SubmitButtonProps extends ButtonProps {
   text: string;

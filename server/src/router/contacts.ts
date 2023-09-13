@@ -5,6 +5,7 @@ import {
   updateContact,
   deleteContact,
   getSpecificContact,
+  getDashboardContacts,
 } from "../controllers/contacts";
 import { isAuth } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
@@ -12,6 +13,8 @@ import { cookieSchema, createContactSchema, paramSchema, updateContactSchema } f
 import { isContactOwner } from "../middlewares/contacts";
 
 export default (router: Router) => {
+  router.get("/dashboard/contacts", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardContacts);
+
   router.get("/contacts", validateRequest({ cookies: cookieSchema }), isAuth, getMyContacts);
 
   // router.get("/contacts/:id", getSpecificContact);

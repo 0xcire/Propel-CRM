@@ -8,6 +8,7 @@ import {
   findContactByID,
   findRelation,
   getContactRelations,
+  getUserDashboardContacts,
   getUsersContacts,
   insertNewContact,
   insertNewRelation,
@@ -15,6 +16,22 @@ import {
 } from "../db/queries/contacts";
 
 import type { NewContact } from "../db/types";
+
+export const getDashboardContacts = async (req: Request, res: Response) => {
+  try {
+    const id = req.user.id;
+
+    const userDashboardContacts = await getUserDashboardContacts(id);
+
+    return res.status(200).json({
+      message: "",
+      contacts: userDashboardContacts,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({});
+  }
+};
 
 export const getMyContacts = async (req: Request, res: Response) => {
   try {

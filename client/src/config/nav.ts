@@ -6,7 +6,7 @@ type NavLinksProps = Array<{
 export const navLinks: NavLinksProps = [
   {
     name: 'Home',
-    path: '/protected',
+    path: '/dashboard',
   },
   {
     name: 'Listings',

@@ -7,7 +7,7 @@ export function Welcome(): JSX.Element {
 
   const redirectPath = (): string => {
     if (user.data) {
-      return '/protected';
+      return '/dashboard';
     }
     return '/auth/signin';
   };

@@ -25,7 +25,22 @@ type DeleteUserContactRelationParams = {
   contactID: number;
 };
 
+export const getUserDashboardContacts = async (userID: number) => {
+  const userContactJoin = await db
+    .select()
+    .from(usersToContacts)
+    .leftJoin(contacts, eq(usersToContacts.contactID, contacts.id))
+    .leftJoin(users, eq(usersToContacts.userID, users.id))
+    .where(eq(users.id, userID))
+    .orderBy(sql`${usersToContacts.createdAt} asc`)
+    .limit(25);
+
+  const userContacts = userContactJoin.map((result) => result.contacts);
+  return userContacts;
+};
+
 export const getUsersContacts = async (id: number) => {
+  // filter, pagination options
   const userContactJoin = await db
     .select()
     .from(usersToContacts)

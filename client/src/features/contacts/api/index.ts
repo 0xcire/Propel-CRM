@@ -5,6 +5,12 @@ import type {
   UpdateContactParams,
 } from '../types';
 
+export const getDashboardContacts = (): Promise<ContactResponse> => {
+  return Get({ endpoint: 'dashboard/contacts' }).then(
+    handleAPIResponse<ContactResponse>
+  );
+};
+
 export const getContacts = (): Promise<ContactResponse> => {
   return Get({ endpoint: 'contacts' }).then(handleAPIResponse<ContactResponse>);
 };
