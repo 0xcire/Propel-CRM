@@ -45,7 +45,7 @@ export default {
   daisyui: {
     themes: [],
     base: false,
-    styled: false,
+    styled: true,
     utils: false,
     logs: false,
   }
