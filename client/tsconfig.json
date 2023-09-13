@@ -1,27 +1,22 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    // Base Options
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-
-    /* Bundler mode */
-    // "moduleResolution": "bundler",
-    "moduleResolution": "node",
+    "target": "ES2022",
+    // "verbatimModuleSyntax": true,
+    "allowJs": true,
     "allowImportingTsExtensions": true,
-    // "resolveJsonModule": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Linting */
+    // Strictnessd
     "strict": true,
+    "noUncheckedIndexedAccess": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -29,8 +24,23 @@
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "strictBindCallApply": true,
-    "strictPropertyInitialization": true
+    "strictPropertyInitialization": true,
+
+    /* Bundler mode */
+    "moduleResolution": "Node",
+    "module": "ESNext",
+    // path alias' dont work with below config?
+    // "moduleResolution": "NodeNext",
+    // "module": "NodeNext",
+
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src"],
+  "include": ["./src/**/*"],
+  "exclude": ["./src/components/ui/*.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

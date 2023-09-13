@@ -1,4 +1,4 @@
-import { ComponentWithChild } from '@/types';
+import type { ComponentWithChild } from '@/types';
 
 export function DashboardItemContent({
   children,
