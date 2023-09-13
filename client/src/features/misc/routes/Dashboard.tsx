@@ -16,8 +16,6 @@ import { DashboardItemHeader } from '@/components/Layout/DashboardItemHeader';
 import { DashboardGridItem } from '@/components/Layout/DashboardGridItem';
 import { DashboardItemContent } from '@/components/Layout/DashboardItemContent';
 
-import { AddContact } from '@/features/contacts/components/AddContact';
-import { ContactList } from '@/features/contacts/components/ContactList';
 import { TaskList } from '@/features/tasks/components/TaskList';
 
 import { TaskDropdown } from '@/features/tasks/components/TaskDropdown';
@@ -27,6 +25,7 @@ import { AnalyticsProvider } from '@/features/analytics/context/AnalyticsContext
 import { SalesVolumeChart } from '@/features/analytics/components/SalesVolumeChart';
 import { AnalyticsHeader } from '@/features/analytics/components/AnalyticsHeader';
 import { DashboardListingView } from '@/features/listings/components/dashboard/DashboardListingView';
+import { DashboardContactsView } from '@/features/contacts/components/dashboard/DashboardContactsView';
 
 export const Dashboard = (): JSX.Element => {
   const user = useUser();
@@ -59,15 +58,7 @@ export const Dashboard = (): JSX.Element => {
           </DashboardGridItem>
 
           <DashboardGridItem className='col-start-10 col-end-13 row-start-1 row-end-7 2xl:col-start-11'>
-            {/* <DashboardContactsView /> */}
-            <DashboardItemHeader>
-              <Typography variant='h4'>Contacts</Typography>
-              <AddContact />
-            </DashboardItemHeader>
-
-            <DashboardItemContent>
-              <ContactList />
-            </DashboardItemContent>
+            <DashboardContactsView />
           </DashboardGridItem>
 
           <DashboardGridItem className='col-start-1 col-end-4 row-start-4 row-end-7'>

@@ -6,7 +6,7 @@ import type { Listings } from '../types';
 
 export const useDashboardListings = (): UseQueryResult<Listings, unknown> => {
   return useQuery({
-    queryKey: ['dashboard-listings'],
+    queryKey: ['listings', { dashboard: true }],
     queryFn: getDashboardListings,
     select: (data) => data.listings,
   });

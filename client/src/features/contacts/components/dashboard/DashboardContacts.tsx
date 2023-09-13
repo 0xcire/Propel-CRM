@@ -1,20 +1,19 @@
 import { memo } from 'react';
 
-import { useContacts } from '../hooks/useContacts';
+import { useDashboardContacts } from '../../hooks/useDashboardContacts';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 import { Spinner } from '@/components';
 
-import { Contact } from './Contact';
+import { Contact } from '../Contact';
 import { Typography } from '@/components/ui/typography';
+import { Link } from 'react-router-dom';
 
 const MemoizedContact = memo(Contact);
 
-// TODO: search filter options
-
-export function ContactList(): JSX.Element {
-  const contacts = useContacts();
+export function DashboardContacts(): JSX.Element {
+  const contacts = useDashboardContacts();
 
   if (contacts.isLoading) {
     return (
@@ -46,6 +45,14 @@ export function ContactList(): JSX.Element {
           contact={contact}
         />
       ))}
+      <div className='text-center'>
+        <Link
+          to='/contacts'
+          className='mx-auto w-full text-slate-500'
+        >
+          View All
+        </Link>
+      </div>
     </ScrollArea>
   );
 }
