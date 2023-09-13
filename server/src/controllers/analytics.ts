@@ -1,7 +1,4 @@
 import type { Request, Response } from "express";
-import { db } from "../db";
-import { listings, soldListings } from "../db/schema";
-import { and, between, eq, isNotNull, sql } from "drizzle-orm";
 import { getExistingYears, getSalesDataByYear } from "../db/queries/analytics";
 
 export const getPeriodicSalesVolume = async (req: Request, res: Response) => {
