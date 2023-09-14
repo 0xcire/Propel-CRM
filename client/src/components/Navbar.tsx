@@ -1,5 +1,10 @@
 import { Link } from 'react-router-dom';
+
+import { useUser } from '@/lib/react-query-auth';
+
 import { useIsDesktop } from '@/hooks/useIsDesktop';
+
+import { Menu, Settings } from 'lucide-react';
 import {
   Sheet,
   SheetClose,
@@ -14,7 +19,6 @@ import {
   NavigationMenuList,
 } from './ui/navigation-menu';
 import { Typography } from './ui/typography';
-import { Menu, Settings } from 'lucide-react';
 
 import { CustomLink } from './CustomLink';
 import { Avatar } from './Avatar';
@@ -22,26 +26,33 @@ import { Avatar } from './Avatar';
 import { navLinks } from '@/config';
 
 type NavProps = {
-  name: string;
+  name: string | undefined;
 };
 
-export function Navbar({ name }: { name: string }): JSX.Element {
+export function Navbar(): JSX.Element {
   const isDesktop = useIsDesktop();
+  const user = useUser();
 
   return (
-    <>{isDesktop ? <SideNav name={name} /> : <MobileSideNav name={name} />}</>
+    <>
+      {isDesktop ? (
+        <SideNav name={user.data?.name} />
+      ) : (
+        <MobileSideNav name={user.data?.name} />
+      )}
+    </>
   );
 }
 
 function MobileSideNav({ name }: NavProps): JSX.Element {
   return (
     <Sheet>
-      <SheetTrigger className='absolute left-5 top-5'>
+      <SheetTrigger className=''>
         <Menu />
       </SheetTrigger>
       <SheetContent
         side='left'
-        className='flex w-[300px] flex-col'
+        className='flex w-[300px] flex-col py-10'
       >
         <SheetHeader>
           <SheetTitle className='mx-auto text-2xl'>Propel CRM</SheetTitle>
@@ -64,13 +75,13 @@ function MobileSideNav({ name }: NavProps): JSX.Element {
           </NavigationMenuList>
         </NavigationMenu>
         <div className='mx-auto flex items-center'>
-          <Avatar name={name} />
+          <Avatar name={name as string} />
 
           <Typography
             variant='p'
             className='mx-3 text-sm'
           >
-            {name}
+            {name as string}
           </Typography>
 
           <SheetClose asChild>
@@ -109,13 +120,13 @@ function SideNav({ name }: NavProps): JSX.Element {
         </NavigationMenuList>
       </NavigationMenu>
       <div className='mx-auto flex items-center'>
-        <Avatar name={name} />
+        <Avatar name={name as string} />
 
         <Typography
           variant='p'
           className='mx-3 text-sm'
         >
-          {name}
+          {name as string}
         </Typography>
 
         <Link to='/profile'>
