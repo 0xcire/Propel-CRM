@@ -7,7 +7,6 @@ export function AppLayout(): JSX.Element {
   return (
     <div className='h-screen w-full xl:flex'>
       {isDesktop && <Navbar />}
-      {/* <Navbar /> */}
       <Outlet />
     </div>
   );
