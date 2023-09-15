@@ -24,21 +24,21 @@ export const getDashboardListings = async (req: Request, res: Response) => {
   }
 };
 
-// export const getAllListings = async (req: Request, res: Response) => {
-//   try {
-//     const userID = req.user.id;
+export const getAllListings = async (req: Request, res: Response) => {
+  try {
+    const userID = req.user.id;
 
-//     const userListings = await getListings(userID);
+    const userListings = await getAllUserListings(userID);
 
-//     return res.status(200).json({
-//       message: "",
-//       listings: userListings,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(500).json({});
-//   }
-// };
+    return res.status(200).json({
+      message: "",
+      listings: userListings,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
 
 export const createListing = async (req: Request, res: Response) => {
   try {

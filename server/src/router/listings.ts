@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   createListing,
-  // getAllListings,
+  getAllListings,
   deleteListing,
   updateListing,
   getDashboardListings,
@@ -17,7 +17,7 @@ export default (router: Router) => {
 
   router.get("/dashboard/listings", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardListings);
 
-  // router.get("/listings", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardListings);
+  router.get("/listings", validateRequest({ cookies: cookieSchema }), isAuth, getAllListings);
 
   router.post(
     "/listings",

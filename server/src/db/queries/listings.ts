@@ -34,6 +34,20 @@ export const getAllUserListings = async (userID: number) => {
   //support pagination
   //filter sold/not sold
   //filter by create date, etc
+
+  //compare offset vs keyset pagination
+
+  const userListings = (
+    await db
+      .select()
+      .from(listings)
+      .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
+      .where(and(eq(listings.userID, userID), isNull(soldListings.listingID)))
+      .orderBy(desc(listings.createdAt))
+      .limit(10)
+  ).map((listingJoin) => listingJoin.listings);
+
+  return userListings;
 };
 
 export const insertNewListing = async (listing: NewListing) => {
