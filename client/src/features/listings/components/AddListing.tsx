@@ -4,6 +4,8 @@ import { useUser } from '@/lib/react-query-auth';
 import { useCreateListing } from '../hooks/useCreateListing';
 
 import { PlusIcon } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
 import { Tooltip } from '@/components';
 import {
   Dialog,
@@ -18,7 +20,11 @@ import { ListingForm } from './ListingForm';
 import type { ListingFields } from './ListingForm';
 import type { NewListing } from '../types';
 
-export function AddListing(): JSX.Element {
+type AddListingProps = {
+  text?: string;
+};
+
+export function AddListing({ text }: AddListingProps): JSX.Element {
   const [open, setOpen] = useState(false);
 
   const user = useUser();
@@ -46,14 +52,20 @@ export function AddListing(): JSX.Element {
       open={open}
       onOpenChange={setOpen}
     >
-      <Tooltip content='Add listing'>
+      {text ? (
         <DialogTrigger asChild>
-          <PlusIcon
-            className='cursor-pointer'
-            size={18}
-          />
+          <Button>{text}</Button>
         </DialogTrigger>
-      </Tooltip>
+      ) : (
+        <Tooltip content='Add Listing'>
+          <DialogTrigger asChild>
+            <PlusIcon
+              className='cursor-pointer'
+              size={18}
+            />
+          </DialogTrigger>
+        </Tooltip>
+      )}
 
       <DialogContent>
         <DialogHeader>
