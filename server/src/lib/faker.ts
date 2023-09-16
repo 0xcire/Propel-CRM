@@ -1,8 +1,9 @@
 import { faker, fakerEN_US } from "@faker-js/faker";
 
-import type { NewListing } from "../db/types";
+import type { Contact, NewListing } from "../db/types";
 import { db } from "../db";
-import { listings, soldListings } from "../db/schema";
+import { listings, listingsToContacts, soldListings } from "../db/schema";
+import { getUsersContacts } from "../db/queries/contacts";
 
 // from a random listing on zillow
 const exampleListingDescription =
@@ -13,7 +14,7 @@ const exampleListingDescription =
 // probably wont have 15000 sqft house with 3 ba, 3 bed
 // etc
 
-export const createFakeListing = (): NewListing => {
+export const createFakeSoldListing = (): NewListing => {
   const stateAbbr = fakerEN_US.location.state({ abbreviated: true });
   const zipcode = fakerEN_US.location.zipCode({ format: "#####", state: stateAbbr });
   const address = `${faker.location.streetAddress()}, ${faker.location.city()}, ${stateAbbr} ${zipcode}`;
@@ -34,10 +35,10 @@ export const createFakeListing = (): NewListing => {
 // have to have associated contact?
 // have separate sale price?
 
-export const seedListingsTable = async () => {
+export const seedListingsAndSoldListings = async () => {
   for (let i = 0; i < 200; i++) {
     await db.transaction(async (tx) => {
-      const newListing = await tx.insert(listings).values(createFakeListing()).returning({
+      const newListing = await tx.insert(listings).values(createFakeSoldListing()).returning({
         id: listings.id,
         createdAt: listings.createdAt,
       });
@@ -47,8 +48,53 @@ export const seedListingsTable = async () => {
       await tx.insert(soldListings).values({
         listingID: newListing[0].id,
         soldAt: newListingDate,
-        userID: 10,
+        userID: 10, // demo act
       });
+    });
+  }
+};
+
+export const createFakeActiveListing = () => {
+  const stateAbbr = fakerEN_US.location.state({ abbreviated: true });
+  const zipcode = fakerEN_US.location.zipCode({ format: "#####", state: stateAbbr });
+  const address = `${faker.location.streetAddress()}, ${faker.location.city()}, ${stateAbbr} ${zipcode}`;
+  return {
+    address: address,
+    propertyType: "single family",
+    baths: faker.number.int({ min: 2, max: 5 }),
+    bedrooms: faker.number.int({ min: 3, max: 8 }),
+    description: exampleListingDescription,
+    price: faker.number.int({ min: 250000, max: 6000000 }).toString(),
+    squareFeet: faker.number.int({ min: 1250, max: 20000 }),
+    createdAt: faker.date.between({ from: "2023-04-01T00:00:00.000Z", to: "2023-09-15T00:00:00.000Z" }),
+    userID: 10,
+  };
+};
+
+export const seedListings = async () => {
+  const usersContacts = await getUsersContacts(10);
+  for (let i = 0; i < 50; i++) {
+    await db.transaction(async (tx) => {
+      const newListing = await db.insert(listings).values(createFakeActiveListing()).returning({
+        id: listings.id,
+      });
+      console.log("----- \n LISTING ID \n -----", newListing[0].id);
+
+      for (let j = 0; j < Math.round(Math.random() * 3); j++) {
+        const randomContactIdx = Math.floor(Math.random() * usersContacts.length);
+        const randomContact = usersContacts[randomContactIdx];
+
+        const listingLeads = await db
+          .insert(listingsToContacts)
+          .values({
+            contactID: randomContact?.id as number,
+            listingID: newListing[0].id,
+          })
+          .returning({
+            contactID: listingsToContacts.contactID,
+          });
+        console.log("----- \n LEAD ID \n -----", listingLeads[0].contactID);
+      }
     });
   }
 };
