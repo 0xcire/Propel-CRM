@@ -12,7 +12,9 @@ export const getDashboardListings = (): Promise<ListingResponse> => {
 };
 
 export const getListings = (): Promise<ListingResponse> => {
-  return Get({ endpoint: 'listings' }).then(handleAPIResponse<ListingResponse>);
+  return Get({ endpoint: `listings${window.location.search}` }).then(
+    handleAPIResponse<ListingResponse>
+  );
 };
 
 export const createListing = (data: NewListing): Promise<ListingResponse> => {

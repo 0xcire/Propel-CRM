@@ -10,7 +10,7 @@ export const navLinks: NavLinksProps = [
   },
   {
     name: 'Listings',
-    path: '/listings',
+    path: '/listings?page=1&status=active',
   },
   {
     name: 'Contacts',
