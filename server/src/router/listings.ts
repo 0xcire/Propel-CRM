@@ -10,14 +10,23 @@ import { validateRequest } from "../middlewares/validate-input";
 import { isAuth } from "../middlewares";
 import { isListingOwner } from "../middlewares/listings";
 
-import { cookieSchema, createListingSchema, paramSchema, updateListingSchema } from "../db/validation-schema";
+import {
+  cookieSchema,
+  createListingSchema,
+  listingQuerySchema,
+  paramSchema,
+  updateListingSchema,
+} from "../db/validation-schema";
 
 export default (router: Router) => {
-  // router.get("/listings/:id", getListing)
-
   router.get("/dashboard/listings", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardListings);
 
-  router.get("/listings", validateRequest({ cookies: cookieSchema }), isAuth, getAllListings);
+  router.get(
+    "/listings",
+    validateRequest({ cookies: cookieSchema, query: listingQuerySchema }),
+    isAuth,
+    getAllListings
+  );
 
   router.post(
     "/listings",

@@ -27,8 +27,9 @@ export const getDashboardListings = async (req: Request, res: Response) => {
 export const getAllListings = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
+    const { page, status } = req.query;
 
-    const userListings = await getAllUserListings(userID);
+    const userListings = await getAllUserListings(userID, +page!, status as string);
 
     return res.status(200).json({
       message: "",

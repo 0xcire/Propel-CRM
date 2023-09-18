@@ -1,6 +1,6 @@
-import { and, desc, eq, isNull, not } from "drizzle-orm";
+import { and, desc, eq, isNotNull, isNull, not, sql } from "drizzle-orm";
 import { db } from "..";
-import { listings, soldListings } from "../schema";
+import { contacts, listings, listingsToContacts, soldListings } from "../schema";
 import type { NewListing } from "../types";
 
 type updateListingByIDParams = {
@@ -30,22 +30,36 @@ export const getUserDashboardListings = async (userID: number) => {
   return userListings;
 };
 
-export const getAllUserListings = async (userID: number) => {
-  //support pagination
-  //filter sold/not sold
-  //filter by create date, etc
+export const getAllUserListings = async (userID: number, page: number, status: string) => {
+  const contactsArr = sql`ARRAY_AGG(${(contacts.id, contacts.name)})`;
 
-  //compare offset vs keyset pagination
-
-  const userListings = (
-    await db
-      .select()
-      .from(listings)
-      .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
-      .where(and(eq(listings.userID, userID), isNull(soldListings.listingID)))
-      .orderBy(desc(listings.createdAt))
-      .limit(10)
-  ).map((listingJoin) => listingJoin.listings);
+  const userListings = await db
+    .select({
+      id: listings.id,
+      address: listings.address,
+      propertyType: listings.propertyType,
+      price: listings.price,
+      bedrooms: listings.bedrooms,
+      baths: listings.baths,
+      squareFeet: listings.squareFeet,
+      description: listings.description,
+      createdAt: listings.createdAt,
+      contacts: contactsArr,
+    })
+    .from(listings)
+    .where(eq(listings.id, userID))
+    .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
+    .where(
+      status === "active"
+        ? isNull(soldListings.listingID)
+        : and(eq(listings.id, soldListings.listingID), isNotNull(soldListings.listingID))
+    )
+    .leftJoin(listingsToContacts, eq(listings.id, listingsToContacts.listingID))
+    .leftJoin(contacts, eq(listingsToContacts.contactID, contacts.id))
+    .orderBy(desc(listings.createdAt))
+    .groupBy(listings.id)
+    .limit(10)
+    .offset((page - 1) * 10);
 
   return userListings;
 };

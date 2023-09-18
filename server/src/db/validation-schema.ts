@@ -169,3 +169,13 @@ export const updateListingSchema = createInsertSchema(listings, {
   })
   .partial()
   .strict();
+
+export const listingQuerySchema = z
+  .object({
+    page: z.string(),
+    status: z.string(),
+  })
+  .transform((listing) => ({
+    page: listing.page.trim(),
+    status: listing.status.trim(),
+  }));
