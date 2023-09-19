@@ -66,10 +66,11 @@ export function ListingForm({
   });
 
   return (
-    <>
+    <div className='flex h-[80vh] flex-col'>
       <Form {...form}>
         <form
           id={isCreate ? 'add-listing' : 'update-listing'}
+          className='my-4 flex flex-1 flex-col gap-2'
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <TextInput
@@ -79,6 +80,7 @@ export function ListingForm({
           />
           <TextAreaInput
             name='description'
+            className='flex-1'
             label='Description'
             control={form.control}
           />
@@ -135,6 +137,6 @@ export function ListingForm({
           text={isCreate ? 'Add' : 'Save'}
         />
       </DialogFooter>
-    </>
+    </div>
   );
 }

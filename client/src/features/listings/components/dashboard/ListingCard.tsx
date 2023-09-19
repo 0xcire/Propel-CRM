@@ -1,4 +1,4 @@
-import { UpdateListing } from './UpdateListing';
+import { UpdateListing } from '../UpdateListing';
 
 import { Typography } from '@/components/ui/typography';
 import { Separator } from '@/components/ui/separator';
@@ -7,9 +7,9 @@ import { Avatar } from '@/components';
 
 import { currency, number } from '@/utils/intl';
 
-import type { Listing } from '../types';
+import type { Listing } from '../../types';
 
-export function Listing({ listing }: { listing: Listing }): JSX.Element {
+export function ListingCard({ listing }: { listing: Listing }): JSX.Element {
   // TODO: will need to better address responsiveness for listings. after seeding data,
   // look into creating a carousel instead?
   // max-w-[225px]

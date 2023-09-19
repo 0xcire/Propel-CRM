@@ -1,5 +1,3 @@
-import type { ColumnDef } from '@tanstack/react-table';
-
 import { MoreHorizontal, ArrowUpDown } from 'lucide-react';
 
 import { Avatar } from '@/components';
@@ -14,8 +12,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { toast } from '@/components/ui/use-toast';
 
+import { DeleteListing } from '../components/DeleteListing';
+
 import { currency, dateIntl, number } from '@/utils/intl';
 
+import type { ColumnDef } from '@tanstack/react-table';
 import type { Listing } from '../types';
 
 export const listingColumns: Array<ColumnDef<Listing>> = [
@@ -170,7 +171,8 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={(): Promise<void> => {
+              onClick={(e): Promise<void> => {
+                e.stopPropagation();
                 toast({
                   description: `Listing ID: ${listing.id} copied to clipboard`,
                 });
@@ -179,9 +181,14 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
             >
               Copy listing ID
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            {/* <DropdownMenuSeparator /> */}
             {/* <DropdownMenuItem>View leads</DropdownMenuItem> */}
-            <DropdownMenuItem>View listing details</DropdownMenuItem>
+            {/* <DropdownMenuItem>View listing details</DropdownMenuItem> */}
+            {/* <DropdownMenuSeparator /> */}
+            {/* <DeleteListing onClick={()} listingID={listing.id} /> */}
+            {/* <DropdownMenuItem>
+              <DeleteListing listingID={listing.id} />
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

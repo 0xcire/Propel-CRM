@@ -2,7 +2,7 @@ import { useDashboardListings } from '../../hooks/useDashboardListings';
 
 import { Spinner } from '@/components';
 
-import { Listing } from '../Listing';
+import { ListingCard } from './ListingCard';
 
 export function DashboardListings(): JSX.Element {
   const listings = useDashboardListings();
@@ -32,7 +32,7 @@ export function DashboardListings(): JSX.Element {
   return (
     <div className='relative flex h-full flex-wrap items-start gap-4 overflow-hidden p-4 pt-0'>
       {listings.data?.map((listing) => (
-        <Listing
+        <ListingCard
           key={`${listing.id}-listing`}
           listing={listing}
         />

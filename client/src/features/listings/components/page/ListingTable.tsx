@@ -37,6 +37,9 @@ import type {
 } from '@tanstack/react-table';
 
 import { StatusToggle } from './StatusToggle';
+import { useNavigate } from 'react-router-dom';
+import { Spinner } from '@/components';
+import type { Listing } from '../../types';
 
 // some reusable layout components and etc
 
@@ -46,15 +49,21 @@ import { StatusToggle } from './StatusToggle';
 
 // Suspense fallback
 
-interface ListingTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface ListingTableProps<TData extends Listing> {
+  columns: Array<ColumnDef<Listing>>;
+  data: Array<TData>;
+  isLoading: boolean;
+  isFetching: boolean;
 }
 
-export function ListingTable<TData, TValue>({
+// cant see use case for TValue
+export function ListingTable<TData extends Listing>({
   columns,
   data,
-}: ListingTableProps<TData, TValue>): JSX.Element {
+  isLoading,
+  isFetching,
+}: ListingTableProps<TData>): JSX.Element {
+  const navigate = useNavigate();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -79,6 +88,17 @@ export function ListingTable<TData, TValue>({
   });
 
   const currentPage: string = searchParams.get('page') ?? '1';
+
+  if (isLoading || isFetching) {
+    return (
+      <div className='grid h-full w-full flex-1 place-items-center'>
+        <Spinner
+          className='mx-auto'
+          variant='md'
+        />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -150,9 +170,16 @@ export function ListingTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  className='cursor-pointer'
+                  className='row cursor-pointer'
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  onClick={(): void => {
+                    navigate(`/listings/${row.original.id}`, {
+                      state: {
+                        query: searchParams,
+                      },
+                    });
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -200,10 +227,17 @@ export function ListingTable<TData, TValue>({
           size='sm'
           onClick={(): void => {
             const status = searchParams.get('status');
-            setSearchParams([
-              ['page', (+currentPage + 1).toString()],
-              ['status', status as string],
-            ]);
+            setSearchParams(
+              [
+                ['page', (+currentPage + 1).toString()],
+                ['status', status as string],
+              ],
+              {
+                state: {
+                  query: searchParams,
+                },
+              }
+            );
           }}
           // 10 could be a dynamic 'results per page' number
           disabled={data.length < 10}
