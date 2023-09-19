@@ -1,9 +1,28 @@
+import type { ColumnDef } from '@tanstack/react-table';
+
+import { MoreHorizontal, ArrowUpDown } from 'lucide-react';
+
+import { Avatar } from '@/components';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { toast } from '@/components/ui/use-toast';
+
 import { currency, dateIntl, number } from '@/utils/intl';
 
-import type { ColumnDef } from '@tanstack/react-table';
 import type { Listing } from '../types';
 
 export const listingColumns: Array<ColumnDef<Listing>> = [
+  {
+    accessorKey: 'id',
+    header: 'ID',
+  },
   {
     accessorKey: 'address',
     header: 'Address',
@@ -14,36 +33,158 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
   },
   {
     accessorKey: 'price',
-    header: 'Price',
+    header: ({ column }): JSX.Element => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={(): void =>
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }
+        >
+          Price
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
     cell: ({ row }): string => {
       const price: string = row.getValue('price');
       const formatted = currency.format(+price);
-      // TODO: dont input number with .00 format into db
       return formatted.split('.')[0] as string;
     },
   },
   {
     accessorKey: 'bedrooms',
-    header: 'Beds',
+    header: ({ column }): JSX.Element => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={(): void =>
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }
+        >
+          Beds
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }): JSX.Element => (
+      <p className='text-center'>{row.getValue('bedrooms')}</p>
+    ),
   },
   {
     accessorKey: 'baths',
-    header: 'Baths',
+    header: ({ column }): JSX.Element => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={(): void =>
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }
+        >
+          Baths
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }): JSX.Element => (
+      <p className='text-center'>{row.getValue('baths')}</p>
+    ),
   },
   {
     accessorKey: 'squareFeet',
-    header: 'Sq Ft',
-    cell: ({ row }): string => {
+    header: ({ column }): JSX.Element => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={(): void =>
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }
+        >
+          SqFt
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }): JSX.Element => {
       const sqft: number = row.getValue('squareFeet');
-      return number.format(sqft);
+      return <p className='text-center'>{number.format(sqft)}</p>;
+    },
+  },
+  {
+    accessorKey: 'contacts',
+    header: 'Leads',
+    cell: ({ row }): JSX.Element => {
+      const leads: Array<string> = row.getValue('contacts');
+
+      return (
+        <div className='line-clamp-1 flex'>
+          {leads.map(
+            (lead, idx) =>
+              lead !== 'NULL' && (
+                <Avatar
+                  key={`${lead}-${idx}`}
+                  name={lead}
+                />
+              )
+          )}
+        </div>
+      );
     },
   },
   {
     accessorKey: 'createdAt',
-    header: 'Listed Date',
-    cell: ({ row }): string => {
+    header: ({ column }): JSX.Element => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={(): void =>
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }
+        >
+          Listed Date
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }): JSX.Element => {
       const date = new Date(row.getValue('createdAt'));
-      return dateIntl.format(date);
+      return <p className='text-center'>{dateIntl.format(date)}</p>;
+    },
+  },
+  {
+    id: 'actions',
+    cell: ({ row }): JSX.Element => {
+      const listing = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant='ghost'
+              className='h-8 w-8 p-0'
+            >
+              <span className='sr-only'>Open menu</span>
+              <MoreHorizontal className='h-4 w-4' />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align='end'>
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={(): Promise<void> => {
+                toast({
+                  description: `Listing ID: ${listing.id} copied to clipboard`,
+                });
+                return navigator.clipboard.writeText(listing.id.toString());
+              }}
+            >
+              Copy listing ID
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            {/* <DropdownMenuItem>View leads</DropdownMenuItem> */}
+            <DropdownMenuItem>View listing details</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
     },
   },
 ];

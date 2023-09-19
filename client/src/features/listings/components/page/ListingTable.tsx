@@ -1,9 +1,24 @@
+import { useState } from 'react';
+
+import { useListingContext } from '../../context/ListingPageContext';
+
 import {
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   Table,
   TableBody,
@@ -13,7 +28,23 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import type { ColumnDef } from '@tanstack/react-table';
+import type { ChangeEvent } from 'react';
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+} from '@tanstack/react-table';
+
+import { StatusToggle } from './StatusToggle';
+
+// some reusable layout components and etc
+
+// mapbox address autocomplete
+
+// sold listings need a contact field like a sold_to column
+
+// Suspense fallback
 
 interface ListingTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -24,58 +55,162 @@ export function ListingTable<TData, TValue>({
   columns,
   data,
 }: ListingTableProps<TData, TValue>): JSX.Element {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const { searchParams, setSearchParams } = useListingContext();
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    manualPagination: true,
+    pageCount: -1,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+    },
   });
+
+  const currentPage: string = searchParams.get('page') ?? '1';
+
   return (
-    <div className='rounded-md border'>
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && 'selected'}
+    <>
+      <div className='flex items-center py-4'>
+        <Input
+          placeholder='Search by address'
+          value={(table.getColumn('address')?.getFilterValue() as string) ?? ''}
+          onChange={(event: ChangeEvent<HTMLInputElement>): void =>
+            table.getColumn('address')?.setFilterValue(event.target.value)
+          }
+          className='max-w-sm'
+        />
+        <div className='ml-auto flex items-center gap-2'>
+          <StatusToggle />
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant='outline'
+                className='ml-auto'
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                Columns
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end'>
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className='capitalize'
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value): void =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+      <div className='flex-1 overflow-auto rounded-md border shadow'>
+        <Table>
+          <TableHeader className='w-full'>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className='h-24 text-center'
-              >
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+            ))}
+          </TableHeader>
+
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  className='cursor-pointer'
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className='h-24 text-center'
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <div className='flex items-center justify-end space-x-2 py-4'>
+        <p>
+          ${} - ${}
+        </p>
+        <Button
+          variant='outline'
+          size='sm'
+          onClick={(): void => {
+            const status = searchParams.get('status');
+            setSearchParams([
+              ['page', (+currentPage - 1).toString()],
+              ['status', status as string],
+            ]);
+          }}
+          disabled={searchParams.get('page') === '1'}
+        >
+          Previous
+        </Button>
+        <Button
+          variant='outline'
+          size='sm'
+          onClick={(): void => {
+            const status = searchParams.get('status');
+            setSearchParams([
+              ['page', (+currentPage + 1).toString()],
+              ['status', status as string],
+            ]);
+          }}
+          // 10 could be a dynamic 'results per page' number
+          disabled={data.length < 10}
+        >
+          Next
+        </Button>
+      </div>
+    </>
   );
 }

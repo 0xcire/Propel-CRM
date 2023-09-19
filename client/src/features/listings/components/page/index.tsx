@@ -1,21 +1,43 @@
-import { Button } from '@/components/ui/button';
+import { useEffect } from 'react';
+
+import { useListings } from '../../hooks/useListings';
+
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+
+import { Spinner } from '@/components';
+
 import { Header } from './Header';
+
 import { ListingTable } from './ListingTable';
 import { listingColumns } from '../../config/ListingColumns';
-import { useListings } from '../../hooks/useListings';
-import { Listings } from '../../types';
-import { useDocumentTitle } from '@/hooks/useDocumentTitle';
-import { Spinner } from '@/components';
+
+import type { Listings } from '../../types';
+import { useListingContext } from '../../context/ListingPageContext';
 
 export function ListingPage(): JSX.Element {
   useDocumentTitle('Listings | Propel CRM');
+
+  const { searchParams, setSearchParams } = useListingContext();
+
   const listings = useListings();
 
-  console.log(listings.data);
+  useEffect(() => {
+    if (
+      searchParams.get('page') === null ||
+      searchParams.get('status') === null
+    ) {
+      setSearchParams([
+        ['page', '1'],
+        ['status', 'active'],
+      ]);
+    }
+
+    // eslint-disable-next-line
+  }, []);
 
   if (listings.isLoading) {
     return (
-      <div className='grid h-full w-full place-items-center'>
+      <div className='grid h-full w-full flex-1 place-items-center'>
         <Spinner
           className='mx-auto'
           variant='md'
@@ -28,31 +50,13 @@ export function ListingPage(): JSX.Element {
     <div className='flex h-full w-full flex-1 flex-col p-10'>
       <Header />
       <div className='h-full pt-10'>
-        {/* gap-4 */}
-        <div className='border-1 flex h-full flex-col rounded-md shadow-md'>
-          {/* --- Filter Options --- */}
-          <div className='mx-auto py-4'>
-            <Button>Click me to filter things</Button>
+        <div className='relative flex h-full flex-col rounded-md border shadow-md'>
+          <div className='absolute flex h-full w-full flex-col px-4'>
+            <ListingTable
+              columns={listingColumns}
+              data={listings.data as Listings}
+            />
           </div>
-
-          <ListingTable
-            columns={listingColumns}
-            data={listings.data as Listings}
-          />
-
-          {/* <div className='flex-1 p-4'>
-                <p className=''>Listings per Page</p>
-              </div> */}
-
-          {/* --- Basic Pagination --- */}
-          {/* <div className='mx-auto py-4'>
-                <Button variant='outline'>{'<'}</Button>
-                <Button variant='outline'>1</Button>
-                <Button variant='outline'>2</Button>
-                <Button variant='outline'>3</Button>
-                <Button variant='outline'>4</Button>
-                <Button variant='outline'>{'>'}</Button>
-              </div> */}
         </div>
       </div>
     </div>
