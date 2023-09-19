@@ -1,18 +1,16 @@
 import { MoreHorizontal, ArrowUpDown } from 'lucide-react';
 
-import { Avatar } from '@/components';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { toast } from '@/components/ui/use-toast';
 
-import { DeleteListing } from '../components/DeleteListing';
+import { ListingLeadAvatar } from '../components/ListingLeadAvatar';
 
 import { currency, dateIntl, number } from '@/utils/intl';
 
@@ -31,6 +29,9 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
   {
     accessorKey: 'propertyType',
     header: 'Property Type',
+    cell: ({ row }): JSX.Element => {
+      return <p className='text-center'>{row.getValue('propertyType')}</p>;
+    },
   },
   {
     accessorKey: 'price',
@@ -47,10 +48,10 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
         </Button>
       );
     },
-    cell: ({ row }): string => {
+    cell: ({ row }): JSX.Element => {
       const price: string = row.getValue('price');
       const formatted = currency.format(+price);
-      return formatted.split('.')[0] as string;
+      return <p className='text-center'>{formatted.split('.')[0] as string}</p>;
     },
   },
   {
@@ -115,16 +116,17 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
     accessorKey: 'contacts',
     header: 'Leads',
     cell: ({ row }): JSX.Element => {
-      const leads: Array<string> = row.getValue('contacts');
+      const leads: Array<{ name: string; email: string; phone: string }> =
+        row.getValue('contacts');
 
       return (
         <div className='line-clamp-1 flex'>
           {leads.map(
             (lead, idx) =>
-              lead !== 'NULL' && (
-                <Avatar
+              lead.name !== null && (
+                <ListingLeadAvatar
                   key={`${lead}-${idx}`}
-                  name={lead}
+                  contactInfo={lead}
                 />
               )
           )}
@@ -181,14 +183,6 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
             >
               Copy listing ID
             </DropdownMenuItem>
-            {/* <DropdownMenuSeparator /> */}
-            {/* <DropdownMenuItem>View leads</DropdownMenuItem> */}
-            {/* <DropdownMenuItem>View listing details</DropdownMenuItem> */}
-            {/* <DropdownMenuSeparator /> */}
-            {/* <DeleteListing onClick={()} listingID={listing.id} /> */}
-            {/* <DropdownMenuItem>
-              <DeleteListing listingID={listing.id} />
-            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

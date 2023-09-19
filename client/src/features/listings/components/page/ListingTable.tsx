@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useListingContext } from '../../context/ListingPageContext';
 
@@ -10,6 +11,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
+import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -28,6 +30,9 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+import { Spinner } from '@/components';
+import { StatusToggle } from './StatusToggle';
+
 import type { ChangeEvent } from 'react';
 import type {
   ColumnDef,
@@ -35,10 +40,6 @@ import type {
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
-
-import { StatusToggle } from './StatusToggle';
-import { useNavigate } from 'react-router-dom';
-import { Spinner } from '@/components';
 import type { Listing } from '../../types';
 
 // some reusable layout components and etc
@@ -205,9 +206,18 @@ export function ListingTable<TData extends Listing>({
         </Table>
       </div>
       <div className='flex items-center justify-end space-x-2 py-4'>
-        <p>
-          ${} - ${}
-        </p>
+        <Typography
+          variant='p'
+          className='text-sm'
+        >
+          Page: {currentPage}
+        </Typography>
+        <Typography
+          variant='p'
+          className='text-sm'
+        >
+          {`${+currentPage * 10 - 10 + 1} - ${+currentPage * 10}`}
+        </Typography>
         <Button
           variant='outline'
           size='sm'
@@ -227,17 +237,10 @@ export function ListingTable<TData extends Listing>({
           size='sm'
           onClick={(): void => {
             const status = searchParams.get('status');
-            setSearchParams(
-              [
-                ['page', (+currentPage + 1).toString()],
-                ['status', status as string],
-              ],
-              {
-                state: {
-                  query: searchParams,
-                },
-              }
-            );
+            setSearchParams([
+              ['page', (+currentPage + 1).toString()],
+              ['status', status as string],
+            ]);
           }}
           // 10 could be a dynamic 'results per page' number
           disabled={data.length < 10}

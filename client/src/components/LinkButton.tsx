@@ -1,6 +1,7 @@
-import type { ButtonProps } from './ui/button';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
+
+import type { ButtonProps } from './ui/button';
 
 interface LinkButtonProps extends ButtonProps {
   text: string;

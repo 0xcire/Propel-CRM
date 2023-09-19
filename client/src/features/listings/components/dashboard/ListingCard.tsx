@@ -11,9 +11,9 @@ import type { Listing } from '../../types';
 
 export function ListingCard({ listing }: { listing: Listing }): JSX.Element {
   return (
-    <div className='flex min-h-full flex-1 basis-[31%] flex-col justify-between rounded-sm border shadow  2xl:basis-[20%] 3xl:basis-[18%]'>
+    <div className='flex h-full flex-1 basis-[31%] flex-col justify-between rounded-sm border shadow  2xl:basis-[20%] 3xl:basis-[18%]'>
       {/* img placeholder  */}
-      <div className='mx-auto h-[130px] w-full rounded-sm bg-gray-300'></div>
+      <div className='mx-auto h-[45%] w-full rounded-sm bg-gray-300'></div>
       <div>
         <div className='p-2'>
           <Typography

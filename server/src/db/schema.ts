@@ -144,6 +144,7 @@ export const listingsToContacts = pgTable(
     contactID: integer("contact_id")
       .notNull()
       .references(() => contacts.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   },
   (t) => ({
     pk: primaryKey(t.listingID, t.contactID),
