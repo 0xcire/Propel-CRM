@@ -22,7 +22,8 @@ export function LinkButton({
     <Button
       {...props}
       className={className}
-      onClick={(): void => {
+      onClick={(e): void => {
+        e.stopPropagation();
         path ? navigate(path) : navigate(delta as number);
       }}
     >

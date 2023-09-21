@@ -1,3 +1,4 @@
+import { extractInitials } from '@/utils/name';
 import { Avatar as Wrapper, AvatarFallback } from './ui/avatar';
 
 export function Avatar({
@@ -7,11 +8,7 @@ export function Avatar({
   name: string;
   className?: string;
 }): JSX.Element {
-  const initials = name
-    .split(' ')
-    .map((word) => word[0])
-    .join('')
-    .toUpperCase();
+  const initials = extractInitials(name);
   return (
     <Wrapper className={className}>
       <AvatarFallback>{initials}</AvatarFallback>

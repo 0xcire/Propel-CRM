@@ -7,7 +7,7 @@ type SchemaParams = {
   body?: AnyZodObject | ZodEffects<ZodEffects<AnyZodObject>> | ZodEffects<AnyZodObject>;
   cookies?: ZodEffects<AnyZodObject>;
   query?: ZodEffects<AnyZodObject>;
-  params?: ZodEffects<AnyZodObject>;
+  params?: AnyZodObject | ZodEffects<AnyZodObject>;
 };
 
 export const validateRequest = (schema: SchemaParams) => {
