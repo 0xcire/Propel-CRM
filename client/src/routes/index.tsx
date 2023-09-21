@@ -8,7 +8,7 @@ import { privateRoutes } from './private';
 
 import { Welcome } from '@/features/misc';
 const { NotFound } = lazyImport(() => import('@/features/misc'), 'NotFound');
-// import { Spinner } from '@/components';
+import { Spinner } from '@/components';
 
 import { lazyImport } from '@/utils/lazyImport';
 
@@ -27,13 +27,17 @@ export const Routes = (): JSX.Element => {
   const element = useRoutes([...welcome, ...routes]);
 
   // TODO: yet another place to replace
-  // if (user.isLoading) {
-  //   return (
-  //     <div className='grid h-screen place-items-center'>
-  //       <Spinner variant='md' />
-  //     </div>
-  //   );
-  // }
+  if (user.isLoading || user.isFetching) {
+    return (
+      <div className='grid h-screen place-items-center'>
+        <Spinner variant='md' />
+      </div>
+    );
+  }
 
+  // if (user.data && user.isFetched) {
   return <Suspense>{element}</Suspense>;
+  // }
+  // TODO: ?
+  // return <></>;
 };

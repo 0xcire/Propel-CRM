@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { useUser } from '@/lib/react-query-auth';
 
-import { useUpdateListing } from '../hooks/useUpdateListing';
+import { useUpdateListing } from '../../hooks/useUpdateListing';
 
 import { PencilIcon } from 'lucide-react';
 import { Tooltip } from '@/components';
@@ -14,38 +14,22 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { ListingFields, ListingForm } from './ListingForm';
+import { ListingForm } from '../ListingForm';
 
 import { filterEqualFields } from '@/utils/form-data';
+import { generateDefaultValues, transformData } from '../../utils';
 
-import type { Listing, NewListing } from '../types';
+import type { Listing, NewListing, ListingFields } from '../../types';
 
 export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
   const [open, setOpen] = useState(false);
   const user = useUser();
   const updateListing = useUpdateListing();
 
-  const defaultValues = {
-    address: listing.address,
-    description: listing.description,
-    propertyType: listing.propertyType,
-    price: listing.price,
-    bedrooms: listing.bedrooms.toString(),
-    baths: listing.baths.toString(),
-    squareFeet: listing.squareFeet.toString(),
-  };
+  const defaultValues = generateDefaultValues(listing);
 
   function onSubmit(values: ListingFields): void {
-    const transformedData: NewListing = {
-      userID: user.data?.id as number,
-      address: values.address,
-      description: values.description,
-      propertyType: values.propertyType,
-      price: values.price,
-      bedrooms: +values.bedrooms,
-      baths: +values.baths,
-      squareFeet: +values.squareFeet,
-    };
+    const transformedData = transformData(user.data?.id as number, values);
 
     const data: Partial<NewListing> = filterEqualFields({
       newData: transformedData,
@@ -70,7 +54,7 @@ export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
       <Tooltip content='edit'>
         <DialogTrigger asChild>
           <PencilIcon
-            className='cursor-pointer'
+            className='ml-auto cursor-pointer'
             size={18}
             tabIndex={0}
           />

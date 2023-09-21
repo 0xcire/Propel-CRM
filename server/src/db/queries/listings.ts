@@ -1,6 +1,6 @@
-import { and, desc, eq, isNull, not } from "drizzle-orm";
+import { and, desc, eq, isNotNull, isNull, not, sql } from "drizzle-orm";
 import { db } from "..";
-import { listings, soldListings } from "../schema";
+import { contacts, listings, listingsToContacts, soldListings } from "../schema";
 import type { NewListing } from "../types";
 
 type updateListingByIDParams = {
@@ -9,31 +9,64 @@ type updateListingByIDParams = {
   userID: number;
 };
 
-// findUsersListingsOnMarket
-// findUsersSoldListings
+const contactsAggregate = sql`JSON_AGG(json_build_object('id', ${contacts.id},'name', ${contacts.name}, 'email', ${contacts.email}, 'phone', ${contacts.phoneNumber}))`;
 
 export const getUserDashboardListings = async (userID: number) => {
-  // TODO: can see issues with performance if larger amt of data?
-  // change this to dashboard/listings endpoint?
-  // normal /listings endpoint should return all, with pagination support etc
-
-  const userListings = (
-    await db
-      .select()
-      .from(listings)
-      .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
-      .where(and(eq(listings.userID, userID), isNull(soldListings.listingID)))
-      .orderBy(desc(listings.createdAt))
-      .limit(6)
-  ).map((listingJoin) => listingJoin.listings);
+  const userListings = await db
+    .select({
+      id: listings.id,
+      address: listings.address,
+      propertyType: listings.propertyType,
+      price: listings.price,
+      bedrooms: listings.bedrooms,
+      baths: listings.baths,
+      squareFeet: listings.squareFeet,
+      description: listings.description,
+      createdAt: listings.createdAt,
+      contacts: contactsAggregate,
+    })
+    .from(listings)
+    .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
+    .where(and(eq(listings.userID, userID), isNull(soldListings.listingID)))
+    .leftJoin(listingsToContacts, eq(listings.id, listingsToContacts.listingID))
+    .leftJoin(contacts, eq(listingsToContacts.contactID, contacts.id))
+    .orderBy(desc(listings.createdAt))
+    .groupBy(listings.id)
+    .limit(6);
 
   return userListings;
 };
 
-export const getAllUserListings = async (userID: number) => {
-  //support pagination
-  //filter sold/not sold
-  //filter by create date, etc
+export const getAllUserListings = async (userID: number, page: number, status: string) => {
+  const userListings = await db
+    .select({
+      id: listings.id,
+      address: listings.address,
+      propertyType: listings.propertyType,
+      price: listings.price,
+      bedrooms: listings.bedrooms,
+      baths: listings.baths,
+      squareFeet: listings.squareFeet,
+      description: listings.description,
+      createdAt: listings.createdAt,
+      contacts: contactsAggregate,
+    })
+    .from(listings)
+    .where(eq(listings.id, userID))
+    .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
+    .where(
+      status === "active"
+        ? isNull(soldListings.listingID)
+        : and(eq(listings.id, soldListings.listingID), isNotNull(soldListings.listingID))
+    )
+    .leftJoin(listingsToContacts, eq(listings.id, listingsToContacts.listingID))
+    .leftJoin(contacts, eq(listingsToContacts.contactID, contacts.id))
+    .orderBy(desc(listings.createdAt))
+    .groupBy(listings.id)
+    .limit(10)
+    .offset((page - 1) * 10);
+
+  return userListings;
 };
 
 export const insertNewListing = async (listing: NewListing) => {
@@ -112,4 +145,44 @@ export const deleteListingByID = async (listingID: number, userID: number) => {
   });
 
   return deletedListing[0];
+};
+
+export const findExistingLead = async (listingID: number, contactID: number) => {
+  const existingLead = await db
+    .select()
+    .from(listingsToContacts)
+    .where(and(eq(listingsToContacts.contactID, +contactID), eq(listingsToContacts.listingID, +listingID)));
+
+  if (!existingLead[0]) {
+    return undefined;
+  }
+
+  return existingLead[0];
+};
+
+export const insertNewLead = async (listingID: number, contactID: number) => {
+  const newLead = await db
+    .insert(listingsToContacts)
+    .values({
+      listingID: listingID,
+      contactID: contactID,
+    })
+    .returning({
+      listingID: listingsToContacts.listingID,
+      contactID: listingsToContacts.contactID,
+    });
+
+  return newLead[0];
+};
+
+export const removeLead = async (listingID: number, contactID: number) => {
+  const removedLead = await db
+    .delete(listingsToContacts)
+    .where(and(eq(listingsToContacts.contactID, contactID), eq(listingsToContacts.listingID, listingID)))
+    .returning({
+      listingID: listingsToContacts.listingID,
+      contactID: listingsToContacts.contactID,
+    });
+
+  return removedLead[0];
 };

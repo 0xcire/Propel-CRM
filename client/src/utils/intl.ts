@@ -4,3 +4,5 @@ export const currency = new Intl.NumberFormat('en-US', {
 });
 
 export const number = new Intl.NumberFormat();
+
+export const dateIntl = new Intl.DateTimeFormat('en-US');

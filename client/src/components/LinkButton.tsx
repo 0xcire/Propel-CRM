@@ -1,6 +1,7 @@
-import type { ButtonProps } from './ui/button';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
+
+import type { ButtonProps } from './ui/button';
 
 interface LinkButtonProps extends ButtonProps {
   text: string;
@@ -21,7 +22,8 @@ export function LinkButton({
     <Button
       {...props}
       className={className}
-      onClick={(): void => {
+      onClick={(e): void => {
+        e.stopPropagation();
         path ? navigate(path) : navigate(delta as number);
       }}
     >

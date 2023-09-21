@@ -1,4 +1,4 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, ilike, sql } from "drizzle-orm";
 import { db } from "../";
 import { contacts, users, usersToContacts } from "../schema";
 import type { Contact, NewContact, NewUserContactRelation, UserContactRelation } from "../types";
@@ -39,17 +39,33 @@ export const getUserDashboardContacts = async (userID: number) => {
   return userContacts;
 };
 
-export const getUsersContacts = async (id: number) => {
+export const getUsersContacts = async (userID: number) => {
   // filter, pagination options
   const userContactJoin = await db
     .select()
     .from(usersToContacts)
     .leftJoin(contacts, eq(usersToContacts.contactID, contacts.id))
     .leftJoin(users, eq(usersToContacts.userID, users.id))
-    .where(eq(users.id, id))
+    .where(eq(users.id, userID))
     .orderBy(sql`${usersToContacts.createdAt} asc`);
 
   const userContacts = userContactJoin.map((result) => result.contacts);
+  return userContacts;
+};
+
+export const searchForContacts = async (userID: number, name: string) => {
+  const userContacts = await db
+    .select({
+      id: contacts.id,
+      name: contacts.name,
+      phone: contacts.phoneNumber,
+      email: contacts.email,
+    })
+    .from(contacts)
+    .leftJoin(usersToContacts, eq(contacts.id, usersToContacts.contactID))
+    .leftJoin(users, eq(usersToContacts.userID, users.id))
+    .where(and(eq(users.id, userID), ilike(contacts.name, `%${name}%`)));
+
   return userContacts;
 };
 

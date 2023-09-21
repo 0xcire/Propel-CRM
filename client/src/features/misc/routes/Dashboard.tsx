@@ -18,11 +18,14 @@ import { DashboardListingView } from '@/features/listings/components/dashboard';
 import { DashboardContactsView } from '@/features/contacts/components/dashboard';
 import { DashboardTasksView } from '@/features/tasks/components/dashboard';
 import { DashboardAnalyticsView } from '@/features/analytics/components/dashboard';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { Navbar } from '@/components/Navbar';
 
 export const Dashboard = (): JSX.Element => {
   const user = useUser();
   const logout = useLogout();
   const navigate = useNavigate();
+  const isDesktop = useIsDesktop();
 
   useDocumentTitle('Dashboard | Propel CRM');
 
@@ -34,9 +37,12 @@ export const Dashboard = (): JSX.Element => {
     <>
       <div className='flex h-full w-full flex-1 flex-col py-10'>
         <div className='flex w-full items-center justify-between px-10'>
-          <Typography variant='h3'>
-            Welcome, {user.data?.name as string}
-          </Typography>
+          <div className='flex items-center gap-2'>
+            {!isDesktop && <Navbar />}
+            <Typography variant='h3'>
+              Welcome, {user.data?.name as string}
+            </Typography>
+          </div>
           <SubmitButton
             text='Logout'
             isLoading={logout.isLoading}

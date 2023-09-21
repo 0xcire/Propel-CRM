@@ -119,8 +119,6 @@ export const listings = pgTable("listings", {
   baths: integer("baths").notNull(),
   squareFeet: integer("sq_ft").notNull(),
   description: text("description").notNull(),
-  // isSold: boolean("is_sold").default(false),
-  // soldAt: timestamp("sold_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
@@ -146,6 +144,7 @@ export const listingsToContacts = pgTable(
     contactID: integer("contact_id")
       .notNull()
       .references(() => contacts.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   },
   (t) => ({
     pk: primaryKey(t.listingID, t.contactID),

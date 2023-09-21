@@ -1,23 +1,35 @@
 import { Router } from "express";
 import {
   createListing,
-  // getAllListings,
+  getAllListings,
   deleteListing,
   updateListing,
   getDashboardListings,
+  addListingLead,
+  removeListingLead,
 } from "../controllers/listings";
 import { validateRequest } from "../middlewares/validate-input";
 import { isAuth } from "../middlewares";
 import { isListingOwner } from "../middlewares/listings";
 
-import { cookieSchema, createListingSchema, paramSchema, updateListingSchema } from "../db/validation-schema";
+import {
+  cookieSchema,
+  createListingSchema,
+  listingQuerySchema,
+  listingLeadSchema,
+  paramSchema,
+  updateListingSchema,
+} from "../db/validation-schema";
 
 export default (router: Router) => {
-  // router.get("/listings/:id", getListing)
-
   router.get("/dashboard/listings", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardListings);
 
-  // router.get("/listings", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardListings);
+  router.get(
+    "/listings",
+    validateRequest({ cookies: cookieSchema, query: listingQuerySchema }),
+    isAuth,
+    getAllListings
+  );
 
   router.post(
     "/listings",
@@ -40,5 +52,21 @@ export default (router: Router) => {
     isAuth,
     isListingOwner,
     deleteListing
+  );
+
+  router.post(
+    "/listings/:id/lead/:contactID",
+    validateRequest({ cookies: cookieSchema, params: listingLeadSchema }),
+    isAuth,
+    isListingOwner,
+    addListingLead
+  );
+
+  router.delete(
+    "/listings/:id/lead/:contactID",
+    validateRequest({ cookies: cookieSchema, params: listingLeadSchema }),
+    isAuth,
+    isListingOwner,
+    removeListingLead
   );
 };

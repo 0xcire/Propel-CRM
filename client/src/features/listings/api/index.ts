@@ -2,6 +2,7 @@ import { Delete, Get, Patch, Post, handleAPIResponse } from '@/lib/fetch';
 import type {
   ListingResponse,
   NewListing,
+  ListingLeadParams,
   UpdateListingParams,
 } from '../types';
 
@@ -12,7 +13,9 @@ export const getDashboardListings = (): Promise<ListingResponse> => {
 };
 
 export const getListings = (): Promise<ListingResponse> => {
-  return Get({ endpoint: 'listings' }).then(handleAPIResponse<ListingResponse>);
+  return Get({ endpoint: `listings${window.location.search}` }).then(
+    handleAPIResponse<ListingResponse>
+  );
 };
 
 export const createListing = (data: NewListing): Promise<ListingResponse> => {
@@ -34,4 +37,23 @@ export const deleteListing = (id: number): Promise<ListingResponse> => {
   return Delete({ endpoint: `listings/${id}` }).then(
     handleAPIResponse<ListingResponse>
   );
+};
+
+export const addLead = ({
+  listingID,
+  contactID,
+}: ListingLeadParams): Promise<ListingResponse> => {
+  return Post({
+    endpoint: `listings/${listingID}/lead/${contactID}`,
+    body: undefined,
+  }).then(handleAPIResponse<ListingResponse>);
+};
+
+export const removeLead = ({
+  listingID,
+  contactID,
+}: ListingLeadParams): Promise<ListingResponse> => {
+  return Delete({
+    endpoint: `listings/${listingID}/lead/${contactID}`,
+  }).then(handleAPIResponse<ListingResponse>);
 };

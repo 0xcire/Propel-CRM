@@ -1,0 +1,37 @@
+import { useListingContext } from '../../context/ListingPageContext';
+
+import { DollarSignIcon, HomeIcon } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Tooltip } from '@/components';
+
+export function StatusToggle(): JSX.Element {
+  const { searchParams, setSearchParams } = useListingContext();
+
+  return (
+    <Tooltip content='listing status'>
+      <Button
+        variant='outline'
+        onClick={(): void => {
+          const status = searchParams.get('status');
+
+          setSearchParams([
+            ['page', '1'],
+            ['status', status === 'active' ? 'sold' : 'active'],
+          ]);
+        }}
+      >
+        {searchParams.get('status') === 'active' ? (
+          <span className='flex items-center gap-1'>
+            <HomeIcon size={16} />
+            Active
+          </span>
+        ) : (
+          <span className='flex items-center gap-1'>
+            <DollarSignIcon size={16} /> Sold
+          </span>
+        )}
+      </Button>
+    </Tooltip>
+  );
+}

@@ -1,8 +1,8 @@
 // per: https://www.radix-ui.com/docs/primitives/components/navigation-menu#with-client-side-routing
 
 import { Link, useLocation } from 'react-router-dom';
-import { NavigationMenuLink } from './ui/navigation-menu';
-import { navigationMenuTriggerStyle } from './ui/navigation-menu';
+import { NavigationMenuLink } from '../ui/navigation-menu';
+import { navigationMenuTriggerStyle } from '../ui/navigation-menu';
 
 type CustomLinkProps = {
   path: string;

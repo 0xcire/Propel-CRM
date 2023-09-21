@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -14,6 +13,7 @@ import { SubmitButton } from '@/components';
 import { listingSchema } from '@/lib/validations/listings';
 
 import type { DeepPartial } from 'react-hook-form';
+import type { ListingFields } from '../types';
 import type { FormMode } from '@/types';
 
 interface ListingFormProps extends FormMode {
@@ -21,8 +21,6 @@ interface ListingFormProps extends FormMode {
   onSubmit: (values: ListingFields) => void;
   listingID?: number;
 }
-
-export type ListingFields = z.infer<typeof listingSchema>;
 
 // TODO: propertyType
 // single family, apartment, townhome, condo, duplex, etc..
@@ -66,10 +64,11 @@ export function ListingForm({
   });
 
   return (
-    <>
+    <div className='flex h-[80vh] flex-col'>
       <Form {...form}>
         <form
           id={isCreate ? 'add-listing' : 'update-listing'}
+          className='my-4 flex flex-1 flex-col gap-2'
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <TextInput
@@ -79,6 +78,7 @@ export function ListingForm({
           />
           <TextAreaInput
             name='description'
+            className='flex-1'
             label='Description'
             control={form.control}
           />
@@ -135,6 +135,6 @@ export function ListingForm({
           text={isCreate ? 'Add' : 'Save'}
         />
       </DialogFooter>
-    </>
+    </div>
   );
 }

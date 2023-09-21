@@ -3,24 +3,19 @@ import { UpdateListing } from './UpdateListing';
 import { Typography } from '@/components/ui/typography';
 import { Separator } from '@/components/ui/separator';
 
-import { Avatar } from '@/components';
+import { ListingLeadAvatar } from '../ListingLeadAvatar';
 
 import { currency, number } from '@/utils/intl';
 
-import type { Listing } from '../types';
+import type { Listing } from '../../types';
 
-export function Listing({ listing }: { listing: Listing }): JSX.Element {
-  // TODO: will need to better address responsiveness for listings. after seeding data,
-  // look into creating a carousel instead?
-  // max-w-[225px]
-  // add flex basis {X}px if going carousel route
-
+export function ListingCard({ listing }: { listing: Listing }): JSX.Element {
   return (
-    <div className='w-content flex h-full flex-1 basis-[31%] flex-col rounded-sm border shadow 2xl:basis-[20%] 3xl:basis-[18%]'>
+    <div className='flex h-full flex-1 basis-[31%] flex-col justify-between rounded-sm border shadow  2xl:basis-[20%] 3xl:basis-[18%]'>
       {/* img placeholder  */}
-      <div className='aspect-video h-auto w-full rounded-sm bg-gray-300'></div>
+      <div className='mx-auto h-[45%] w-full rounded-sm bg-gray-300'></div>
 
-      <div className='flex-grow p-2'>
+      <div className='flex-1 p-2'>
         <Typography
           className='font-bold'
           variant='p'
@@ -47,15 +42,20 @@ export function Listing({ listing }: { listing: Listing }): JSX.Element {
           {listing.address}
         </Typography>
       </div>
-      <div className='flex items-center justify-between p-2'>
-        {/* interested contacts, hide overflow with '...' */}
-        {/* TODO: obviously need to add functionality here later */}
+      <div className='flex flex-1 items-center justify-between p-2'>
+        <div className='line-clamp-2 flex w-full  items-center gap-2'>
+          {listing.contacts?.map(
+            (contact) =>
+              contact.name !== null && (
+                <ListingLeadAvatar
+                  contactInfo={contact}
+                  listingID={listing.id}
+                />
+              )
+          )}
 
-        <div className='line-clamp-2 flex items-center gap-2'>
-          <Avatar name={'Max Holloway'} />
-          <Avatar name={'Kevin Hart'} />
+          <UpdateListing listing={listing} />
         </div>
-        <UpdateListing listing={listing} />
       </div>
     </div>
   );
