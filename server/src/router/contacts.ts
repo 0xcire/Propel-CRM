@@ -4,18 +4,33 @@ import {
   createContact,
   updateContact,
   deleteContact,
-  getSpecificContact,
+  // getSpecificContact,
   getDashboardContacts,
+  searchMyContacts,
 } from "../controllers/contacts";
 import { isAuth } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
-import { cookieSchema, createContactSchema, paramSchema, updateContactSchema } from "../db/validation-schema";
+import {
+  contactQuerySchema,
+  cookieSchema,
+  createContactSchema,
+  paramSchema,
+  updateContactSchema,
+} from "../db/validation-schema";
 import { isContactOwner } from "../middlewares/contacts";
 
 export default (router: Router) => {
   router.get("/dashboard/contacts", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardContacts);
 
-  router.get("/contacts", validateRequest({ cookies: cookieSchema }), isAuth, getMyContacts);
+  // paginate options via query params
+  router.get("/contacts", validateRequest({ cookies: cookieSchema, query: contactQuerySchema }), isAuth, getMyContacts);
+
+  router.get(
+    "/search_contacts",
+    validateRequest({ cookies: cookieSchema, query: contactQuerySchema }),
+    isAuth,
+    searchMyContacts
+  );
 
   // router.get("/contacts/:id", getSpecificContact);
 

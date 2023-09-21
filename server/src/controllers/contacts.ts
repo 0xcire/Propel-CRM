@@ -12,6 +12,7 @@ import {
   getUsersContacts,
   insertNewContact,
   insertNewRelation,
+  searchForContacts,
   updateContactByID,
 } from "../db/queries/contacts";
 
@@ -33,11 +34,50 @@ export const getDashboardContacts = async (req: Request, res: Response) => {
   }
 };
 
+export const searchMyContacts = async (req: Request, res: Response) => {
+  try {
+    const userID = req.user.id;
+    const { name } = req.query;
+
+    let usersSearchedContacts;
+
+    if (name && name === "") {
+      usersSearchedContacts = [];
+    }
+
+    if (name) {
+      usersSearchedContacts = await searchForContacts(userID, name as string);
+    }
+
+    return res.status(200).json({
+      message: "",
+      contacts: usersSearchedContacts,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({});
+  }
+};
+
 export const getMyContacts = async (req: Request, res: Response) => {
   try {
-    const id = req.user.id;
+    const userID = req.user.id;
+    const { name, page } = req.query;
 
-    const userContacts = await getUsersContacts(id);
+    let userContacts;
+
+    if (name && name === "") {
+      return res.status(200).json({
+        message: "",
+        contacts: [],
+      });
+    }
+
+    if (name) {
+      userContacts = await searchForContacts(userID, name as string);
+    } else {
+      userContacts = await getUsersContacts(userID);
+    }
 
     return res.status(200).json({
       message: "",

@@ -31,9 +31,7 @@ export const getUserDashboardListings = async (userID: number) => {
 };
 
 export const getAllUserListings = async (userID: number, page: number, status: string) => {
-  const contactsArr = sql`ARRAY_AGG(${contacts.name})`;
-
-  const contactsAggregate = sql`JSON_AGG(json_build_object('name', ${contacts.name}, 'email', ${contacts.email}, 'phone', ${contacts.phoneNumber}))`;
+  const contactsAggregate = sql`JSON_AGG(json_build_object('id', ${contacts.id},'name', ${contacts.name}, 'email', ${contacts.email}, 'phone', ${contacts.phoneNumber}))`;
 
   const userListings = await db
     .select({
