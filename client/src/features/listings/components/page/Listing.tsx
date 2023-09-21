@@ -20,6 +20,9 @@ import { filterEqualFields } from '@/utils/form-data';
 import type { Listing, ListingResponse, NewListing } from '../../types';
 import type { ListingFields } from '../ListingForm';
 
+// Currently just update form.
+// when adding file uploads, can improve this.
+
 export function Listing(): JSX.Element {
   const [open, setOpen] = useState(false);
 

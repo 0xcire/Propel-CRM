@@ -8,6 +8,10 @@ import {
   updateListingByID,
 } from "../db/queries/listings";
 import type { NewListing } from "../db/types";
+import { db } from "../db";
+import { listingsToContacts } from "../db/schema";
+import { findContactByID } from "../db/queries/contacts";
+import { and, eq } from "drizzle-orm";
 
 export const getDashboardListings = async (req: Request, res: Response) => {
   try {
@@ -56,7 +60,7 @@ export const createListing = async (req: Request, res: Response) => {
 
     return res.status(201).json({
       message: "Listing added",
-      data: newListing,
+      listings: newListing,
     });
   } catch (error) {
     console.log(error);
@@ -79,7 +83,7 @@ export const updateListing = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Updated listing.",
-      data: updatedListingByID,
+      listings: updatedListingByID,
     });
   } catch (error) {
     console.log(error);
@@ -96,6 +100,62 @@ export const deleteListing = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: `Deleted listing: ${deletedListingByID.id}`,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
+
+export const addListingLead = async (req: Request, res: Response) => {
+  try {
+    const { id: listingID, contactID } = req.params;
+
+    const contactByID = await findContactByID(+contactID);
+
+    if (!contactByID) {
+      return res.status(400).json({
+        message: "That's weird, couldn't find that contact to add. Please try again.",
+      });
+    }
+
+    const existingLead = await db
+      .select()
+      .from(listingsToContacts)
+      .where(and(eq(listingsToContacts.contactID, +contactID), eq(listingsToContacts.listingID, +listingID)));
+
+    if (existingLead[0]) {
+      return res.status(400).json({
+        message: `${contactByID?.name} is already an established lead for listing: ${listingID}`,
+      });
+    }
+
+    const newListingLead = await db.insert(listingsToContacts).values({
+      listingID: +listingID,
+      contactID: +contactID,
+    });
+
+    return res.status(201).json({
+      message: `Added ${contactByID?.name} to listing: ${listingID}`,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
+
+export const removeListingLead = async (req: Request, res: Response) => {
+  try {
+    const { id: listingID, contactID } = req.params;
+
+    const contactByID = await findContactByID(+contactID);
+
+    const deletedLead = await db
+      .delete(listingsToContacts)
+      .where(and(eq(listingsToContacts.contactID, +contactID), eq(listingsToContacts.listingID, +listingID)));
+
+    return res.status(200).json({
+      message: `Successfully removed lead: ${contactByID?.name} from listing: ${listingID}`,
     });
   } catch (error) {
     console.log(error);

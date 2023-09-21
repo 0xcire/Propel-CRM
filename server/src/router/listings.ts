@@ -5,6 +5,8 @@ import {
   deleteListing,
   updateListing,
   getDashboardListings,
+  addListingLead,
+  removeListingLead,
 } from "../controllers/listings";
 import { validateRequest } from "../middlewares/validate-input";
 import { isAuth } from "../middlewares";
@@ -14,6 +16,7 @@ import {
   cookieSchema,
   createListingSchema,
   listingQuerySchema,
+  newListingLeadSchema,
   paramSchema,
   updateListingSchema,
 } from "../db/validation-schema";
@@ -27,6 +30,9 @@ export default (router: Router) => {
     isAuth,
     getAllListings
   );
+
+  // ?
+  // router.get("/listings/:id/leads")
 
   router.post(
     "/listings",
@@ -49,5 +55,21 @@ export default (router: Router) => {
     isAuth,
     isListingOwner,
     deleteListing
+  );
+
+  router.post(
+    "/listings/:id/lead/:contactID",
+    validateRequest({ cookies: cookieSchema, params: newListingLeadSchema }),
+    isAuth,
+    isListingOwner,
+    addListingLead
+  );
+
+  router.delete(
+    "/listings/:id/lead/:contactID",
+    validateRequest({ cookies: cookieSchema, params: newListingLeadSchema }),
+    isAuth,
+    isListingOwner,
+    removeListingLead
   );
 };

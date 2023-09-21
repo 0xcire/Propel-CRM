@@ -16,6 +16,14 @@ import { currency, dateIntl, number } from '@/utils/intl';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Listing } from '../types';
+import { AddLead } from '../components/page/AddLead';
+
+type ContactInfo = {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+};
 
 export const listingColumns: Array<ColumnDef<Listing>> = [
   {
@@ -39,9 +47,9 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
       return (
         <Button
           variant='ghost'
-          onClick={(): void =>
-            column.toggleSorting(column.getIsSorted() === 'asc')
-          }
+          onClick={(): void => {
+            column.toggleSorting(column.getIsSorted() === 'asc');
+          }}
         >
           Price
           <ArrowUpDown className='ml-2 h-4 w-4' />
@@ -52,6 +60,19 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
       const price: string = row.getValue('price');
       const formatted = currency.format(+price);
       return <p className='text-center'>{formatted.split('.')[0] as string}</p>;
+    },
+    sortingFn: (rowA, rowB, columnId): number => {
+      const rowAValue: string = rowA.getValue(columnId);
+      const rowBValue: string = rowB.getValue(columnId);
+
+      const priceA: number = +(rowAValue.split('.')[0] as string);
+      const priceB: number = +(rowBValue.split('.')[0] as string);
+
+      if (priceA === priceB) {
+        return 0;
+      }
+
+      return priceA > priceB ? 1 : -1;
     },
   },
   {
@@ -116,20 +137,26 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
     accessorKey: 'contacts',
     header: 'Leads',
     cell: ({ row }): JSX.Element => {
-      const leads: Array<{ name: string; email: string; phone: string }> =
-        row.getValue('contacts');
+      const leads: Array<ContactInfo> = row.getValue('contacts');
+      const listing = row.original;
 
       return (
-        <div className='line-clamp-1 flex'>
+        <div className='line-clamp-1 flex items-center justify-start'>
           {leads.map(
             (lead, idx) =>
               lead.name !== null && (
                 <ListingLeadAvatar
                   key={`${lead}-${idx}`}
                   contactInfo={lead}
+                  listingID={listing.id}
+                  onClick={(e): void => e.stopPropagation()}
                 />
               )
           )}
+          <AddLead
+            listingID={listing.id}
+            onClick={(e): void => e.stopPropagation()}
+          />
         </div>
       );
     },

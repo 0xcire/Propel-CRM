@@ -2,6 +2,7 @@ import { Delete, Get, Patch, Post, handleAPIResponse } from '@/lib/fetch';
 import type {
   ListingResponse,
   NewListing,
+  NewListingLeadParams,
   UpdateListingParams,
 } from '../types';
 
@@ -36,4 +37,23 @@ export const deleteListing = (id: number): Promise<ListingResponse> => {
   return Delete({ endpoint: `listings/${id}` }).then(
     handleAPIResponse<ListingResponse>
   );
+};
+
+export const addLead = ({
+  listingID,
+  contactID,
+}: NewListingLeadParams): Promise<ListingResponse> => {
+  return Post({
+    endpoint: `listings/${listingID}/lead/${contactID}`,
+    body: undefined,
+  }).then(handleAPIResponse<ListingResponse>);
+};
+
+export const removeLead = ({
+  listingID,
+  contactID,
+}: NewListingLeadParams): Promise<ListingResponse> => {
+  return Delete({
+    endpoint: `listings/${listingID}/lead/${contactID}`,
+  }).then(handleAPIResponse<ListingResponse>);
 };

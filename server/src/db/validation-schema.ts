@@ -76,6 +76,17 @@ export const signinSchema = createInsertSchema(users)
     password: user.password.trim(),
   }));
 
+export const contactQuerySchema = z
+  .object({
+    page: z.string(),
+    name: z.string(),
+  })
+  .partial()
+  .transform((contact) => ({
+    page: contact.page?.trim(),
+    name: contact.name?.trim(),
+  }));
+
 export const createContactSchema = createInsertSchema(contacts)
   .omit({
     id: true,
@@ -178,4 +189,14 @@ export const listingQuerySchema = z
   .transform((listing) => ({
     page: listing.page.trim(),
     status: listing.status.trim(),
+  }));
+
+export const newListingLeadSchema = z
+  .object({
+    id: z.string(),
+    contactID: z.string(),
+  })
+  .transform((lead) => ({
+    id: lead.id.trim(),
+    contactID: lead.contactID.trim(),
   }));

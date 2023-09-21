@@ -26,6 +26,20 @@ export type UpdateListingParams = {
   data: Partial<NewListing>;
 };
 
+export type NewListingLeadParams = {
+  listingID: number;
+  contactID: number;
+};
+
 export type ListingContext = {
   previousListings: Listings | undefined;
+};
+
+// TODO address when clean up
+
+export type ContactInfo = {
+  id: number;
+  name: string;
+  phone: string;
+  email: string;
 };
