@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { useDebounce } from '@/hooks/useDebounce';
-
-// shared Dir?
-// although may be one off
 import { useSearchContacts } from '@/features/contacts/hooks/useSearchContacts';
 import { useAddLead } from '../../hooks/useAddLead';
+
+import { useDebounce } from '@/hooks/useDebounce';
 
 import { PlusIcon } from 'lucide-react';
 
@@ -25,18 +23,21 @@ import { SubmitButton } from '@/components';
 
 import type { ComponentProps } from 'react';
 
-// TODO Address
+// ?
 import type { Contact } from '@/features/contacts/types';
 
 interface AddLeadProps extends ComponentProps<'div'> {
   listingID: number;
 }
 
+// TODO: revisit when building tasks page
+// could make generic: 'ContactSearch' or etc..
 export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
   const [query, setQuery] = useState<string | undefined>(undefined);
   const [searchParams, setSearchParams] = useSearchParams();
   const debouncedQuery = useDebounce(query, 200);
 
+  // TODO: consider extracting into shared dir. revisit when building tasks page
   const searchContacts = useSearchContacts();
 
   const handleInputChange = (value: string): void => {

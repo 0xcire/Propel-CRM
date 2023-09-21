@@ -16,9 +16,14 @@ import {
 import { ListingForm } from '../ListingForm';
 
 import { filterEqualFields } from '@/utils/form-data';
+import { generateDefaultValues, transformData } from '../../utils';
 
-import type { Listing, ListingResponse, NewListing } from '../../types';
-import type { ListingFields } from '../ListingForm';
+import type {
+  Listing,
+  ListingResponse,
+  NewListing,
+  ListingFields,
+} from '../../types';
 
 // Currently just update form.
 // when adding file uploads, can improve this.
@@ -48,29 +53,14 @@ export function Listing(): JSX.Element {
     if (id) {
       setOpen(true);
     }
+
+    // eslint-disable-next-line
   }, []);
 
-  const defaultValues = {
-    address: listing?.address,
-    description: listing?.description,
-    propertyType: listing?.propertyType,
-    price: listing?.price,
-    bedrooms: listing?.bedrooms.toString(),
-    baths: listing?.baths.toString(),
-    squareFeet: listing?.squareFeet.toString(),
-  };
+  const defaultValues = generateDefaultValues(listing);
 
   function onSubmit(values: ListingFields): void {
-    const transformedData: NewListing = {
-      userID: user.data?.id as number,
-      address: values.address,
-      description: values.description,
-      propertyType: values.propertyType,
-      price: values.price,
-      bedrooms: +values.bedrooms,
-      baths: +values.baths,
-      squareFeet: +values.squareFeet,
-    };
+    const transformedData = transformData(user.data?.id as number, values);
 
     const data: Partial<NewListing> = filterEqualFields({
       newData: transformedData,
@@ -97,8 +87,8 @@ export function Listing(): JSX.Element {
         }
       }}
     >
-      <DialogContent id='contents'>
-        <div id='actual-contents'>
+      <DialogContent>
+        <div>
           <DialogHeader>
             <DialogTitle>Update Listing</DialogTitle>
           </DialogHeader>

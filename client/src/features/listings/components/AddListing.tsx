@@ -17,8 +17,7 @@ import {
 
 import { ListingForm } from './ListingForm';
 
-import type { ListingFields } from './ListingForm';
-import type { NewListing } from '../types';
+import type { NewListing, ListingFields } from '../types';
 
 type AddListingProps = {
   text?: string;

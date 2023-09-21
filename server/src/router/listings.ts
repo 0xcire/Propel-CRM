@@ -16,7 +16,7 @@ import {
   cookieSchema,
   createListingSchema,
   listingQuerySchema,
-  newListingLeadSchema,
+  listingLeadSchema,
   paramSchema,
   updateListingSchema,
 } from "../db/validation-schema";
@@ -30,9 +30,6 @@ export default (router: Router) => {
     isAuth,
     getAllListings
   );
-
-  // ?
-  // router.get("/listings/:id/leads")
 
   router.post(
     "/listings",
@@ -59,7 +56,7 @@ export default (router: Router) => {
 
   router.post(
     "/listings/:id/lead/:contactID",
-    validateRequest({ cookies: cookieSchema, params: newListingLeadSchema }),
+    validateRequest({ cookies: cookieSchema, params: listingLeadSchema }),
     isAuth,
     isListingOwner,
     addListingLead
@@ -67,7 +64,7 @@ export default (router: Router) => {
 
   router.delete(
     "/listings/:id/lead/:contactID",
-    validateRequest({ cookies: cookieSchema, params: newListingLeadSchema }),
+    validateRequest({ cookies: cookieSchema, params: listingLeadSchema }),
     isAuth,
     isListingOwner,
     removeListingLead

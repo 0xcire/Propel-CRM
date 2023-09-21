@@ -1,5 +1,9 @@
 import { useState } from 'react';
 
+import { useRemoveLead } from '../hooks/useRemoveLead';
+
+import { Trash2Icon } from 'lucide-react';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,10 +15,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+
 import { SubmitButton } from '@/components';
-import { Trash2Icon } from 'lucide-react';
-import { useRemoveLead } from '../../hooks/useRemoveLead';
-import type { ContactInfo } from '../../types';
+
+import type { ContactInfo } from '../types';
 
 export function RemoveLead({
   contactInfo,
@@ -49,7 +53,9 @@ export function RemoveLead({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel onClick={(e): void => e.stopPropagation()}>
+            Cancel
+          </AlertDialogCancel>
           <AlertDialogAction asChild>
             <SubmitButton
               variant='destructive'

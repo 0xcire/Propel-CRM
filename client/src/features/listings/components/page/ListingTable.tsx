@@ -42,13 +42,7 @@ import type {
 } from '@tanstack/react-table';
 import type { Listing } from '../../types';
 
-// some reusable layout components and etc
-
-// mapbox address autocomplete
-
 // sold listings need a contact field like a sold_to column
-
-// Suspense fallback
 
 interface ListingTableProps<TData extends Listing> {
   columns: Array<ColumnDef<Listing>>;

@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
 
+import { findContactByID } from "../db/queries/contacts";
 import {
   deleteListingByID,
+  findExistingLead,
   getAllUserListings,
   getUserDashboardListings,
+  insertNewLead,
   insertNewListing,
+  removeLead,
   updateListingByID,
 } from "../db/queries/listings";
 import type { NewListing } from "../db/types";
-import { db } from "../db";
-import { listingsToContacts } from "../db/schema";
-import { findContactByID } from "../db/queries/contacts";
-import { and, eq } from "drizzle-orm";
 
 export const getDashboardListings = async (req: Request, res: Response) => {
   try {
@@ -119,21 +119,15 @@ export const addListingLead = async (req: Request, res: Response) => {
       });
     }
 
-    const existingLead = await db
-      .select()
-      .from(listingsToContacts)
-      .where(and(eq(listingsToContacts.contactID, +contactID), eq(listingsToContacts.listingID, +listingID)));
+    const existingLead = await findExistingLead(+listingID, +contactID);
 
-    if (existingLead[0]) {
+    if (existingLead) {
       return res.status(400).json({
         message: `${contactByID?.name} is already an established lead for listing: ${listingID}`,
       });
     }
 
-    const newListingLead = await db.insert(listingsToContacts).values({
-      listingID: +listingID,
-      contactID: +contactID,
-    });
+    const newListingLead = await insertNewLead(+listingID, +contactID);
 
     return res.status(201).json({
       message: `Added ${contactByID?.name} to listing: ${listingID}`,
@@ -150,9 +144,7 @@ export const removeListingLead = async (req: Request, res: Response) => {
 
     const contactByID = await findContactByID(+contactID);
 
-    const deletedLead = await db
-      .delete(listingsToContacts)
-      .where(and(eq(listingsToContacts.contactID, +contactID), eq(listingsToContacts.listingID, +listingID)));
+    const removedLead = await removeLead(+listingID, +contactID);
 
     return res.status(200).json({
       message: `Successfully removed lead: ${contactByID?.name} from listing: ${listingID}`,

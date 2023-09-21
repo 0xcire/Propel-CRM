@@ -6,12 +6,12 @@ import { useToast } from '@/components/ui/use-toast';
 import { isAPIError } from '@/utils/error';
 
 import type { UseMutationResult } from '@tanstack/react-query';
-import type { ListingResponse, NewListingLeadParams } from '../types';
+import type { ListingResponse, ListingLeadParams } from '../types';
 
 export const useAddLead = (): UseMutationResult<
   ListingResponse,
   unknown,
-  NewListingLeadParams,
+  ListingLeadParams,
   unknown
 > => {
   const { toast } = useToast();

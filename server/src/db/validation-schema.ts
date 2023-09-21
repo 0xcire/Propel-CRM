@@ -191,7 +191,7 @@ export const listingQuerySchema = z
     status: listing.status.trim(),
   }));
 
-export const newListingLeadSchema = z
+export const listingLeadSchema = z
   .object({
     id: z.string(),
     contactID: z.string(),
