@@ -34,6 +34,7 @@ interface AddLeadProps extends ComponentProps<'div'> {
 // could make generic: 'ContactSearch' or etc..
 export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
   const [query, setQuery] = useState<string | undefined>(undefined);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const debouncedQuery = useDebounce(query, 200);
 
@@ -46,7 +47,12 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
 
   useEffect(() => {
     searchParams.set('name', debouncedQuery ?? '');
-    setSearchParams(searchParams);
+    setSearchParams(
+      searchParams,
+      // set 'same time' as ./page/index.tsx
+      // replace true to retain browser navigation controls
+      { replace: true }
+    );
 
     // eslint-disable-next-line
   }, [debouncedQuery]);

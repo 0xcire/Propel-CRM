@@ -16,7 +16,12 @@ import { currency, dateIntl, number } from '@/utils/intl';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Listing } from '../types';
-import { AddLead } from '../components/page/AddLead';
+import { lazyImport } from '@/utils/lazyImport';
+// import { AddLead } from '../components/page/AddLead';
+const { AddLead } = lazyImport(
+  () => import('../components/page/AddLead'),
+  'AddLead'
+);
 
 type ContactInfo = {
   id: number;

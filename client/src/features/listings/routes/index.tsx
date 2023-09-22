@@ -1,23 +1,25 @@
-import { lazyImport } from '@/utils/lazyImport';
 import { Suspense } from 'react';
 
-import { ListingProvider } from '../context/ListingPageContext';
+import { lazyImport } from '@/utils/lazyImport';
 
 const { ListingPage } = lazyImport(
   () => import('../components/page'),
   'ListingPage'
 );
-import { Listing } from '../components/page/Listing';
+
+const { Listing } = lazyImport(
+  () => import('../components/page/Listing'),
+  'Listing'
+);
 
 import type { RouteObject } from 'react-router-dom';
 
 export const listingRoutes: RouteObject = {
   path: 'listings',
   element: (
+    // TODO: skeleton with rest of layout?
     <Suspense>
-      <ListingProvider>
-        <ListingPage />
-      </ListingProvider>
+      <ListingPage />
     </Suspense>
   ),
   children: [
