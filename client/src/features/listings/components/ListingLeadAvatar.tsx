@@ -51,36 +51,51 @@ export function ListingLeadAvatar({
               text={contactInfo.name}
             />
             {/* <p className='text-sm'>This lead was established X days ago.</p> */}
-            <p>contact info</p>
+
             <div className='flex items-center gap-2 pt-0'>
-              <Tooltip content={contactInfo.phone}>
-                <PhoneIcon
-                  className='cursor-pointer'
-                  onClick={(e): void => {
-                    e.stopPropagation();
-                    navigator.clipboard.writeText(contactInfo.phone);
-                    toast({
-                      description: `Copied ${contactInfo.name}'s number to your clipboard`,
-                    });
-                  }}
-                  size={16}
-                />
-              </Tooltip>
-              <Tooltip content={contactInfo.email}>
-                <AtSignIcon
-                  className='cursor-pointer'
-                  onClick={(e): void => {
-                    e.stopPropagation();
-                    window.location = `mailto:${contactInfo.email}` as string &
-                      Location;
-                    navigator.clipboard.writeText(contactInfo.email);
-                    toast({
-                      description: `Copied ${contactInfo.name}'s email to your clipboard`,
-                    });
-                  }}
-                  size={16}
-                />
-              </Tooltip>
+              <div className='flex cursor-pointer items-center gap-1'>
+                <Tooltip content={contactInfo.phone}>
+                  <div className='flex items-center gap-1'>
+                    <PhoneIcon
+                      className='mt-1 cursor-pointer'
+                      onClick={(e): void => {
+                        e.stopPropagation();
+                        window.location =
+                          `mailto:${contactInfo.email}` as string & Location;
+                        navigator.clipboard.writeText(contactInfo.phone);
+                        toast({
+                          description: `Copied ${contactInfo.name}'s number to your clipboard`,
+                        });
+                      }}
+                      size={16}
+                    />
+
+                    <p>phone</p>
+                  </div>
+                </Tooltip>
+              </div>
+
+              <div className='flex cursor-pointer items-center gap-1'>
+                <Tooltip content={contactInfo.email}>
+                  <div className='flex items-center gap-1'>
+                    <AtSignIcon
+                      className='mt-1 cursor-pointer'
+                      onClick={(e): void => {
+                        e.stopPropagation();
+                        window.location =
+                          `mailto:${contactInfo.email}` as string & Location;
+                        navigator.clipboard.writeText(contactInfo.email);
+                        toast({
+                          description: `Copied ${contactInfo.name}'s email to your clipboard`,
+                        });
+                      }}
+                      size={16}
+                    />
+
+                    <p>email</p>
+                  </div>
+                </Tooltip>
+              </div>
 
               <RemoveLead
                 listingID={listingID}

@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import { DESKTOP_MEDIA_QUERY } from '@/config';
 
 export const useIsDesktop = (): boolean | undefined => {
   const [isDesktop, setIsDesktop] = useState<boolean | undefined>();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const query = window.matchMedia(DESKTOP_MEDIA_QUERY);
     setIsDesktop(query.matches);
 

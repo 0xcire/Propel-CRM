@@ -1,4 +1,4 @@
-import { useListingContext } from '../../context/ListingPageContext';
+import { useSearchParams } from 'react-router-dom';
 
 import { DollarSignIcon, HomeIcon } from 'lucide-react';
 
@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Tooltip } from '@/components';
 
 export function StatusToggle(): JSX.Element {
-  const { searchParams, setSearchParams } = useListingContext();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   return (
     <Tooltip content='listing status'>

@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { useListingContext } from '../../context/ListingPageContext';
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 
 import {
   flexRender,
@@ -59,10 +61,10 @@ export function ListingTable<TData extends Listing>({
   isFetching,
 }: ListingTableProps<TData>): JSX.Element {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const { searchParams, setSearchParams } = useListingContext();
 
   const table = useReactTable({
     data,
@@ -83,17 +85,6 @@ export function ListingTable<TData extends Listing>({
   });
 
   const currentPage: string = searchParams.get('page') ?? '1';
-
-  if (isLoading || isFetching) {
-    return (
-      <div className='grid h-full w-full flex-1 place-items-center'>
-        <Spinner
-          className='mx-auto'
-          variant='md'
-        />
-      </div>
-    );
-  }
 
   return (
     <>
@@ -140,7 +131,75 @@ export function ListingTable<TData extends Listing>({
           </DropdownMenu>
         </div>
       </div>
-      <div className='flex-1 overflow-auto rounded-md border shadow'>
+      {isLoading || isFetching ? (
+        <div className='grid h-full w-full flex-1 place-items-center'>
+          <Spinner
+            className='mx-auto'
+            variant='md'
+          />
+        </div>
+      ) : (
+        <div className='flex-1 overflow-auto rounded-md border shadow'>
+          <Table>
+            <TableHeader className='w-full'>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    className='row cursor-pointer'
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                    onClick={(): void => {
+                      navigate(`/listings/${row.original.id}`, {
+                        state: {
+                          query: searchParams,
+                        },
+                      });
+                    }}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className='h-24 text-center'
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+      {/* <div className='flex-1 overflow-auto rounded-md border shadow'>
         <Table>
           <TableHeader className='w-full'>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -198,7 +257,7 @@ export function ListingTable<TData extends Listing>({
             )}
           </TableBody>
         </Table>
-      </div>
+      </div> */}
       <div className='flex items-center justify-end space-x-2 py-4'>
         <Typography
           variant='p'
@@ -231,10 +290,29 @@ export function ListingTable<TData extends Listing>({
           size='sm'
           onClick={(): void => {
             const status = searchParams.get('status');
-            setSearchParams([
-              ['page', (+currentPage + 1).toString()],
-              ['status', status as string],
-            ]);
+            // navigate(
+            //   `/listings/?page=${(
+            //     +currentPage + 1
+            //   ).toString()}&status=${status}`,
+            //   search: '',
+            //   {
+            //     replace: true,
+            //   }
+            // );
+            navigate(
+              {
+                pathname: '/listings',
+                search: createSearchParams({
+                  page: (+currentPage + 1).toString(),
+                  status: status ?? 'active',
+                }).toString(),
+              }
+              // { replace: true }
+            );
+            // setSearchParams([
+            //   ['page', (+currentPage + 1).toString()],
+            //   ['status', status as string],
+            // ]);
           }}
           // 10 could be a dynamic 'results per page' number
           disabled={data.length < 10}
