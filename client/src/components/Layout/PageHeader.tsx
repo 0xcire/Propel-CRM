@@ -1,11 +1,25 @@
+import { useIsDesktop } from '@/hooks/useIsDesktop';
+
+import { Typography } from '../ui/typography';
+import { Navbar } from '../Navbar';
+
 import type { ReactNode } from 'react';
 
-export function PageHeader({ children }: { children: ReactNode }): JSX.Element {
+export function PageHeader({
+  children,
+  text,
+}: {
+  children: ReactNode;
+  text: string;
+}): JSX.Element {
+  const isDesktop = useIsDesktop();
   return (
-    <div className='flex h-full w-full flex-1 flex-col p-10'>
-      <div className='flex w-full items-center justify-between'>
-        <>{children}</>
+    <div className='flex w-full items-center justify-between'>
+      <div className='flex items-center gap-2'>
+        {!isDesktop && <Navbar />}
+        <Typography variant='h3'>{text}</Typography>
       </div>
+      {children}
     </div>
   );
 }

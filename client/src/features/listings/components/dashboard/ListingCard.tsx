@@ -48,6 +48,7 @@ export function ListingCard({ listing }: { listing: Listing }): JSX.Element {
             (contact) =>
               contact.name !== null && (
                 <ListingLeadAvatar
+                  key={`${contact.id}-${listing.id}`}
                   contactInfo={contact}
                   listingID={listing.id}
                 />
