@@ -7,9 +7,12 @@ export const useContacts = (): UseQueryResult<
   Contacts | undefined,
   unknown
 > => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const query = { page: searchParams.get('page') ?? '1' };
   return useQuery({
-    queryKey: ['contacts'],
+    queryKey: ['contacts', query],
     queryFn: getContacts,
     select: (data) => data.contacts,
+    // refetchOnMount
   });
 };

@@ -39,15 +39,17 @@ export const getUserDashboardContacts = async (userID: number) => {
   return userContacts;
 };
 
-export const getUsersContacts = async (userID: number) => {
-  // filter, pagination options
+export const getUsersContacts = async (userID: number, page: number) => {
+  // pagination options
   const userContactJoin = await db
     .select()
     .from(usersToContacts)
     .leftJoin(contacts, eq(usersToContacts.contactID, contacts.id))
     .leftJoin(users, eq(usersToContacts.userID, users.id))
     .where(eq(users.id, userID))
-    .orderBy(sql`${usersToContacts.createdAt} asc`);
+    .orderBy(sql`${usersToContacts.createdAt} asc`)
+    .limit(10)
+    .offset((page - 1) * 10);
 
   const userContacts = userContactJoin.map((result) => result.contacts);
   return userContacts;

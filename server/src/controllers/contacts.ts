@@ -41,6 +41,7 @@ export const searchMyContacts = async (req: Request, res: Response) => {
 
     let usersSearchedContacts;
 
+    // react query query does not run if name is ''
     if (name && name === "") {
       usersSearchedContacts = [];
     }
@@ -62,22 +63,9 @@ export const searchMyContacts = async (req: Request, res: Response) => {
 export const getMyContacts = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { name, page } = req.query;
+    const { page } = req.query;
 
-    let userContacts;
-
-    if (name && name === "") {
-      return res.status(200).json({
-        message: "",
-        contacts: [],
-      });
-    }
-
-    if (name) {
-      userContacts = await searchForContacts(userID, name as string);
-    } else {
-      userContacts = await getUsersContacts(userID);
-    }
+    const userContacts = await getUsersContacts(userID, +(page ?? "1"));
 
     return res.status(200).json({
       message: "",
@@ -91,6 +79,7 @@ export const getMyContacts = async (req: Request, res: Response) => {
 
 export const getSpecificContact = async (req: Request, res: Response) => {
   try {
+    const { id } = req.params;
     return 0;
   } catch (error) {
     console.log(error);
