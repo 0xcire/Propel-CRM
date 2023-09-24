@@ -6,7 +6,12 @@ declare namespace Express {
     };
     task: {};
     contact: {
+      id?: number;
       name: string;
+      email?: string;
+      createdAt?: Date | null;
+      phoneNumber?: string;
+      address?: string;
     };
   }
 }

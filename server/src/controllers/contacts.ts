@@ -80,7 +80,23 @@ export const getMyContacts = async (req: Request, res: Response) => {
 export const getSpecificContact = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    return 0;
+
+    if (!id) {
+      return res.status(400).json({
+        message: "bad request",
+      });
+    }
+
+    const contactByID = req.contact;
+
+    // TODO:
+    // on get, message unnecessary
+    // getByID should just return that one element, ex.) contact vs contacts
+    // mainly just typing issue on client
+    return res.status(200).json({
+      message: "",
+      contacts: [contactByID],
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({});

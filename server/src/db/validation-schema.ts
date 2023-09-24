@@ -76,15 +76,20 @@ export const signinSchema = createInsertSchema(users)
     password: user.password.trim(),
   }));
 
+export const contactSearchQuerySchema = z
+  .object({
+    name: z.string(),
+  })
+  .transform((contact) => ({
+    name: contact.name.trim(),
+  }));
+
 export const contactQuerySchema = z
   .object({
     page: z.string(),
-    name: z.string(),
   })
-  .partial()
   .transform((contact) => ({
-    page: contact.page?.trim(),
-    name: contact.name?.trim(),
+    page: contact.page.trim(),
   }));
 
 export const createContactSchema = createInsertSchema(contacts)

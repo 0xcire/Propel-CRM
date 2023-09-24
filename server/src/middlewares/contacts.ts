@@ -5,6 +5,8 @@ export const isContactOwner = async (req: Request, res: Response, next: NextFunc
   const userID = req.user.id;
   const { id } = req.params;
 
+  const method = req.method;
+
   const contactByID = await findContactByID(+id);
 
   const contactToUserRelation = await findRelation({ currentUserID: userID, existingContactID: +id });
@@ -21,10 +23,16 @@ export const isContactOwner = async (req: Request, res: Response, next: NextFunc
     });
   }
 
-  if (contactByID.name) {
+  // need name to return helpful message for POST, DELETE
+  if (contactByID.name && (req.method === "POST" || req.method === "DELETE")) {
     req.contact = {
       name: contactByID.name,
     };
+  }
+
+  // only applies to get('/contacts/:id')
+  if (method === "GET") {
+    req.contact = contactByID;
   }
 
   return next();
