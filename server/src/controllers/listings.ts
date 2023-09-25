@@ -45,6 +45,28 @@ export const getAllListings = async (req: Request, res: Response) => {
   }
 };
 
+export const getSpecificListing = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({
+        message: "Please provide a listing ID.",
+      });
+    }
+
+    const listing = req.listing;
+
+    return res.status(200).json({
+      message: "",
+      listings: [listing],
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
+
 export const createListing = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;

@@ -180,11 +180,7 @@ export function ListingTable<TData extends Listing>({
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
                     onClick={(): void => {
-                      navigate(`/listings/${row.original.id}`, {
-                        state: {
-                          query: searchParams,
-                        },
-                      });
+                      navigate(`/listings/${row.original.id}`);
                     }}
                   >
                     {row.getVisibleCells().map((cell) => (

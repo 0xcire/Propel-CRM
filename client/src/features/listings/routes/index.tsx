@@ -7,9 +7,9 @@ const { ListingPage } = lazyImport(
   'ListingPage'
 );
 
-const { Listing } = lazyImport(
-  () => import('../components/page/Listing'),
-  'Listing'
+const { ListingRoute } = lazyImport(
+  () => import('../components/page/ListingRoute'),
+  'ListingRoute'
 );
 
 import type { RouteObject } from 'react-router-dom';
@@ -25,7 +25,11 @@ export const listingRoutes: RouteObject = {
   children: [
     {
       path: ':id',
-      element: <Listing />,
+      element: (
+        <Suspense>
+          <ListingRoute />
+        </Suspense>
+      ),
     },
   ],
 };

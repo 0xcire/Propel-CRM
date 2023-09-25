@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Outlet, useSearchParams } from 'react-router-dom';
+import { Outlet, useParams, useSearchParams } from 'react-router-dom';
 
 import { useListings } from '../../hooks/useListings';
 
@@ -17,23 +17,22 @@ export function ListingPage(): JSX.Element {
   useDocumentTitle('Listings | Propel CRM');
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const { id } = useParams();
 
   const listings = useListings();
 
   useEffect(() => {
+    // when linking to /listing/:id from non listing route. if deviating away from modal route
+    // remove this functionality.
+    if (id) return;
     if (
       searchParams.get('page') === null ||
       searchParams.get('status') === null
     ) {
-      setSearchParams(
-        [
-          ['page', '1'],
-          ['status', 'active'],
-        ],
-        {
-          replace: false,
-        }
-      );
+      setSearchParams([
+        ['page', '1'],
+        ['status', 'active'],
+      ]);
     }
 
     // eslint-disable-next-line

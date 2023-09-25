@@ -1,12 +1,14 @@
-import type { Request, Response, NextFunction } from "express";
 import { db } from "../db";
 import { listings } from "../db/schema";
 import { eq } from "drizzle-orm";
-import { Listing } from "../db/types";
+
+import type { Listing } from "../db/types";
+import type { Request, Response, NextFunction } from "express";
 
 export const isListingOwner = async (req: Request, res: Response, next: NextFunction) => {
   const userID = req.user.id;
   const { id } = req.params;
+  const method = req.method;
 
   const listingByID: Array<Listing> = await db.select().from(listings).where(eq(listings.id, +id));
 
@@ -20,6 +22,10 @@ export const isListingOwner = async (req: Request, res: Response, next: NextFunc
     return res.status(403).json({
       message: "Cannot operate on this listing.",
     });
+  }
+
+  if (method === "GET") {
+    req.listing = listingByID[0];
   }
 
   // TODO: need to address certain relations in future
