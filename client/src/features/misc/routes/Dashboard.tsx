@@ -1,15 +1,10 @@
-// TODO: obviously this should be refactored into <Dashboard /> once everything is built out
-// TODO: and also obviously need to refactor out <TaskDashboardView />, <ContactsDashboardView /> etc etc
-// TODO: fix mobile navbar trigger position
-
-import { useNavigate } from 'react-router-dom';
-
 import { useLogout, useUser } from '@/lib/react-query-auth';
 
-import { useDocumentTitle } from '@/hooks/useDocumentTitle';
+import { useIsDesktop, useDocumentTitle } from '@/hooks';
 
 import { Typography } from '@/components/ui/typography';
 
+import { Navbar } from '@/components/Navbar';
 import { SubmitButton } from '@/components/SubmitButton';
 
 import { DashboardGridItem } from '@/components/Layout/DashboardGridItem';
@@ -18,20 +13,14 @@ import { DashboardListingView } from '@/features/listings/components/dashboard';
 import { DashboardContactsView } from '@/features/contacts/components/dashboard';
 import { DashboardTasksView } from '@/features/tasks/components/dashboard';
 import { DashboardAnalyticsView } from '@/features/analytics/components/dashboard';
-import { useIsDesktop } from '@/hooks/useIsDesktop';
-import { Navbar } from '@/components/Navbar';
 
 export const Dashboard = (): JSX.Element => {
   const user = useUser();
   const logout = useLogout();
-  const navigate = useNavigate();
+
   const isDesktop = useIsDesktop();
 
   useDocumentTitle('Dashboard | Propel CRM');
-
-  if (!user) {
-    navigate('/auth/signin');
-  }
 
   return (
     <>

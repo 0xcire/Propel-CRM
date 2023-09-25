@@ -1,19 +1,15 @@
 // from: https://github.com/alan2207/react-query-auth/blob/master/src/index.tsx
 // had issue preventing default onError cb from firing in queryConfig
 
-import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { getMe, signin, signup, signout } from '@/features/auth';
 
-import {
-  type UseMutationResult,
-  type UseQueryResult,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { isAPIError } from '@/utils/error';
+
+import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
 import type {
   SignInFields,
   SignUpFields,
@@ -46,22 +42,18 @@ const logoutFn = async (): Promise<void> => {
 export const useUser = (): UseQueryResult<User | undefined, unknown> => {
   const queryClient = useQueryClient();
 
-  const setUser = useCallback(
-    (data: User | undefined) => {
-      queryClient.setQueryData(['user'], data);
-    },
-    [queryClient]
-  );
-
   return useQuery({
     queryKey: ['user'],
     queryFn: userFn,
-    retry: false,
+    retry: 0,
     staleTime: 30 * 60 * 1000, // 30 min
-    onSuccess: (data) => {
-      setUser(data);
+
+    onSuccess: () => undefined,
+    onError: (error) => {
+      if (isAPIError(error) && error.status === 403) {
+        queryClient.setQueryData(['user'], null);
+      }
     },
-    onError: () => undefined,
   });
 };
 
@@ -80,7 +72,6 @@ export const useLogin = (): UseMutationResult<
       queryClient.invalidateQueries(['user']);
       navigate('/dashboard');
     },
-    onError: () => undefined,
   });
 };
 
