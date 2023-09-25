@@ -16,8 +16,16 @@ import { ContactForm, type UpdateContactFields } from './ContactForm';
 
 import type { ContactAsProp, NewContact } from '../types';
 import { filterEqualFields } from '@/utils/form-data';
+import { Button } from '@/components/ui/button';
 
-export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
+interface UpdateContactProps extends ContactAsProp {
+  text?: string;
+}
+
+export function UpdateContact({
+  contact,
+  text,
+}: UpdateContactProps): JSX.Element {
   const [open, setOpen] = useState(false);
   const updateContact = useUpdateContact();
 
@@ -49,15 +57,22 @@ export function UpdateContact({ contact }: ContactAsProp): JSX.Element {
       open={open}
       onOpenChange={setOpen}
     >
-      <Tooltip content='edit'>
+      {text ? (
         <DialogTrigger asChild>
-          <PencilIcon
-            className='cursor-pointer'
-            size={18}
-            tabIndex={0}
-          />
+          <Button>{text}</Button>
         </DialogTrigger>
-      </Tooltip>
+      ) : (
+        <Tooltip content='edit'>
+          <DialogTrigger asChild>
+            <PencilIcon
+              className='cursor-pointer'
+              size={18}
+              tabIndex={0}
+            />
+          </DialogTrigger>
+        </Tooltip>
+      )}
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Update Contact</DialogTitle>

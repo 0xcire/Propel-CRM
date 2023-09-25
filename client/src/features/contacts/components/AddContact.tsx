@@ -15,8 +15,9 @@ import { ContactForm } from './ContactForm';
 
 import type { DeepPartial } from 'react-hook-form';
 import type { CreateContactFields } from './ContactForm';
+import { Button } from '@/components/ui/button';
 
-export function AddContact(): JSX.Element {
+export function AddContact({ text }: { text?: string }): JSX.Element {
   const [open, setOpen] = useState(false);
 
   const createContact = useCreateContact();
@@ -40,15 +41,31 @@ export function AddContact(): JSX.Element {
       open={open}
       onOpenChange={setOpen}
     >
-      <Tooltip content='Add new contact'>
+      {text ? (
         <DialogTrigger asChild>
-          <UserPlus
-            className='cursor-pointer'
-            size={20}
-            tabIndex={0}
-          />
+          <Button>
+            <span className='flex items-center gap-2'>
+              <UserPlus
+                className='mt-[2px] cursor-pointer'
+                size={18}
+                tabIndex={0}
+              />
+              {text}
+            </span>
+          </Button>
         </DialogTrigger>
-      </Tooltip>
+      ) : (
+        <Tooltip content='Add new contact'>
+          <DialogTrigger asChild>
+            <UserPlus
+              className='cursor-pointer'
+              size={20}
+              tabIndex={0}
+            />
+          </DialogTrigger>
+        </Tooltip>
+      )}
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Contact</DialogTitle>
