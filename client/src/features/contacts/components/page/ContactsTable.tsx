@@ -30,7 +30,7 @@ import {
 
 import { Spinner } from '@/components';
 
-import type { ChangeEvent } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -46,6 +46,8 @@ interface ContactTableProps<TData extends Contact> {
   data: Array<TData>;
   isLoading: boolean;
   isFetching: boolean;
+  nameQuery: string | undefined;
+  setNameQuery: Dispatch<SetStateAction<string | undefined>>;
 }
 
 // cant see use case for TValue
@@ -54,6 +56,8 @@ export function ContactTable<TData extends Contact>({
   data,
   isLoading,
   isFetching,
+  nameQuery,
+  setNameQuery,
 }: ContactTableProps<TData>): JSX.Element {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -97,10 +101,14 @@ export function ContactTable<TData extends Contact>({
       <div className='flex items-center py-4'>
         <Input
           placeholder='Search your contacts'
-          value={(table.getColumn('address')?.getFilterValue() as string) ?? ''}
-          onChange={(event: ChangeEvent<HTMLInputElement>): void =>
-            table.getColumn('address')?.setFilterValue(event.target.value)
-          }
+          // value={(table.getColumn('address')?.getFilterValue() as string) ?? ''}
+          value={nameQuery ?? ''}
+          // onChange={(event: ChangeEvent<HTMLInputElement>): void =>
+          //   table.getColumn('address')?.setFilterValue(event.target.value)
+          // }
+          onChange={(e): void => {
+            setNameQuery(e.currentTarget.value);
+          }}
           className='max-w-sm'
         />
         <div className='ml-auto flex items-center gap-2'>
@@ -173,11 +181,7 @@ export function ContactTable<TData extends Contact>({
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
                     onClick={(): void => {
-                      navigate(`/contacts/${row.original.id}`, {
-                        // state: {
-                        //   query: searchParams,
-                        // },
-                      });
+                      navigate(`/contacts/${row.original.id}`);
                     }}
                   >
                     {row.getVisibleCells().map((cell) => (
@@ -233,14 +237,6 @@ export function ContactTable<TData extends Contact>({
           size='sm'
           onClick={(): void => {
             setSearchParams([['page', (+currentPage + 1).toString()]]);
-            // const status = searchParams.get('status');
-            // navigate({
-            //   pathname: '/listings',
-            //   search: createSearchParams({
-            //     page: (+currentPage + 1).toString(),
-            //     status: status ?? 'active',
-            //   }).toString(),
-            // });
           }}
           // 10 could be a dynamic 'results per page' number
           disabled={data.length < 10}

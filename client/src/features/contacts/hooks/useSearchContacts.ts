@@ -4,6 +4,11 @@ import { searchContacts } from '../api';
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { Contacts } from '../types';
 
+// TODO:
+// need to differentiate between AddLead and Contacts Table
+// add lead should return name and id
+// contacts table should return everything
+
 export const useSearchContacts = (): UseQueryResult<
   Contacts | undefined,
   unknown
@@ -15,5 +20,6 @@ export const useSearchContacts = (): UseQueryResult<
     queryKey: ['contacts', query],
     queryFn: searchContacts,
     select: (data) => data?.contacts,
+    enabled: !!query.name,
   });
 };
