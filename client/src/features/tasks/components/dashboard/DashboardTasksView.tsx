@@ -1,7 +1,7 @@
 import { Typography } from '@/components/ui/typography';
 
-import { DashboardItemHeader } from '@/components/Layout/DashboardItemHeader';
-import { DashboardItemContent } from '@/components/Layout/DashboardItemContent';
+import { DashboardItemHeader } from '@/components/Layout/dashboard';
+import { DashboardItemContent } from '@/components/Layout/dashboard';
 
 import { TaskDropdown } from '../TaskDropdown';
 import { DashboardTasks } from './DashboardTasks';

@@ -7,7 +7,7 @@ import { Typography } from '@/components/ui/typography';
 import { Navbar } from '@/components/Navbar';
 import { SubmitButton } from '@/components/SubmitButton';
 
-import { DashboardGridItem } from '@/components/Layout/DashboardGridItem';
+import { DashboardGridItem } from '@/components/Layout/dashboard';
 
 import { DashboardListingView } from '@/features/listings/components/dashboard';
 import { DashboardContactsView } from '@/features/contacts/components/dashboard';

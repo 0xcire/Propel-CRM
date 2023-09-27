@@ -1,7 +1,7 @@
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
-import { Typography } from '../ui/typography';
-import { Navbar } from '../Navbar';
+import { Typography } from '../../ui/typography';
+import { Navbar } from '../../Navbar';
 
 import type { ReactNode } from 'react';
 
