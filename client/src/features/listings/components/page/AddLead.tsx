@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { useSearchContacts } from '@/features/contacts/hooks/useSearchContacts';
@@ -25,6 +25,7 @@ import type { ComponentProps } from 'react';
 
 // ?
 import type { Contact } from '@/features/contacts/types';
+import { useNameQuerySearchParams } from '@/hooks';
 
 interface AddLeadProps extends ComponentProps<'div'> {
   listingID: number;
@@ -36,7 +37,7 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
   const [query, setQuery] = useState<string | undefined>(undefined);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const debouncedQuery = useDebounce(query, 200);
+  const debouncedNameQuery = useDebounce(query, 200);
 
   // TODO: consider extracting into shared dir. revisit when building tasks page
   const searchContacts = useSearchContacts();
@@ -45,17 +46,7 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
     setQuery(value);
   };
 
-  useEffect(() => {
-    searchParams.set('name', debouncedQuery ?? '');
-    setSearchParams(
-      searchParams,
-      // set 'same time' as ./page/index.tsx
-      // replace true to retain browser navigation controls
-      { replace: true }
-    );
-
-    // eslint-disable-next-line
-  }, [debouncedQuery]);
+  useNameQuerySearchParams(debouncedNameQuery);
 
   return (
     <div
@@ -65,7 +56,7 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
       <Sheet
         onOpenChange={(open: boolean): void => {
           if (!open) {
-            searchParams.set('name', '');
+            searchParams.delete('name');
             setSearchParams(searchParams);
           }
         }}
