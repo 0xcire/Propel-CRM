@@ -9,6 +9,11 @@ import type { Contacts } from '../types';
 // add lead should return name and id
 // contacts table should return everything
 
+// AddLead => id , name
+// going to be in Tasks as TagContact ? => id, name
+// Contacts => everything
+// ?name=aust?$select=id,name
+
 export const useSearchContacts = (): UseQueryResult<
   Contacts | undefined,
   unknown
@@ -17,7 +22,7 @@ export const useSearchContacts = (): UseQueryResult<
   const query = { name: searchParams.get('name') };
 
   return useQuery({
-    queryKey: ['contacts', query],
+    queryKey: ['search-contacts', query],
     queryFn: searchContacts,
     select: (data) => data?.contacts,
     enabled: !!query.name,

@@ -1,12 +1,12 @@
-import {
-  type UseMutationResult,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { deleteContact } from '../api';
-import { useToast } from '@/components/ui/use-toast';
+
 import { isAPIError } from '@/utils/error';
 
+import { useToast } from '@/components/ui/use-toast';
+
+import type { UseMutationResult } from '@tanstack/react-query';
 import type { ContactContext, ContactResponse } from '../types';
 
 export const useDeleteContact = (): UseMutationResult<
@@ -72,7 +72,9 @@ export const useDeleteContact = (): UseMutationResult<
       });
     },
     onSettled: () => {
-      queryClient.invalidateQueries(['contacts']);
+      queryClient.invalidateQueries(['contacts'], {
+        exact: false,
+      });
     },
   });
 };

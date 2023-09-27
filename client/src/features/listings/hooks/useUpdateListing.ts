@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { findRelevantKeys } from '@/lib/react-query';
 
 import { updateListing } from '../api';
 
@@ -20,11 +21,17 @@ export const useUpdateListing = (): UseMutationResult<
   return useMutation({
     mutationFn: updateListing,
 
-    onSuccess: (data) => {
+    onSuccess: (data, { id }) => {
+      const keys = findRelevantKeys(queryClient, 'listings', id);
       toast({
         description: data.message,
       });
-      queryClient.invalidateQueries(['listings']);
+
+      keys.forEach((key) => {
+        queryClient.invalidateQueries(key, {
+          refetchType: 'none',
+        });
+      });
     },
 
     onError: (error) => {
