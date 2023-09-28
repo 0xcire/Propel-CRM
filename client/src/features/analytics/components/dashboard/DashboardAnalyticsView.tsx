@@ -1,7 +1,7 @@
 import { AnalyticsProvider } from '../../context/AnalyticsContext';
 
-import { DashboardItemHeader } from '@/components/Layout/DashboardItemHeader';
-import { DashboardItemContent } from '@/components/Layout/DashboardItemContent';
+import { DashboardItemHeader } from '@/components/Layout/dashboard';
+import { DashboardItemContent } from '@/components/Layout/dashboard';
 
 import { AnalyticsHeader } from '../AnalyticsHeader';
 import { SalesVolumeChart } from '../SalesVolumeChart';

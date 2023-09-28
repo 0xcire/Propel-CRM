@@ -22,12 +22,12 @@ export const Routes = (): JSX.Element => {
     { path: '*', element: <NotFound /> },
   ];
 
-  const routes = user.data ? privateRoutes : publicRoutes;
-
+  const isLoggedIn = user.isSuccess && user.data !== null;
+  const routes = isLoggedIn ? privateRoutes : publicRoutes;
   const element = useRoutes([...welcome, ...routes]);
 
   // TODO: yet another place to replace
-  if (user.isLoading || user.isFetching) {
+  if (user.isInitialLoading || user.isLoading || user.isFetching) {
     return (
       <div className='grid h-screen place-items-center'>
         <Spinner variant='md' />
@@ -35,9 +35,6 @@ export const Routes = (): JSX.Element => {
     );
   }
 
-  // if (user.data && user.isFetched) {
+  // should add fallback here
   return <Suspense>{element}</Suspense>;
-  // }
-  // TODO: ?
-  // return <></>;
 };

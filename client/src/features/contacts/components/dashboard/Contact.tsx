@@ -1,11 +1,12 @@
+import { UpdateContact } from '../UpdateContact';
+import { RemoveContact } from '../RemoveContact';
+
 import { Typography } from '@/components/ui/typography';
 import { PhoneIcon, AtSignIcon, MapPinIcon } from 'lucide-react';
 
 import { Avatar, Tooltip } from '@/components';
-import { UpdateContact } from './UpdateContact';
-import { RemoveContact } from './RemoveContact';
 
-import type { ContactAsProp } from '../types';
+import type { ContactAsProp } from '../../types';
 
 export function Contact({ contact }: ContactAsProp): JSX.Element {
   return (

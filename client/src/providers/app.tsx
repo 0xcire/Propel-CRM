@@ -1,4 +1,3 @@
-import { type ReactNode } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -6,6 +5,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { queryClient } from '@/lib/react-query';
 
 import { ErrorBoundary } from '@/features/misc';
+
+import type { ReactNode } from 'react';
 
 type AppProviderProps = {
   children: ReactNode | Array<ReactNode>;

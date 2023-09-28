@@ -1,9 +1,9 @@
 import AppProvider from '@/providers/app';
+import { Routes } from '@/routes';
+
 import { Toaster } from '@/components/ui/toaster';
 
 import '@/styles/globals.css';
-
-import { Routes } from '@/routes';
 
 function App(): JSX.Element {
   return (

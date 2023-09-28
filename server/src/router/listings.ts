@@ -1,10 +1,11 @@
 import { Router } from "express";
 import {
-  createListing,
+  getDashboardListings,
   getAllListings,
+  getSpecificListing,
+  createListing,
   deleteListing,
   updateListing,
-  getDashboardListings,
   addListingLead,
   removeListingLead,
 } from "../controllers/listings";
@@ -29,6 +30,14 @@ export default (router: Router) => {
     validateRequest({ cookies: cookieSchema, query: listingQuerySchema }),
     isAuth,
     getAllListings
+  );
+
+  router.get(
+    "/listings/:id",
+    validateRequest({ cookies: cookieSchema, params: paramSchema }),
+    isAuth,
+    isListingOwner,
+    getSpecificListing
   );
 
   router.post(

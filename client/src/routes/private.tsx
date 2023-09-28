@@ -1,10 +1,3 @@
-// dashboard
-// profile
-// listings
-// contacts
-// tasks
-// analytics
-
 import { lazyImport } from '@/utils/lazyImport';
 
 const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
@@ -37,9 +30,3 @@ export const privateRoutes: Array<RouteObject> = [
     ],
   },
 ];
-
-// dashboard || app
-// // listings/{:id}
-// // contacts/{:id}
-// // tasks/{:id}
-// // analytics/

@@ -1,12 +1,13 @@
-import {
-  type UseMutationResult,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { findRelevantKeys } from '@/lib/react-query';
+
 import { updateContact } from '../api';
+
 import { useToast } from '@/components/ui/use-toast';
+
 import { isAPIError } from '@/utils/error';
 
+import type { UseMutationResult } from '@tanstack/react-query';
 import type { ContactResponse, UpdateContactParams } from '../types';
 
 export const useUpdateContact = (): UseMutationResult<
@@ -17,14 +18,22 @@ export const useUpdateContact = (): UseMutationResult<
 > => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: updateContact,
 
-    onSuccess: (data) => {
+    onSuccess: (data, { id }) => {
+      const keys = findRelevantKeys(queryClient, 'contacts', id);
+
       toast({
         description: data.message,
       });
-      queryClient.invalidateQueries(['contacts']);
+
+      keys.forEach((key) => {
+        queryClient.invalidateQueries(key, {
+          refetchType: 'none',
+        });
+      });
     },
     onError: (error) => {
       if (isAPIError(error)) {

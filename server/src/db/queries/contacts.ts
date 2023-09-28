@@ -1,6 +1,6 @@
 import { and, eq, ilike, sql } from "drizzle-orm";
 import { db } from "../";
-import { contacts, users, usersToContacts } from "../schema";
+import { contacts, listings, listingsToContacts, users, usersToContacts } from "../schema";
 import type { Contact, NewContact, NewUserContactRelation, UserContactRelation } from "../types";
 
 type UpdateContactByIDParams = {
@@ -39,27 +39,31 @@ export const getUserDashboardContacts = async (userID: number) => {
   return userContacts;
 };
 
-export const getUsersContacts = async (userID: number) => {
-  // filter, pagination options
+export const getUsersContacts = async (userID: number, page: number) => {
+  // pagination options
   const userContactJoin = await db
     .select()
     .from(usersToContacts)
     .leftJoin(contacts, eq(usersToContacts.contactID, contacts.id))
     .leftJoin(users, eq(usersToContacts.userID, users.id))
     .where(eq(users.id, userID))
-    .orderBy(sql`${usersToContacts.createdAt} asc`);
+    .orderBy(sql`${usersToContacts.createdAt} asc`)
+    .limit(10)
+    .offset((page - 1) * 10);
 
   const userContacts = userContactJoin.map((result) => result.contacts);
   return userContacts;
 };
 
 export const searchForContacts = async (userID: number, name: string) => {
+  // TODO: need param for addlead vs contactstable
   const userContacts = await db
     .select({
       id: contacts.id,
       name: contacts.name,
       phone: contacts.phoneNumber,
       email: contacts.email,
+      address: contacts.address,
     })
     .from(contacts)
     .leftJoin(usersToContacts, eq(contacts.id, usersToContacts.contactID))
@@ -69,8 +73,22 @@ export const searchForContacts = async (userID: number, name: string) => {
   return userContacts;
 };
 
+// listings view,
+// id, address, click to link to /listings/:id
 export const findContactByID = async (id: number) => {
-  const contact: Array<Contact> = await db.select().from(contacts).where(eq(contacts.id, +id));
+  // : Array<Contact>
+  const contact = await db
+    .select({
+      id: contacts.id,
+      name: contacts.name,
+      email: contacts.email,
+      phoneNumber: contacts.phoneNumber,
+      address: contacts.address,
+    })
+    .from(contacts)
+    .where(eq(contacts.id, +id))
+    .leftJoin(listingsToContacts, eq(listingsToContacts.contactID, id))
+    .leftJoin(listings, eq(listings.id, listingsToContacts.listingID));
 
   if (!contact[0]) {
     return undefined;

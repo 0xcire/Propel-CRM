@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import {
-  createSearchParams,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import {
   flexRender,
@@ -33,33 +29,34 @@ import {
 } from '@/components/ui/table';
 
 import { Spinner } from '@/components';
-import { StatusToggle } from './StatusToggle';
 
-import type { ChangeEvent } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import type {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
-import type { Listing } from '../../types';
+import type { Contact } from '../../types';
 
-// sold listings need a contact field like a sold_to column
-
-interface ListingTableProps<TData extends Listing> {
-  columns: Array<ColumnDef<Listing>>;
+interface ContactTableProps<TData extends Contact> {
+  columns: Array<ColumnDef<Contact>>;
   data: Array<TData>;
   isLoading: boolean;
   isFetching: boolean;
+  nameQuery: string | undefined;
+  setNameQuery: Dispatch<SetStateAction<string | undefined>>;
 }
 
 // cant see use case for TValue
-export function ListingTable<TData extends Listing>({
+export function ContactTable<TData extends Contact>({
   columns,
   data,
   isLoading,
   isFetching,
-}: ListingTableProps<TData>): JSX.Element {
+  nameQuery,
+  setNameQuery,
+}: ContactTableProps<TData>): JSX.Element {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -86,6 +83,8 @@ export function ListingTable<TData extends Listing>({
 
   const currentPage: string = searchParams.get('page') ?? '1';
 
+  // TODO: remove table flash on search, loading should only take over table content
+
   if ((!data && isLoading) || (!data && isFetching)) {
     return (
       <div className='grid h-full w-full flex-1 place-items-center'>
@@ -101,16 +100,15 @@ export function ListingTable<TData extends Listing>({
     <>
       <div className='flex items-center p-4'>
         <Input
-          placeholder='Search by address'
-          value={(table.getColumn('address')?.getFilterValue() as string) ?? ''}
-          onChange={(event: ChangeEvent<HTMLInputElement>): void =>
-            table.getColumn('address')?.setFilterValue(event.target.value)
-          }
+          autoFocus={true}
+          placeholder='Search your contacts'
+          value={nameQuery ?? ''}
+          onChange={(e): void => {
+            setNameQuery(e.currentTarget.value);
+          }}
           className='max-w-sm'
         />
         <div className='ml-auto flex items-center gap-2'>
-          <StatusToggle />
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -180,7 +178,7 @@ export function ListingTable<TData extends Listing>({
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
                     onClick={(): void => {
-                      navigate(`/listings/${row.original.id}`);
+                      navigate(`/contacts/${row.original.id}`);
                     }}
                   >
                     {row.getVisibleCells().map((cell) => (
@@ -225,11 +223,7 @@ export function ListingTable<TData extends Listing>({
           variant='outline'
           size='sm'
           onClick={(): void => {
-            const status = searchParams.get('status');
-            setSearchParams([
-              ['page', (+currentPage - 1).toString()],
-              ['status', status as string],
-            ]);
+            setSearchParams([['page', (+currentPage - 1).toString()]]);
           }}
           disabled={searchParams.get('page') === '1'}
         >
@@ -239,14 +233,7 @@ export function ListingTable<TData extends Listing>({
           variant='outline'
           size='sm'
           onClick={(): void => {
-            const status = searchParams.get('status');
-            navigate({
-              pathname: '/listings',
-              search: createSearchParams({
-                page: (+currentPage + 1).toString(),
-                status: status ?? 'active',
-              }).toString(),
-            });
+            setSearchParams([['page', (+currentPage + 1).toString()]]);
           }}
           // 10 could be a dynamic 'results per page' number
           disabled={data.length < 10}

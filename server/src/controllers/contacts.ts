@@ -41,6 +41,7 @@ export const searchMyContacts = async (req: Request, res: Response) => {
 
     let usersSearchedContacts;
 
+    // react query query does not run if name is ''
     if (name && name === "") {
       usersSearchedContacts = [];
     }
@@ -62,22 +63,9 @@ export const searchMyContacts = async (req: Request, res: Response) => {
 export const getMyContacts = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { name, page } = req.query;
+    const { page } = req.query;
 
-    let userContacts;
-
-    if (name && name === "") {
-      return res.status(200).json({
-        message: "",
-        contacts: [],
-      });
-    }
-
-    if (name) {
-      userContacts = await searchForContacts(userID, name as string);
-    } else {
-      userContacts = await getUsersContacts(userID);
-    }
+    const userContacts = await getUsersContacts(userID, +(page ?? "1"));
 
     return res.status(200).json({
       message: "",
@@ -91,7 +79,24 @@ export const getMyContacts = async (req: Request, res: Response) => {
 
 export const getSpecificContact = async (req: Request, res: Response) => {
   try {
-    return 0;
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({
+        message: "bad request",
+      });
+    }
+
+    const contactByID = req.contact;
+
+    // TODO:
+    // on get, message unnecessary
+    // getByID should just return that one element, ex.) contact vs contacts
+    // mainly just typing issue on client
+    return res.status(200).json({
+      message: "",
+      contacts: [contactByID],
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({});

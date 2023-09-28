@@ -18,7 +18,14 @@ import { SubmitButton } from '@/components';
 
 import type { ContactAsProp } from '../types';
 
-export function RemoveContact({ contact }: ContactAsProp): JSX.Element {
+interface RemoveContactProps extends ContactAsProp {
+  text?: string;
+}
+
+export function RemoveContact({
+  contact,
+  text,
+}: RemoveContactProps): JSX.Element {
   const [open, setOpen] = useState(false);
 
   const deleteContact = useDeleteContact();
@@ -28,12 +35,19 @@ export function RemoveContact({ contact }: ContactAsProp): JSX.Element {
       open={open}
       onOpenChange={setOpen}
     >
-      <AlertDialogTrigger asChild>
-        <Trash2Icon
-          className='cursor-pointer'
-          size={18}
-          tabIndex={0}
-        />
+      <AlertDialogTrigger
+        onClick={(e): void => e.stopPropagation()}
+        asChild
+      >
+        {text ? (
+          <p className='h-full w-full cursor-pointer'>{text}</p>
+        ) : (
+          <Trash2Icon
+            className='cursor-pointer'
+            size={18}
+            tabIndex={0}
+          />
+        )}
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

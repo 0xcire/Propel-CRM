@@ -1,9 +1,9 @@
 import { faker, fakerEN_US } from "@faker-js/faker";
 
-import type { Contact, NewListing } from "../db/types";
+import type { Contact, NewContact, NewListing } from "../db/types";
 import { db } from "../db";
-import { listings, listingsToContacts, soldListings } from "../db/schema";
-import { getUsersContacts } from "../db/queries/contacts";
+import { contacts, listings, listingsToContacts, soldListings } from "../db/schema";
+import { getUsersContacts, insertNewContact, insertNewRelation } from "../db/queries/contacts";
 
 // from a random listing on zillow
 const exampleListingDescription =
@@ -14,10 +14,16 @@ const exampleListingDescription =
 // probably wont have 15000 sqft house with 3 ba, 3 bed
 // etc
 
-export const createFakeSoldListing = (): NewListing => {
+const generateAddress = () => {
   const stateAbbr = fakerEN_US.location.state({ abbreviated: true });
   const zipcode = fakerEN_US.location.zipCode({ format: "#####", state: stateAbbr });
   const address = `${faker.location.streetAddress()}, ${faker.location.city()}, ${stateAbbr} ${zipcode}`;
+
+  return address;
+};
+
+export const createFakeSoldListing = (): NewListing => {
+  const address = generateAddress();
   return {
     address: address,
     propertyType: "single family",
@@ -72,7 +78,8 @@ export const createFakeActiveListing = () => {
 };
 
 export const seedListings = async () => {
-  const usersContacts = await getUsersContacts(10);
+  // if i reseed listings need to address below function call
+  const usersContacts = await getUsersContacts(10, 1);
   for (let i = 0; i < 50; i++) {
     await db.transaction(async (tx) => {
       const newListing = await db.insert(listings).values(createFakeActiveListing()).returning({
@@ -95,6 +102,34 @@ export const seedListings = async () => {
           });
         console.log("----- \n LEAD ID \n -----", listingLeads[0].contactID);
       }
+    });
+  }
+};
+
+export const createFakeContact = () => {
+  const first = faker.person.firstName();
+  const last = faker.person.lastName();
+  const name = `${first} ${last}`;
+  const email = faker.internet.email({
+    firstName: first,
+    lastName: last,
+  });
+  const address = generateAddress();
+
+  return {
+    name: name,
+    email: email,
+    phoneNumber: fakerEN_US.phone.number().split("x")[0].trim(),
+    address: address,
+    createdAt: faker.date.between({ from: "2022-01-01T00:00:00.000Z", to: "2023-08-15T00:00:00.000Z" }),
+  };
+};
+
+export const seedContacts = async () => {
+  for (let i = 0; i <= 50; i++) {
+    await db.transaction(async (tx) => {
+      const newContact = await insertNewContact(createFakeContact());
+      const relation = await insertNewRelation({ currentUserID: 10, newContactID: newContact.id });
     });
   }
 };

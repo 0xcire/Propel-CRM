@@ -1,7 +1,22 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '@/lib/react-query-auth';
+
 import { Typography } from '@/components/ui/typography';
 import { LinkButton } from '@/components';
 
 export const NotFound = (): JSX.Element => {
+  const user = useUser();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user.data === null) {
+      navigate('/auth/signin');
+    }
+
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <div className='grid h-screen w-full place-items-center'>
       <div>

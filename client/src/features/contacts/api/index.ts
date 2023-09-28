@@ -12,8 +12,15 @@ export const getDashboardContacts = (): Promise<ContactResponse> => {
 };
 
 export const getContacts = (): Promise<ContactResponse> => {
-  // pagination etc
-  return Get({ endpoint: `contacts` }).then(handleAPIResponse<ContactResponse>);
+  return Get({ endpoint: `contacts${window.location.search}` }).then(
+    handleAPIResponse<ContactResponse>
+  );
+};
+
+export const getContact = (id: number): Promise<ContactResponse> => {
+  return Get({ endpoint: `contacts/${id}` }).then(
+    handleAPIResponse<ContactResponse>
+  );
 };
 
 export const createContact = (data: NewContact): Promise<ContactResponse> => {

@@ -7,25 +7,37 @@ const { ListingPage } = lazyImport(
   'ListingPage'
 );
 
-const { Listing } = lazyImport(
-  () => import('../components/page/Listing'),
-  'Listing'
+const { ListingRoute } = lazyImport(
+  () => import('../components/page/ListingRoute'),
+  'ListingRoute'
 );
 
 import type { RouteObject } from 'react-router-dom';
+import { ListingLayout } from '../components/Layout';
+
+// TODO: skeleton with rest of layout?
+
+// TODO: figure out showing listing table in background when on listing route
 
 export const listingRoutes: RouteObject = {
   path: 'listings',
-  element: (
-    // TODO: skeleton with rest of layout?
-    <Suspense>
-      <ListingPage />
-    </Suspense>
-  ),
+  element: <ListingLayout />,
   children: [
     {
+      index: true,
+      element: (
+        <Suspense>
+          <ListingPage />
+        </Suspense>
+      ),
+    },
+    {
       path: ':id',
-      element: <Listing />,
+      element: (
+        <Suspense>
+          <ListingRoute />
+        </Suspense>
+      ),
     },
   ],
 };

@@ -1,17 +1,18 @@
 import { Router } from "express";
 import {
+  getDashboardContacts,
   getMyContacts,
+  getSpecificContact,
+  searchMyContacts,
   createContact,
   updateContact,
   deleteContact,
-  // getSpecificContact,
-  getDashboardContacts,
-  searchMyContacts,
 } from "../controllers/contacts";
 import { isAuth } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
 import {
   contactQuerySchema,
+  contactSearchQuerySchema,
   cookieSchema,
   createContactSchema,
   paramSchema,
@@ -22,17 +23,24 @@ import { isContactOwner } from "../middlewares/contacts";
 export default (router: Router) => {
   router.get("/dashboard/contacts", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardContacts);
 
-  // paginate options via query params
   router.get("/contacts", validateRequest({ cookies: cookieSchema, query: contactQuerySchema }), isAuth, getMyContacts);
 
   router.get(
     "/search_contacts",
-    validateRequest({ cookies: cookieSchema, query: contactQuerySchema }),
+    validateRequest({ cookies: cookieSchema, query: contactSearchQuerySchema }),
     isAuth,
     searchMyContacts
   );
 
-  // router.get("/contacts/:id", getSpecificContact);
+  router.get(
+    "/contacts/:id",
+    validateRequest({ cookies: cookieSchema, query: contactSearchQuerySchema, params: paramSchema }),
+    isAuth,
+    isContactOwner,
+    getSpecificContact
+  );
+
+  // router.get("/contacts/:id/listings");
 
   router.post(
     "/contacts",
