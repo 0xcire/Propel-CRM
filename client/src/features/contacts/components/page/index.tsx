@@ -13,8 +13,6 @@ import type { Contacts } from '../../types';
 
 export function ContactPage(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  // not great. consider context.
   const [nameQuery, setNameQuery] = useState<string | undefined>(undefined);
   const debouncedNameQuery = useDebounce(nameQuery, 200);
 
@@ -36,9 +34,6 @@ export function ContactPage(): JSX.Element {
 
   useNameQuerySearchParams(debouncedNameQuery);
 
-  {
-    /* TODO: opportunity for <PageLayout /> */
-  }
   {
     /* TODO: create reusable <DataTable /> component */
   }

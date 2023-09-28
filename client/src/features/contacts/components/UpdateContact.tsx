@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import type { DeepPartial } from 'react-hook-form';
 
 import { useUpdateContact } from '../hooks/useUpdateContact';
 
 import { PencilIcon } from 'lucide-react';
-import { Tooltip } from '@/components';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -12,19 +11,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { ContactForm, type UpdateContactFields } from './ContactForm';
 
-import type { ContactAsProp, NewContact } from '../types';
+import { Tooltip } from '@/components';
+import { ContactForm } from './ContactForm';
+
 import { filterEqualFields } from '@/utils/form-data';
-import { Button } from '@/components/ui/button';
+
+import type { DeepPartial } from 'react-hook-form';
+import type { UpdateContactFields } from './ContactForm';
+import type { ContactAsProp, NewContact } from '../types';
 
 interface UpdateContactProps extends ContactAsProp {
   text?: string;
+  asButton?: boolean;
 }
 
 export function UpdateContact({
   contact,
   text,
+  asButton,
 }: UpdateContactProps): JSX.Element {
   const [open, setOpen] = useState(false);
   const updateContact = useUpdateContact();
@@ -56,10 +61,26 @@ export function UpdateContact({
     <Dialog
       open={open}
       onOpenChange={setOpen}
+      // onOpenChange={(open): void => (open ? setOpen(true) : setOpen(false))}
     >
-      {text ? (
-        <DialogTrigger asChild>
+      {/* TODO: cleanup */}
+      {text && asButton ? (
+        <DialogTrigger
+          onClick={(e): void => e.stopPropagation()}
+          asChild
+        >
           <Button>{text}</Button>
+        </DialogTrigger>
+      ) : text && !asButton ? (
+        <DialogTrigger asChild>
+          <p
+            onClick={(e): void => {
+              e.stopPropagation();
+            }}
+            className='h-full w-full cursor-pointer'
+          >
+            {text}
+          </p>
         </DialogTrigger>
       ) : (
         <Tooltip content='edit'>

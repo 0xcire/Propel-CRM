@@ -39,8 +39,6 @@ import type {
 } from '@tanstack/react-table';
 import type { Contact } from '../../types';
 
-// sold listings need a contact field like a sold_to column
-
 interface ContactTableProps<TData extends Contact> {
   columns: Array<ColumnDef<Contact>>;
   data: Array<TData>;
@@ -85,6 +83,8 @@ export function ContactTable<TData extends Contact>({
 
   const currentPage: string = searchParams.get('page') ?? '1';
 
+  // TODO: remove table flash on search, loading should only take over table content
+
   if ((!data && isLoading) || (!data && isFetching)) {
     return (
       <div className='grid h-full w-full flex-1 place-items-center'>
@@ -98,14 +98,11 @@ export function ContactTable<TData extends Contact>({
 
   return (
     <>
-      <div className='flex items-center py-4'>
+      <div className='flex items-center p-4'>
         <Input
+          autoFocus={true}
           placeholder='Search your contacts'
-          // value={(table.getColumn('address')?.getFilterValue() as string) ?? ''}
           value={nameQuery ?? ''}
-          // onChange={(event: ChangeEvent<HTMLInputElement>): void =>
-          //   table.getColumn('address')?.setFilterValue(event.target.value)
-          // }
           onChange={(e): void => {
             setNameQuery(e.currentTarget.value);
           }}
@@ -152,7 +149,7 @@ export function ContactTable<TData extends Contact>({
           />
         </div>
       ) : (
-        <div className='flex-1 overflow-auto rounded-md border shadow'>
+        <div className='mx-4 flex-1 overflow-auto rounded-md border shadow'>
           <Table>
             <TableHeader className='w-full'>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -209,7 +206,7 @@ export function ContactTable<TData extends Contact>({
         </div>
       )}
 
-      <div className='flex items-center justify-end space-x-2 py-4'>
+      <div className='flex items-center justify-end space-x-2 p-4'>
         <Typography
           variant='p'
           className='text-sm'

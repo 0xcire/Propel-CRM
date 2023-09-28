@@ -1,17 +1,17 @@
 import type { BaseResponse } from '@/types';
 
-// TODO: fix. no createdAt field
 export type Contact = {
   id: number;
   name: string;
   email: string;
   phoneNumber: string;
   address: string;
+  createdAt: Date;
 };
 
 export type Contacts = Array<Contact>;
 
-export type NewContact = Omit<Contact, 'id'>;
+export type NewContact = Omit<Contact, 'id' | 'createdAt'>;
 
 export type ContactAsProp = {
   contact: Contact;

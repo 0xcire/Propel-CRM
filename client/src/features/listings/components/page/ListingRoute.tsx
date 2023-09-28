@@ -55,7 +55,7 @@ export function ListingRoute(): JSX.Element {
           }
         }}
       >
-        <DialogContent>
+        <DialogContent className='h-[80vh]'>
           <div className='grid h-full w-full place-items-center'>
             <Spinner
               className='mx-auto'
