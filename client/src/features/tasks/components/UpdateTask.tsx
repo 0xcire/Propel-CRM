@@ -37,8 +37,8 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
 
   const defaultValues: DeepPartial<CreateTaskFields> = {
     title: task.title,
-    description: task.description ?? undefined,
-    notes: task.notes ?? undefined,
+    description: task.description ?? '',
+    notes: task.notes ?? '',
     dueDate: task.dueDate ? new Date(removeTimeZone(task.dueDate)) : undefined,
     priority: task.priority ?? undefined,
   };

@@ -49,7 +49,7 @@ export function RemoveContact({
           />
         )}
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent onClick={(e): void => e.stopPropagation()}>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>

@@ -37,10 +37,10 @@ import type {
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
-import type { Contact } from '../../types';
+import type { Task } from '../../types';
 
-interface ContactTableProps<TData extends Contact> {
-  columns: Array<ColumnDef<Contact>>;
+interface ContactTableProps<TData extends Task> {
+  columns: Array<ColumnDef<Task>>;
   data: Array<TData>;
   isLoading: boolean;
   isFetching: boolean;
@@ -49,7 +49,7 @@ interface ContactTableProps<TData extends Contact> {
 }
 
 // cant see use case for TValue
-export function ContactTable<TData extends Contact>({
+export function ContactTable<TData extends Task>({
   columns,
   data,
   isLoading,
@@ -177,6 +177,9 @@ export function ContactTable<TData extends Contact>({
                     className='row'
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
+                    // onClick={(): void => {
+                    //   navigate(`/contacts/${row.original.id}`);
+                    // }}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell

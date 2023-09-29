@@ -60,8 +60,15 @@ export function UpdateContact({
   return (
     <Dialog
       open={open}
-      onOpenChange={setOpen}
-      // onOpenChange={(open): void => (open ? setOpen(true) : setOpen(false))}
+      // TODO: extract -> handleNestedDialogOnOpenChange...?
+      onOpenChange={(open): void => {
+        if (open) {
+          setOpen(true);
+        } else {
+          setOpen(false);
+          document.body.style.pointerEvents = ''; // best solution?
+        }
+      }}
     >
       {/* TODO: cleanup */}
       {text && asButton ? (
@@ -94,7 +101,8 @@ export function UpdateContact({
         </Tooltip>
       )}
 
-      <DialogContent>
+      {/* TODO: just make this a util... */}
+      <DialogContent onClick={(e): void => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle>Update Contact</DialogTitle>
         </DialogHeader>

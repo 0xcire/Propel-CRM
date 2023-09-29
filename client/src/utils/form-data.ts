@@ -20,7 +20,7 @@ export const filterEqualFields = ({
 
 export const filterUndefined = (data: Record<string, unknown>): void => {
   Object.keys(data).forEach((key) => {
-    if (data[key] === undefined) {
+    if (data[key] === undefined || data[key] === '') {
       delete data[key];
     }
   });
