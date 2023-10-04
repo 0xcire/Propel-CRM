@@ -11,15 +11,15 @@ const { TaskRoute } = lazyImport(
 
 import type { RouteObject } from 'react-router-dom';
 
-// ?
 // /tasks
 // /tasks/:id
 // /tasks/:projectID
 // /tasks/:projectID/task/:taskID
 
-// OR
+// /tasks/:listingID/task/:taskID
+// /tasks/:contactID/task/:taskID
 
-// /tasks?project=all/:id
+// :categoryID -> task categories / listings / contacts?
 
 export const taskRoutes: RouteObject = {
   path: 'tasks',
@@ -41,6 +41,23 @@ export const taskRoutes: RouteObject = {
         </Suspense>
       ),
     },
+    // {
+    //   path: ':categoryID',
+    //   element: (
+    //     <Suspense>
+
+    //       <TaskCategoryRoute />
+    //     </Suspense>
+    //   ),
+    // },
+    // {
+    //   path: ':id',
+    //   element: (
+    //     <Suspense>
+    //       <TaskRoute />
+    //     </Suspense>
+    //   ),
+    // },
     // {
     //   path: ':id/update',
     // },

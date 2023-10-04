@@ -8,14 +8,15 @@ import type { DefaultOptions, QueryKey } from '@tanstack/react-query';
 
 const handleApiError = (error: unknown): void => {
   if (isAPIError(error)) {
+    // TODO: refresh
     if (error.status === 403) {
-      // redirect('/auth/signin');
-      return;
+      // queryClient.setQueryData(['user'], null);
+      queryClient.invalidateQueries(['user']);
+    } else {
+      toast({
+        description: `${error.message}`,
+      });
     }
-
-    toast({
-      description: `${error.message}`,
-    });
   }
 };
 

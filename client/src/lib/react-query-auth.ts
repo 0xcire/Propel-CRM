@@ -7,8 +7,6 @@ import { getMe, signin, signup, signout } from '@/features/auth';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { isAPIError } from '@/utils/error';
-
 import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
 import type {
   SignInFields,
@@ -40,8 +38,6 @@ const logoutFn = async (): Promise<void> => {
 };
 
 export const useUser = (): UseQueryResult<User | undefined, unknown> => {
-  const queryClient = useQueryClient();
-
   return useQuery({
     queryKey: ['user'],
     queryFn: userFn,
@@ -49,11 +45,7 @@ export const useUser = (): UseQueryResult<User | undefined, unknown> => {
     staleTime: 30 * 60 * 1000, // 30 min
 
     onSuccess: () => undefined,
-    onError: (error) => {
-      if (isAPIError(error) && error.status === 403) {
-        queryClient.setQueryData(['user'], null);
-      }
-    },
+    onError: () => undefined,
   });
 };
 

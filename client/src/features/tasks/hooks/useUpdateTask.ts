@@ -5,6 +5,7 @@ import { isAPIError } from '@/utils/error';
 
 import type { UseMutationResult } from '@tanstack/react-query';
 import type { TaskContext, TaskResponse, UpdateTaskParams } from '../types';
+import { findRelevantKeys } from '@/lib/react-query';
 
 export const useUpdateTask = (): UseMutationResult<
   TaskResponse,
@@ -18,10 +19,19 @@ export const useUpdateTask = (): UseMutationResult<
     mutationFn: updateTask,
 
     onSuccess: (data) => {
+      // const keys = findRelevantKeys(queryClient, 'tasks', id);
       toast({
         description: data.message,
       });
+
       queryClient.invalidateQueries(['tasks', { completed: 'false' }]);
+
+      // TODO: ensure this works correctly
+      // keys.forEach((key) => {
+      //   queryClient.invalidateQueries(key, {
+      //     refetchType: 'none',
+      //   });
+      // });
     },
 
     onError: (error) => {

@@ -1,3 +1,5 @@
+import { lazyImport } from '@/utils/lazyImport';
+
 import { MoreHorizontal, ArrowUpDown } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -7,21 +9,22 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { toast } from '@/components/ui/use-toast';
 
 import { ListingLeadAvatar } from '../components/ListingLeadAvatar';
 
-import { currency, dateIntl, number } from '@/utils/intl';
-
-import type { ColumnDef } from '@tanstack/react-table';
-import type { Listing } from '../types';
-import { lazyImport } from '@/utils/lazyImport';
-// import { AddLead } from '../components/page/AddLead';
 const { AddLead } = lazyImport(
   () => import('../components/page/AddLead'),
   'AddLead'
 );
+
+import { currency, dateIntl, number } from '@/utils/intl';
+
+import type { ColumnDef } from '@tanstack/react-table';
+import type { Listing } from '../types';
+import { Link } from 'react-router-dom';
 
 type ContactInfo = {
   id: number;
@@ -158,10 +161,6 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
                 />
               )
           )}
-          <AddLead
-            listingID={listing.id}
-            onClick={(e): void => e.stopPropagation()}
-          />
         </div>
       );
     },
@@ -202,7 +201,10 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
               <MoreHorizontal className='h-4 w-4' />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
+          <DropdownMenuContent
+            onClick={(e): void => e.stopPropagation()}
+            align='end'
+          >
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={(e): Promise<void> => {
@@ -214,6 +216,51 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
               }}
             >
               Copy listing ID
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e): void => {
+                e.stopPropagation();
+              }}
+            >
+              Update
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e): void => {
+                e.stopPropagation();
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+            // onClick={(e): void => {
+            //   e.stopPropagation();
+            // }}
+            >
+              <AddLead
+                listingID={listing.id}
+                onClick={(e): void => e.stopPropagation()}
+              />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className='cursor-pointer'
+              onClick={(e): void => {
+                e.stopPropagation();
+              }}
+            >
+              Add Task
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className='cursor-pointer'
+              onClick={(e): void => {
+                e.stopPropagation();
+              }}
+              asChild
+            >
+              {/* TODO: this */}
+              <Link to={`/tasks/listings/${listing.id}`}>View Tasks</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

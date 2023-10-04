@@ -40,6 +40,7 @@ export function Task({ task }: TaskProps): JSX.Element {
 
   let localFormat;
   if (task.dueDate) {
+    // extract this
     localFormat = new Intl.DateTimeFormat('en-US', {
       dateStyle: 'short',
     }).format(parseISO(removeTimeZone(task.dueDate)));

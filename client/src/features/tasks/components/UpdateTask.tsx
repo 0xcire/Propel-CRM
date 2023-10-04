@@ -24,11 +24,14 @@ import type { DeepPartial } from 'react-hook-form';
 import type { Task as TaskData } from '../types';
 import type { CreateTaskFields } from './TaskForm';
 
+// TODO: as dashboard and per page components have been built out,
+// can extract common typing
 type TaskProps = {
   task: TaskData;
+  text?: string;
 };
 
-export function UpdateTask({ task }: TaskProps): JSX.Element {
+export function UpdateTask({ task, text }: TaskProps): JSX.Element {
   const [open, setOpen] = useState(false);
 
   const updateTask = useUpdateTask();
@@ -68,15 +71,36 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
   return (
     <Dialog
       open={open}
-      onOpenChange={setOpen}
+      // onOpenChange={setOpen}
+      onOpenChange={(open): void => {
+        if (open) {
+          setOpen(true);
+        } else {
+          setOpen(false);
+          document.body.style.pointerEvents = ''; // best solution?
+        }
+      }}
     >
-      <DialogTrigger asChild>
-        <InfoIcon
-          className='cursor-pointer'
-          size={16}
-        />
+      <DialogTrigger
+        className='cursor-pointer'
+        asChild
+      >
+        {text ? (
+          <p
+            onClick={(e): void => e.stopPropagation()}
+            className='w-full'
+          >
+            {text}
+          </p>
+        ) : (
+          <InfoIcon size={16} />
+        )}
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent
+        onClick={(e): void => e.stopPropagation()}
+        // h-[80vh]
+        className='sm:max-w-[425px]'
+      >
         <DialogHeader>
           <DialogTitle>Update Task</DialogTitle>
         </DialogHeader>

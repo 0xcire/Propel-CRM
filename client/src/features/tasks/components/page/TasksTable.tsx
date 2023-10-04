@@ -30,7 +30,7 @@ import {
 
 import { Spinner } from '@/components';
 
-import type { Dispatch, SetStateAction } from 'react';
+// import type { Dispatch, SetStateAction } from 'react';
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -38,25 +38,26 @@ import type {
   VisibilityState,
 } from '@tanstack/react-table';
 import type { Task } from '../../types';
+import { FilterDropdown } from './FilterDropdown';
 
 interface ContactTableProps<TData extends Task> {
   columns: Array<ColumnDef<Task>>;
   data: Array<TData>;
   isLoading: boolean;
   isFetching: boolean;
-  nameQuery: string | undefined;
-  setNameQuery: Dispatch<SetStateAction<string | undefined>>;
+  // nameQuery: string | undefined;
+  // setNameQuery: Dispatch<SetStateAction<string | undefined>>;
 }
 
 // cant see use case for TValue
-export function ContactTable<TData extends Task>({
+export function TaskTable<TData extends Task>({
   columns,
   data,
   isLoading,
   isFetching,
-  nameQuery,
-  setNameQuery,
-}: ContactTableProps<TData>): JSX.Element {
+}: // nameQuery,
+// setNameQuery,
+ContactTableProps<TData>): JSX.Element {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -101,13 +102,15 @@ export function ContactTable<TData extends Task>({
       <div className='flex items-center p-4'>
         <Input
           autoFocus={true}
-          placeholder='Search your contacts'
-          value={nameQuery ?? ''}
-          onChange={(e): void => {
-            setNameQuery(e.currentTarget.value);
-          }}
+          placeholder='Search your tasks'
+          // value={nameQuery ?? ''}
+          // onChange={(e): void => {
+          //   setNameQuery(e.currentTarget.value);
+          // }}
           className='max-w-sm'
         />
+        <FilterDropdown label='Status' />
+        <FilterDropdown label='Priority' />
         <div className='ml-auto flex items-center gap-2'>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

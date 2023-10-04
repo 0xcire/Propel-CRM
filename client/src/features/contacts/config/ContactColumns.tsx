@@ -8,6 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
@@ -82,6 +83,17 @@ export const listingColumns: Array<ColumnDef<Contact>> = [
                 text='Delete'
                 contact={contact}
               />
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              className='cursor-pointer'
+              onClick={(e): void => {
+                e.stopPropagation();
+              }}
+            >
+              Add Task
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

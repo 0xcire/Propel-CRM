@@ -126,7 +126,7 @@ export function ContactTable<TData extends Contact>({
                   return (
                     <DropdownMenuCheckboxItem
                       key={column.id}
-                      className='capitalize'
+                      className='cursor-pointer capitalize'
                       checked={column.getIsVisible()}
                       onCheckedChange={(value): void =>
                         column.toggleVisibility(!!value)

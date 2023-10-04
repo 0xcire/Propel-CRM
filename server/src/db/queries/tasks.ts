@@ -1,6 +1,7 @@
-import { and, asc, eq } from "drizzle-orm";
 import { db } from "..";
+import { and, asc, eq } from "drizzle-orm";
 import { tasks } from "../schema";
+
 import { type NewTask } from "../types";
 
 type FindUserTasksParams = {
@@ -44,6 +45,7 @@ export const findUserTasks = async ({ userID, completed }: FindUserTasksParams) 
     where: and(eq(tasks.userID, userID), eq(tasks.completed, JSON.parse(completed as string))),
     orderBy: [asc(tasks.createdAt)],
   });
+  // const userTasks = await db.select().from(tasks).where()
 
   return userTasks;
 };

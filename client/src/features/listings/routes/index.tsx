@@ -2,6 +2,8 @@ import { Suspense } from 'react';
 
 import { lazyImport } from '@/utils/lazyImport';
 
+import { ListingLayout } from '../components/Layout';
+
 const { ListingPage } = lazyImport(
   () => import('../components/page'),
   'ListingPage'
@@ -13,7 +15,6 @@ const { ListingRoute } = lazyImport(
 );
 
 import type { RouteObject } from 'react-router-dom';
-import { ListingLayout } from '../components/Layout';
 
 // TODO: skeleton with rest of layout?
 
