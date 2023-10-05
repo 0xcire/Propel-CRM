@@ -25,6 +25,20 @@ declare namespace Express {
       phoneNumber?: string;
       address?: string;
     };
+    task: {
+      id: number;
+      createdAt: Date | null;
+      description: string | null;
+      userID: number;
+      contactID?: number | null;
+      listingID?: number | null;
+      title: string;
+      notes: string | null;
+      dueDate: string | null;
+      completed: boolean | null;
+      priority: "low" | "medium" | "high" | null;
+      status: "todo" | "in progress" | "done" | "canceled" | null;
+    };
   }
 }
 
@@ -32,5 +46,6 @@ declare namespace Express {
 // {
 //   ...
 //   listing: Listing,
-//   contact: Contact
+//   contact: Contact,
+//   task: Task
 // }

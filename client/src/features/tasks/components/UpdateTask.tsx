@@ -71,7 +71,6 @@ export function UpdateTask({ task, text }: TaskProps): JSX.Element {
   return (
     <Dialog
       open={open}
-      // onOpenChange={setOpen}
       onOpenChange={(open): void => {
         if (open) {
           setOpen(true);

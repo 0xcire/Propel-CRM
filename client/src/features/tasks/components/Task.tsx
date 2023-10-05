@@ -36,6 +36,8 @@ export function Task({ task }: TaskProps): JSX.Element {
         completed: checked as boolean,
       },
     });
+
+    //eslint-disable-next-line
   }, []);
 
   let localFormat;

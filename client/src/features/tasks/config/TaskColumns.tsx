@@ -106,7 +106,7 @@ export const taskColumns: Array<ColumnDef<Task>> = [
                 });
               }}
             >
-              Copy listing ID
+              Copy task ID
             </DropdownMenuItem>
             <DropdownMenuItem onClick={(e): void => e.stopPropagation()}>
               <UpdateTask

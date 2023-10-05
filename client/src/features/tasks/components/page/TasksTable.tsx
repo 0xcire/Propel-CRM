@@ -192,8 +192,8 @@ ContactTableProps<TData>): JSX.Element {
                             : ''
                         }
                         onClick={(): void => {
-                          if (cell.getContext().column.id === 'name') {
-                            navigate(`/contacts/${row.original.id}`);
+                          if (cell.getContext().column.id === 'title') {
+                            navigate(`/tasks/${row.original.id}`);
                           }
                         }}
                         key={cell.id}

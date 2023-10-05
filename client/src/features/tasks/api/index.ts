@@ -8,6 +8,10 @@ export const getDashboardTasks = (completed: string): Promise<TaskResponse> => {
   );
 };
 
+export const getTask = (id: number): Promise<TaskResponse> => {
+  return Get({ endpoint: `tasks/${id}` }).then(handleAPIResponse<TaskResponse>);
+};
+
 export const getTasks = (completed: string): Promise<TaskResponse> => {
   return Get({ endpoint: `tasks?completed=${completed}` }).then(
     handleAPIResponse<TaskResponse>
