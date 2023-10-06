@@ -3,7 +3,7 @@ import { Get, Post, Patch, Delete, handleAPIResponse } from '@/lib/fetch';
 import type { NewTask, TaskResponse, UpdateTaskParams } from '../types';
 
 export const getDashboardTasks = (completed: string): Promise<TaskResponse> => {
-  return Get({ endpoint: `tasks?completed=${completed}` }).then(
+  return Get({ endpoint: `dashboard/tasks?completed=${completed}` }).then(
     handleAPIResponse<TaskResponse>
   );
 };
@@ -12,8 +12,8 @@ export const getTask = (id: number): Promise<TaskResponse> => {
   return Get({ endpoint: `tasks/${id}` }).then(handleAPIResponse<TaskResponse>);
 };
 
-export const getTasks = (completed: string): Promise<TaskResponse> => {
-  return Get({ endpoint: `tasks?completed=${completed}` }).then(
+export const getTasks = (): Promise<TaskResponse> => {
+  return Get({ endpoint: `tasks${window.location.search}` }).then(
     handleAPIResponse<TaskResponse>
   );
 };

@@ -80,9 +80,6 @@ export const usersToContactsRelations = relations(usersToContacts, ({ one }) => 
   }),
 }));
 
-// export const priorityEnum = pgEnum("priority", ["low", "medium", "high"]);
-export const statusEnum = pgEnum("status", ["todo", "in progress", "done", "canceled"]);
-
 export const tasks = pgTable("tasks", {
   id: serial("id").primaryKey(),
   userID: integer("user_id")
@@ -94,11 +91,8 @@ export const tasks = pgTable("tasks", {
   description: varchar("description", { length: 255 }),
   notes: varchar("notes", { length: 255 }),
   dueDate: date("due_date", { mode: "string" }),
-  completed: boolean("completed").default(false),
   priority: text("priority", { enum: ["low", "medium", "high"] }),
-  // TODO: issue here due to previous migration. consider 'resetting'(?) db
-  // priority: priorityEnum("priority"),
-  status: statusEnum("status").default("todo"),
+  completed: boolean("completed").default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 

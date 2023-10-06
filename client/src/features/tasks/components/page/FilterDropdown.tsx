@@ -1,3 +1,7 @@
+import { useSearchParams } from 'react-router-dom';
+
+import { CheckCircleIcon } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -7,15 +11,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useTaskContext } from '../../context/TaskContext';
-import { CheckCircleIcon } from 'lucide-react';
 
 type FilterDropdownProps = {
   label: string;
 };
 
 export function FilterDropdown({ label }: FilterDropdownProps): JSX.Element {
-  const { state: showCompleted, setState: setShowCompleted } = useTaskContext();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const completedBoolean = JSON.parse(searchParams.get('completed') as string);
+
+  // TODO:
+  // https://stackoverflow.com/questions/71973934/how-to-get-all-query-params-using-react-router-dom-v6-usesearchparams-without
+  // manual solution will not scale.
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,7 +34,12 @@ export function FilterDropdown({ label }: FilterDropdownProps): JSX.Element {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={(): void => setShowCompleted(!showCompleted)}
+          onClick={(): void => {
+            setSearchParams([
+              ['page', '1'],
+              ['completed', completedBoolean ? 'false' : 'true'],
+            ]);
+          }}
           className='cursor-pointer'
         >
           <>
@@ -34,7 +48,7 @@ export function FilterDropdown({ label }: FilterDropdownProps): JSX.Element {
               size={18}
               className='mr-1 cursor-pointer'
             />
-            {showCompleted ? 'Hide Completed' : 'Show Completed'}
+            {!completedBoolean ? 'Hide Completed' : 'Show Completed'}
           </>
         </DropdownMenuItem>
         <DropdownMenuItem>Billing</DropdownMenuItem>

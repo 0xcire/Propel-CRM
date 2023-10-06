@@ -5,20 +5,33 @@ import { useTasks } from '../../hooks/useTasks';
 
 import { TaskTable } from './TasksTable';
 import { taskColumns } from '../../config/TaskColumns';
-import { useTaskContext } from '../../context/TaskContext';
 
 export function TaskPage(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { state: completed } = useTaskContext();
-  // removes bug with modal route?
+  // ?? only makes sense in dashboard,
+  // not in data table scenario
+  // const { state: completed } = useTaskContext();
+
   const { id } = useParams();
 
-  const tasks = useTasks(completed.toString());
+  const tasks = useTasks();
 
   useEffect(() => {
     if (id) return;
-    // console.log('yee shall see me twice');
+    if (!searchParams.get('page') || !searchParams.get('completed')) {
+      setSearchParams(
+        [
+          ['page', '1'],
+          ['completed', 'false'],
+        ],
+        {
+          replace: true,
+        }
+      );
+    }
+
+    // eslint-disable-next-line
   }, []);
 
   return (

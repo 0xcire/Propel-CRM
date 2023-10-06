@@ -1,10 +1,11 @@
 import { faker, fakerEN_US } from "@faker-js/faker";
 
-import type { Contact, NewContact, NewListing } from "../db/types";
+import type { Contact, NewContact, NewListing, NewTask } from "../db/types";
 import { db } from "../db";
 import { contacts, listings, listingsToContacts, soldListings } from "../db/schema";
 import { getUsersContacts, insertNewContact, insertNewRelation } from "../db/queries/contacts";
 import { getAllUserListings } from "../db/queries/listings";
+import { insertNewTask } from "../db/queries/tasks";
 
 const DEMO_ACCOUNT_ID = 10;
 
@@ -137,11 +138,32 @@ export const seedContacts = async () => {
   }
 };
 
-// const createFakeTask = () => {
-//   return {};
-// };
+const setPriority = () => {
+  const priorities = ["low", "medium", "high"] as const;
+  const randomIndex = Math.floor(Math.random() * priorities.length);
+  return priorities[randomIndex];
+};
 
-// export const seedTasks = async () => {};
+// all uniform, but at least it wont be lorem ipsum or just complete word salad.
+export const createFakeTask = (): NewTask => {
+  const date = fakerEN_US.date.between({ from: "2023-10-01T00:00:00.000Z", to: "2024-01-01T00:00:00.000Z" });
+  return {
+    userID: DEMO_ACCOUNT_ID,
+    // title: "This is an incomplete task.",
+    title: "This is a complete task.",
+    description: "Here's an opportunity to add a couple sentences to furthur describe a task.",
+    notes: "- Bullet points \n- To provide additional details \n- About the task at hand",
+    dueDate: date.toISOString(),
+    priority: setPriority(),
+    completed: true,
+  };
+};
+
+export const seedTasks = async () => {
+  for (let i = 0; i < 25; i++) {
+    const newTask = await insertNewTask(createFakeTask());
+  }
+};
 
 // export const seedListingTasks = async () => {
 //   const demoListings = await getAllUserListings(10, 1, );

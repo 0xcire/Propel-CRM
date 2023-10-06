@@ -5,7 +5,7 @@ import { isAPIError } from '@/utils/error';
 
 import type { UseMutationResult } from '@tanstack/react-query';
 import type { TaskContext, TaskResponse, UpdateTaskParams } from '../types';
-import { findRelevantKeys } from '@/lib/react-query';
+// import { findRelevantKeys } from '@/lib/react-query';
 
 export const useUpdateTask = (): UseMutationResult<
   TaskResponse,
@@ -24,9 +24,11 @@ export const useUpdateTask = (): UseMutationResult<
         description: data.message,
       });
 
-      queryClient.invalidateQueries(['tasks', { completed: 'false' }]);
+      queryClient.invalidateQueries(['tasks']);
 
       // TODO: ensure this works correctly
+      // way to differentiate checkbox action vs actual update task form
+
       // keys.forEach((key) => {
       //   queryClient.invalidateQueries(key, {
       //     refetchType: 'none',

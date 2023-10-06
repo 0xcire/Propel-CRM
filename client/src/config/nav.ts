@@ -18,7 +18,7 @@ export const navLinks: NavLinksProps = [
   },
   {
     name: 'Tasks',
-    path: '/tasks',
+    path: '/tasks?page=1&completed=false',
   },
   {
     name: 'Analytics',

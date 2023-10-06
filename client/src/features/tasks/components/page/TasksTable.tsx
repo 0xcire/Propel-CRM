@@ -30,7 +30,6 @@ import {
 
 import { Spinner } from '@/components';
 
-// import type { Dispatch, SetStateAction } from 'react';
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -180,14 +179,11 @@ ContactTableProps<TData>): JSX.Element {
                     className='row'
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    // onClick={(): void => {
-                    //   navigate(`/contacts/${row.original.id}`);
-                    // }}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         className={
-                          cell.getContext().column.id === 'name'
+                          cell.getContext().column.id === 'title'
                             ? 'cursor-pointer'
                             : ''
                         }
@@ -238,7 +234,10 @@ ContactTableProps<TData>): JSX.Element {
           variant='outline'
           size='sm'
           onClick={(): void => {
-            setSearchParams([['page', (+currentPage - 1).toString()]]);
+            setSearchParams([
+              ['page', (+currentPage - 1).toString()],
+              ['completed', searchParams.get('completed') ?? 'false'],
+            ]);
           }}
           disabled={searchParams.get('page') === '1'}
         >
@@ -248,7 +247,10 @@ ContactTableProps<TData>): JSX.Element {
           variant='outline'
           size='sm'
           onClick={(): void => {
-            setSearchParams([['page', (+currentPage + 1).toString()]]);
+            setSearchParams([
+              ['page', (+currentPage + 1).toString()],
+              ['completed', searchParams.get('completed') ?? 'false'],
+            ]);
           }}
           // 10 could be a dynamic 'results per page' number
           disabled={data.length < 10}

@@ -11,7 +11,7 @@ export function DashboardTasksView(): JSX.Element {
   return (
     <TaskProvider>
       <DashboardItemHeader>
-        <Typography variant='h4'>Tasks</Typography>
+        <Typography variant='h4'>Recent Tasks</Typography>
         <TaskDropdown />
       </DashboardItemHeader>
 

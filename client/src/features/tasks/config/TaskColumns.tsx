@@ -21,30 +21,53 @@ import { DeleteTask } from '../components/DeleteTask';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Task } from '../types';
+import { useUser } from '@/lib/react-query-auth';
 
-// import { TaskForm } from '../components/TaskForm';
+import { TaskForm } from '../components/TaskForm';
+import { useUpdateTask } from '../hooks/useUpdateTask';
+import { useCallback } from 'react';
+import { CheckedState } from '@radix-ui/react-checkbox';
 
 export const taskColumns: Array<ColumnDef<Task>> = [
-  // {
-  //   id: 'select',
-  //   cell: ({ row }): JSX.Element => {
-  //     const task = row.original;
+  {
+    id: 'select',
+    cell: ({ row }): JSX.Element => {
+      const task = row.original;
 
-  //     return (
-  //       <TaskForm
-  //         isCheckbox={true}
-  //         isCreate={true}
-  //         isLoading={updateTask.isLoading}
-  //         handleOnCheckedChange={handleOnCheckedChange}
-  //         defaultValues={{
-  //           completed: task.completed,
-  //         }}
-  //       />
-  //     );
-  //   },
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
+      // TODO: Clean up :)
+      // same as Task.tsx
+      //eslint-disable-next-line
+      const updateTask = useUpdateTask();
+
+      //eslint-disable-next-line
+      const handleOnCheckedChange = useCallback(
+        (checked: CheckedState): void => {
+          updateTask.mutate({
+            id: task.id,
+            data: {
+              completed: checked as boolean,
+            },
+          });
+        },
+        //eslint-disable-next-line
+        []
+      );
+
+      return (
+        <TaskForm
+          isCheckbox={true}
+          isCreate={true}
+          isLoading={updateTask.isLoading}
+          handleOnCheckedChange={handleOnCheckedChange}
+          defaultValues={{
+            completed: task.completed,
+          }}
+        />
+      );
+    },
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: 'id',
     header: 'ID',
@@ -55,15 +78,11 @@ export const taskColumns: Array<ColumnDef<Task>> = [
   },
   {
     accessorKey: 'description',
-    header: 'Desc',
+    header: 'Description',
   },
   {
     accessorKey: 'priority',
     header: 'Priority',
-  },
-  {
-    accessorKey: 'status',
-    header: 'Status',
   },
   {
     accessorKey: 'dueDate',
@@ -84,6 +103,10 @@ export const taskColumns: Array<ColumnDef<Task>> = [
     id: 'actions',
     cell: ({ row }): JSX.Element => {
       const task = row.original;
+
+      // TODO: user context
+      //eslint-disable-next-line
+      const user = useUser();
 
       return (
         <DropdownMenu>
@@ -110,6 +133,7 @@ export const taskColumns: Array<ColumnDef<Task>> = [
             </DropdownMenuItem>
             <DropdownMenuItem onClick={(e): void => e.stopPropagation()}>
               <UpdateTask
+                userID={user.data?.id as number}
                 task={task}
                 text='Update Task'
               />

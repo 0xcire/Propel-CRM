@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { format } from 'date-fns';
 
 import { useUpdateTask } from '../hooks/useUpdateTask';
-import { useUser } from '@/lib/react-query-auth';
 
 import { InfoIcon } from 'lucide-react';
 
@@ -29,14 +28,13 @@ import type { CreateTaskFields } from './TaskForm';
 type TaskProps = {
   task: TaskData;
   text?: string;
+  userID: number;
 };
 
-export function UpdateTask({ task, text }: TaskProps): JSX.Element {
+export function UpdateTask({ task, text, userID }: TaskProps): JSX.Element {
   const [open, setOpen] = useState(false);
 
   const updateTask = useUpdateTask();
-
-  const user = useUser();
 
   const defaultValues: DeepPartial<CreateTaskFields> = {
     title: task.title,
@@ -48,7 +46,7 @@ export function UpdateTask({ task, text }: TaskProps): JSX.Element {
 
   function onSubmit(values: CreateTaskFields): void {
     const data = {
-      userID: user.data?.id,
+      userID: userID,
       title: values.title,
       description: values.description,
       notes: values.notes,

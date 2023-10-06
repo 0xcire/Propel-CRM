@@ -7,6 +7,7 @@ import { type NewTask } from "../types";
 type FindUserTasksParams = {
   userID: number;
   completed: string;
+  page?: number;
 };
 
 type UpdateTaskByIDParams = {
@@ -31,21 +32,23 @@ export const findTaskByID = async (id: number) => {
 };
 
 export const getUserDashboardTasks = async ({ userID, completed }: FindUserTasksParams) => {
-  const userTasks = await db.query.tasks.findMany({
-    where: and(eq(tasks.userID, userID), eq(tasks.completed, JSON.parse(completed as string))),
-    orderBy: [asc(tasks.createdAt)],
-    limit: 25,
-  });
+  const userTasks = await db
+    .select()
+    .from(tasks)
+    .where(and(eq(tasks.userID, userID), eq(tasks.completed, JSON.parse(completed))))
+    .orderBy(asc(tasks.createdAt))
+    .limit(15);
 
   return userTasks;
 };
 
-export const findUserTasks = async ({ userID, completed }: FindUserTasksParams) => {
+export const findUserTasks = async ({ userID, completed, page }: FindUserTasksParams) => {
   const userTasks = await db.query.tasks.findMany({
-    where: and(eq(tasks.userID, userID), eq(tasks.completed, JSON.parse(completed as string))),
+    where: and(eq(tasks.userID, userID), eq(tasks.completed, JSON.parse(completed))),
     orderBy: [asc(tasks.createdAt)],
+    limit: 10,
+    ...(page && { offset: (page - 1) * 10 }),
   });
-  // const userTasks = await db.select().from(tasks).where()
 
   return userTasks;
 };
@@ -58,6 +61,7 @@ export const insertNewTask = async (task: NewTask) => {
     notes: tasks.notes,
     dueDate: tasks.dueDate,
     completed: tasks.completed,
+
     priority: tasks.priority,
   });
 
@@ -106,7 +110,8 @@ export const updateTaskByID = async ({ userID, contactID, newData }: UpdateTaskB
       description: tasks.description,
       notes: tasks.notes,
       dueDate: tasks.dueDate,
-      completed: tasks.completed,
+      // status: tasks.status,
+      // completed: tasks.completed,
       priority: tasks.priority,
     });
 

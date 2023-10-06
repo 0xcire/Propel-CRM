@@ -51,12 +51,8 @@ export function TaskRoute(): JSX.Element {
   if (!task.data || !task.data[0]) {
     return <NestedNotFound context='task' />;
   }
-  console.log(task.data[0]);
 
   const defaultValues = generateDefaultValues(task.data[0]);
-  console.log(defaultValues);
-
-  // return <div>hey</div>;
 
   return (
     <Dialog
