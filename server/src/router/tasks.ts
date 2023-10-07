@@ -9,19 +9,20 @@ import {
   createTaskSchema,
   updateTaskSchema,
   taskQuerySchema,
+  dashboardTaskQuerySchema,
 } from "../db/validation-schema";
 
 export default (router: Router) => {
   router.get(
     "/dashboard/tasks",
-    validateRequest({ query: taskQuerySchema, cookies: cookieSchema }),
+    validateRequest({ query: dashboardTaskQuerySchema, cookies: cookieSchema }),
     isAuth,
     getDashboardTasks
   );
 
   router.get(
     "/tasks/:id",
-    validateRequest({ query: taskQuerySchema, cookies: cookieSchema }),
+    validateRequest({ params: paramSchema, cookies: cookieSchema }),
     isAuth,
     isTaskOwner,
     getTask

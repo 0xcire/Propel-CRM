@@ -15,7 +15,10 @@ export const getDashboardTasks = async (req: Request, res: Response) => {
     const userID = req.user.id;
     const { completed } = req.query;
 
-    const userDashboardTasks = await getUserDashboardTasks({ userID: userID, completed: completed as string });
+    const userDashboardTasks = await getUserDashboardTasks({
+      userID: userID,
+      completed: completed as "true" | "false",
+    });
 
     return res.status(200).json({
       message: "",
@@ -30,9 +33,16 @@ export const getDashboardTasks = async (req: Request, res: Response) => {
 export const getTasks = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { completed, page } = req.query;
+    const { completed, page, priority } = req.query;
 
-    const userTasks = await findUserTasks({ userID: userID, completed: completed as string, page: +page! });
+    const priorities = (priority as string)?.split(",");
+
+    const userTasks = await findUserTasks({
+      userID: userID,
+      completed: completed as "true" | "false",
+      page: +page!,
+      priority: priorities,
+    });
 
     return res.status(200).json({
       message: "",

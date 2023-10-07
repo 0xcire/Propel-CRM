@@ -1,13 +1,14 @@
 import { db } from "..";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, inArray } from "drizzle-orm";
 import { tasks } from "../schema";
 
-import { type NewTask } from "../types";
+import type { NewTask } from "../types";
 
 type FindUserTasksParams = {
   userID: number;
-  completed: string;
+  completed: "true" | "false";
   page?: number;
+  priority?: Array<string>;
 };
 
 type UpdateTaskByIDParams = {
@@ -42,9 +43,13 @@ export const getUserDashboardTasks = async ({ userID, completed }: FindUserTasks
   return userTasks;
 };
 
-export const findUserTasks = async ({ userID, completed, page }: FindUserTasksParams) => {
+export const findUserTasks = async ({ userID, completed, page, priority }: FindUserTasksParams) => {
   const userTasks = await db.query.tasks.findMany({
-    where: and(eq(tasks.userID, userID), eq(tasks.completed, JSON.parse(completed))),
+    where: and(
+      eq(tasks.userID, userID),
+      eq(tasks.completed, JSON.parse(completed)),
+      priority && inArray(tasks.priority, priority as Array<"low" | "medium" | "high">)
+    ),
     orderBy: [asc(tasks.createdAt)],
     limit: 10,
     ...(page && { offset: (page - 1) * 10 }),

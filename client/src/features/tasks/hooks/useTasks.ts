@@ -9,8 +9,9 @@ export const useTasks = (): UseQueryResult<Tasks, unknown> => {
   const query = {
     page: searchParams.get('page'),
     completed: searchParams.get('completed'),
+    priority: searchParams.get('priority'),
   };
-  
+
   return useQuery({
     queryKey: ['tasks', query],
     queryFn: getTasks,

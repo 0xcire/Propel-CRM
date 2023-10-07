@@ -30,14 +30,16 @@ import {
 
 import { Spinner } from '@/components';
 
+import { TestFilterDropdown } from './TestFilterDropdown';
+
 import type {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
+
 import type { Task } from '../../types';
-import { FilterDropdown } from './FilterDropdown';
 
 interface ContactTableProps<TData extends Task> {
   columns: Array<ColumnDef<Task>>;
@@ -73,6 +75,7 @@ ContactTableProps<TData>): JSX.Element {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     manualPagination: true,
+    manualFiltering: true,
     pageCount: -1,
     state: {
       sorting,
@@ -98,7 +101,7 @@ ContactTableProps<TData>): JSX.Element {
 
   return (
     <>
-      <div className='flex items-center p-4'>
+      <div className='flex items-center gap-2 p-4'>
         <Input
           autoFocus={true}
           placeholder='Search your tasks'
@@ -108,8 +111,35 @@ ContactTableProps<TData>): JSX.Element {
           // }}
           className='max-w-sm'
         />
-        <FilterDropdown label='Status' />
-        <FilterDropdown label='Priority' />
+
+        <Button
+          variant='outline'
+          onClick={(): void => {
+            searchParams.set('page', '1');
+            searchParams.set(
+              'completed',
+              searchParams.get('completed') === 'true' ? 'false' : 'true'
+            );
+            setSearchParams(searchParams);
+          }}
+        >
+          {searchParams.get('completed') === 'true'
+            ? 'Hide Completed'
+            : 'Show Completed'}
+        </Button>
+
+        <TestFilterDropdown
+          column={table.getColumn('priority')}
+          options={[
+            {
+              label: 'Low',
+              value: 'low',
+            },
+            { label: 'Medium', value: 'medium' },
+            { label: 'High', value: 'high' },
+          ]}
+          title='Priority'
+        />
         <div className='ml-auto flex items-center gap-2'>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -234,10 +264,8 @@ ContactTableProps<TData>): JSX.Element {
           variant='outline'
           size='sm'
           onClick={(): void => {
-            setSearchParams([
-              ['page', (+currentPage - 1).toString()],
-              ['completed', searchParams.get('completed') ?? 'false'],
-            ]);
+            searchParams.set('page', (+currentPage - 1).toString());
+            setSearchParams(searchParams);
           }}
           disabled={searchParams.get('page') === '1'}
         >
@@ -247,10 +275,8 @@ ContactTableProps<TData>): JSX.Element {
           variant='outline'
           size='sm'
           onClick={(): void => {
-            setSearchParams([
-              ['page', (+currentPage + 1).toString()],
-              ['completed', searchParams.get('completed') ?? 'false'],
-            ]);
+            searchParams.set('page', (+currentPage + 1).toString());
+            setSearchParams(searchParams);
           }}
           // 10 could be a dynamic 'results per page' number
           disabled={data.length < 10}

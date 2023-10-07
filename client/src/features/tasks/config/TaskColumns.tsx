@@ -16,12 +16,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 
-import { UpdateTask } from '../components/UpdateTask';
+// import { UpdateTask } from '../components/UpdateTask';
 import { DeleteTask } from '../components/DeleteTask';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Task } from '../types';
-import { useUser } from '@/lib/react-query-auth';
+// import { useUser } from '@/lib/react-query-auth';
 
 import { TaskForm } from '../components/TaskForm';
 import { useUpdateTask } from '../hooks/useUpdateTask';
@@ -106,7 +106,7 @@ export const taskColumns: Array<ColumnDef<Task>> = [
 
       // TODO: user context
       //eslint-disable-next-line
-      const user = useUser();
+      // const user = useUser();
 
       return (
         <DropdownMenu>
@@ -131,13 +131,13 @@ export const taskColumns: Array<ColumnDef<Task>> = [
             >
               Copy task ID
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={(e): void => e.stopPropagation()}>
+            {/* <DropdownMenuItem onClick={(e): void => e.stopPropagation()}>
               <UpdateTask
                 userID={user.data?.id as number}
                 task={task}
                 text='Update Task'
               />
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuItem onClick={(e): void => e.stopPropagation()}>
               <DeleteTask
                 id={task.id}
