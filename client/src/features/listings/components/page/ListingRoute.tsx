@@ -14,20 +14,22 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
+import { NestedNotFound } from '@/components/Layout/page/NestedNotFound';
+
 import { ListingForm } from '../ListingForm';
 
 import { Spinner } from '@/components';
 
-import { filterEqualFields } from '@/utils/form-data';
-import { generateDefaultValues, transformData } from '../../utils';
+import { filterEqualFields, generateDefaultValues } from '@/utils/form-data';
+import { transformData } from '../../utils';
 
-import type { Listing, NewListing, ListingFields } from '../../types';
+import type { NewListing, ListingFields } from '../../types';
 
 // Currently just update form.
 // when adding file uploads, can improve this.
 
 export function ListingRoute(): JSX.Element {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const user = useUser();
   const updateListing = useUpdateListing();
@@ -67,7 +69,11 @@ export function ListingRoute(): JSX.Element {
     );
   }
 
-  const listingData = listing.data && listing.data[0];
+  if (!listing.data || !listing.data[0]) {
+    return <NestedNotFound context='listing' />;
+  }
+
+  const listingData = listing.data[0];
 
   const defaultValues = generateDefaultValues(listingData);
 
@@ -76,11 +82,11 @@ export function ListingRoute(): JSX.Element {
 
     const data: Partial<NewListing> = filterEqualFields({
       newData: transformedData,
-      originalData: listingData as Listing,
+      originalData: listingData,
     });
 
     updateListing.mutate(
-      { id: listingData?.id as number, data: data },
+      { id: listingData.id as number, data: data },
       {
         onSuccess: () => {
           setOpen(false);
