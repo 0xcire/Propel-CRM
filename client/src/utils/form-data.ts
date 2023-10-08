@@ -1,3 +1,6 @@
+import { isValid } from 'date-fns/esm';
+import { removeTimeZone } from './date';
+
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
 type FilterFieldParams = {
@@ -36,4 +39,28 @@ export const fieldsAreDirty = <T extends FieldValues>(
     return dirtyFields.some((field) => fields.includes(field));
   }
   return dirtyFields.includes(fields as string);
+};
+
+// string | number | Date
+export const generateDefaultValues = (
+  initialData: Record<string, unknown>
+): Record<string, unknown> => {
+  const initialEntries: Array<[string, unknown]> = Object.entries(
+    initialData
+  ).map(([key, value]) => {
+    if (!value) {
+      value = '';
+    }
+    if (typeof value === 'number') {
+      value = value.toString();
+    }
+
+    if (typeof value === 'string' && isValid(new Date(value))) {
+      value = new Date(removeTimeZone(value));
+    }
+
+    return [key, value];
+  });
+
+  return Object.fromEntries(initialEntries);
 };

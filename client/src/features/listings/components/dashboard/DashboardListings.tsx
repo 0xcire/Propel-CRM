@@ -3,9 +3,21 @@ import { useDashboardListings } from '../../hooks/useDashboardListings';
 import { Spinner } from '@/components';
 
 import { ListingCard } from './ListingCard';
+// import { memo, useMemo } from 'react';
+
+// const MemoizedListingCard = memo(ListingCard);
 
 export function DashboardListings(): JSX.Element {
   const listings = useDashboardListings();
+
+  // const MemoizedDashboardListings = useMemo(() => {
+  //   return listings.data?.map((listing) => (
+  //     <MemoizedListingCard
+  //       key={`${listing.id}-listing`}
+  //       listing={listing}
+  //     />
+  //   ));
+  // }, [listings]);
 
   // TODO: common. extract.
   if (listings.isLoading) {
@@ -31,6 +43,7 @@ export function DashboardListings(): JSX.Element {
 
   return (
     <div className='relative flex h-full flex-wrap items-start gap-4 overflow-hidden p-4 pt-0'>
+      {/* {MemoizedDashboardListings} */}
       {listings.data?.map((listing) => (
         <ListingCard
           key={`${listing.id}-listing`}
