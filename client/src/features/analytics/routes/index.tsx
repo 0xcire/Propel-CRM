@@ -1,31 +1,40 @@
-// import { lazyImport } from '@/utils/lazyImport';
+import { Suspense } from 'react';
 
-import { Button } from '@/components/ui/button';
-import { Typography } from '@/components/ui/typography';
+import { lazyImport } from '@/utils/lazyImport';
+
+import { AnalyticsLayout } from '@/features/analytics/components/Layout';
+
+const { AnalyticsPage } = lazyImport(
+  () => import('../components/page'),
+  'AnalyticsPage'
+);
+
+const { AnalyticsRoute } = lazyImport(
+  () => import('../components/page/AnalyticsRoute'),
+  'AnalyticsRoute'
+);
+
 import type { RouteObject } from 'react-router-dom';
 
 export const analyticsRoutes: RouteObject = {
   path: 'analytics',
+  element: <AnalyticsLayout />,
   children: [
     {
       index: true,
       element: (
-        <div className='flex h-full w-full flex-1 flex-col p-10'>
-          <div className='flex w-full items-center justify-between'>
-            <Typography variant='h3'>Analytics</Typography>
-            <Button>Generate PDF</Button>
-          </div>
-          <div className='h-full pt-10'>
-            <div className='border-1 grid h-full place-items-center rounded-md shadow-md'>
-              <p>Much Graphs</p>
-            </div>
-          </div>
-        </div>
+        <Suspense>
+          <AnalyticsPage />
+        </Suspense>
       ),
     },
     {
       path: ':id',
-      element: <p>hey listing ID</p>,
+      element: (
+        <Suspense>
+          <AnalyticsRoute />
+        </Suspense>
+      ),
     },
   ],
 };
