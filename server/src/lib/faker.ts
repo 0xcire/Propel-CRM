@@ -1,9 +1,13 @@
 import { faker, fakerEN_US } from "@faker-js/faker";
 
-import type { Contact, NewContact, NewListing } from "../db/types";
+import type { Contact, NewContact, NewListing, NewTask } from "../db/types";
 import { db } from "../db";
 import { contacts, listings, listingsToContacts, soldListings } from "../db/schema";
 import { getUsersContacts, insertNewContact, insertNewRelation } from "../db/queries/contacts";
+import { getAllUserListings } from "../db/queries/listings";
+import { insertNewTask } from "../db/queries/tasks";
+
+const DEMO_ACCOUNT_ID = 10;
 
 // from a random listing on zillow
 const exampleListingDescription =
@@ -33,7 +37,7 @@ export const createFakeSoldListing = (): NewListing => {
     price: faker.number.int({ min: 250000, max: 6000000 }).toString(),
     squareFeet: faker.number.int({ min: 1250, max: 20000 }),
     createdAt: faker.date.between({ from: "2022-01-01T00:00:00.000Z", to: "2023-08-15T00:00:00.000Z" }),
-    userID: 10,
+    userID: DEMO_ACCOUNT_ID,
   };
 };
 
@@ -54,7 +58,7 @@ export const seedListingsAndSoldListings = async () => {
       await tx.insert(soldListings).values({
         listingID: newListing[0].id,
         soldAt: newListingDate,
-        userID: 10, // demo act
+        userID: DEMO_ACCOUNT_ID,
       });
     });
   }
@@ -73,13 +77,13 @@ export const createFakeActiveListing = () => {
     price: faker.number.int({ min: 250000, max: 6000000 }).toString(),
     squareFeet: faker.number.int({ min: 1250, max: 20000 }),
     createdAt: faker.date.between({ from: "2023-04-01T00:00:00.000Z", to: "2023-09-15T00:00:00.000Z" }),
-    userID: 10,
+    userID: DEMO_ACCOUNT_ID,
   };
 };
 
 export const seedListings = async () => {
   // if i reseed listings need to address below function call
-  const usersContacts = await getUsersContacts(10, 1);
+  const usersContacts = await getUsersContacts(DEMO_ACCOUNT_ID, 1);
   for (let i = 0; i < 50; i++) {
     await db.transaction(async (tx) => {
       const newListing = await db.insert(listings).values(createFakeActiveListing()).returning({
@@ -129,7 +133,40 @@ export const seedContacts = async () => {
   for (let i = 0; i <= 50; i++) {
     await db.transaction(async (tx) => {
       const newContact = await insertNewContact(createFakeContact());
-      const relation = await insertNewRelation({ currentUserID: 10, newContactID: newContact.id });
+      const relation = await insertNewRelation({ currentUserID: DEMO_ACCOUNT_ID, newContactID: newContact.id });
     });
   }
 };
+
+const setPriority = () => {
+  const priorities = ["low", "medium", "high"] as const;
+  const randomIndex = Math.floor(Math.random() * priorities.length);
+  return priorities[randomIndex];
+};
+
+// all uniform, but at least it wont be lorem ipsum or just complete word salad.
+export const createFakeTask = (): NewTask => {
+  const date = fakerEN_US.date.between({ from: "2023-10-01T00:00:00.000Z", to: "2024-01-01T00:00:00.000Z" });
+  return {
+    userID: DEMO_ACCOUNT_ID,
+    // title: "This is an incomplete task.",
+    title: "This is a complete task.",
+    description: "Here's an opportunity to add a couple sentences to furthur describe a task.",
+    notes: "- Bullet points \n- To provide additional details \n- About the task at hand",
+    dueDate: date.toISOString(),
+    priority: setPriority(),
+    completed: true,
+  };
+};
+
+export const seedTasks = async () => {
+  for (let i = 0; i < 25; i++) {
+    const newTask = await insertNewTask(createFakeTask());
+  }
+};
+
+// export const seedListingTasks = async () => {
+//   const demoListings = await getAllUserListings(10, 1, );
+// };
+
+// export const seedContactTasks = async () => {};

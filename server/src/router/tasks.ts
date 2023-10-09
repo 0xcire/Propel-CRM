@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getTasks, createTask, updateTask, deleteTask, getDashboardTasks } from "../controllers/tasks";
+import { getTasks, createTask, updateTask, deleteTask, getDashboardTasks, getTask } from "../controllers/tasks";
 import { isAuth } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
 import { isTaskOwner } from "../middlewares/tasks";
@@ -9,17 +9,31 @@ import {
   createTaskSchema,
   updateTaskSchema,
   taskQuerySchema,
+  dashboardTaskQuerySchema,
 } from "../db/validation-schema";
 
 export default (router: Router) => {
   router.get(
     "/dashboard/tasks",
-    validateRequest({ query: taskQuerySchema, cookies: cookieSchema }),
+    validateRequest({ query: dashboardTaskQuerySchema, cookies: cookieSchema }),
     isAuth,
     getDashboardTasks
   );
 
-  router.get("/tasks", validateRequest({ query: taskQuerySchema, cookies: cookieSchema }), isAuth, getTasks);
+  router.get(
+    "/tasks/:id",
+    validateRequest({ params: paramSchema, cookies: cookieSchema }),
+    isAuth,
+    isTaskOwner,
+    getTask
+  );
+
+  router.get(
+    "/tasks",
+    validateRequest({ query: taskQuerySchema, params: paramSchema, cookies: cookieSchema }),
+    isAuth,
+    getTasks
+  );
 
   router.post("/tasks", validateRequest({ body: createTaskSchema, cookies: cookieSchema }), isAuth, createTask);
 

@@ -1,11 +1,12 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { useContact } from '../../hooks/useContact';
 
 import { AtSignIcon, PhoneIcon } from 'lucide-react';
 
 import { Typography } from '@/components/ui/typography';
-import { Button } from '@/components/ui/button';
+
+import { NestedNotFound } from '@/components/Layout/page/NestedNotFound';
 
 import { Avatar, Spinner } from '@/components';
 
@@ -13,7 +14,6 @@ import { UpdateContact } from '../UpdateContact';
 
 export function ContactRoute(): JSX.Element {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const contact = useContact(+(id as string));
 
@@ -41,20 +41,11 @@ export function ContactRoute(): JSX.Element {
     );
   }
 
-  // TODO: extract -> <NestedNotFound />
   if (!contact.data || !contact.data[0]) {
-    return (
-      <div className='grid h-full w-full place-items-center'>
-        <div>
-          <Typography variant='h4'>404! We can't find that contact.</Typography>
-          <Button onClick={(): void => navigate(-1)}>Go back</Button>
-        </div>
-      </div>
-    );
+    return <NestedNotFound context='contact' />;
   }
 
   return (
-    // absolute
     <div className='grid h-full grid-cols-12 grid-rows-6 gap-4'>
       <div className='col-start-1 col-end-13 row-start-1 row-end-2 flex items-center justify-between rounded-md border-b p-4'>
         <div className='flex items-start gap-2'>

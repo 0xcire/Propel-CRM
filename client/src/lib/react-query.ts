@@ -2,20 +2,21 @@ import { QueryClient } from '@tanstack/react-query';
 
 import { toast } from '@/components/ui/use-toast';
 
-import { isAPIError } from '@/utils/error';
+import { isAPIError } from '@/utils/';
 
 import type { DefaultOptions, QueryKey } from '@tanstack/react-query';
 
 const handleApiError = (error: unknown): void => {
+  // TODO: handle refresh
   if (isAPIError(error)) {
     if (error.status === 403) {
-      // redirect('/auth/signin');
-      return;
+      queryClient.setQueryData(['user'], null);
+      // queryClient.invalidateQueries(['user']);
+    } else {
+      toast({
+        description: `${error.message}`,
+      });
     }
-
-    toast({
-      description: `${error.message}`,
-    });
   }
 };
 

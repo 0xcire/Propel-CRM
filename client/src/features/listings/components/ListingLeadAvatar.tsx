@@ -13,7 +13,7 @@ import { Tooltip } from '@/components';
 
 import { RemoveLead } from './RemoveLead';
 
-import { extractInitials } from '@/utils/name';
+import { extractInitials } from '@/utils/';
 
 import type { MouseEventHandler } from 'react';
 import type { ContactInfo } from '../types';
@@ -39,7 +39,7 @@ export function ListingLeadAvatar({
       >
         <Button variant='link'>{extractInitials(contactInfo.name)}</Button>
       </HoverCardTrigger>
-      <HoverCardContent>
+      <HoverCardContent onClick={(e): void => e.stopPropagation()}>
         <div className='flex justify-between gap-4'>
           <Avatar name={contactInfo.name} />
 

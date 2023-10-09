@@ -15,6 +15,7 @@ import {
 import { Tooltip } from '@/components';
 import { ContactForm } from './ContactForm';
 
+import { handleOnOpenChange } from '@/utils';
 import { filterEqualFields } from '@/utils/form-data';
 
 import type { DeepPartial } from 'react-hook-form';
@@ -60,8 +61,7 @@ export function UpdateContact({
   return (
     <Dialog
       open={open}
-      onOpenChange={setOpen}
-      // onOpenChange={(open): void => (open ? setOpen(true) : setOpen(false))}
+      onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
     >
       {/* TODO: cleanup */}
       {text && asButton ? (
@@ -94,7 +94,8 @@ export function UpdateContact({
         </Tooltip>
       )}
 
-      <DialogContent>
+      {/* TODO: just make this a util... */}
+      <DialogContent onClick={(e): void => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle>Update Contact</DialogTitle>
         </DialogHeader>

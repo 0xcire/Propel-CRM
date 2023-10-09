@@ -16,22 +16,39 @@ import {
 
 import { SubmitButton } from '@/components';
 
+import { handleOnOpenChange } from '@/utils';
+
 // TODO: may need to change to regular dialog to show loading state
-export function DeleteTask({ id }: { id: number }): JSX.Element {
+export function DeleteTask({
+  id,
+  text,
+}: {
+  id: number;
+  text?: string;
+}): JSX.Element {
   const [open, setOpen] = useState(false);
   const deleteTask = useDeleteTask();
   return (
     <AlertDialog
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
     >
       <AlertDialogTrigger asChild>
-        <Button
-          variant='destructive'
-          className='mr-auto'
-        >
-          Delete
-        </Button>
+        {text ? (
+          <p
+            onClick={(e): void => e.stopPropagation()}
+            className='w-full cursor-pointer'
+          >
+            {text}
+          </p>
+        ) : (
+          <Button
+            variant='destructive'
+            className='mr-auto'
+          >
+            Delete
+          </Button>
+        )}
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

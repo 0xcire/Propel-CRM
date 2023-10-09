@@ -1,5 +1,6 @@
 import { MoreHorizontal } from 'lucide-react';
-// , ArrowUpDown
+
+import { toast } from '@/components/ui/use-toast';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -7,17 +8,15 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-// import { toast } from '@/components/ui/use-toast';
 
-// import { currency, dateIntl, number } from '@/utils/intl';
+import { RemoveContact } from '../components/RemoveContact';
+import { UpdateContact } from '../components/UpdateContact';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Contact } from '../types';
-import { toast } from '@/components/ui/use-toast';
-import { RemoveContact } from '../components/RemoveContact';
-// import { UpdateContact } from '../components/UpdateContact';
 
 export const listingColumns: Array<ColumnDef<Contact>> = [
   {
@@ -59,8 +58,8 @@ export const listingColumns: Array<ColumnDef<Contact>> = [
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={(e): Promise<void> => {
-                e.stopPropagation();
+              className='cursor-pointer'
+              onClick={(): Promise<void> => {
                 toast({
                   description: `Contact ID: ${contact.id} copied to clipboard`,
                 });
@@ -69,16 +68,12 @@ export const listingColumns: Array<ColumnDef<Contact>> = [
             >
               Copy contact ID
             </DropdownMenuItem>
-            {/* <DropdownMenuItem
-              onClick={(e): void => {
-                e.stopPropagation();
-              }}
-            >
+            <DropdownMenuItem>
               <UpdateContact
                 text='Update'
                 contact={contact}
               />
-            </DropdownMenuItem> */}
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={(e): void => {
                 e.stopPropagation();
@@ -88,6 +83,17 @@ export const listingColumns: Array<ColumnDef<Contact>> = [
                 text='Delete'
                 contact={contact}
               />
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              className='cursor-pointer'
+              onClick={(e): void => {
+                e.stopPropagation();
+              }}
+            >
+              Add Task
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -1,11 +1,14 @@
-import { and, asc, eq } from "drizzle-orm";
 import { db } from "..";
+import { and, asc, eq, inArray } from "drizzle-orm";
 import { tasks } from "../schema";
-import { type NewTask } from "../types";
+
+import type { NewTask } from "../types";
 
 type FindUserTasksParams = {
   userID: number;
-  completed: string;
+  completed: "true" | "false";
+  page?: number;
+  priority?: Array<string>;
 };
 
 type UpdateTaskByIDParams = {
@@ -30,19 +33,26 @@ export const findTaskByID = async (id: number) => {
 };
 
 export const getUserDashboardTasks = async ({ userID, completed }: FindUserTasksParams) => {
-  const userTasks = await db.query.tasks.findMany({
-    where: and(eq(tasks.userID, userID), eq(tasks.completed, JSON.parse(completed as string))),
-    orderBy: [asc(tasks.createdAt)],
-    limit: 25,
-  });
+  const userTasks = await db
+    .select()
+    .from(tasks)
+    .where(and(eq(tasks.userID, userID), eq(tasks.completed, JSON.parse(completed))))
+    .orderBy(asc(tasks.createdAt))
+    .limit(15);
 
   return userTasks;
 };
 
-export const findUserTasks = async ({ userID, completed }: FindUserTasksParams) => {
+export const findUserTasks = async ({ userID, completed, page, priority }: FindUserTasksParams) => {
   const userTasks = await db.query.tasks.findMany({
-    where: and(eq(tasks.userID, userID), eq(tasks.completed, JSON.parse(completed as string))),
+    where: and(
+      eq(tasks.userID, userID),
+      eq(tasks.completed, JSON.parse(completed)),
+      priority && inArray(tasks.priority, priority as Array<"low" | "medium" | "high">)
+    ),
     orderBy: [asc(tasks.createdAt)],
+    limit: 10,
+    ...(page && { offset: (page - 1) * 10 }),
   });
 
   return userTasks;
@@ -56,6 +66,7 @@ export const insertNewTask = async (task: NewTask) => {
     notes: tasks.notes,
     dueDate: tasks.dueDate,
     completed: tasks.completed,
+
     priority: tasks.priority,
   });
 
@@ -104,7 +115,8 @@ export const updateTaskByID = async ({ userID, contactID, newData }: UpdateTaskB
       description: tasks.description,
       notes: tasks.notes,
       dueDate: tasks.dueDate,
-      completed: tasks.completed,
+      // status: tasks.status,
+      // completed: tasks.completed,
       priority: tasks.priority,
     });
 

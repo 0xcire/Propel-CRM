@@ -10,6 +10,7 @@ import {
   date,
   integer,
   numeric,
+  pgEnum,
   pgTable,
   primaryKey,
   serial,
@@ -49,6 +50,7 @@ export const contacts = pgTable("contacts", {
 export const contactsRelations = relations(contacts, ({ many }) => ({
   usersToContacts: many(usersToContacts),
   listingsToContacts: many(listingsToContacts),
+  tasks: many(tasks),
 }));
 
 export const usersToContacts = pgTable(
@@ -78,17 +80,19 @@ export const usersToContactsRelations = relations(usersToContacts, ({ one }) => 
   }),
 }));
 
-// TODO: tasks can have 1 to 1 relation with listings?
 export const tasks = pgTable("tasks", {
   id: serial("id").primaryKey(),
-  userID: integer("user_id").references(() => users.id),
+  userID: integer("user_id")
+    .references(() => users.id)
+    .notNull(),
   listingID: integer("listing_id").references(() => listings.id),
+  contactID: integer("contact_id").references(() => contacts.id),
   title: varchar("title", { length: 255 }).notNull(),
   description: varchar("description", { length: 255 }),
   notes: varchar("notes", { length: 255 }),
   dueDate: date("due_date", { mode: "string" }),
-  completed: boolean("completed").default(false),
   priority: text("priority", { enum: ["low", "medium", "high"] }),
+  completed: boolean("completed").default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
@@ -100,6 +104,10 @@ export const tasksRelations = relations(tasks, ({ one }) => ({
   listing: one(listings, {
     fields: [tasks.listingID],
     references: [listings.id],
+  }),
+  contacts: one(contacts, {
+    fields: [tasks.contactID],
+    references: [contacts.id],
   }),
 }));
 

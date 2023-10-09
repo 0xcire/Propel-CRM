@@ -6,8 +6,6 @@ import { useAddLead } from '../../hooks/useAddLead';
 
 import { useDebounce } from '@/hooks/useDebounce';
 
-import { PlusIcon } from 'lucide-react';
-
 import { Input } from '@/components/ui/input';
 import {
   Sheet,
@@ -50,7 +48,7 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
 
   return (
     <div
-      className='ml-auto rounded-full border border-black p-[1px]'
+      className='w-full cursor-pointer'
       onClick={props.onClick}
     >
       <Sheet
@@ -62,7 +60,7 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
         }}
       >
         <SheetTrigger asChild>
-          <PlusIcon size={16} />
+          <p>Add Lead</p>
         </SheetTrigger>
         <SheetContent className='flex flex-col'>
           <SheetHeader className='px-4'>

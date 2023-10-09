@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteTask } from '../api';
 import { useToast } from '@/components/ui/use-toast';
-import { isAPIError } from '@/utils/error';
+import { isAPIError } from '@/utils/';
 
 import type { UseMutationResult } from '@tanstack/react-query';
 import type { TaskContext, TaskResponse } from '../types';

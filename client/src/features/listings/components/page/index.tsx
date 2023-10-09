@@ -16,7 +16,7 @@ export function ListingPage(): JSX.Element {
   const listings = useListings();
 
   useEffect(() => {
-    // when linking to /listing/:id from non listing route. if deviating away from modal route
+    // TODO: when linking to /listing/:id from non listing route. if deviating away from modal route
     // remove this functionality.
     // sync with /contacts/page if so
     if (id) return;

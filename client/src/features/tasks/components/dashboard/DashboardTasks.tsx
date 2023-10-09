@@ -1,3 +1,5 @@
+import { useUser } from '@/lib/react-query-auth';
+
 import { useDashboardTasks } from '../../hooks/useDashboardTasks';
 
 import { useTaskContext } from '../../context/TaskContext';
@@ -11,6 +13,7 @@ import { Task } from '../Task';
 import { CompletedTasks } from '../CompletedTasks';
 
 export function DashboardTasks(): JSX.Element {
+  const user = useUser();
   const incompleteTasks = useDashboardTasks('false');
 
   const { state: showCompleted } = useTaskContext();
@@ -44,12 +47,13 @@ export function DashboardTasks(): JSX.Element {
       <>
         {incompleteTasks.data?.map((task) => (
           <Task
+            userID={user.data?.id as number}
             key={task.id}
             task={task}
           />
         ))}
 
-        {showCompleted && <CompletedTasks />}
+        {showCompleted && <CompletedTasks userID={user.data?.id as number} />}
       </>
     </ScrollArea>
   );

@@ -126,7 +126,7 @@ export function ContactTable<TData extends Contact>({
                   return (
                     <DropdownMenuCheckboxItem
                       key={column.id}
-                      className='capitalize'
+                      className='cursor-pointer capitalize'
                       checked={column.getIsVisible()}
                       onCheckedChange={(value): void =>
                         column.toggleVisibility(!!value)
@@ -174,15 +174,24 @@ export function ContactTable<TData extends Contact>({
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
-                    className='row cursor-pointer'
+                    className='row'
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    onClick={(): void => {
-                      navigate(`/contacts/${row.original.id}`);
-                    }}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell
+                        className={
+                          cell.getContext().column.id === 'name'
+                            ? 'cursor-pointer'
+                            : ''
+                        }
+                        onClick={(): void => {
+                          if (cell.getContext().column.id === 'name') {
+                            navigate(`/contacts/${row.original.id}`);
+                          }
+                        }}
+                        key={cell.id}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

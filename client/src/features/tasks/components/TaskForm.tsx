@@ -23,7 +23,7 @@ import { DeleteTask } from './DeleteTask';
 import { taskSchema, checkboxSchema } from '@/lib/validations/tasks';
 import { priorityOptions } from '@/config';
 
-import { removeTimeZone } from '@/utils/date';
+import { removeTimeZone } from '@/utils/';
 import { fieldsAreDirty } from '@/utils/form-data';
 
 import type { FormMode } from '@/types';
@@ -105,11 +105,12 @@ export function TaskForm({
   }
 
   return (
-    <>
+    <div className='flex h-[80vh] flex-col'>
       <Form {...form}>
         <form
           id={isCreate ? 'add-task' : 'update-task'}
           onSubmit={onSubmit && form.handleSubmit(onSubmit)}
+          className='my-4 flex flex-1 flex-col gap-2'
         >
           <TextInput
             name='title'
@@ -127,6 +128,7 @@ export function TaskForm({
             name='notes'
             label='Notes'
             control={form.control}
+            className='flex-1'
           />
 
           <div className='flex items-center justify-between pt-4'>
@@ -157,6 +159,6 @@ export function TaskForm({
           text='Add'
         />
       </DialogFooter>
-    </>
+    </div>
   );
 }

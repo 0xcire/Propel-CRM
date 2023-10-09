@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { format } from 'date-fns';
 
 import { useUpdateTask } from '../hooks/useUpdateTask';
-import { useUser } from '@/lib/react-query-auth';
 
 import { InfoIcon } from 'lucide-react';
 
@@ -17,35 +16,37 @@ import {
 
 import { TaskForm } from './TaskForm';
 
-import { removeTimeZone } from '@/utils/date';
+import { handleOnOpenChange, removeTimeZone } from '@/utils/';
 import { filterUndefined } from '@/utils/form-data';
 
 import type { DeepPartial } from 'react-hook-form';
 import type { Task as TaskData } from '../types';
 import type { CreateTaskFields } from './TaskForm';
 
+// TODO: as dashboard and per page components have been built out,
+// can extract common typing
 type TaskProps = {
   task: TaskData;
+  text?: string;
+  userID: number;
 };
 
-export function UpdateTask({ task }: TaskProps): JSX.Element {
+export function UpdateTask({ task, text, userID }: TaskProps): JSX.Element {
   const [open, setOpen] = useState(false);
 
   const updateTask = useUpdateTask();
 
-  const user = useUser();
-
   const defaultValues: DeepPartial<CreateTaskFields> = {
     title: task.title,
-    description: task.description ?? undefined,
-    notes: task.notes ?? undefined,
+    description: task.description ?? '',
+    notes: task.notes ?? '',
     dueDate: task.dueDate ? new Date(removeTimeZone(task.dueDate)) : undefined,
     priority: task.priority ?? undefined,
   };
 
   function onSubmit(values: CreateTaskFields): void {
     const data = {
-      userID: user.data?.id,
+      userID: userID,
       title: values.title,
       description: values.description,
       notes: values.notes,
@@ -68,15 +69,28 @@ export function UpdateTask({ task }: TaskProps): JSX.Element {
   return (
     <Dialog
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
     >
-      <DialogTrigger asChild>
-        <InfoIcon
-          className='cursor-pointer'
-          size={16}
-        />
+      <DialogTrigger
+        className='cursor-pointer'
+        asChild
+      >
+        {text ? (
+          <p
+            onClick={(e): void => e.stopPropagation()}
+            className='w-full'
+          >
+            {text}
+          </p>
+        ) : (
+          <InfoIcon size={16} />
+        )}
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent
+        onClick={(e): void => e.stopPropagation()}
+        // h-[80vh]
+        className='sm:max-w-[425px]'
+      >
         <DialogHeader>
           <DialogTitle>Update Task</DialogTitle>
         </DialogHeader>

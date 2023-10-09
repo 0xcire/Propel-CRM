@@ -10,7 +10,7 @@ export const NotFound = (): JSX.Element => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user.data === null) {
+    if (!user.data) {
       navigate('/auth/signin');
     }
 

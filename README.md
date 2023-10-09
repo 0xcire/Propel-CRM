@@ -183,4 +183,7 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - [ ] # of listings handled, avg time to close lead, overall sales vol.
 
 - mobile dialog components
+
   - [ ] detect purely mobile viewport and replace dialog components with [Vaul](https://github.com/emilkowalski/vaul)
+
+- teams, team specifc admin, admin for all

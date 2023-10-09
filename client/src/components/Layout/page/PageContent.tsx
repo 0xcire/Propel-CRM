@@ -1,5 +1,8 @@
 import type { ReactNode } from 'react';
 
+// TODO: consider moving absolute shadow container to per page basis,
+// more control per route.
+
 export function PageContent({
   children,
 }: {

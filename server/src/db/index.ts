@@ -5,13 +5,15 @@ import postgres from "postgres";
 import * as schema from "./schema";
 
 import { PG_URL } from "../config";
-// import {
-//   createFakeActiveListing,
-//   createFakeContact,
-//   seedContacts,
-//   seedListings,
-//   seedListingsAndSoldListings,
-// } from "../lib/faker";
+
+import {
+  //   createFakeActiveListing,
+  //   createFakeContact,
+  //   seedContacts,
+  //   seedListings,
+  //   seedListingsAndSoldListings,
+  seedTasks,
+} from "../lib/faker";
 
 // TODO: close connection after each query
 
@@ -23,3 +25,4 @@ export const db = drizzle(queryClient, { schema: schema });
 // seedListingsAndSoldListings();
 // seedListings();
 // seedContacts();
+// seedTasks();

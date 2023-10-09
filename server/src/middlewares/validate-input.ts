@@ -1,7 +1,8 @@
-import type { Request, Response, NextFunction } from "express";
 import { AnyZodObject, ZodEffects, ZodError } from "zod";
 import { objectNotEmpty } from "../utils";
 import { getRequestBodies } from "../config";
+
+import type { Request, Response, NextFunction } from "express";
 
 type SchemaParams = {
   body?: AnyZodObject | ZodEffects<ZodEffects<AnyZodObject>> | ZodEffects<AnyZodObject>;

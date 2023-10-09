@@ -1,31 +1,71 @@
-// import { lazyImport } from '@/utils/lazyImport';
+import { Suspense } from 'react';
+import { lazyImport } from '@/utils/lazyImport';
 
-import { Button } from '@/components/ui/button';
-import { Typography } from '@/components/ui/typography';
+import { TaskLayout } from '../components/Layout';
+
+const { TaskPage } = lazyImport(() => import('../components/page'), 'TaskPage');
+const { TaskRoute } = lazyImport(
+  () => import('../components/page/TaskRoute'),
+  'TaskRoute'
+);
+
 import type { RouteObject } from 'react-router-dom';
+
+// /tasks
+// /tasks/:id
+// /tasks/:projectID
+// /tasks/:projectID/task/:taskID
+
+// /tasks/:listingID/task/:taskID
+// /tasks/:contactID/task/:taskID
+
+// :categoryID -> task categories / listings / contacts?
 
 export const taskRoutes: RouteObject = {
   path: 'tasks',
+  element: <TaskLayout />,
   children: [
     {
       index: true,
       element: (
-        <div className='flex h-full w-full flex-1 flex-col p-10'>
-          <div className='flex w-full items-center justify-between'>
-            <Typography variant='h3'>All Tasks</Typography>
-            <Button>Add Task</Button>
-          </div>
-          <div className='h-full pt-10'>
-            <div className='border-1 grid h-full place-items-center rounded-md shadow-md'>
-              <p>Much Tasks</p>
-            </div>
-          </div>
-        </div>
+        <Suspense>
+          <TaskPage />
+        </Suspense>
       ),
     },
     {
       path: ':id',
-      element: <p>hey task ID</p>,
+      element: (
+        <Suspense>
+          <TaskRoute />
+        </Suspense>
+      ),
     },
+    // {
+    //   path: ':categoryID',
+    //   element: (
+    //     <Suspense>
+
+    //       <TaskCategoryRoute />
+    //     </Suspense>
+    //   ),
+    // },
+    // {
+    //   path: ':id',
+    //   element: (
+    //     <Suspense>
+    //       <TaskRoute />
+    //     </Suspense>
+    //   ),
+    // },
+    // {
+    //   path: ':id/update',
+    // },
+    // {
+    //   path: ':id/delete',
+    // },
+    // {
+    //   path: ':id/update',
+    // },
   ],
 };

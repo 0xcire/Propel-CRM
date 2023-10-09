@@ -11,12 +11,13 @@ import { Typography } from '@/components/ui/typography';
 import { TaskForm } from './TaskForm';
 import { UpdateTask } from './UpdateTask';
 
-import { removeTimeZone } from '@/utils/date';
+import { removeTimeZone } from '@/utils/';
 
 import type { Task as TaskData } from '../types';
 import type { CheckedState } from '@radix-ui/react-checkbox';
 
 type TaskProps = {
+  userID: number;
   task: TaskData;
 };
 
@@ -26,7 +27,7 @@ const taskPriorityLookup = {
   high: '!!!',
 };
 
-export function Task({ task }: TaskProps): JSX.Element {
+export function Task({ task, userID }: TaskProps): JSX.Element {
   const updateTask = useUpdateTask();
 
   const handleOnCheckedChange = useCallback((checked: CheckedState): void => {
@@ -36,10 +37,13 @@ export function Task({ task }: TaskProps): JSX.Element {
         completed: checked as boolean,
       },
     });
+
+    //eslint-disable-next-line
   }, []);
 
   let localFormat;
   if (task.dueDate) {
+    // extract this
     localFormat = new Intl.DateTimeFormat('en-US', {
       dateStyle: 'short',
     }).format(parseISO(removeTimeZone(task.dueDate)));
@@ -86,7 +90,10 @@ export function Task({ task }: TaskProps): JSX.Element {
             {taskPriorityLookup[task.priority]}
           </span>
         )}
-        <UpdateTask task={task} />
+        <UpdateTask
+          userID={userID}
+          task={task}
+        />
       </div>
     </div>
   );

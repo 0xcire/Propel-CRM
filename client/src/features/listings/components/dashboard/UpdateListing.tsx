@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useUser } from '@/lib/react-query-auth';
 
@@ -16,8 +16,9 @@ import {
 
 import { ListingForm } from '../ListingForm';
 
-import { filterEqualFields } from '@/utils/form-data';
-import { generateDefaultValues, transformData } from '../../utils';
+// s, generateDefaultValues
+import { filterEqualFields, generateDefaultValues } from '@/utils/form-data';
+import { transformData } from '../../utils';
 
 import type { Listing, NewListing, ListingFields } from '../../types';
 
@@ -26,7 +27,13 @@ export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
   const user = useUser();
   const updateListing = useUpdateListing();
 
-  const defaultValues = generateDefaultValues(listing);
+  const defaultValues = useMemo(
+    () => generateDefaultValues(listing),
+    [listing]
+  );
+  // const defaultValues = generateDefaultValues(listing);
+
+  // const defaultValues = generateDefaultValues(listing);
 
   function onSubmit(values: ListingFields): void {
     const transformedData = transformData(user.data?.id as number, values);

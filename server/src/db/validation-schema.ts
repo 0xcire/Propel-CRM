@@ -117,12 +117,24 @@ export const updateContactSchema = createInsertSchema(contacts)
     address: contact.address?.trim(),
   }));
 
-export const taskQuerySchema = z
+export const dashboardTaskQuerySchema = z
   .object({
     completed: z.enum(["true", "false"]),
   })
   .transform((task) => ({
     completed: task.completed.trim(),
+  }));
+
+export const taskQuerySchema = z
+  .object({
+    completed: z.enum(["true", "false"]),
+    priority: z.union([z.string(), z.undefined()]),
+    page: z.string(),
+  })
+  .transform((task) => ({
+    completed: task.completed.trim(),
+    priority: task.priority?.trim(),
+    page: task.page.trim(),
   }));
 
 export const createTaskSchema = createInsertSchema(tasks)
