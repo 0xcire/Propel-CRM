@@ -1,17 +1,22 @@
 //https://github.com/shadcn-ui/ui/blob/main/apps/www/app/examples/tasks/components/data-table-faceted-filter.tsx
 
-// shadcn ui componenent,
-// move to @/components/ui/table
+// modified, assumes table is set to manualFiltering: true
 
-import * as React from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-import { Column } from '@tanstack/react-table';
 import { PlusCircleIcon, CheckIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 
 import { Button } from '@/components/ui/button';
+
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
+
 import {
   Command,
   CommandEmpty,
@@ -21,30 +26,28 @@ import {
   CommandList,
   CommandSeparator,
 } from '@/components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { Separator } from '@/components/ui/separator';
-import { useSearchParams } from 'react-router-dom';
 
-interface DataTableFacetedFilterProps<TData, TValue> {
+import { Separator } from '@/components/ui/separator';
+
+import type { ComponentType } from 'react';
+import type { Column } from '@tanstack/react-table';
+
+
+interface DataTableFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
   title?: string;
   options: {
     label: string;
     value: string;
-    icon?: React.ComponentType<{ className?: string }>;
+    icon?: ComponentType<{ className?: string }>;
   }[];
 }
 
-// DataTableFacetedFilter
-export function TestFilterDropdown<TData, TValue>({
+export function DataTableFilter<TData, TValue>({
   column,
   title,
   options,
-}: DataTableFacetedFilterProps<TData, TValue>): JSX.Element {
+}: DataTableFilterProps<TData, TValue>): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const selectedValues = new Set(column?.getFilterValue() as string[]);
@@ -73,7 +76,6 @@ export function TestFilterDropdown<TData, TValue>({
         <Button
           variant='outline'
           size='sm'
-          className=''
         >
           <PlusCircleIcon className='mr-2 h-4 w-4' />
           {title}

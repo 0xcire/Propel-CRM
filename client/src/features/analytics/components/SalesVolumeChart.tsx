@@ -15,7 +15,7 @@ import {
 import { Spinner } from '@/components';
 
 import { currency } from '@/utils/intl';
-import { yAxisRange } from '@/utils/charts';
+import { yAxisRange } from '@/utils/';
 
 import type {
   ValueType,

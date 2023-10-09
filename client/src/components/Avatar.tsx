@@ -1,4 +1,4 @@
-import { extractInitials } from '@/utils/name';
+import { extractInitials } from '@/utils';
 import { Avatar as Wrapper, AvatarFallback } from './ui/avatar';
 
 export function Avatar({

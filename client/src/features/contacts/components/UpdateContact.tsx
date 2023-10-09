@@ -15,6 +15,7 @@ import {
 import { Tooltip } from '@/components';
 import { ContactForm } from './ContactForm';
 
+import { handleOnOpenChange } from '@/utils';
 import { filterEqualFields } from '@/utils/form-data';
 
 import type { DeepPartial } from 'react-hook-form';
@@ -60,15 +61,7 @@ export function UpdateContact({
   return (
     <Dialog
       open={open}
-      // TODO: extract -> handleNestedDialogOnOpenChange...?
-      onOpenChange={(open): void => {
-        if (open) {
-          setOpen(true);
-        } else {
-          setOpen(false);
-          document.body.style.pointerEvents = ''; // best solution?
-        }
-      }}
+      onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
     >
       {/* TODO: cleanup */}
       {text && asButton ? (

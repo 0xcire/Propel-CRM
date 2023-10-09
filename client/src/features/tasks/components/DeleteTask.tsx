@@ -16,6 +16,8 @@ import {
 
 import { SubmitButton } from '@/components';
 
+import { handleOnOpenChange } from '@/utils';
+
 // TODO: may need to change to regular dialog to show loading state
 export function DeleteTask({
   id,
@@ -29,7 +31,7 @@ export function DeleteTask({
   return (
     <AlertDialog
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
     >
       <AlertDialogTrigger asChild>
         {text ? (

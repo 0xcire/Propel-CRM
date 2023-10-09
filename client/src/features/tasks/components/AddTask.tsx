@@ -18,6 +18,7 @@ import {
 
 import { TaskForm } from './TaskForm';
 
+import { handleOnOpenChange } from '@/utils';
 import { filterUndefined } from '@/utils/form-data';
 
 import type { DeepPartial } from 'react-hook-form';
@@ -64,15 +65,7 @@ export function AddTask({
     <>
       <Dialog
         open={open}
-        // TODO: could extract
-        onOpenChange={(open): void => {
-          if (open) {
-            setOpen(true);
-          } else {
-            setOpen(false);
-            document.body.style.pointerEvents = ''; // best solution?
-          }
-        }}
+        onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
       >
         <DialogTrigger
           onClick={(e): void => e.stopPropagation()}

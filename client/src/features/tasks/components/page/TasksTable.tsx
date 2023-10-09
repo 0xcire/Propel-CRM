@@ -30,8 +30,6 @@ import {
 
 import { Spinner } from '@/components';
 
-import { TestFilterDropdown } from './TestFilterDropdown';
-
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -40,6 +38,7 @@ import type {
 } from '@tanstack/react-table';
 
 import type { Task } from '../../types';
+import { DataTableFilter } from '@/components/ui/table/data-table-filter';
 
 interface ContactTableProps<TData extends Task> {
   columns: Array<ColumnDef<Task>>;
@@ -128,7 +127,8 @@ ContactTableProps<TData>): JSX.Element {
             : 'Show Completed'}
         </Button>
 
-        <TestFilterDropdown
+        <DataTableFilter
+          title='Priority'
           column={table.getColumn('priority')}
           options={[
             {
@@ -138,8 +138,8 @@ ContactTableProps<TData>): JSX.Element {
             { label: 'Medium', value: 'medium' },
             { label: 'High', value: 'high' },
           ]}
-          title='Priority'
         />
+
         <div className='ml-auto flex items-center gap-2'>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

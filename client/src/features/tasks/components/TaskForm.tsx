@@ -23,7 +23,7 @@ import { DeleteTask } from './DeleteTask';
 import { taskSchema, checkboxSchema } from '@/lib/validations/tasks';
 import { priorityOptions } from '@/config';
 
-import { removeTimeZone } from '@/utils/date';
+import { removeTimeZone } from '@/utils/';
 import { fieldsAreDirty } from '@/utils/form-data';
 
 import type { FormMode } from '@/types';

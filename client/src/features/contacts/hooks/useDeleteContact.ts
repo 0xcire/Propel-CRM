@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { deleteContact } from '../api';
 
-import { isAPIError } from '@/utils/error';
+import { isAPIError } from '@/utils/';
 
 import { useToast } from '@/components/ui/use-toast';
 

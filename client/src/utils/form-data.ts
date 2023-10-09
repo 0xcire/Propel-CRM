@@ -1,5 +1,5 @@
 import { isValid } from 'date-fns/esm';
-import { removeTimeZone } from './date';
+import { removeTimeZone } from './index';
 
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
 

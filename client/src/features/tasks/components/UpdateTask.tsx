@@ -16,7 +16,7 @@ import {
 
 import { TaskForm } from './TaskForm';
 
-import { removeTimeZone } from '@/utils/date';
+import { handleOnOpenChange, removeTimeZone } from '@/utils/';
 import { filterUndefined } from '@/utils/form-data';
 
 import type { DeepPartial } from 'react-hook-form';
@@ -69,14 +69,7 @@ export function UpdateTask({ task, text, userID }: TaskProps): JSX.Element {
   return (
     <Dialog
       open={open}
-      onOpenChange={(open): void => {
-        if (open) {
-          setOpen(true);
-        } else {
-          setOpen(false);
-          document.body.style.pointerEvents = ''; // best solution?
-        }
-      }}
+      onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
     >
       <DialogTrigger
         className='cursor-pointer'

@@ -16,6 +16,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { SubmitButton } from '@/components';
 
+import { handleOnOpenChange } from '@/utils';
+
 import type { ContactAsProp } from '../types';
 
 interface RemoveContactProps extends ContactAsProp {
@@ -33,7 +35,7 @@ export function RemoveContact({
   return (
     <AlertDialog
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
     >
       <AlertDialogTrigger
         onClick={(e): void => e.stopPropagation()}

@@ -2,7 +2,7 @@ import { parseISO } from 'date-fns';
 
 // index to clean this up
 import { dateIntl } from '@/utils/intl';
-import { removeTimeZone } from '@/utils/date';
+import { removeTimeZone } from '@/utils/';
 
 import { MoreHorizontal } from 'lucide-react';
 

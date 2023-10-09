@@ -5,7 +5,7 @@ import { updateListing } from '../api';
 
 import { useToast } from '@/components/ui/use-toast';
 
-import { isAPIError } from '@/utils/error';
+import { isAPIError } from '@/utils/';
 
 import type { UseMutationResult } from '@tanstack/react-query';
 import type { ListingResponse, UpdateListingParams } from '../types';

@@ -11,7 +11,7 @@ import { Typography } from '@/components/ui/typography';
 import { TaskForm } from './TaskForm';
 import { UpdateTask } from './UpdateTask';
 
-import { removeTimeZone } from '@/utils/date';
+import { removeTimeZone } from '@/utils/';
 
 import type { Task as TaskData } from '../types';
 import type { CheckedState } from '@radix-ui/react-checkbox';
