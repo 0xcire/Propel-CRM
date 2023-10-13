@@ -5,10 +5,12 @@ import { getSalesVolumeData } from '../api';
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { SalesVolume } from '../types';
 
-export const useSalesVolume = (): UseQueryResult<SalesVolume, unknown> => {
+export const useSalesVolume = (
+  userID: number
+): UseQueryResult<SalesVolume, unknown> => {
   return useQuery({
-    queryKey: ['sales-volume'],
-    queryFn: getSalesVolumeData,
+    queryKey: ['sales-volume', { userID: userID }],
+    queryFn: () => getSalesVolumeData(userID),
     select: (data) => data.analytics,
   });
 };

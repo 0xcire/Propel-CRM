@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { getExistingYears, getSalesDataByYear } from "../db/queries/analytics";
+import { getAvgDays, getExistingYears, getSalesDataByYear } from "../db/queries/analytics";
 
 export const getPeriodicSalesVolume = async (req: Request, res: Response) => {
   const userID = req.user.id;
@@ -32,4 +32,15 @@ export const getExistingSalesYears = async (req: Request, res: Response) => {
 // GCI - Gross Commission Income
 export const getGCIData = async () => {
   return 0;
+};
+
+export const getAvgListingDaysOnMarket = async (req: Request, res: Response) => {
+  const userID = req.user.id;
+
+  const avgDaysOnMarket = await getAvgDays(userID);
+
+  return res.status(200).json({
+    message: "",
+    average: avgDaysOnMarket.average,
+  });
 };

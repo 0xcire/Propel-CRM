@@ -26,6 +26,27 @@ export const getSalesDataByYear = async (userID: number) => {
   return usersSalesVolume;
 };
 
+// {
+//   id: listings.id,
+//   createdAt: listings.createdAt,
+// }
+export const getAvgDays = async (userID: number) => {
+  const average = await db
+    .select({ average: sql`AVG(${soldListings.soldAt} - ${listings.createdAt})` })
+    .from(listings)
+    .where(eq(listings.id, userID))
+    .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
+    .where(
+      and(
+        eq(listings.id, soldListings.listingID),
+        isNotNull(soldListings.listingID),
+        between(soldListings.soldAt, new Date("1-1-2023"), new Date("12-31-2023"))
+      )
+    );
+
+  return average[0];
+};
+
 export const getExistingYears = async (userID: number) => {
   const years = (
     await db

@@ -17,7 +17,7 @@ dotenv.config();
 const app = express();
 
 app.use(helmet());
-app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
+app.use(helmet.crossOriginResourcePolicy({ policy: "same-site" }));
 app.use(
   cors({
     credentials: true,
