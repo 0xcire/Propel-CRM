@@ -1,4 +1,4 @@
-import type { Quarters } from '../components/AnalyticsHeader';
+import type { Quarters } from '../components/dashboard/AnalyticsHeader';
 import {
   useState,
   createContext,

@@ -8,6 +8,7 @@ export type Quarters = (typeof quarters)[number];
 
 export function AnalyticsHeader(): JSX.Element {
   const { setState: setCurrentTimeFrame } = useAnalyticsContext();
+
   const handleSelectChange = (val: string): void => {
     setCurrentTimeFrame(val as Quarters);
   };
@@ -16,7 +17,7 @@ export function AnalyticsHeader(): JSX.Element {
     <>
       <Typography variant='h4'>YTD Performance</Typography>
       <Select
-        label='Filter by time frame'
+        placeholder='Filter by quarter'
         options={quarters}
         handleSelectChange={handleSelectChange}
       />

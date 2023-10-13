@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { useUser } from '@/lib/react-query-auth';
 import { useSalesVolume } from '../hooks/useSalesVolume';
 
 import {
@@ -31,13 +32,14 @@ const timeFrameMap = {
 };
 
 export function SalesVolumeChart(): JSX.Element {
-  const salesVolume = useSalesVolume();
+  const user = useUser();
+  const salesVolume = useSalesVolume(user.data?.id as number);
 
   const { state: currentTimeFrame } = useAnalyticsContext();
 
   const minmax = useMemo(() => {
     if (salesVolume.data) {
-      const volumeArray = salesVolume.data?.map((data) => data.volume);
+      const volumeArray = salesVolume.data?.map((data) => +data.volume);
       return [Math.min(...volumeArray), Math.max(...volumeArray)] as const;
     }
   }, [salesVolume.data]);
@@ -102,7 +104,7 @@ function CustomTooltip({
   payload,
   label,
 }: TooltipProps<ValueType, NameType>): JSX.Element {
-  if (active && payload && label && payload[0].value) {
+  if (active && payload && payload[0] && label && payload[0].value) {
     return (
       <div className='rounded-md border-2 border-slate-800 bg-gray-300 p-4'>
         <div>

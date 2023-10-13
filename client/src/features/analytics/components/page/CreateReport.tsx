@@ -12,7 +12,7 @@ export function CreateReport(): JSX.Element {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Generate PDF</Button>
+        <Button>Create Report</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
