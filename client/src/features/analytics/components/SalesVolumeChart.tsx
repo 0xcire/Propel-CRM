@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import { useUser } from '@/lib/react-query-auth';
 import { useSalesVolume } from '../hooks/useSalesVolume';
 
+import { useAnalyticsContext } from '../context/AnalyticsContext';
+
 import {
   BarChart,
   Bar,
@@ -17,19 +19,13 @@ import { Spinner } from '@/components';
 
 import { currency } from '@/utils/intl';
 import { yAxisRange } from '@/utils/';
+import { filterAnalyticsData } from '../utils';
 
 import type {
   ValueType,
   NameType,
 } from 'recharts/types/component/DefaultTooltipContent';
-import { useAnalyticsContext } from '../context/AnalyticsContext';
-
-const timeFrameMap = {
-  Q1: [0, 3],
-  Q2: [3, 6],
-  Q3: [6, 9],
-  Q4: [9, 12],
-};
+import type { SalesVolumes } from '../types';
 
 export function SalesVolumeChart(): JSX.Element {
   const user = useUser();
@@ -44,10 +40,10 @@ export function SalesVolumeChart(): JSX.Element {
     }
   }, [salesVolume.data]);
 
-  const filter =
-    currentTimeFrame === 'YTD'
-      ? salesVolume.data
-      : salesVolume.data?.slice(...timeFrameMap[currentTimeFrame]);
+  const filteredSalesVolumeData = filterAnalyticsData(
+    salesVolume.data as SalesVolumes,
+    currentTimeFrame
+  );
 
   if (salesVolume.isLoading) {
     return (
@@ -82,17 +78,24 @@ export function SalesVolumeChart(): JSX.Element {
           left: 20,
           bottom: 5,
         }}
-        data={filter}
+        data={filteredSalesVolumeData}
       >
-        <XAxis dataKey={'month'} />
+        <XAxis
+          dataKey={'month'}
+          tickLine={false}
+          stroke='#010101'
+        />
         <YAxis
           domain={yAxisRange(minmax as [number, number])}
           fontSize={10}
+          tickLine={false}
+          stroke='#010101'
         />
         <Tooltip content={<CustomTooltip />} />
         <Bar
           dataKey='volume'
-          fill='rgb(209, 213, 219)'
+          fill='#010101'
+          radius={3}
         />
       </BarChart>
     </ResponsiveContainer>

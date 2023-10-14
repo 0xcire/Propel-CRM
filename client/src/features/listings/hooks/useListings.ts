@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getListings } from '../api';
 
-import { UseQueryResult } from '@tanstack/react-query';
+import type { UseQueryResult } from '@tanstack/react-query';
 import type { Listings } from '../types';
 
 export const useListings = (): UseQueryResult<Listings, unknown> => {

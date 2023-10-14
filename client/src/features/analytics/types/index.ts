@@ -1,18 +1,25 @@
-import { BaseResponse } from '@/types';
+import { quarters } from '../config';
 
-export type SalesVolume = Array<{
+import type { BaseResponse } from '@/types';
+
+export type Quarters = (typeof quarters)[number];
+
+export type SalesVolume = {
   month: string;
   volume: string;
-}>;
+};
 
-// export type DaysOnMarket = {
-//   average: string;
-// };
+export type SalesVolumes = Array<SalesVolume>;
+
+export type DaysOnMarket = Array<{
+  month: string;
+  average: string;
+}>;
 
 export type Years = Array<string>;
 
 export interface AnalyticsDataResponse extends BaseResponse {
-  analytics: SalesVolume;
+  analytics: SalesVolumes;
 }
 
 export interface AnalyticsYearsResponse extends BaseResponse {
@@ -20,5 +27,5 @@ export interface AnalyticsYearsResponse extends BaseResponse {
 }
 
 export interface AnalyticsDaysOnMarketResponse extends BaseResponse {
-  average: string;
+  averages: DaysOnMarket;
 }

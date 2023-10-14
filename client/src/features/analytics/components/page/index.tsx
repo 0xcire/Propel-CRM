@@ -1,57 +1,71 @@
-// import { useMemo } from 'react';
+import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-import { useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@/lib/react-query-auth';
+import { useSalesVolume } from '../../hooks/useSalesVolume';
+import { useAvgDaysOnMarket } from '../../hooks/useAvgDaysOnMarket';
+
+import { useAnalyticsContext } from '../../context/AnalyticsContext';
 
 import { Typography } from '@/components/ui/typography';
 
 import { SalesVolumeChart } from '../SalesVolumeChart';
+import { GCILineChart } from '../GCILineChart';
+
+import { Spinner } from '@/components';
+import { Select } from '@/components/Select';
+import { YearSelection } from './YearSelection';
 
 import { currency } from '@/utils/intl';
+import { filterAnalyticsData } from '../../utils';
 
-import { AnalyticsDataResponse } from '../../types';
-import { useAvgDaysOnMarket } from '../../hooks/useAvgDaysOnMarket';
-import { GCILineChart } from '../GCILineChart';
-import { useSalesVolume } from '../../hooks/useSalesVolume';
-import { Spinner } from '@/components';
+import type { SalesVolumes } from '../../types';
+
+// try to replace dashboard layout with min-h-0
+
+// replace @/components/dashboard as just grid<X>...
+
+const quarters = ['YTD', 'Q1', 'Q2', 'Q3', 'Q4'] as const;
+export type Quarters = (typeof quarters)[number];
 
 export function AnalyticsPage(): JSX.Element {
-  // try to replace dashboard layout with min-h-0
-
-  // replace @/components/dashboard as just grid<X>...
-
-  // const queryClient = useQueryClient();
+  const [searchParams, setSearchParams] = useSearchParams();
   const user = useUser();
+  const { state: currentTimeFrame, setState: setCurrentTimeFrame } =
+    useAnalyticsContext();
+
   const salesVolume = useSalesVolume(user.data?.id as number);
   const avgDays = useAvgDaysOnMarket(user.data?.id as number);
 
-  // const totalTotalTotal = useMemo(() => {
-  //   const total = 0;
+  const average = (): string => {
+    if (avgDays.data) {
+      const filteredAverageDaysData = filterAnalyticsData(
+        avgDays.data,
+        currentTimeFrame
+      );
+      return Math.floor(
+        filteredAverageDaysData
+          .map((data) => +(data.average.split(' ')[0] as string))
+          .reduce((previous, current) => previous + current, 0) /
+          filteredAverageDaysData.length
+      ).toString();
+    }
+    return 'no data yet';
+  };
 
-  //   const salesVolumeQueryData =
-  //     queryClient.getQueryData<AnalyticsDataResponse>([
-  //       'sales-volume',
-  //       { userID: user.data?.id as number },
-  //     ])?.analytics;
-
-  //   const sum = salesVolumeQueryData?.reduce(
-  //     (acc, { volume: currentVolume }) => acc + +currentVolume,
-  //     total
-  //   );
-
-  //   return currency.format(sum as number);
-  // }, [queryClient, user.data?.id]);
+  const handleSelectChange = (val: string): void => {
+    setCurrentTimeFrame(val as Quarters);
+  };
 
   const totalYTDSalesVolume = (): string => {
     const total = 0;
 
-    // const salesVolumeQueryData =
-    //   queryClient.getQueryData<AnalyticsDataResponse>([
-    //     'sales-volume',
-    //     { userID: user.data?.id as number },
-    //   ])?.analytics;
+    const filteredSalesVolumeData = filterAnalyticsData(
+      salesVolume.data as SalesVolumes,
+      currentTimeFrame
+    );
 
-    const sum = salesVolume.data?.reduce(
+    const sum = filteredSalesVolumeData?.reduce(
       (acc, { volume: currentVolume }) => acc + +currentVolume,
       total
     );
@@ -59,15 +73,41 @@ export function AnalyticsPage(): JSX.Element {
     return currency.format(sum as number);
   };
 
+  useEffect(() => {
+    searchParams.set('year', new Date().getFullYear().toString());
+    setSearchParams(searchParams, {
+      replace: true,
+    });
+
+    //eslint-disable-next-line
+  }, []);
+
   return (
     <div className='flex h-full flex-col'>
-      <h1 className='p-4 pb-0'>hey</h1>
+      <div className='flex items-center justify-between p-4 pb-0'>
+        <Typography
+          variant='h4'
+          className=''
+        >
+          Showing YTD Results
+        </Typography>
+        <div className='flex items-center gap-2'>
+          <YearSelection />
+          <Select
+            placeholder='Filter by quarter'
+            options={quarters}
+            handleSelectChange={(val): void => handleSelectChange(val)}
+            className='w-full'
+          />
+        </div>
+      </div>
+
       <div className=' grid h-full min-h-0 flex-1 grid-cols-12 grid-rows-6 gap-4 p-4'>
         <div className='col-start-1 col-end-4 row-start-1 row-end-3 grid place-items-center rounded-md border shadow'>
           <div>
             <Typography
               variant='h4'
-              className='font-normal'
+              className='text-base font-normal'
             >
               Total Volume
             </Typography>
@@ -115,7 +155,7 @@ export function AnalyticsPage(): JSX.Element {
                 variant='p'
                 className='text-2xl font-black'
               >
-                {avgDays.data?.split('days')[0] as string}
+                {average() as string}
               </Typography>
             )}
 
@@ -148,7 +188,16 @@ export function AnalyticsPage(): JSX.Element {
         </div>
 
         <div className='col-start-8 col-end-13 row-start-3 row-end-7 rounded-md border shadow'>
-          Recent Listing Sales
+          <Typography
+            variant='h4'
+            className='p-2'
+          >
+            YTD Listing Sales
+          </Typography>
+          <Typography variant='p'>
+            Listing ID, Listing Address, sold_to Contact Name. Link to Listing.
+            Link to Contact
+          </Typography>
         </div>
       </div>
     </div>

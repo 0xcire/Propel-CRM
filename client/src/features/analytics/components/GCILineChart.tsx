@@ -1,4 +1,10 @@
+import { useMemo } from 'react';
+
 import { useUser } from '@/lib/react-query-auth';
+import { useSalesVolume } from '../hooks/useSalesVolume';
+
+import { useAnalyticsContext } from '../context/AnalyticsContext';
+
 import {
   Line,
   LineChart,
@@ -8,18 +14,18 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { AnalyticsDataResponse } from '../types';
-import { useQueryClient } from '@tanstack/react-query';
+
+import { Spinner } from '@/components';
+
 import { yAxisRange } from '@/utils';
-import { useMemo } from 'react';
+import { currency } from '@/utils/intl';
+import { filterAnalyticsData } from '../utils';
 
 import type {
   ValueType,
   NameType,
 } from 'recharts/types/component/DefaultTooltipContent';
-import { currency } from '@/utils/intl';
-import { useSalesVolume } from '../hooks/useSalesVolume';
-import { Spinner } from '@/components';
+import type { SalesVolumes } from '../types';
 
 // extend when implementing teams
 // admin can set rates for their team members for example...
@@ -27,21 +33,16 @@ const COMMISSION_RATE = 0.15;
 
 export function GCILineChart(): JSX.Element {
   const user = useUser();
-  const queryClient = useQueryClient();
-
-  // improve this
   const salesVolume = useSalesVolume(user.data?.id as number);
-  // const salesVolumeToGCI = queryClient
-  //   .getQueryData<AnalyticsDataResponse>([
-  //     'sales-volume',
-  //     { userID: user.data?.id as number },
-  //   ])
-  //   ?.analytics.map((data) => ({
-  //     month: data.month,
-  //     gci: (+data.volume * COMMISSION_RATE).toString(),
-  //   }));
+  const { state: currentTimeFrame } = useAnalyticsContext();
 
-  const salesVolumeToGCI = salesVolume.data?.map((data) => ({
+  // repeated
+  const filteredSalesVolumeData = filterAnalyticsData(
+    salesVolume.data as SalesVolumes,
+    currentTimeFrame
+  );
+
+  const salesVolumeToGCI = filteredSalesVolumeData?.map((data) => ({
     month: data.month,
     gci: (+data.volume * COMMISSION_RATE).toString(),
   }));
@@ -69,7 +70,6 @@ export function GCILineChart(): JSX.Element {
     <ResponsiveContainer
       width='100%'
       className='flex-1'
-      // height='100%'
     >
       <LineChart
         width={150}
@@ -85,16 +85,21 @@ export function GCILineChart(): JSX.Element {
         <XAxis
           dataKey='month'
           fontSize={12}
+          stroke='#010101'
+          tickLine={false}
         />
         <YAxis
           domain={yAxisRange(minmax as [number, number])}
           fontSize={10}
+          stroke='#010101'
+          tickLine={false}
         />
         <Tooltip content={<CustomTooltip />} />
         <Line
           type='monotone'
           dataKey='gci'
-          stroke='#888888'
+          stroke='#010101'
+          strokeWidth={2}
         />
       </LineChart>
     </ResponsiveContainer>

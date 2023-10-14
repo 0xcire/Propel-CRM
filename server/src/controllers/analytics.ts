@@ -3,14 +3,15 @@ import { getAvgDays, getExistingYears, getSalesDataByYear } from "../db/queries/
 
 export const getPeriodicSalesVolume = async (req: Request, res: Response) => {
   const userID = req.user.id;
-  // const {year} = req.query
-  // year = 2023
+  const { year } = req.query;
 
   // TODO: need to update schema to allow user ( agent ) to update sale price
   // also attach contact id to soldListings table to include additional info
   // for additional analytics features
+  const currentYear = new Date().getFullYear();
+  const yearParam = !!year ? +year : currentYear;
 
-  const usersSalesVolume = await getSalesDataByYear(userID);
+  const usersSalesVolume = await getSalesDataByYear(userID, yearParam);
 
   return res.status(200).json({
     message: "",
@@ -36,11 +37,15 @@ export const getGCIData = async () => {
 
 export const getAvgListingDaysOnMarket = async (req: Request, res: Response) => {
   const userID = req.user.id;
+  const { year } = req.query;
 
-  const avgDaysOnMarket = await getAvgDays(userID);
+  const currentYear = new Date().getFullYear();
+  const yearParam = !!year ? +year : currentYear;
+
+  const avgDaysOnMarket = await getAvgDays(userID, yearParam);
 
   return res.status(200).json({
     message: "",
-    average: avgDaysOnMarket.average,
+    averages: avgDaysOnMarket,
   });
 };
