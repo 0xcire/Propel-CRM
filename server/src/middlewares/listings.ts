@@ -1,6 +1,6 @@
 import { db } from "../db";
 import { listings } from "../db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import type { Listing } from "../db/types";
 import type { Request, Response, NextFunction } from "express";
@@ -10,7 +10,10 @@ export const isListingOwner = async (req: Request, res: Response, next: NextFunc
   const { id } = req.params;
   const method = req.method;
 
-  const listingByID: Array<Listing> = await db.select().from(listings).where(eq(listings.id, +id));
+  const listingByID: Array<Listing> = await db
+    .select()
+    .from(listings)
+    .where(and(eq(listings.id, +id), eq(listings.userID, userID)));
 
   if (!listingByID[0]) {
     return res.status(404).json({

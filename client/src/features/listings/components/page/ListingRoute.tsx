@@ -29,7 +29,7 @@ import type { NewListing, ListingFields } from '../../types';
 // when adding file uploads, can improve this.
 
 export function ListingRoute(): JSX.Element {
-  const [open, setOpen] = useState(true);
+  const [routeOpen, setRouteOpen] = useState(true);
 
   const user = useUser();
   const updateListing = useUpdateListing();
@@ -40,7 +40,7 @@ export function ListingRoute(): JSX.Element {
 
   useEffect(() => {
     if (id) {
-      setOpen(true);
+      setRouteOpen(true);
     }
 
     // eslint-disable-next-line
@@ -49,11 +49,11 @@ export function ListingRoute(): JSX.Element {
   if (listing.isLoading) {
     return (
       <Dialog
-        open={open}
+        open={routeOpen}
         onOpenChange={(open: boolean): void => {
           if (!open) {
             navigate(-1);
-            setOpen(false);
+            setRouteOpen(false);
           }
         }}
       >
@@ -89,7 +89,7 @@ export function ListingRoute(): JSX.Element {
       { id: listingData.id as number, data: data },
       {
         onSuccess: () => {
-          setOpen(false);
+          setRouteOpen(false);
         },
       }
     );
@@ -97,11 +97,11 @@ export function ListingRoute(): JSX.Element {
 
   return (
     <Dialog
-      open={open}
+      open={routeOpen}
       onOpenChange={(open: boolean): void => {
         if (!open) {
           navigate(-1);
-          setOpen(false);
+          setRouteOpen(false);
         }
       }}
     >
