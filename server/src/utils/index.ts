@@ -19,3 +19,17 @@ export const checkPassword = async (password: string, storedPassword: string) =>
 export const objectNotEmpty = (object: Record<string, unknown>) => {
   return Object.keys(object).length > 0;
 };
+
+export const getCurrentYear = () => new Date().getFullYear();
+
+// export const formatAnalyticsData = (data: Array<unknown>, existingMonths: Array<string>) => {
+//   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+//   // const exisitingMonths = data.map((d: { month: string }) => d.month);
+
+//   const formattedAnalyticsData = data.length > 0 ? months.map((month, idx) => {
+//     if(data[idx] && !existingMonths.includes(month)) {
+//       return month: month,
+
+//     }
+//   }) : [];
+// };

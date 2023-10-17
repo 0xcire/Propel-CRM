@@ -33,6 +33,7 @@ const findLargestMultiple = (value: number): number => {
   return targetMultiple;
 };
 
+// normalizes range values
 export const yAxisRange = (minmax: Array<number>): Array<number> => {
   return minmax?.map((num, index) => {
     return index === 0
@@ -47,6 +48,8 @@ export const yAxisRange = (minmax: Array<number>): Array<number> => {
 export const removeTimeZone = (dateString: string): string => {
   return dateString.split('T')[0] as string;
 };
+
+export const getCurrentYear = (): number => new Date().getFullYear();
 
 // (alert) dialog onOpenChange
 

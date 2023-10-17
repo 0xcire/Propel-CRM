@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { useUser } from '@/lib/react-query-auth';
 import { useSalesVolume } from '../hooks/useSalesVolume';
 
@@ -12,38 +10,27 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  TooltipProps,
 } from 'recharts';
 
 import { Spinner } from '@/components';
+import { CustomTooltip } from './CustomTooltip';
 
-import { currency } from '@/utils/intl';
 import { yAxisRange } from '@/utils/';
-import { filterAnalyticsData } from '../utils';
+import { filterAnalyticsData, getMinMax } from '../utils';
 
-import type {
-  ValueType,
-  NameType,
-} from 'recharts/types/component/DefaultTooltipContent';
 import type { SalesVolumes } from '../types';
 
 export function SalesVolumeChart(): JSX.Element {
+  const { state: currentTimeFrame } = useAnalyticsContext();
+
   const user = useUser();
   const salesVolume = useSalesVolume(user.data?.id as number);
 
-  const { state: currentTimeFrame } = useAnalyticsContext();
-
-  const minmax = useMemo(() => {
+  const minmax = getMinMax(() => {
     if (salesVolume.data) {
-      const volumeArray = salesVolume.data?.map((data) => +data.volume);
-      return [Math.min(...volumeArray), Math.max(...volumeArray)] as const;
+      return salesVolume.data?.map((data) => +data.volume);
     }
-  }, [salesVolume.data]);
-
-  const filteredSalesVolumeData = filterAnalyticsData(
-    salesVolume.data as SalesVolumes,
-    currentTimeFrame
-  );
+  });
 
   if (salesVolume.isLoading) {
     return (
@@ -55,6 +42,11 @@ export function SalesVolumeChart(): JSX.Element {
       </div>
     );
   }
+
+  const filteredSalesVolumeData = filterAnalyticsData(
+    salesVolume.data as SalesVolumes,
+    currentTimeFrame
+  );
 
   if (salesVolume.data?.length === 0) {
     return (
@@ -100,22 +92,4 @@ export function SalesVolumeChart(): JSX.Element {
       </BarChart>
     </ResponsiveContainer>
   );
-}
-
-function CustomTooltip({
-  active,
-  payload,
-  label,
-}: TooltipProps<ValueType, NameType>): JSX.Element {
-  if (active && payload && payload[0] && label && payload[0].value) {
-    return (
-      <div className='rounded-md border-2 border-slate-800 bg-gray-300 p-4'>
-        <div>
-          <p className='font-bold'>{label}</p>
-          <p>Volume: {currency.format(+payload[0].value)}</p>
-        </div>
-      </div>
-    );
-  }
-  return <></>;
 }
