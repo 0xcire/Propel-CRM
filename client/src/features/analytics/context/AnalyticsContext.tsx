@@ -1,12 +1,7 @@
-import type { Quarters } from '../components/dashboard/AnalyticsHeader';
-import {
-  useState,
-  createContext,
-  type ReactNode,
-  type Dispatch,
-  type SetStateAction,
-  useContext,
-} from 'react';
+import { useState, createContext, useContext } from 'react';
+
+import type { ReactNode, Dispatch, SetStateAction } from 'react';
+import type { Quarters } from '../types';
 
 // TODO: another place where ComponentWithChild could be used
 type AnalyticsProviderProps = {
@@ -23,7 +18,7 @@ const analyticsContext = createContext<TaskState | undefined>(undefined);
 export function AnalyticsProvider({
   children,
 }: AnalyticsProviderProps): JSX.Element {
-  const [currentTimeFrame, setCurrentTimeFrame] = useState<Quarters>('YTD');
+  const [currentTimeFrame, setCurrentTimeFrame] = useState<Quarters>('year');
 
   const value = { state: currentTimeFrame, setState: setCurrentTimeFrame };
   return (

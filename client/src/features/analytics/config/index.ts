@@ -5,4 +5,4 @@ export const timeFrameMap = {
   Q4: [9, 12],
 } as const;
 
-export const quarters = ['YTD', 'Q1', 'Q2', 'Q3', 'Q4'] as const;
+export const quarters = ['year', 'Q1', 'Q2', 'Q3', 'Q4'] as const;

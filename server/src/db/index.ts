@@ -10,8 +10,8 @@ import {
   //   createFakeActiveListing,
   //   createFakeContact,
   //   seedContacts,
-  //   seedListings,
-  //   seedListingsAndSoldListings,
+  seedListings,
+  seedListingsAndSoldListings,
   seedTasks,
 } from "../lib/faker";
 

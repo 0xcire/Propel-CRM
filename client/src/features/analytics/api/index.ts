@@ -2,6 +2,8 @@ import { Get, handleAPIResponse } from '@/lib/fetch';
 import type {
   AnalyticsDataResponse,
   AnalyticsDaysOnMarketResponse,
+  AnalyticsListToSaleRatioResponse,
+  AnalyticsTimeToCloseResponse,
   AnalyticsYearsResponse,
 } from '../types';
 
@@ -27,4 +29,20 @@ export const getAvgDaysOnMarket = (
   return Get({
     endpoint: `analytics/days-on-market/${userID}${window.location.search}`,
   }).then(handleAPIResponse<AnalyticsDaysOnMarketResponse>);
+};
+
+export const getListToSaleRatio = (
+  userID: number
+): Promise<AnalyticsListToSaleRatioResponse> => {
+  return Get({
+    endpoint: `analytics/list-sale-ratio/${userID}${window.location.search}`,
+  }).then(handleAPIResponse<AnalyticsListToSaleRatioResponse>);
+};
+
+export const getAvgTimeToCloseLead = (
+  userID: number
+): Promise<AnalyticsTimeToCloseResponse> => {
+  return Get({
+    endpoint: `analytics/time-to-close/${userID}${window.location.search}`,
+  }).then(handleAPIResponse<AnalyticsTimeToCloseResponse>);
 };

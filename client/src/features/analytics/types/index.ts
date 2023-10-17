@@ -16,6 +16,16 @@ export type DaysOnMarket = Array<{
   average: string;
 }>;
 
+export type ListToSaleRatio = Array<{
+  month: string;
+  ratio: string;
+}>;
+
+export type TimeToClose = Array<{
+  month: string;
+  days: string;
+}>;
+
 export type Years = Array<string>;
 
 export interface AnalyticsDataResponse extends BaseResponse {
@@ -28,4 +38,12 @@ export interface AnalyticsYearsResponse extends BaseResponse {
 
 export interface AnalyticsDaysOnMarketResponse extends BaseResponse {
   averages: DaysOnMarket;
+}
+
+export interface AnalyticsListToSaleRatioResponse extends BaseResponse {
+  ratios: ListToSaleRatio;
+}
+
+export interface AnalyticsTimeToCloseResponse extends BaseResponse {
+  days: TimeToClose;
 }
