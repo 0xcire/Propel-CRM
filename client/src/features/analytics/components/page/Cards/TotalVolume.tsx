@@ -6,6 +6,8 @@ import { useAnalyticsContext } from '@/features/analytics/context/AnalyticsConte
 import { Spinner } from '@/components';
 import { Typography } from '@/components/ui/typography';
 
+import { twMerge } from 'tailwind-merge';
+
 import { filterAnalyticsData } from '@/features/analytics/utils';
 
 import { currency } from '@/utils/intl';
@@ -24,7 +26,9 @@ export function TotalVolumeCard({
 
   if (salesVolume.isInitialLoading) {
     return (
-      <div className='grid h-full w-full place-items-center'>
+      <div
+        className={twMerge('grid h-full w-full place-items-center', className)}
+      >
         <Spinner
           className='mx-auto'
           variant='md'
@@ -56,9 +60,7 @@ export function TotalVolumeCard({
           variant='p'
           className='text-2xl font-black'
         >
-          {salesVolumeTotal === 0
-            ? 'No sales'
-            : currency.format(salesVolumeTotal)}
+          {currency.format(salesVolumeTotal)}
         </Typography>
       </div>
     </div>

@@ -6,6 +6,8 @@ import { useAnalyticsContext } from '@/features/analytics/context/AnalyticsConte
 import { Spinner } from '@/components';
 import { Typography } from '@/components/ui/typography';
 
+import { twMerge } from 'tailwind-merge';
+
 import { filterAnalyticsData } from '@/features/analytics/utils';
 
 import type { DaysOnMarket } from '@/features/analytics/types';
@@ -22,7 +24,9 @@ export function DaysOnMarketCard({
 
   if (daysOnMarket.isLoading) {
     return (
-      <div className='grid h-full w-full place-items-center'>
+      <div
+        className={twMerge('grid h-full w-full place-items-center', className)}
+      >
         <Spinner
           className='mx-auto'
           variant='md'
@@ -31,20 +35,29 @@ export function DaysOnMarketCard({
     );
   }
 
-  const filteredTimeToCloseData = filterAnalyticsData(
-    daysOnMarket.data as DaysOnMarket,
-    currentTimeFrame
-  ).filter((data) => +(data.average.split(' ')[0] as string) !== 0);
+  const calculateAverage = (): string => {
+    const filteredDaysOnMarketData = filterAnalyticsData(
+      daysOnMarket.data as DaysOnMarket,
+      currentTimeFrame
+    ).filter((data) => +(data.average.split(' ')[0] as string) !== 0);
 
-  const calculatedAverage =
-    daysOnMarket.data && daysOnMarket.data.length > 0
-      ? Math.floor(
-          filteredTimeToCloseData
-            .map((data) => +(data.average.split(' ')[0] as string))
-            .reduce((previous, current) => previous + current, 0) /
-            filteredTimeToCloseData.length
-        ).toString()
-      : 'no data yet';
+    if (filteredDaysOnMarketData.length === 0) {
+      return '0';
+    }
+
+    if (daysOnMarket.data && daysOnMarket.data.length > 0) {
+      return Math.floor(
+        filteredDaysOnMarketData
+          .map((data) => +(data.average.split(' ')[0] as string))
+          .reduce((previous, current) => previous + current, 0) /
+          filteredDaysOnMarketData.length
+      ).toString();
+    }
+
+    console.log(filteredDaysOnMarketData, 'hey');
+
+    return '0';
+  };
 
   return (
     <div className={className}>
@@ -59,7 +72,7 @@ export function DaysOnMarketCard({
           variant='p'
           className='text-2xl font-black'
         >
-          {calculatedAverage as string}
+          {calculateAverage() as string}
         </Typography>
       </div>
     </div>

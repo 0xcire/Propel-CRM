@@ -39,7 +39,7 @@ export const yAxisRange = (minmax: Array<number>): Array<number> => {
     return index === 0
       ? Math.floor((num * 0.55) / findLargestMultiple(num)) *
           findLargestMultiple(num)
-      : Math.floor((num * 1.15) / findLargestMultiple(num)) *
+      : Math.floor((num * 1.55) / findLargestMultiple(num)) *
           findLargestMultiple(num);
   });
 };

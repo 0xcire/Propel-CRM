@@ -66,65 +66,105 @@ export const createFakeSoldListing = (): NewListing => {
 // create listing,
 // add leads
 // add sold_listings info per listing
+
+// export const amungus = () => {
+//   const listing = createFakeSoldListing();
+//   console.log(listing);
+//   const listingDate = listing.createdAt;
+
+//   const leadEstablished = faker.number.int({ min: 1, max: 20 });
+
+//   listingDate?.setDate(listingDate.getDate() + leadEstablished);
+
+//   console.log("- creating lead -");
+//   console.log("LEAD", {
+//     contactID: "",
+//     listingID: "",
+//     createdAt: listingDate,
+//   });
+
+//   const newListingDate = listing.createdAt;
+//   const daysOnMarket = faker.number.int({ min: 25, max: 65 });
+
+//   newListingDate?.setDate(newListingDate.getDate() + daysOnMarket);
+
+//   console.log("- inserting into sold_listing -");
+//   console.log({
+//     soldAt: newListingDate,
+//   });
+// };
 export const seedListingsAndSoldListings = async () => {
   console.log("seeding (sold) listings");
   const usersContacts = await getAllDemoContacts(DEMO_ACCOUNT_ID);
 
-  for (let i = 0; i < 70; i++) {
+  for (let i = 0; i < 74; i++) {
     const listingLeadsIDArray: Array<number> = [];
 
-    await db.transaction(async (tx) => {
-      console.log("inserting into listings");
-      const newListing = await db.insert(listings).values(createFakeSoldListing()).returning({
+    console.log("inserting into listings");
+    const newListing = await db
+      .insert(listings)
+      .values(createFakeSoldListing())
+      .returning({
         id: listings.id,
         price: listings.price,
         createdAt: listings.createdAt,
-      });
+      })
+      .onConflictDoNothing();
 
-      console.log("----- \n LISTING ID \n -----", newListing[0].id);
+    console.log("----- \n LISTING \n -----", newListing[0]);
 
-      for (let j = 0; j < Math.round(Math.random() * 2) + 1; j++) {
-        const randomContactIdx = Math.floor(Math.random() * usersContacts.length);
-        const randomContact = usersContacts[randomContactIdx];
+    for (let j = 0; j < Math.round(Math.random() * 2) + 1; j++) {
+      const randomContactIdx = Math.floor(Math.random() * usersContacts.length);
+      const randomContact = usersContacts[randomContactIdx];
 
-        console.log("ADDING LEAD");
-        const leadEstablished = newListing[0].createdAt && new Date(newListing[0].createdAt);
-        leadEstablished?.setDate(leadEstablished.getDate() + faker.number.int({ min: 1, max: 20 }));
+      console.log("ADDING LEAD");
+      const leadEstablished = newListing[0].createdAt && new Date(newListing[0].createdAt);
+      const daysAfter = faker.number.int({ min: 1, max: 20 });
+      leadEstablished?.setDate(leadEstablished.getDate() + daysAfter);
 
-        const listingLeads = await db
-          .insert(listingsToContacts)
-          .values({
-            contactID: randomContact?.id as number,
-            listingID: newListing[0].id,
-            createdAt: leadEstablished,
-          })
-          .returning({
-            contactID: listingsToContacts.contactID,
-          });
+      const listingLeads = await db
+        .insert(listingsToContacts)
+        .values({
+          contactID: randomContact?.id as number,
+          listingID: newListing[0].id,
+          createdAt: leadEstablished,
+        })
+        .returning({
+          contactID: listingsToContacts.contactID,
+          createdAt: listingsToContacts.createdAt,
+        })
+        .onConflictDoNothing();
 
-        listingLeadsIDArray.push(listingLeads[0].contactID as number);
+      console.log("lead", listingLeads[0]);
 
-        console.log("----- \n LEAD ID \n -----", listingLeads[0].contactID);
-      }
+      listingLeadsIDArray.push(listingLeads[0].contactID as number);
 
-      const newListingDate = newListing[0].createdAt && new Date(newListing[0].createdAt);
-      const daysOnMarket = faker.number.int({ min: 25, max: 65 });
-      newListingDate?.setDate(newListingDate.getDate() + daysOnMarket);
-      const salePrice = (+newListing[0].price * faker.number.float({ min: 0.88, max: 1 })).toString();
+      console.log("----- \n LEAD ID \n -----", listingLeads[0].contactID);
+    }
 
-      console.log(listingLeadsIDArray, Math.floor(Math.random() * listingLeadsIDArray.length));
+    const newListingDate = newListing[0].createdAt && new Date(newListing[0].createdAt);
+    const daysOnMarket = faker.number.int({ min: 25, max: 65 });
+    newListingDate?.setDate(newListingDate.getDate() + daysOnMarket);
+    const salePrice = (+newListing[0].price * faker.number.float({ min: 0.88, max: 1 })).toString();
 
-      // await tx.transaction(async (tx2) => {
-      console.log("inserting into sold_listings");
-      await db.insert(soldListings).values({
+    console.log(listingLeadsIDArray, Math.floor(Math.random() * listingLeadsIDArray.length));
+
+    console.log("inserting into sold_listings");
+    const soldListing = await db
+      .insert(soldListings)
+      .values({
         listingID: newListing[0].id,
         soldAt: newListingDate,
         userID: DEMO_ACCOUNT_ID,
         salePrice: salePrice,
         contactID: listingLeadsIDArray[Math.floor(Math.random() * listingLeadsIDArray.length)],
-      });
-      // });
-    });
+      })
+      .returning({
+        soldAt: soldListings.soldAt,
+      })
+      .onConflictDoNothing();
+    console.log("sold_listing", soldListing[0]);
+
     console.log(`completed ${i + 1} iterations`);
   }
 };
@@ -146,7 +186,7 @@ export const createFakeActiveListing = () => {
 export const seedListings = async () => {
   // if i reseed listings need to address below function call
   const usersContacts = await getAllDemoContacts(DEMO_ACCOUNT_ID);
-  for (let i = 0; i < 45; i++) {
+  for (let i = 0; i < 1; i++) {
     await db.transaction(async (tx) => {
       const newListing = await db.insert(listings).values(createFakeActiveListing()).returning({
         id: listings.id,

@@ -12,10 +12,10 @@ export const getSalesDataByYear = async (userID: number, year: number) => {
       volume: sql<number>`sum(${soldListings.salePrice})`,
     })
     .from(listings)
-    .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
+    .where(eq(listings.userID, userID))
+    .leftJoin(soldListings, eq(soldListings.listingID, listings.id))
     .where(
       and(
-        eq(listings.userID, userID),
         isNotNull(soldListings.listingID),
         between(soldListings.soldAt, new Date(`1-1-${year}`), new Date(`12-31-${year}`))
       )
@@ -86,6 +86,12 @@ export const getAvgTimeToClose = async (userID: number, year: number) => {
       )
     )
     .leftJoin(listingsToContacts, eq(listingsToContacts.contactID, soldListings.contactID))
+    .where(
+      and(
+        eq(listingsToContacts.listingID, soldListings.listingID),
+        between(listingsToContacts.createdAt, new Date(`1-1-${year}`), new Date(`12-31-${year}`))
+      )
+    )
     .groupBy(month, monthNumberFromName)
     .orderBy(monthNumberFromName);
 

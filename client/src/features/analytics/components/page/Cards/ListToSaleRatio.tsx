@@ -5,6 +5,8 @@ import { useAnalyticsContext } from '@/features/analytics/context/AnalyticsConte
 import { Spinner } from '@/components';
 import { Typography } from '@/components/ui/typography';
 
+import { twMerge } from 'tailwind-merge';
+
 import { filterAnalyticsData } from '@/features/analytics/utils';
 
 import type { ListToSaleRatio } from '@/features/analytics/types';
@@ -21,7 +23,9 @@ export function ListToSaleRatioCard({
 
   if (listToSaleRatio.isLoading) {
     return (
-      <div className='grid h-full w-full place-items-center'>
+      <div
+        className={twMerge('grid h-full w-full place-items-center', className)}
+      >
         <Spinner
           className='mx-auto'
           variant='md'
@@ -30,21 +34,30 @@ export function ListToSaleRatioCard({
     );
   }
 
-  const filteredTimeToCloseData = filterAnalyticsData(
-    listToSaleRatio.data as ListToSaleRatio,
-    currentTimeFrame
-  ).filter((data) => +data.ratio !== 0);
+  const calculatedAverage = (): string => {
+    const filteredListToSaleData = filterAnalyticsData(
+      listToSaleRatio.data as ListToSaleRatio,
+      currentTimeFrame
+    ).filter((data) => +data.ratio !== 0);
 
-  const calculatedAverage =
-    listToSaleRatio.data && listToSaleRatio.data.length > 0
-      ? Math.floor(
-          (filteredTimeToCloseData
+    if (listToSaleRatio.data && listToSaleRatio.data.length > 0) {
+      return (
+        Math.floor(
+          (filteredListToSaleData
             .map((data) => +data.ratio)
             .reduce((previous, current) => previous + current, 0) /
-            filteredTimeToCloseData.length) *
+            filteredListToSaleData.length) *
             100
         ).toString() + '%'
-      : 'no data yet';
+      );
+    }
+
+    if (filteredListToSaleData.length === 0) {
+      return '0%';
+    }
+
+    return '0%';
+  };
 
   return (
     <div className={className}>
@@ -59,7 +72,7 @@ export function ListToSaleRatioCard({
           variant='p'
           className='text-2xl font-black'
         >
-          {calculatedAverage as string}
+          {calculatedAverage() as string}
         </Typography>
       </div>
     </div>

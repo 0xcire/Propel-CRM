@@ -6,9 +6,9 @@ import { useAnalyticsContext } from '@/features/analytics/context/AnalyticsConte
 import { Spinner } from '@/components';
 import { Typography } from '@/components/ui/typography';
 
-import { filterAnalyticsData } from '@/features/analytics/utils';
+import { twMerge } from 'tailwind-merge';
 
-import type { TimeToClose } from '@/features/analytics/types';
+import { filterAnalyticsData } from '@/features/analytics/utils';
 
 export function TimeToCloseCard({
   className,
@@ -22,7 +22,9 @@ export function TimeToCloseCard({
 
   if (timeToClose.isLoading) {
     return (
-      <div className='grid h-full w-full place-items-center'>
+      <div
+        className={twMerge('grid h-full w-full place-items-center', className)}
+      >
         <Spinner
           className='mx-auto'
           variant='md'
@@ -31,20 +33,29 @@ export function TimeToCloseCard({
     );
   }
 
-  const filteredTimeToCloseData = filterAnalyticsData(
-    timeToClose.data as TimeToClose,
-    currentTimeFrame
-  ).filter((data) => +(data.days.split(' ')[0] as string) !== 0);
+  const calculateAverage = (): string => {
+    if (timeToClose.data && timeToClose.data.length > 0) {
+      const filteredTimeToCloseData = filterAnalyticsData(
+        timeToClose.data,
+        currentTimeFrame
+      ).filter((data) => +(data.days.split(' ')[0] as string) !== 0);
 
-  const calculatedAverage =
-    timeToClose.data && timeToClose.data.length > 0
-      ? Math.floor(
-          filteredTimeToCloseData
-            .map((data) => +(data.days.split(' ')[0] as string))
-            .reduce((previous, current) => previous + current, 0) /
-            filteredTimeToCloseData.length
-        ).toString()
-      : 'no data yet';
+      if (filteredTimeToCloseData.length === 0) {
+        return '0';
+      }
+
+      const average = Math.floor(
+        filteredTimeToCloseData
+          .map((data) => +(data.days.split(' ')[0] as string))
+          .reduce((previous, current) => previous + current, 0) /
+          filteredTimeToCloseData.length
+      ).toString();
+
+      return average;
+    }
+
+    return '0';
+  };
 
   return (
     <div className={className}>
@@ -59,7 +70,7 @@ export function TimeToCloseCard({
           variant='p'
           className='text-2xl font-black'
         >
-          {calculatedAverage as string}
+          {calculateAverage()}
         </Typography>
       </div>
     </div>
