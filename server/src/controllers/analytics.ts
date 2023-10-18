@@ -5,13 +5,9 @@ import {
   getListToSaleRatioByYear,
   getSalesDataByYear,
 } from "../db/queries/analytics";
-import { getCurrentYear } from "../utils";
+import { formatAnalyticsData, getCurrentYear } from "../utils";
 
 import type { Request, Response } from "express";
-
-const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-// is there a way to clean up formatting data function?
 
 export const getSalesVolumeForYear = async (req: Request, res: Response) => {
   const userID = req.user.id;
@@ -21,39 +17,22 @@ export const getSalesVolumeForYear = async (req: Request, res: Response) => {
   const yearParam = !!year ? +year : currentYear;
 
   const usersSalesVolume = await getSalesDataByYear(userID, yearParam);
-  const existingMonths = usersSalesVolume.map((data) => data.month);
 
-  const fullSalesVolume =
-    usersSalesVolume.length > 0
-      ? months.map((month, index) => {
-          if (!usersSalesVolume[index] && !existingMonths.includes(month)) {
-            return {
-              month: month,
-              volume: 0,
-            };
-          }
-
-          if (!existingMonths.includes(month)) {
-            return {
-              month: month,
-              volume: 0,
-            };
-          }
-
-          if (existingMonths.includes(month)) {
-            const referenceIdx = existingMonths.indexOf(month);
-
-            return {
-              month: usersSalesVolume[referenceIdx].month,
-              volume: usersSalesVolume[referenceIdx].volume,
-            };
-          }
-        })
-      : [];
+  const fullSalesVolume = formatAnalyticsData(
+    usersSalesVolume,
+    (data) =>
+      (
+        data as {
+          month: unknown;
+          volume: unknown;
+        }
+      ).volume,
+    "0"
+  );
 
   return res.status(200).json({
     message: "",
-    analytics: fullSalesVolume,
+    volumes: fullSalesVolume,
   });
 };
 
@@ -81,39 +60,21 @@ export const getAvgListingDaysOnMarket = async (req: Request, res: Response) => 
   const yearParam = !!year ? +year : currentYear;
 
   const avgDaysOnMarket = await getAvgDays(userID, yearParam);
-  const existingMonths = avgDaysOnMarket.map((data) => data.month);
-
-  const fullAvgDaysOnMarket =
-    avgDaysOnMarket.length > 0
-      ? months.map((month, index) => {
-          if (!avgDaysOnMarket[index] && !existingMonths.includes(month)) {
-            return {
-              month: month,
-              average: "0 days",
-            };
-          }
-
-          if (!existingMonths.includes(month)) {
-            return {
-              month: month,
-              average: "0 days",
-            };
-          }
-
-          if (existingMonths.includes(month)) {
-            const referenceIdx = existingMonths.indexOf(month);
-
-            return {
-              month: avgDaysOnMarket[referenceIdx].month,
-              average: avgDaysOnMarket[referenceIdx].average,
-            };
-          }
-        })
-      : [];
+  const fullDaysOnMarket = formatAnalyticsData(
+    avgDaysOnMarket,
+    (data) =>
+      (
+        data as {
+          month: unknown;
+          average: unknown;
+        }
+      ).average,
+    "0 days"
+  );
 
   return res.status(200).json({
     message: "",
-    averages: fullAvgDaysOnMarket,
+    averages: fullDaysOnMarket,
   });
 };
 
@@ -126,35 +87,18 @@ export const getListToSaleRatioForYear = async (req: Request, res: Response) => 
     const yearParam = !!year ? +year : currentYear;
 
     const listToSaleRatio = await getListToSaleRatioByYear(userID, yearParam);
-    const existingMonths = listToSaleRatio.map((data) => data.month);
 
-    const fullListToSaleRatio =
-      listToSaleRatio.length > 0
-        ? months.map((month, index) => {
-            if (!listToSaleRatio[index] && !existingMonths.includes(month)) {
-              return {
-                month: month,
-                ratio: "0",
-              };
-            }
-
-            if (!existingMonths.includes(month)) {
-              return {
-                month: month,
-                ratio: "0",
-              };
-            }
-
-            if (existingMonths.includes(month)) {
-              const referenceIdx = existingMonths.indexOf(month);
-
-              return {
-                month: listToSaleRatio[referenceIdx].month,
-                ratio: listToSaleRatio[referenceIdx].ratio,
-              };
-            }
-          })
-        : [];
+    const fullListToSaleRatio = formatAnalyticsData(
+      listToSaleRatio,
+      (data) =>
+        (
+          data as {
+            month: unknown;
+            ratio: unknown;
+          }
+        ).ratio,
+      "0"
+    );
 
     return res.status(200).json({
       message: "",
@@ -174,35 +118,18 @@ export const getAvgTimeToCloseLead = async (req: Request, res: Response) => {
     const yearParam = !!year ? +year : currentYear;
 
     const avgTimeToClose = await getAvgTimeToClose(userID, yearParam);
-    const existingMonths = avgTimeToClose.map((data) => data.month);
 
-    const fullAvgTimeToClose =
-      avgTimeToClose.length > 0
-        ? months.map((month, index) => {
-            if (!avgTimeToClose[index] && !existingMonths.includes(month)) {
-              return {
-                month: month,
-                days: "0 days",
-              };
-            }
-
-            if (!existingMonths.includes(month)) {
-              return {
-                month: month,
-                days: "0 days",
-              };
-            }
-
-            if (existingMonths.includes(month)) {
-              const referenceIdx = existingMonths.indexOf(month);
-
-              return {
-                month: avgTimeToClose[referenceIdx].month,
-                days: avgTimeToClose[referenceIdx].days,
-              };
-            }
-          })
-        : [];
+    const fullAvgTimeToClose = formatAnalyticsData(
+      avgTimeToClose,
+      (data) =>
+        (
+          data as {
+            month: unknown;
+            days: unknown;
+          }
+        ).days,
+      "0 days"
+    );
 
     return res.status(200).json({
       message: "",

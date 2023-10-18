@@ -59,40 +59,6 @@ export const createFakeSoldListing = (): NewListing => {
   };
 };
 
-// TODO: need to redo:
-// have to have associated contact?
-// have separate sale price?
-
-// create listing,
-// add leads
-// add sold_listings info per listing
-
-// export const amungus = () => {
-//   const listing = createFakeSoldListing();
-//   console.log(listing);
-//   const listingDate = listing.createdAt;
-
-//   const leadEstablished = faker.number.int({ min: 1, max: 20 });
-
-//   listingDate?.setDate(listingDate.getDate() + leadEstablished);
-
-//   console.log("- creating lead -");
-//   console.log("LEAD", {
-//     contactID: "",
-//     listingID: "",
-//     createdAt: listingDate,
-//   });
-
-//   const newListingDate = listing.createdAt;
-//   const daysOnMarket = faker.number.int({ min: 25, max: 65 });
-
-//   newListingDate?.setDate(newListingDate.getDate() + daysOnMarket);
-
-//   console.log("- inserting into sold_listing -");
-//   console.log({
-//     soldAt: newListingDate,
-//   });
-// };
 export const seedListingsAndSoldListings = async () => {
   console.log("seeding (sold) listings");
   const usersContacts = await getAllDemoContacts(DEMO_ACCOUNT_ID);

@@ -4,32 +4,21 @@ import type { BaseResponse } from '@/types';
 
 export type Quarters = (typeof quarters)[number];
 
-export type SalesVolume = {
+export type AnalyticsDataPoint = {
   month: string;
-  volume: string;
+  value: string;
 };
 
-export type SalesVolumes = Array<SalesVolume>;
+export type SalesVolumes = Array<AnalyticsDataPoint>;
 
-export type DaysOnMarket = Array<{
-  month: string;
-  average: string;
-}>;
-
-export type ListToSaleRatio = Array<{
-  month: string;
-  ratio: string;
-}>;
-
-export type TimeToClose = Array<{
-  month: string;
-  days: string;
-}>;
+export type DaysOnMarketData = Array<AnalyticsDataPoint>;
+export type ListToSaleRatioData = Array<AnalyticsDataPoint>;
+export type TimeToCloseData = Array<AnalyticsDataPoint>;
 
 export type Years = Array<string>;
 
-export interface AnalyticsDataResponse extends BaseResponse {
-  analytics: SalesVolumes;
+export interface AnalyticsSalesVolumeResponse extends BaseResponse {
+  volumes: SalesVolumes;
 }
 
 export interface AnalyticsYearsResponse extends BaseResponse {
@@ -37,13 +26,13 @@ export interface AnalyticsYearsResponse extends BaseResponse {
 }
 
 export interface AnalyticsDaysOnMarketResponse extends BaseResponse {
-  averages: DaysOnMarket;
+  averages: DaysOnMarketData;
 }
 
 export interface AnalyticsListToSaleRatioResponse extends BaseResponse {
-  ratios: ListToSaleRatio;
+  ratios: ListToSaleRatioData;
 }
 
 export interface AnalyticsTimeToCloseResponse extends BaseResponse {
-  days: TimeToClose;
+  days: TimeToCloseData;
 }

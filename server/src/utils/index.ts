@@ -22,14 +22,35 @@ export const objectNotEmpty = (object: Record<string, unknown>) => {
 
 export const getCurrentYear = () => new Date().getFullYear();
 
-// export const formatAnalyticsData = (data: Array<unknown>, existingMonths: Array<string>) => {
-//   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-//   // const exisitingMonths = data.map((d: { month: string }) => d.month);
+export const formatAnalyticsData = <T extends { month: unknown }>(
+  data: Array<T>,
+  getValue: (data: unknown) => unknown,
+  defaultValue: string
+) => {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const existingMonths = data.map((data) => (data as { month: unknown } & unknown).month);
+  return data.length > 0
+    ? months.map((month, index) => {
+        if (!data[index] && !existingMonths.includes(month)) {
+          return {
+            month: month,
+            value: defaultValue,
+          };
+        }
 
-//   const formattedAnalyticsData = data.length > 0 ? months.map((month, idx) => {
-//     if(data[idx] && !existingMonths.includes(month)) {
-//       return month: month,
+        if (!existingMonths.includes(month)) {
+          return {
+            month: month,
+            value: defaultValue,
+          };
+        }
 
-//     }
-//   }) : [];
-// };
+        const referenceIdx = existingMonths.indexOf(month);
+
+        return {
+          month: data[referenceIdx].month,
+          value: getValue(data[referenceIdx]),
+        };
+      })
+    : [];
+};

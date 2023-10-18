@@ -28,7 +28,7 @@ export function SalesVolumeChart(): JSX.Element {
 
   const minmax = getMinMax(() => {
     if (salesVolume.data) {
-      return salesVolume.data?.map((data) => +data.volume);
+      return salesVolume.data?.map((data) => +data.value);
     }
   });
 
@@ -85,7 +85,7 @@ export function SalesVolumeChart(): JSX.Element {
         />
         <Tooltip content={<CustomTooltip />} />
         <Bar
-          dataKey='volume'
+          dataKey='value'
           fill='#010101'
           radius={3}
         />

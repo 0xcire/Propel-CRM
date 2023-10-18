@@ -3,11 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { getAvgDaysOnMarket } from '../api';
 
 import type { UseQueryResult } from '@tanstack/react-query';
-import { DaysOnMarket } from '../types';
+import type { DaysOnMarketData } from '../types';
 
 export const useAvgDaysOnMarket = (
   userID: number
-): UseQueryResult<DaysOnMarket, unknown> => {
+): UseQueryResult<DaysOnMarketData, unknown> => {
   const searchParams = new URLSearchParams(window.location.search);
   const year = searchParams.get('year');
 

@@ -43,7 +43,7 @@ export function TotalVolumeCard({
   );
 
   const salesVolumeTotal = filteredSalesVolumeData.reduce(
-    (acc, { volume: currentVolume }) => acc + +currentVolume,
+    (acc, { value: currentVolume }) => acc + +currentVolume,
     0
   );
 

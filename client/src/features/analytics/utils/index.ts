@@ -22,3 +22,41 @@ export const getMinMax = (
 
   return [Math.min(...data), Math.max(...data)] as const;
 };
+
+type calculateAverageParams = {
+  data: Array<unknown> | undefined;
+  getValues: (data: unknown) => number;
+  currentTimeFrame: Quarters;
+  percentage?: boolean;
+};
+
+export const calculateAverage = ({
+  data,
+  getValues,
+  currentTimeFrame,
+  percentage,
+}: calculateAverageParams): string => {
+  // handle initial query / a fresh user, for ex
+  if (!data || data.length === 0) {
+    return `0${percentage ? '%' : ''}`;
+  }
+
+  const filteredData = filterAnalyticsData(data, currentTimeFrame).filter(
+    (data) => getValues(data) !== 0
+  );
+
+  // user may have data, but q4, for ex, could be empty
+  if (filteredData.length === 0) {
+    return `0${percentage ? '%' : ''}`;
+  }
+
+  const average =
+    filteredData
+      .map(getValues)
+      .reduce((previous, current) => previous + current, 0) /
+    filteredData.length;
+
+  return percentage
+    ? `${Math.floor(average * 100).toString()} %`
+    : Math.floor(average).toString();
+};

@@ -14,6 +14,6 @@ export const useSalesVolume = (
   return useQuery({
     queryKey: ['sales-volume', { userID: userID, year: year }],
     queryFn: () => getSalesVolumeData(userID),
-    select: (data) => data.analytics,
+    select: (data) => data.volumes,
   });
 };

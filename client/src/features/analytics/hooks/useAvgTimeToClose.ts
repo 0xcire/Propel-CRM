@@ -3,11 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { getAvgTimeToCloseLead } from '../api';
 
 import type { UseQueryResult } from '@tanstack/react-query';
-import type { TimeToClose } from '../types';
+import type { TimeToCloseData } from '../types';
 
 export const useAvgTimeToClose = (
   userID: number
-): UseQueryResult<TimeToClose, unknown> => {
+): UseQueryResult<TimeToCloseData, unknown> => {
   const searchParams = new URLSearchParams(window.location.search);
   const year = searchParams.get('year');
 

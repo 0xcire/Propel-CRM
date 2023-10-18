@@ -33,7 +33,7 @@ export function GCILineChart(): JSX.Element {
   const salesVolumeToGCI = useMemo(() => {
     return salesVolume.data?.map((data) => ({
       month: data.month,
-      gci: Math.round(+data.volume * COMMISSION_RATE).toString(),
+      gci: Math.round(+data.value * COMMISSION_RATE).toString(),
     }));
   }, [salesVolume.data]);
 

@@ -7,8 +7,9 @@ import { Spinner } from '@/components';
 import { Typography } from '@/components/ui/typography';
 
 import { twMerge } from 'tailwind-merge';
+import { calculateAverage } from '@/features/analytics/utils';
 
-import { filterAnalyticsData } from '@/features/analytics/utils';
+import type { AnalyticsDataPoint } from '@/features/analytics/types';
 
 export function TimeToCloseCard({
   className,
@@ -33,29 +34,12 @@ export function TimeToCloseCard({
     );
   }
 
-  const calculateAverage = (): string => {
-    if (timeToClose.data && timeToClose.data.length > 0) {
-      const filteredTimeToCloseData = filterAnalyticsData(
-        timeToClose.data,
-        currentTimeFrame
-      ).filter((data) => +(data.days.split(' ')[0] as string) !== 0);
-
-      if (filteredTimeToCloseData.length === 0) {
-        return '0';
-      }
-
-      const average = Math.floor(
-        filteredTimeToCloseData
-          .map((data) => +(data.days.split(' ')[0] as string))
-          .reduce((previous, current) => previous + current, 0) /
-          filteredTimeToCloseData.length
-      ).toString();
-
-      return average;
-    }
-
-    return '0';
-  };
+  const average = calculateAverage({
+    data: timeToClose.data,
+    getValues: (data) =>
+      +((data as AnalyticsDataPoint).value.split(' ')[0] as string),
+    currentTimeFrame: currentTimeFrame,
+  });
 
   return (
     <div className={className}>
@@ -70,7 +54,7 @@ export function TimeToCloseCard({
           variant='p'
           className='text-2xl font-black'
         >
-          {calculateAverage()}
+          {average}
         </Typography>
       </div>
     </div>

@@ -6,10 +6,9 @@ import { Spinner } from '@/components';
 import { Typography } from '@/components/ui/typography';
 
 import { twMerge } from 'tailwind-merge';
+import { calculateAverage } from '@/features/analytics/utils';
 
-import { filterAnalyticsData } from '@/features/analytics/utils';
-
-import type { ListToSaleRatio } from '@/features/analytics/types';
+import type { AnalyticsDataPoint } from '@/features/analytics/types';
 
 export function ListToSaleRatioCard({
   className,
@@ -34,30 +33,12 @@ export function ListToSaleRatioCard({
     );
   }
 
-  const calculatedAverage = (): string => {
-    const filteredListToSaleData = filterAnalyticsData(
-      listToSaleRatio.data as ListToSaleRatio,
-      currentTimeFrame
-    ).filter((data) => +data.ratio !== 0);
-
-    if (listToSaleRatio.data && listToSaleRatio.data.length > 0) {
-      return (
-        Math.floor(
-          (filteredListToSaleData
-            .map((data) => +data.ratio)
-            .reduce((previous, current) => previous + current, 0) /
-            filteredListToSaleData.length) *
-            100
-        ).toString() + '%'
-      );
-    }
-
-    if (filteredListToSaleData.length === 0) {
-      return '0%';
-    }
-
-    return '0%';
-  };
+  const average = calculateAverage({
+    data: listToSaleRatio.data,
+    getValues: (data) => +(data as AnalyticsDataPoint).value,
+    currentTimeFrame: currentTimeFrame,
+    percentage: true,
+  });
 
   return (
     <div className={className}>
@@ -72,7 +53,7 @@ export function ListToSaleRatioCard({
           variant='p'
           className='text-2xl font-black'
         >
-          {calculatedAverage() as string}
+          {average}
         </Typography>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { Get, handleAPIResponse } from '@/lib/fetch';
+
 import type {
-  AnalyticsDataResponse,
+  AnalyticsSalesVolumeResponse,
   AnalyticsDaysOnMarketResponse,
   AnalyticsListToSaleRatioResponse,
   AnalyticsTimeToCloseResponse,
@@ -9,10 +10,10 @@ import type {
 
 export const getSalesVolumeData = (
   userID: number
-): Promise<AnalyticsDataResponse> => {
+): Promise<AnalyticsSalesVolumeResponse> => {
   return Get({
     endpoint: `analytics/sales/${userID}${window.location.search}`,
-  }).then(handleAPIResponse<AnalyticsDataResponse>);
+  }).then(handleAPIResponse<AnalyticsSalesVolumeResponse>);
 };
 
 export const getSalesYearsData = (
