@@ -52,6 +52,9 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
   {
     accessorKey: 'price',
     header: ({ column }): JSX.Element => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const status = searchParams.get('status');
+
       return (
         <Button
           variant='ghost'
@@ -59,7 +62,7 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
             column.toggleSorting(column.getIsSorted() === 'asc');
           }}
         >
-          Price
+          {status === 'active' ? 'Price' : 'Sale Price'}
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
@@ -143,7 +146,12 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
   },
   {
     accessorKey: 'contacts',
-    header: 'Leads',
+    header: (): string => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const status = searchParams.get('status');
+
+      return status === 'active' ? 'Leads' : 'Sold To';
+    },
     cell: ({ row }): JSX.Element => {
       const leads: Array<ContactInfo> = row.getValue('contacts');
       const listing = row.original;
@@ -222,7 +230,7 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
                 e.stopPropagation();
               }}
             >
-              Update
+              Mark Sold
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={(e): void => {

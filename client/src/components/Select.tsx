@@ -13,7 +13,7 @@ import type { ComponentProps } from 'react';
 interface SelectProps extends ComponentProps<'select'> {
   options: Readonly<Array<string>>;
   label?: string;
-  handleSelectChange: (value: string) => void;
+  handleSelectChange?: (value: string) => void;
 }
 
 export function Select({

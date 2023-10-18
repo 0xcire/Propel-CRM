@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { findContactByID } from "../db/queries/contacts";
 import {
   deleteListingByID,
+  deleteListingLeadsByID,
   findExistingLead,
   getAllUserListings,
   getUserDashboardListings,
@@ -117,6 +118,8 @@ export const deleteListing = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
     const { id } = req.params;
+
+    const deleteLeadsForListing = await deleteListingLeadsByID(+id, userID);
 
     const deletedListingByID = await deleteListingByID(+id, userID);
 

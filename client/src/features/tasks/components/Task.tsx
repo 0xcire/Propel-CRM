@@ -28,7 +28,7 @@ const taskPriorityLookup = {
 };
 
 export function Task({ task, userID }: TaskProps): JSX.Element {
-  const updateTask = useUpdateTask();
+  const updateTask = useUpdateTask({ isCheckbox: true });
 
   const handleOnCheckedChange = useCallback((checked: CheckedState): void => {
     updateTask.mutate({

@@ -34,7 +34,7 @@ type TaskProps = {
 export function UpdateTask({ task, text, userID }: TaskProps): JSX.Element {
   const [open, setOpen] = useState(false);
 
-  const updateTask = useUpdateTask();
+  const updateTask = useUpdateTask({ isCheckbox: false });
 
   const defaultValues: DeepPartial<CreateTaskFields> = {
     title: task.title,

@@ -1,17 +1,56 @@
 import { Router } from "express";
-import { isAuth } from "../middlewares";
+
+import { isAuth, isOwner } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
-import { cookieSchema } from "../db/validation-schema";
-import { getExistingSalesYears, getPeriodicSalesVolume } from "../controllers/analytics";
 
-// sales bar graph
-// GCI - gross commission income line graph
+import { analyticsQuerySchema, cookieSchema, paramSchema } from "../db/validation-schema";
 
-// year, quarterly, monthly views via search params
+import {
+  getAvgListingDaysOnMarket,
+  getAvgTimeToCloseLead,
+  getExistingSalesYears,
+  getListToSaleRatioForYear,
+  getSalesVolumeForYear,
+} from "../controllers/analytics";
+
 export default (router: Router) => {
-  router.get("/analytics/sales", validateRequest({ cookies: cookieSchema }), isAuth, getPeriodicSalesVolume);
+  router.get(
+    "/analytics/sales/:id",
+    validateRequest({ cookies: cookieSchema, params: paramSchema, query: analyticsQuerySchema }),
+    isAuth,
+    isOwner,
+    getSalesVolumeForYear
+  );
 
-  router.get("/analytics/years", validateRequest({ cookies: cookieSchema }), isAuth, getExistingSalesYears);
+  router.get(
+    "/analytics/years/:id",
+    validateRequest({ cookies: cookieSchema, params: paramSchema }),
+    isAuth,
+    isOwner,
+    getExistingSalesYears
+  );
 
-  router.get("/analytics/gci", validateRequest({ cookies: cookieSchema }), isAuth, () => "yo");
+  router.get(
+    "/analytics/days-on-market/:id",
+    validateRequest({ cookies: cookieSchema, params: paramSchema, query: analyticsQuerySchema }),
+    isAuth,
+    isOwner,
+    getAvgListingDaysOnMarket
+  );
+
+  router.get(
+    "/analytics/list-sale-ratio/:id",
+    validateRequest({ cookies: cookieSchema, params: paramSchema, query: analyticsQuerySchema }),
+    isAuth,
+    isOwner,
+    getListToSaleRatioForYear
+  );
+
+  router.get(
+    "/analytics/time-to-close/:id",
+    validateRequest({ cookies: cookieSchema, params: paramSchema, query: analyticsQuerySchema }),
+    isAuth,
+    isOwner,
+    getAvgTimeToCloseLead
+  );
 };

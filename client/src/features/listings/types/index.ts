@@ -17,6 +17,12 @@ export type Listing = {
   contacts?: Array<ContactInfo>;
 };
 
+export type SoldListing = {
+  listingID: number;
+  contactID: number;
+  salePrice: string;
+};
+
 export type NewListing = Omit<Listing, 'id' | 'createdAt'>;
 
 export type Listings = Array<Listing>;

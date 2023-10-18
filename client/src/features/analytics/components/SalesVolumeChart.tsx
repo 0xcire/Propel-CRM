@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
-
+import { useUser } from '@/lib/react-query-auth';
 import { useSalesVolume } from '../hooks/useSalesVolume';
+
+import { useAnalyticsContext } from '../context/AnalyticsContext';
 
 import {
   BarChart,
@@ -9,43 +10,27 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  TooltipProps,
 } from 'recharts';
 
 import { Spinner } from '@/components';
+import { CustomTooltip } from './CustomTooltip';
 
-import { currency } from '@/utils/intl';
 import { yAxisRange } from '@/utils/';
+import { filterAnalyticsData, getMinMax } from '../utils';
 
-import type {
-  ValueType,
-  NameType,
-} from 'recharts/types/component/DefaultTooltipContent';
-import { useAnalyticsContext } from '../context/AnalyticsContext';
-
-const timeFrameMap = {
-  Q1: [0, 3],
-  Q2: [3, 6],
-  Q3: [6, 9],
-  Q4: [9, 12],
-};
+import type { SalesVolumes } from '../types';
 
 export function SalesVolumeChart(): JSX.Element {
-  const salesVolume = useSalesVolume();
-
   const { state: currentTimeFrame } = useAnalyticsContext();
 
-  const minmax = useMemo(() => {
-    if (salesVolume.data) {
-      const volumeArray = salesVolume.data?.map((data) => data.volume);
-      return [Math.min(...volumeArray), Math.max(...volumeArray)] as const;
-    }
-  }, [salesVolume.data]);
+  const user = useUser();
+  const salesVolume = useSalesVolume(user.data?.id as number);
 
-  const filter =
-    currentTimeFrame === 'YTD'
-      ? salesVolume.data
-      : salesVolume.data?.slice(...timeFrameMap[currentTimeFrame]);
+  const minmax = getMinMax(() => {
+    if (salesVolume.data) {
+      return salesVolume.data?.map((data) => +data.value);
+    }
+  });
 
   if (salesVolume.isLoading) {
     return (
@@ -57,6 +42,11 @@ export function SalesVolumeChart(): JSX.Element {
       </div>
     );
   }
+
+  const filteredSalesVolumeData = filterAnalyticsData(
+    salesVolume.data as SalesVolumes,
+    currentTimeFrame
+  );
 
   if (salesVolume.data?.length === 0) {
     return (
@@ -80,37 +70,26 @@ export function SalesVolumeChart(): JSX.Element {
           left: 20,
           bottom: 5,
         }}
-        data={filter}
+        data={filteredSalesVolumeData}
       >
-        <XAxis dataKey={'month'} />
+        <XAxis
+          dataKey={'month'}
+          tickLine={false}
+          stroke='#010101'
+        />
         <YAxis
           domain={yAxisRange(minmax as [number, number])}
           fontSize={10}
+          tickLine={false}
+          stroke='#010101'
         />
         <Tooltip content={<CustomTooltip />} />
         <Bar
-          dataKey='volume'
-          fill='rgb(209, 213, 219)'
+          dataKey='value'
+          fill='#010101'
+          radius={3}
         />
       </BarChart>
     </ResponsiveContainer>
   );
-}
-
-function CustomTooltip({
-  active,
-  payload,
-  label,
-}: TooltipProps<ValueType, NameType>): JSX.Element {
-  if (active && payload && label && payload[0].value) {
-    return (
-      <div className='rounded-md border-2 border-slate-800 bg-gray-300 p-4'>
-        <div>
-          <p className='font-bold'>{label}</p>
-          <p>Volume: {currency.format(+payload[0].value)}</p>
-        </div>
-      </div>
-    );
-  }
-  return <></>;
 }

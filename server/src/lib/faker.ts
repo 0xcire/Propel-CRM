@@ -1,13 +1,31 @@
+// just used to seed demo account with fake data
+// probably better ways of doing this
+
 import { faker, fakerEN_US } from "@faker-js/faker";
 
-import type { Contact, NewContact, NewListing, NewTask } from "../db/types";
 import { db } from "../db";
-import { contacts, listings, listingsToContacts, soldListings } from "../db/schema";
+import { contacts, listings, listingsToContacts, soldListings, users, usersToContacts } from "../db/schema";
 import { getUsersContacts, insertNewContact, insertNewRelation } from "../db/queries/contacts";
 import { getAllUserListings } from "../db/queries/listings";
 import { insertNewTask } from "../db/queries/tasks";
+import { eq, sql } from "drizzle-orm";
+
+import type { Contact, NewContact, NewListing, NewTask } from "../db/types";
 
 const DEMO_ACCOUNT_ID = 10;
+
+export const getAllDemoContacts = async (userID: number) => {
+  const userContactJoin = await db
+    .select()
+    .from(usersToContacts)
+    .leftJoin(contacts, eq(usersToContacts.contactID, contacts.id))
+    .leftJoin(users, eq(usersToContacts.userID, users.id))
+    .where(eq(users.id, userID))
+    .orderBy(sql`${usersToContacts.createdAt} asc`);
+
+  const userContacts = userContactJoin.map((result) => result.contacts);
+  return userContacts;
+};
 
 // from a random listing on zillow
 const exampleListingDescription =
@@ -41,40 +59,90 @@ export const createFakeSoldListing = (): NewListing => {
   };
 };
 
-// TODO: need to redo:
-// have to have associated contact?
-// have separate sale price?
-
 export const seedListingsAndSoldListings = async () => {
-  for (let i = 0; i < 200; i++) {
-    await db.transaction(async (tx) => {
-      const newListing = await tx.insert(listings).values(createFakeSoldListing()).returning({
+  console.log("seeding (sold) listings");
+  const usersContacts = await getAllDemoContacts(DEMO_ACCOUNT_ID);
+
+  for (let i = 0; i < 74; i++) {
+    const listingLeadsIDArray: Array<number> = [];
+
+    console.log("inserting into listings");
+    const newListing = await db
+      .insert(listings)
+      .values(createFakeSoldListing())
+      .returning({
         id: listings.id,
+        price: listings.price,
         createdAt: listings.createdAt,
-      });
-      const newListingDate = newListing[0].createdAt && new Date(newListing[0].createdAt);
-      const daysOnMarket = faker.number.int({ min: 25, max: 75 });
-      newListingDate?.setDate(newListingDate.getDate() + daysOnMarket);
-      await tx.insert(soldListings).values({
+      })
+      .onConflictDoNothing();
+
+    console.log("----- \n LISTING \n -----", newListing[0]);
+
+    for (let j = 0; j < Math.round(Math.random() * 2) + 1; j++) {
+      const randomContactIdx = Math.floor(Math.random() * usersContacts.length);
+      const randomContact = usersContacts[randomContactIdx];
+
+      console.log("ADDING LEAD");
+      const leadEstablished = newListing[0].createdAt && new Date(newListing[0].createdAt);
+      const daysAfter = faker.number.int({ min: 1, max: 20 });
+      leadEstablished?.setDate(leadEstablished.getDate() + daysAfter);
+
+      const listingLeads = await db
+        .insert(listingsToContacts)
+        .values({
+          contactID: randomContact?.id as number,
+          listingID: newListing[0].id,
+          createdAt: leadEstablished,
+        })
+        .returning({
+          contactID: listingsToContacts.contactID,
+          createdAt: listingsToContacts.createdAt,
+        })
+        .onConflictDoNothing();
+
+      console.log("lead", listingLeads[0]);
+
+      listingLeadsIDArray.push(listingLeads[0].contactID as number);
+
+      console.log("----- \n LEAD ID \n -----", listingLeads[0].contactID);
+    }
+
+    const newListingDate = newListing[0].createdAt && new Date(newListing[0].createdAt);
+    const daysOnMarket = faker.number.int({ min: 25, max: 65 });
+    newListingDate?.setDate(newListingDate.getDate() + daysOnMarket);
+    const salePrice = (+newListing[0].price * faker.number.float({ min: 0.88, max: 1 })).toString();
+
+    console.log(listingLeadsIDArray, Math.floor(Math.random() * listingLeadsIDArray.length));
+
+    console.log("inserting into sold_listings");
+    const soldListing = await db
+      .insert(soldListings)
+      .values({
         listingID: newListing[0].id,
         soldAt: newListingDate,
         userID: DEMO_ACCOUNT_ID,
-      });
-    });
+        salePrice: salePrice,
+        contactID: listingLeadsIDArray[Math.floor(Math.random() * listingLeadsIDArray.length)],
+      })
+      .returning({
+        soldAt: soldListings.soldAt,
+      })
+      .onConflictDoNothing();
+    console.log("sold_listing", soldListing[0]);
+
+    console.log(`completed ${i + 1} iterations`);
   }
 };
 
 export const createFakeActiveListing = () => {
-  const stateAbbr = fakerEN_US.location.state({ abbreviated: true });
-  const zipcode = fakerEN_US.location.zipCode({ format: "#####", state: stateAbbr });
-  const address = `${faker.location.streetAddress()}, ${faker.location.city()}, ${stateAbbr} ${zipcode}`;
   return {
-    address: address,
+    address: generateAddress(),
     propertyType: "single family",
     baths: faker.number.int({ min: 2, max: 5 }),
     bedrooms: faker.number.int({ min: 3, max: 8 }),
     description: exampleListingDescription,
-    price: faker.number.int({ min: 250000, max: 6000000 }).toString(),
+    price: faker.number.int({ min: 250000, max: 3000000 }).toString(),
     squareFeet: faker.number.int({ min: 1250, max: 20000 }),
     createdAt: faker.date.between({ from: "2023-04-01T00:00:00.000Z", to: "2023-09-15T00:00:00.000Z" }),
     userID: DEMO_ACCOUNT_ID,
@@ -83,11 +151,12 @@ export const createFakeActiveListing = () => {
 
 export const seedListings = async () => {
   // if i reseed listings need to address below function call
-  const usersContacts = await getUsersContacts(DEMO_ACCOUNT_ID, 1);
-  for (let i = 0; i < 50; i++) {
+  const usersContacts = await getAllDemoContacts(DEMO_ACCOUNT_ID);
+  for (let i = 0; i < 1; i++) {
     await db.transaction(async (tx) => {
       const newListing = await db.insert(listings).values(createFakeActiveListing()).returning({
         id: listings.id,
+        createdAt: listings.createdAt,
       });
       console.log("----- \n LISTING ID \n -----", newListing[0].id);
 
@@ -95,11 +164,15 @@ export const seedListings = async () => {
         const randomContactIdx = Math.floor(Math.random() * usersContacts.length);
         const randomContact = usersContacts[randomContactIdx];
 
+        const leadEstablished = newListing[0].createdAt && new Date(newListing[0].createdAt);
+        leadEstablished?.setDate(leadEstablished.getDate() + faker.number.int({ min: 1, max: 20 }));
+
         const listingLeads = await db
           .insert(listingsToContacts)
           .values({
             contactID: randomContact?.id as number,
             listingID: newListing[0].id,
+            createdAt: leadEstablished,
           })
           .returning({
             contactID: listingsToContacts.contactID,
@@ -107,6 +180,7 @@ export const seedListings = async () => {
         console.log("----- \n LEAD ID \n -----", listingLeads[0].contactID);
       }
     });
+    console.log(`completed ${i + 1} iterations`);
   }
 };
 

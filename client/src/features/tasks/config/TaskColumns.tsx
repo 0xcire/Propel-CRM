@@ -37,7 +37,7 @@ export const taskColumns: Array<ColumnDef<Task>> = [
       // TODO: Clean up :)
       // same as Task.tsx
       //eslint-disable-next-line
-      const updateTask = useUpdateTask();
+      const updateTask = useUpdateTask({ isCheckbox: true });
 
       //eslint-disable-next-line
       const handleOnCheckedChange = useCallback(

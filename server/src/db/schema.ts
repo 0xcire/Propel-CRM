@@ -47,10 +47,14 @@ export const contacts = pgTable("contacts", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
-export const contactsRelations = relations(contacts, ({ many }) => ({
+export const contactsRelations = relations(contacts, ({ one, many }) => ({
   usersToContacts: many(usersToContacts),
   listingsToContacts: many(listingsToContacts),
   tasks: many(tasks),
+  soldListings: one(soldListings, {
+    fields: [contacts.id],
+    references: [soldListings.contactID],
+  }),
 }));
 
 export const usersToContacts = pgTable(
@@ -173,10 +177,14 @@ export const listingsToContactsRelations = relations(listingsToContacts, ({ one 
 // pgTable: leadsOnListing??
 // for interested contacts on listing
 
+// sold_to
+// sale_price
 export const soldListings = pgTable("sold_listings", {
   id: serial("id").primaryKey(),
-  listingID: integer("listing_id").references(() => listings.id),
   userID: integer("user_id").references(() => users.id),
+  listingID: integer("listing_id").references(() => listings.id),
+  contactID: integer("contact_id").references(() => contacts.id),
+  salePrice: numeric("sale_price", { precision: 11, scale: 2 }).notNull(),
   soldAt: timestamp("sold_at", { withTimezone: true }).defaultNow(),
 });
 

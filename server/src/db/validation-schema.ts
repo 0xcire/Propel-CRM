@@ -217,3 +217,11 @@ export const listingLeadSchema = z
     id: lead.id.trim(),
     contactID: lead.contactID.trim(),
   }));
+
+export const analyticsQuerySchema = z
+  .object({
+    year: z.string(),
+  })
+  .transform((analytics) => ({
+    year: analytics.year.trim(),
+  }));
