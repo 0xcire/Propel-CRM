@@ -11,6 +11,10 @@ import { SelectInput, TextAreaInput, TextInput } from '@/components/form';
 import { SubmitButton } from '@/components';
 
 import { listingSchema } from '@/lib/validations/listings';
+import {
+  propertyTypeSelectOptions,
+  roomsSelectOptions,
+} from '@/config/listings';
 
 import type { DeepPartial } from 'react-hook-form';
 import type { ListingFields } from '../types';
@@ -21,35 +25,6 @@ interface ListingFormProps extends FormMode {
   onSubmit: (values: ListingFields) => void;
   listingID?: number;
 }
-
-// TODO: propertyType
-// single family, apartment, townhome, condo, duplex, etc..
-
-const propertyTypes = [
-  'single family',
-  'apartment',
-  'townhome',
-  'condo',
-  'duplex',
-] as const;
-type PropertyTypes = (typeof propertyTypes)[number];
-
-const rooms = [
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '10',
-  '11',
-  '12',
-  '13',
-] as const;
-type Rooms = (typeof rooms)[number];
 
 export function ListingForm({
   isCreate,
@@ -99,24 +74,24 @@ export function ListingForm({
           </div>
 
           <div className='flex items-center justify-between pt-2'>
-            <SelectInput<ListingFields, PropertyTypes, typeof propertyTypes>
+            <SelectInput
               name='propertyType'
-              options={propertyTypes}
+              options={propertyTypeSelectOptions}
               placeholder='Property Type'
               label='Property Type'
               control={form.control}
             />
             <div className='flex items-center gap-4'>
-              <SelectInput<ListingFields, Rooms, typeof rooms>
+              <SelectInput
                 name='bedrooms'
-                options={rooms}
+                options={roomsSelectOptions}
                 label='Bedrooms'
                 placeholder='Bedrooms'
                 control={form.control}
               />
-              <SelectInput<ListingFields, Rooms, typeof rooms>
+              <SelectInput
                 name='baths'
-                options={rooms}
+                options={roomsSelectOptions}
                 label='Baths'
                 placeholder='Baths'
                 control={form.control}

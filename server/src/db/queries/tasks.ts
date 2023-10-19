@@ -1,5 +1,5 @@
 import { db } from "..";
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray } from "drizzle-orm";
 import { tasks } from "../schema";
 
 import type { NewTask } from "../types";
@@ -50,7 +50,7 @@ export const findUserTasks = async ({ userID, completed, page, priority }: FindU
       eq(tasks.completed, JSON.parse(completed)),
       priority && inArray(tasks.priority, priority as Array<"low" | "medium" | "high">)
     ),
-    orderBy: [asc(tasks.createdAt)],
+    orderBy: [desc(tasks.createdAt)],
     limit: 10,
     ...(page && { offset: (page - 1) * 10 }),
   });

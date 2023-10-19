@@ -1,4 +1,3 @@
-import { priorityOptions } from '@/config';
 import type { BaseResponse } from '@/types';
 
 export type Task = {
@@ -24,8 +23,6 @@ export type UpdateTaskParams = {
   id: number;
   data: Partial<NewTask>;
 };
-
-export type Priority = (typeof priorityOptions)[number];
 
 export type TaskContext = {
   previousTasks: Tasks | undefined;

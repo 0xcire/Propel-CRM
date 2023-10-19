@@ -21,13 +21,13 @@ import { SubmitButton } from '@/components';
 import { DeleteTask } from './DeleteTask';
 
 import { taskSchema, checkboxSchema } from '@/lib/validations/tasks';
-import { priorityOptions } from '@/config';
+import { prioritySelectOptions } from '@/config/tasks';
 
 import { removeTimeZone } from '@/utils/';
 import { fieldsAreDirty } from '@/utils/form-data';
 
 import type { FormMode } from '@/types';
-import type { Priority, Task } from '../types';
+import type { Task } from '../types';
 import type { CheckedState } from '@radix-ui/react-checkbox';
 
 interface TaskFormProps extends FormMode {
@@ -138,11 +138,11 @@ export function TaskForm({
               control={form.control}
             />
 
-            <SelectInput<CreateTaskFields, Priority, typeof priorityOptions>
+            <SelectInput
               name='priority'
               placeholder='Priority'
               label='Priority'
-              options={priorityOptions}
+              options={prioritySelectOptions}
               control={form.control}
             />
           </div>
