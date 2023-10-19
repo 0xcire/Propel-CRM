@@ -1,35 +1,33 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addLead } from '../api';
+
+import { markListingAsSold } from '../api';
 
 import { useToast } from '@/components/ui/use-toast';
 
 import { isAPIError } from '@/utils/';
 
 import type { UseMutationResult } from '@tanstack/react-query';
-import type { ListingResponse, ListingLeadParams } from '../types';
+import type { ListingResponse, SoldListing } from '../types';
 
-export const useAddLead = (): UseMutationResult<
+export const useMarkListingAsSold = (): UseMutationResult<
   ListingResponse,
   unknown,
-  ListingLeadParams,
+  SoldListing,
   unknown
 > => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
-  const searchParams = new URLSearchParams(window.location.search);
-  const query = {
-    page: searchParams.get('page'),
-    status: searchParams.get('status'),
-  };
-
   return useMutation({
-    mutationFn: addLead,
+    mutationFn: markListingAsSold,
+
     onSuccess: (data) => {
       toast({
         description: data.message,
       });
-      queryClient.invalidateQueries(['listings', query]);
+
+      queryClient.invalidateQueries(['listings'], {
+        exact: false,
+      });
     },
 
     onError: (error) => {

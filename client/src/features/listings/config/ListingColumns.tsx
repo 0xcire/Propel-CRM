@@ -25,6 +25,8 @@ import { currency, dateIntl, number } from '@/utils/intl';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Listing } from '../types';
 import { Link } from 'react-router-dom';
+import { MarkSold } from '@/features/tasks/components/page/Columns/MarkSold';
+import { DeleteListing } from '../components/DeleteListing';
 
 type ContactInfo = {
   id: number;
@@ -198,6 +200,10 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
     cell: ({ row }): JSX.Element => {
       const listing = row.original;
 
+      const leads = listing.contacts;
+
+      // const leads = listing.contacts?.map((contact) => contact.name);
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -230,14 +236,21 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
                 e.stopPropagation();
               }}
             >
-              Mark Sold
+              <MarkSold
+                listingID={listing.id}
+                listingPrice={listing.price}
+                leads={leads}
+              />
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={(e): void => {
                 e.stopPropagation();
               }}
             >
-              Delete
+              <DeleteListing
+                asText={true}
+                listingID={listing.id}
+              />
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />

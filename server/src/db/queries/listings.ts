@@ -1,7 +1,7 @@
 import { and, desc, eq, isNotNull, isNull, not, sql } from "drizzle-orm";
 import { db } from "..";
 import { contacts, listings, listingsToContacts, soldListings } from "../schema";
-import type { NewListing } from "../types";
+import type { NewListing, NewSoldListing } from "../types";
 
 type updateListingByIDParams = {
   listing: Partial<NewListing>;
@@ -171,6 +171,17 @@ export const deleteListingLeadsByID = async (listingID: number, userID: number) 
   return deleteLeads[0];
 };
 
+export const deleteSoldListingByID = async (listingID: number, userID: number) => {
+  const deleteSoldListing = await db
+    .delete(soldListings)
+    .where(and(eq(soldListings.listingID, listingID), eq(soldListings.userID, userID)))
+    .returning({
+      id: soldListings.listingID,
+    });
+
+  return deleteSoldListing[0];
+};
+
 export const deleteListingByID = async (listingID: number, userID: number) => {
   const deletedListing = await db.delete(listings).where(eq(listings.id, listingID)).returning({
     id: listings.id,
@@ -190,6 +201,18 @@ export const findExistingLead = async (listingID: number, contactID: number) => 
   }
 
   return existingLead[0];
+};
+
+export const insertSoldListingData = async (values: NewSoldListing) => {
+  const soldListing = await db
+    .insert(soldListings)
+    .values({
+      listingID: values.listingID,
+      userID: values.userID,
+      salePrice: values.salePrice,
+      contactID: values.contactID,
+    })
+    .onConflictDoNothing();
 };
 
 export const insertNewLead = async (listingID: number, contactID: number) => {

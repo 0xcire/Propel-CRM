@@ -4,15 +4,17 @@ import { findContactByID } from "../db/queries/contacts";
 import {
   deleteListingByID,
   deleteListingLeadsByID,
+  deleteSoldListingByID,
   findExistingLead,
   getAllUserListings,
   getUserDashboardListings,
   insertNewLead,
   insertNewListing,
+  insertSoldListingData,
   removeLead,
   updateListingByID,
 } from "../db/queries/listings";
-import type { NewListing } from "../db/types";
+import type { NewListing, NewSoldListing } from "../db/types";
 
 export const getDashboardListings = async (req: Request, res: Response) => {
   try {
@@ -119,12 +121,50 @@ export const deleteListing = async (req: Request, res: Response) => {
     const userID = req.user.id;
     const { id } = req.params;
 
+    // need to add delete cascade functionality
     const deleteLeadsForListing = await deleteListingLeadsByID(+id, userID);
-
+    const deleteFromSoldListings = await deleteSoldListingByID(+id, userID);
     const deletedListingByID = await deleteListingByID(+id, userID);
 
     return res.status(200).json({
       message: `Deleted listing: ${deletedListingByID.id}`,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
+
+export const markListingAsSold = async (req: Request, res: Response) => {
+  try {
+    const userID = req.user.id;
+    const { id } = req.params;
+    const values: NewSoldListing = req.body;
+
+    if (values.userID !== userID) {
+      return res.status(400).json({
+        message: "",
+      });
+    }
+
+    if (values.listingID !== values.listingID) {
+      return res.status(400).json({
+        message: "",
+      });
+    }
+
+    const contactByID = await findContactByID(values.contactID as number);
+
+    if (!contactByID) {
+      return res.status(400).json({
+        message: "That's weird, couldn't find that contact to add. Please try again.",
+      });
+    }
+
+    const listingMarkedAsSold = await insertSoldListingData(values);
+
+    return res.status(200).json({
+      message: `${values.listingID} marked sold.`,
     });
   } catch (error) {
     console.log(error);

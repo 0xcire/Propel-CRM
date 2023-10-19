@@ -4,6 +4,7 @@ import type {
   NewListing,
   ListingLeadParams,
   UpdateListingParams,
+  SoldListing,
 } from '../types';
 
 export const getDashboardListings = (): Promise<ListingResponse> => {
@@ -43,6 +44,15 @@ export const deleteListing = (id: number): Promise<ListingResponse> => {
   return Delete({ endpoint: `listings/${id}` }).then(
     handleAPIResponse<ListingResponse>
   );
+};
+
+export const markListingAsSold = (
+  values: SoldListing
+): Promise<ListingResponse> => {
+  return Post({
+    endpoint: `listings/status/${values.listingID}`,
+    body: JSON.stringify(values),
+  }).then(handleAPIResponse<ListingResponse>);
 };
 
 export const addLead = ({

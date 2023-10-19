@@ -8,6 +8,7 @@ import {
   updateListing,
   addListingLead,
   removeListingLead,
+  markListingAsSold,
 } from "../controllers/listings";
 import { validateRequest } from "../middlewares/validate-input";
 import { isAuth } from "../middlewares";
@@ -61,6 +62,14 @@ export default (router: Router) => {
     isAuth,
     isListingOwner,
     deleteListing
+  );
+
+  router.post(
+    "/listings/status/:id",
+    validateRequest({ cookies: cookieSchema, params: paramSchema }),
+    isAuth,
+    isListingOwner,
+    markListingAsSold
   );
 
   router.post(

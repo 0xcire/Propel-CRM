@@ -20,8 +20,10 @@ import { useNavigate } from 'react-router-dom';
 
 export function DeleteListing({
   listingID,
+  asText,
 }: {
   listingID: number;
+  asText?: boolean;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   const deleteListing = useDeleteListing();
@@ -33,13 +35,20 @@ export function DeleteListing({
       open={open}
       onOpenChange={setOpen}
     >
-      <AlertDialogTrigger asChild>
-        <Button
-          className='mr-auto'
-          variant='destructive'
-        >
-          Delete
-        </Button>
+      <AlertDialogTrigger
+        onClick={(e): void => e.stopPropagation()}
+        asChild
+      >
+        {asText ? (
+          <p className='w-full cursor-pointer'>Delete</p>
+        ) : (
+          <Button
+            className='mr-auto'
+            variant='destructive'
+          >
+            Delete
+          </Button>
+        )}
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

@@ -51,7 +51,7 @@ export const getAvgDays = async (userID: number, year: number) => {
   const average = await db
     .select({
       month: month,
-      average: sql`AVG(${soldListings.soldAt} - ${listings.createdAt})`,
+      average: sql`AVG(EXTRACT(DAYS FROM ${soldListings.soldAt} - ${listings.createdAt}))`,
     })
     .from(listings)
     .where(eq(listings.userID, userID))
@@ -74,7 +74,7 @@ export const getAvgTimeToClose = async (userID: number, year: number) => {
   const timeToClose = await db
     .select({
       month: month,
-      days: sql`AVG(${soldListings.soldAt} - ${listingsToContacts.createdAt})`,
+      days: sql`AVG(EXTRACT(DAYS FROM ${soldListings.soldAt} - ${listingsToContacts.createdAt}))`,
     })
     .from(listings)
     .where(eq(listings.userID, userID))

@@ -21,6 +21,7 @@ export type SoldListing = {
   listingID: number;
   contactID: number;
   salePrice: string;
+  userID: number;
 };
 
 export type NewListing = Omit<Listing, 'id' | 'createdAt'>;
