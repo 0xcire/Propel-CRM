@@ -1,6 +1,12 @@
 import { ComponentProps } from 'react';
-import type { Control, FieldValues, Path, PathValue } from 'react-hook-form';
-import { FormControl, FormField, FormItem, FormMessage } from '../ui/form';
+
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
 import {
   Select,
   SelectContent,
@@ -8,6 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+
+import type { Control, FieldValues, Path, PathValue } from 'react-hook-form';
 
 interface SelectInputProps<
   TFieldValues extends FieldValues,
@@ -17,6 +25,7 @@ interface SelectInputProps<
   control: Control<TFieldValues>;
   name: Path<TFieldValues>;
   options: OptionTypeArray | undefined;
+  label?: string;
   placeholder: string;
 }
 
@@ -31,6 +40,7 @@ export function SelectInput<
   control,
   name,
   options,
+  label,
   placeholder,
 }: SelectInputProps<TFieldValues, OptionType, OptionTypeArray>): JSX.Element {
   return (
@@ -39,6 +49,7 @@ export function SelectInput<
       name={name}
       render={({ field }): JSX.Element => (
         <FormItem>
+          <FormLabel>{label ? label : field.name}</FormLabel>
           <Select
             onValueChange={(val): void => {
               field.onChange(val as OptionType);
