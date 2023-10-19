@@ -1,5 +1,3 @@
-import { ComponentProps } from 'react';
-
 import {
   FormControl,
   FormField,
@@ -15,6 +13,7 @@ import {
   SelectValue,
 } from '../ui/select';
 
+import type { ComponentProps } from 'react';
 import type { Control, FieldValues, Path, PathValue } from 'react-hook-form';
 
 interface SelectInputProps<

@@ -2,7 +2,8 @@ import { Control, FieldValues, Path, PathValue } from 'react-hook-form';
 
 import { FormControl, FormField, FormItem } from '../ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
-import { type CheckedState } from '@radix-ui/react-checkbox';
+
+import type { CheckedState } from '@radix-ui/react-checkbox';
 
 type CheckboxInputProps<TFieldValues extends FieldValues> = {
   control: Control<TFieldValues>;

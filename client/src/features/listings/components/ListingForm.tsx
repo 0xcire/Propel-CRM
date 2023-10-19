@@ -103,18 +103,21 @@ export function ListingForm({
               name='propertyType'
               options={propertyTypes}
               placeholder='Property Type'
+              label='Property Type'
               control={form.control}
             />
-            <div className='flex items-center gap-2'>
+            <div className='flex items-center gap-4'>
               <SelectInput<ListingFields, Rooms, typeof rooms>
                 name='bedrooms'
                 options={rooms}
+                label='Bedrooms'
                 placeholder='Bedrooms'
                 control={form.control}
               />
               <SelectInput<ListingFields, Rooms, typeof rooms>
                 name='baths'
                 options={rooms}
+                label='Baths'
                 placeholder='Baths'
                 control={form.control}
               />

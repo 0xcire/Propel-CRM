@@ -131,7 +131,7 @@ export function TaskForm({
             className='flex-1'
           />
 
-          <div className='flex items-center justify-between pt-4'>
+          <div className='flex items-end justify-between pt-4'>
             <DateInput
               name='dueDate'
               label='Due Date'
@@ -141,6 +141,7 @@ export function TaskForm({
             <SelectInput<CreateTaskFields, Priority, typeof priorityOptions>
               name='priority'
               placeholder='Priority'
+              label='Priority'
               options={priorityOptions}
               control={form.control}
             />
