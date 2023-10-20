@@ -16,7 +16,6 @@ import {
 
 import { ListingForm } from '../ListingForm';
 
-// s, generateDefaultValues
 import { filterEqualFields, generateDefaultValues } from '@/utils/form-data';
 import { transformData } from '../../utils';
 
@@ -31,9 +30,6 @@ export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
     () => generateDefaultValues(listing),
     [listing]
   );
-  // const defaultValues = generateDefaultValues(listing);
-
-  // const defaultValues = generateDefaultValues(listing);
 
   function onSubmit(values: ListingFields): void {
     const transformedData = transformData(user.data?.id as number, values);
