@@ -4,15 +4,15 @@ import { useDeleteTask } from '../hooks/useDeleteTask';
 
 import { Button } from '@/components/ui/button';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+  Dialog,
+  // DialogAction,
+  // DialogCancel,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 import { SubmitButton } from '@/components';
 
@@ -28,12 +28,13 @@ export function DeleteTask({
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   const deleteTask = useDeleteTask();
+
   return (
-    <AlertDialog
+    <Dialog
       open={open}
       onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
     >
-      <AlertDialogTrigger asChild>
+      <DialogTrigger asChild>
         {text ? (
           <p
             onClick={(e): void => e.stopPropagation()}
@@ -49,27 +50,31 @@ export function DeleteTask({
             Delete
           </Button>
         )}
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <SubmitButton
-              variant='destructive'
-              text='Remove'
-              isLoading={deleteTask.isLoading}
-              onClick={(): void =>
-                deleteTask.mutate(id, {
-                  onSuccess: () => setOpen(false),
-                })
-              }
-            />
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Are you absolutely sure?</DialogTitle>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogTrigger asChild>
+            <Button variant='outline'>Cancel</Button>
+          </DialogTrigger>
+          {/* <DialogAction asChild> */}
+          <SubmitButton
+            variant='destructive'
+            text='Remove'
+            isLoading={deleteTask.isLoading}
+            onClick={(): void =>
+              deleteTask.mutate(id, {
+                onSuccess: () => {
+                  setOpen(false);
+                },
+              })
+            }
+          />
+          {/* </DialogAction> */}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

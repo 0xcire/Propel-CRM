@@ -4,6 +4,8 @@ export type Task = {
   id: number;
   createdAt: Date | undefined;
   userID: number | undefined;
+  listingID?: number | undefined;
+  contactID?: number | undefined;
   title: string;
   description: string | undefined;
   notes: string | undefined;

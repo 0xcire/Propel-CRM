@@ -1,8 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { DeleteListing } from './DeleteListing';
-
 import { Button } from '@/components/ui/button';
 import { DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
@@ -29,7 +27,6 @@ interface ListingFormProps extends FormMode {
 export function ListingForm({
   isCreate,
   isLoading,
-  listingID,
   defaultValues,
   onSubmit,
 }: ListingFormProps): JSX.Element {
@@ -102,7 +99,6 @@ export function ListingForm({
       </Form>
 
       <DialogFooter>
-        {!isCreate && listingID && <DeleteListing listingID={listingID} />}
         <DialogTrigger asChild>
           <Button variant='outline'>Close</Button>
         </DialogTrigger>

@@ -16,7 +16,6 @@ import {
 } from '@/components/ui/alert-dialog';
 
 import { SubmitButton } from '@/components';
-import { useNavigate } from 'react-router-dom';
 
 export function DeleteListing({
   listingID,
@@ -27,8 +26,6 @@ export function DeleteListing({
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   const deleteListing = useDeleteListing();
-
-  const navigate = useNavigate();
 
   return (
     <AlertDialog
@@ -69,7 +66,6 @@ export function DeleteListing({
                 deleteListing.mutate(listingID, {
                   onSuccess: () => {
                     setOpen(false);
-                    navigate(-1);
                   },
                 })
               }

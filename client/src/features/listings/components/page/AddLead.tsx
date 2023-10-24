@@ -71,7 +71,11 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
             <Input
               placeholder='Search through your contacts'
               className='mt-4 focus-visible:ring-0'
-              onKeyDown={(e): void => e.stopPropagation()}
+              onKeyDown={(e): void => {
+                if (e.key !== 'Escape') {
+                  e.stopPropagation();
+                }
+              }}
               onChange={(e): void => {
                 handleInputChange(e.currentTarget.value);
               }}

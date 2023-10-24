@@ -18,8 +18,6 @@ import {
 } from '@/components/form';
 import { SubmitButton } from '@/components';
 
-import { DeleteTask } from './DeleteTask';
-
 import { taskSchema, checkboxSchema } from '@/lib/validations/tasks';
 import { prioritySelectOptions } from '@/config/tasks';
 
@@ -149,7 +147,6 @@ export function TaskForm({
         </form>
       </Form>
       <DialogFooter>
-        {!isCreate && <DeleteTask id={task?.id as number} />}
         <DialogTrigger asChild>
           <Button variant='outline'>Close</Button>
         </DialogTrigger>

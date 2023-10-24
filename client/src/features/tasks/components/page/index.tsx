@@ -3,7 +3,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 
 import { useTasks } from '../../hooks/useTasks';
 
-import { TaskTable } from './TasksTable';
+import { TasksTable } from './TasksTable';
 import { taskColumns } from '../../config/TaskColumns';
 
 export function TaskPage(): JSX.Element {
@@ -35,7 +35,7 @@ export function TaskPage(): JSX.Element {
   }, []);
 
   return (
-    <TaskTable
+    <TasksTable
       data={tasks.data ?? []}
       columns={taskColumns}
       isLoading={tasks.isLoading}

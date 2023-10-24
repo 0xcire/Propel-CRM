@@ -50,7 +50,7 @@ interface ContactTableProps<TData extends Task> {
 }
 
 // cant see use case for TValue
-export function TaskTable<TData extends Task>({
+export function TasksTable<TData extends Task>({
   columns,
   data,
   isLoading,

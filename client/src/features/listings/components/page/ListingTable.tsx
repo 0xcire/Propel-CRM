@@ -44,8 +44,6 @@ import type {
 } from '@tanstack/react-table';
 import type { Listing } from '../../types';
 
-// sold listings need a contact field like a sold_to column
-
 interface ListingTableProps<TData extends Listing> {
   columns: Array<ColumnDef<Listing>>;
   data: Array<TData>;
@@ -179,12 +177,16 @@ export function ListingTable<TData extends Listing>({
                     className='row cursor-pointer'
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    onClick={(): void => {
-                      navigate(`/listings/${row.original.id}`);
-                    }}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell
+                        key={cell.id}
+                        onClick={(): void => {
+                          if (cell.getContext().column.id === 'address') {
+                            navigate(`/listings/${row.original.id}`);
+                          }
+                        }}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
