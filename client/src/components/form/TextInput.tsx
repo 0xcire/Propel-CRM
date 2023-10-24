@@ -43,7 +43,6 @@ export function TextInput<TFieldValues extends FieldValues>({
               onBlur={field.onBlur}
               ref={field.ref}
               name={field.name}
-              // {...field}
             />
           </FormControl>
           <FormMessage />

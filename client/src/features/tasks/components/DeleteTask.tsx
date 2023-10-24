@@ -5,8 +5,6 @@ import { useDeleteTask } from '../hooks/useDeleteTask';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  // DialogAction,
-  // DialogCancel,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -18,7 +16,6 @@ import { SubmitButton } from '@/components';
 
 import { handleOnOpenChange } from '@/utils';
 
-// TODO: may need to change to regular dialog to show loading state
 export function DeleteTask({
   id,
   text,
@@ -59,7 +56,7 @@ export function DeleteTask({
           <DialogTrigger asChild>
             <Button variant='outline'>Cancel</Button>
           </DialogTrigger>
-          {/* <DialogAction asChild> */}
+
           <SubmitButton
             variant='destructive'
             text='Remove'
@@ -72,7 +69,6 @@ export function DeleteTask({
               })
             }
           />
-          {/* </DialogAction> */}
         </DialogFooter>
       </DialogContent>
     </Dialog>

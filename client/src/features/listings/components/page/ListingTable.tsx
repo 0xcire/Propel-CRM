@@ -174,18 +174,18 @@ export function ListingTable<TData extends Listing>({
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
-                    className='row cursor-pointer'
+                    className='row'
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
-                        onClick={(): void => {
-                          if (cell.getContext().column.id === 'address') {
-                            navigate(`/listings/${row.original.id}`);
-                          }
-                        }}
+                        // onClick={(): void => {
+                        //   if (cell.getContext().column.id === 'address') {
+                        //     navigate(`/listings/${row.original.id}`);
+                        //   }
+                        // }}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,

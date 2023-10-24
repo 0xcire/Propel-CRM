@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { useSearchContacts } from '@/features/contacts/hooks/useSearchContacts';
-import { useAddLead } from '../../hooks/useAddLead';
+import { useAddLead } from '../../../hooks/useAddLead';
 
 import { useDebounce } from '@/hooks/useDebounce';
+import { useNameQuerySearchParams } from '@/hooks';
 
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
   Sheet,
@@ -20,10 +22,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { SubmitButton } from '@/components';
 
 import type { ComponentProps } from 'react';
-
 // ?
 import type { Contact } from '@/features/contacts/types';
-import { useNameQuerySearchParams } from '@/hooks';
 
 interface AddLeadProps extends ComponentProps<'div'> {
   listingID: number;
@@ -60,7 +60,12 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
         }}
       >
         <SheetTrigger asChild>
-          <p>Add Lead</p>
+          <DropdownMenuItem
+            className='cursor-pointer'
+            onSelect={(e): void => e.preventDefault()}
+          >
+            Add Lead
+          </DropdownMenuItem>
         </SheetTrigger>
         <SheetContent className='flex flex-col'>
           <SheetHeader className='px-4'>
@@ -71,11 +76,6 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
             <Input
               placeholder='Search through your contacts'
               className='mt-4 focus-visible:ring-0'
-              onKeyDown={(e): void => {
-                if (e.key !== 'Escape') {
-                  e.stopPropagation();
-                }
-              }}
               onChange={(e): void => {
                 handleInputChange(e.currentTarget.value);
               }}

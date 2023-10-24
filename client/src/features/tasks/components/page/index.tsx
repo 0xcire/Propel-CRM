@@ -9,10 +9,6 @@ import { taskColumns } from '../../config/TaskColumns';
 export function TaskPage(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // ?? only makes sense in dashboard,
-  // not in data table scenario
-  // const { state: completed } = useTaskContext();
-
   const { id } = useParams();
 
   const tasks = useTasks();

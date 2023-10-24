@@ -89,9 +89,9 @@ export const listingColumns: Array<ColumnDef<Contact>> = [
 
             <DropdownMenuItem
               className='cursor-pointer'
-              onClick={(e): void => {
-                e.stopPropagation();
-              }}
+              // onClick={(e): void => {
+              //   e.stopPropagation();
+              // }}
             >
               Add Task
             </DropdownMenuItem>

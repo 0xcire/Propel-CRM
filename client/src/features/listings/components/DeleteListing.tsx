@@ -4,40 +4,41 @@ import { useDeleteListing } from '../hooks/useDeleteListing';
 
 import { Button } from '@/components/ui/button';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 import { SubmitButton } from '@/components';
 
 export function DeleteListing({
   listingID,
-  asText,
+  asDropDownMenuItem,
 }: {
   listingID: number;
-  asText?: boolean;
+  asDropDownMenuItem?: boolean;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   const deleteListing = useDeleteListing();
 
   return (
-    <AlertDialog
+    <Dialog
       open={open}
       onOpenChange={setOpen}
     >
-      <AlertDialogTrigger
-        onClick={(e): void => e.stopPropagation()}
-        asChild
-      >
-        {asText ? (
-          <p className='w-full cursor-pointer'>Delete</p>
+      <DialogTrigger asChild>
+        {asDropDownMenuItem ? (
+          <DropdownMenuItem
+            onSelect={(e): void => e.preventDefault()}
+            className='cursor-pointer'
+          >
+            Delete
+          </DropdownMenuItem>
         ) : (
           <Button
             className='mr-auto'
@@ -46,33 +47,37 @@ export function DeleteListing({
             Delete
           </Button>
         )}
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogDescription>
             This action cannot be undone. This will permanently delete this
             listing.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <SubmitButton
-              variant='destructive'
-              text='Remove'
-              isLoading={deleteListing.isLoading}
-              onClick={(): void =>
-                deleteListing.mutate(listingID, {
-                  onSuccess: () => {
-                    setOpen(false);
-                  },
-                })
-              }
-            />
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button
+            variant='outline'
+            onClick={(): void => setOpen(false)}
+          >
+            Cancel
+          </Button>
+
+          <SubmitButton
+            variant='destructive'
+            text='Remove'
+            isLoading={deleteListing.isLoading}
+            onClick={(): void =>
+              deleteListing.mutate(listingID, {
+                onSuccess: () => {
+                  setOpen(false);
+                },
+              })
+            }
+          />
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

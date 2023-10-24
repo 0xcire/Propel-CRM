@@ -37,7 +37,6 @@ export function RemoveLead({
     >
       <AlertDialogTrigger asChild>
         <Trash2Icon
-          onClick={(e): void => e.stopPropagation()}
           className='cursor-pointer'
           size={16}
           tabIndex={0}
@@ -53,16 +52,13 @@ export function RemoveLead({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={(e): void => e.stopPropagation()}>
-            Cancel
-          </AlertDialogCancel>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction asChild>
             <SubmitButton
               variant='destructive'
               text='Remove'
               isLoading={removeLead.isLoading}
-              onClick={(e): void => {
-                e.stopPropagation();
+              onClick={(): void => {
                 removeLead.mutate(
                   {
                     listingID: listingID,
