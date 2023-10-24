@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import { MoreHorizontal } from 'lucide-react';
 
 import { toast } from '@/components/ui/use-toast';
@@ -68,31 +70,27 @@ export const listingColumns: Array<ColumnDef<Contact>> = [
             >
               Copy contact ID
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <UpdateContact
-                text='Update'
-                contact={contact}
-              />
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={(e): void => {
-                e.stopPropagation();
-              }}
-            >
-              <RemoveContact
-                text='Delete'
-                contact={contact}
-              />
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
 
             <DropdownMenuItem
               className='cursor-pointer'
-              // onClick={(e): void => {
-              //   e.stopPropagation();
-              // }}
+              asChild
             >
+              <Link to={`/contacts/${contact.id}`}>View Details</Link>
+            </DropdownMenuItem>
+
+            <UpdateContact
+              asDropdownMenuItem
+              contact={contact}
+            />
+
+            <RemoveContact
+              asDropdownMenuItem
+              contact={contact}
+            />
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem className='cursor-pointer'>
               Add Task
             </DropdownMenuItem>
           </DropdownMenuContent>

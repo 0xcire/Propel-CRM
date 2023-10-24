@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import { parseISO } from 'date-fns';
 
 // index to clean this up
@@ -122,28 +124,28 @@ export const taskColumns: Array<ColumnDef<Task>> = [
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={(e): void => {
-                e.stopPropagation();
+              className='cursor-pointer'
+              onClick={(): Promise<void> => {
                 toast({
                   description: `Task ID: ${task.id}`,
                 });
+                return navigator.clipboard.writeText(task.id.toString());
               }}
             >
               Copy task ID
             </DropdownMenuItem>
-            {/* <DropdownMenuItem onClick={(e): void => e.stopPropagation()}>
-              <UpdateTask
-                userID={user.data?.id as number}
-                task={task}
-                text='Update Task'
-              />
-            </DropdownMenuItem> */}
-            <DropdownMenuItem onClick={(e): void => e.stopPropagation()}>
-              <DeleteTask
-                id={task.id}
-                text='Delete Task'
-              />
+
+            <DropdownMenuItem
+              className='cursor-pointer'
+              asChild
+            >
+              <Link to={`/tasks/${task.id}`}>Update</Link>
             </DropdownMenuItem>
+
+            <DeleteTask
+              asDropdownMenuItem
+              id={task.id}
+            />
           </DropdownMenuContent>
         </DropdownMenu>
       );

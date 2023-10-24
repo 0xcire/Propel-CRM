@@ -18,10 +18,10 @@ import { SubmitButton } from '@/components';
 
 export function DeleteListing({
   listingID,
-  asDropDownMenuItem,
+  asDropdownMenuItem,
 }: {
   listingID: number;
-  asDropDownMenuItem?: boolean;
+  asDropdownMenuItem?: boolean;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   const deleteListing = useDeleteListing();
@@ -32,7 +32,7 @@ export function DeleteListing({
       onOpenChange={setOpen}
     >
       <DialogTrigger asChild>
-        {asDropDownMenuItem ? (
+        {asDropdownMenuItem ? (
           <DropdownMenuItem
             onSelect={(e): void => e.preventDefault()}
             className='cursor-pointer'

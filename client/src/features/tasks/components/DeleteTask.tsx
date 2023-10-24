@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useDeleteTask } from '../hooks/useDeleteTask';
 
 import { Button } from '@/components/ui/button';
+
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import {
   Dialog,
   DialogContent,
@@ -18,10 +20,10 @@ import { handleOnOpenChange } from '@/utils';
 
 export function DeleteTask({
   id,
-  text,
+  asDropdownMenuItem,
 }: {
   id: number;
-  text?: string;
+  asDropdownMenuItem?: boolean;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   const deleteTask = useDeleteTask();
@@ -32,13 +34,13 @@ export function DeleteTask({
       onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
     >
       <DialogTrigger asChild>
-        {text ? (
-          <p
-            onClick={(e): void => e.stopPropagation()}
+        {asDropdownMenuItem ? (
+          <DropdownMenuItem
+            onSelect={(e): void => e.preventDefault()}
             className='w-full cursor-pointer'
           >
-            {text}
-          </p>
+            Delete
+          </DropdownMenuItem>
         ) : (
           <Button
             variant='destructive'

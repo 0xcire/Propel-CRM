@@ -109,7 +109,10 @@ export function MarkSold({
     >
       <>
         <DialogTrigger asChild>
-          <DropdownMenuItem onSelect={(e): void => e.preventDefault()}>
+          <DropdownMenuItem
+            className='cursor-pointer'
+            onSelect={(e): void => e.preventDefault()}
+          >
             Mark Sold
           </DropdownMenuItem>
         </DialogTrigger>

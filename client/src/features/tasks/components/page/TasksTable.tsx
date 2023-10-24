@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import {
   flexRender,
@@ -58,7 +58,6 @@ export function TasksTable<TData extends Task>({
 }: // nameQuery,
 // setNameQuery,
 ContactTableProps<TData>): JSX.Element {
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -211,19 +210,7 @@ ContactTableProps<TData>): JSX.Element {
                     data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        className={
-                          cell.getContext().column.id === 'title'
-                            ? 'cursor-pointer'
-                            : ''
-                        }
-                        onClick={(): void => {
-                          if (cell.getContext().column.id === 'title') {
-                            navigate(`/tasks/${row.original.id}`);
-                          }
-                        }}
-                        key={cell.id}
-                      >
+                      <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

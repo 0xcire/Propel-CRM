@@ -213,9 +213,21 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-            <DropdownMenuItem>
-              <Link to={`/listings/${row.original.id}`}>View Details</Link>
+            <DropdownMenuItem
+              className='cursor-pointer'
+              asChild
+            >
+              <Link to={`/listings/${row.original.id}`}>Update</Link>
             </DropdownMenuItem>
+
+            <DeleteListing
+              asDropdownMenuItem
+              listingID={listing.id}
+            />
+
+            <DropdownMenuSeparator />
+
+            <AddLead listingID={listing.id} />
 
             <MarkSold
               listingID={listing.id}
@@ -223,14 +235,7 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
               leads={leads}
             />
 
-            <DeleteListing
-              asDropDownMenuItem={true}
-              listingID={listing.id}
-            />
-
             <DropdownMenuSeparator />
-
-            <AddLead listingID={listing.id} />
 
             <AddListingTask listingID={listing.id} />
 

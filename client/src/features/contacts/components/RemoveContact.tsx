@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useDeleteContact } from '../hooks/useDeleteContact';
 
 import { Trash2Icon } from 'lucide-react';
+
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,12 +23,13 @@ import { handleOnOpenChange } from '@/utils';
 import type { ContactAsProp } from '../types';
 
 interface RemoveContactProps extends ContactAsProp {
-  text?: string;
+  asDropdownMenuItem?: boolean;
 }
 
 export function RemoveContact({
   contact,
-  text,
+
+  asDropdownMenuItem,
 }: RemoveContactProps): JSX.Element {
   const [open, setOpen] = useState(false);
 
@@ -37,12 +40,14 @@ export function RemoveContact({
       open={open}
       onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
     >
-      <AlertDialogTrigger
-        onClick={(e): void => e.stopPropagation()}
-        asChild
-      >
-        {text ? (
-          <p className='h-full w-full cursor-pointer'>{text}</p>
+      <AlertDialogTrigger asChild>
+        {asDropdownMenuItem ? (
+          <DropdownMenuItem
+            className='cursor-pointer'
+            onSelect={(e): void => e.preventDefault()}
+          >
+            Delete
+          </DropdownMenuItem>
         ) : (
           <Trash2Icon
             className='cursor-pointer'
@@ -51,7 +56,7 @@ export function RemoveContact({
           />
         )}
       </AlertDialogTrigger>
-      <AlertDialogContent onClick={(e): void => e.stopPropagation()}>
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>

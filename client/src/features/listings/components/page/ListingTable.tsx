@@ -179,14 +179,7 @@ export function ListingTable<TData extends Listing>({
                     data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        // onClick={(): void => {
-                        //   if (cell.getContext().column.id === 'address') {
-                        //     navigate(`/listings/${row.original.id}`);
-                        //   }
-                        // }}
-                      >
+                      <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
