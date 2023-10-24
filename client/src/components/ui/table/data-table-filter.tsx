@@ -49,8 +49,15 @@ export function DataTableFilter<TData, TValue>({
   options,
 }: DataTableFilterProps<TData, TValue>): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
+  let selectedValues: Set<string>;
 
-  const selectedValues = new Set(column?.getFilterValue() as string[]);
+  const priorities = searchParams.get('priority')
+
+  if(priorities) {
+    selectedValues = new Set(priorities.split(','))
+  } else {
+    selectedValues = new Set(column?.getFilterValue() as string[])
+  }
 
   const generatePriorityFilterQueryParam = (): string => {
     let query = '';
