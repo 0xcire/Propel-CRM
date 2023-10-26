@@ -7,17 +7,17 @@ import type { Request, Response, NextFunction } from "express";
 
 export const isListingOwner = async (req: Request, res: Response, next: NextFunction) => {
   const userID = req.user.id;
-  const { id } = req.params;
+  const { listingID } = req.params;
   const method = req.method;
 
   const listingByID: Array<Listing> = await db
     .select()
     .from(listings)
-    .where(and(eq(listings.id, +id), eq(listings.userID, userID)));
+    .where(and(eq(listings.id, +listingID), eq(listings.userID, userID)));
 
   if (!listingByID[0]) {
     return res.status(404).json({
-      message: `Listing by id: ${id} does not exist`,
+      message: `Listing by id: ${listingID} does not exist`,
     });
   }
 

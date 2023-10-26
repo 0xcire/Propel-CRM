@@ -50,9 +50,9 @@ export const getAllListings = async (req: Request, res: Response) => {
 
 export const getSpecificListing = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { listingID } = req.params;
 
-    if (!id) {
+    if (!listingID) {
       return res.status(400).json({
         message: "Please provide a listing ID.",
       });
@@ -96,7 +96,7 @@ export const createListing = async (req: Request, res: Response) => {
 export const updateListing = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { id } = req.params;
+    const { listingID } = req.params;
 
     const { address, baths, bedrooms, description, price, propertyType, squareFeet }: Partial<NewListing> = req.body;
 
@@ -104,7 +104,7 @@ export const updateListing = async (req: Request, res: Response) => {
       return res.status(400).json({});
     }
 
-    const updatedListingByID = await updateListingByID({ listing: req.body, listingID: +id, userID: userID });
+    const updatedListingByID = await updateListingByID({ listing: req.body, listingID: +listingID, userID: userID });
 
     return res.status(200).json({
       message: "Updated listing.",
@@ -119,12 +119,12 @@ export const updateListing = async (req: Request, res: Response) => {
 export const deleteListing = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { id } = req.params;
+    const { listingID } = req.params;
 
-    // need to add delete cascade functionality
-    const deleteLeadsForListing = await deleteListingLeadsByID(+id, userID);
-    const deleteFromSoldListings = await deleteSoldListingByID(+id, userID);
-    const deletedListingByID = await deleteListingByID(+id, userID);
+    // TODO: need to add delete cascade functionality
+    const deleteLeadsForListing = await deleteListingLeadsByID(+listingID, userID);
+    const deleteFromSoldListings = await deleteSoldListingByID(+listingID, userID);
+    const deletedListingByID = await deleteListingByID(+listingID, userID);
 
     return res.status(200).json({
       message: `Deleted listing: ${deletedListingByID.id}`,
@@ -138,7 +138,7 @@ export const deleteListing = async (req: Request, res: Response) => {
 export const markListingAsSold = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { id } = req.params;
+    const { listingID } = req.params;
     const values: NewSoldListing = req.body;
 
     if (values.userID !== userID) {
@@ -147,7 +147,7 @@ export const markListingAsSold = async (req: Request, res: Response) => {
       });
     }
 
-    if (values.listingID !== values.listingID) {
+    if (values.listingID !== +listingID) {
       return res.status(400).json({
         message: "",
       });
@@ -174,7 +174,7 @@ export const markListingAsSold = async (req: Request, res: Response) => {
 
 export const addListingLead = async (req: Request, res: Response) => {
   try {
-    const { id: listingID, contactID } = req.params;
+    const { listingID, contactID } = req.params;
 
     const contactByID = await findContactByID(+contactID);
 
@@ -205,7 +205,7 @@ export const addListingLead = async (req: Request, res: Response) => {
 
 export const removeListingLead = async (req: Request, res: Response) => {
   try {
-    const { id: listingID, contactID } = req.params;
+    const { listingID, contactID } = req.params;
 
     const contactByID = await findContactByID(+contactID);
 

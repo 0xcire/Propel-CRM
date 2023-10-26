@@ -1,11 +1,13 @@
 import type { Request, Response } from "express";
-import { findUsersByID } from "../db/queries/user";
+
 import {
   deleteTaskByID,
-  findUserTasks,
+  getUserTasks,
   getUserDashboardTasks,
   insertNewTask,
   updateTaskByID,
+  getUsersListingTasks,
+  getUsersContactTasks,
 } from "../db/queries/tasks";
 
 import type { NewTask } from "../db/types";
@@ -30,23 +32,51 @@ export const getDashboardTasks = async (req: Request, res: Response) => {
   }
 };
 
+// listing/:id/tasks
+// contact/:id/tasks
+
 export const getTasks = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
     const { completed, page, priority } = req.query;
+    const { listingID, contactID } = req.params;
 
     const priorities = (priority as string)?.split(",");
 
-    const userTasks = await findUserTasks({
-      userID: userID,
-      completed: completed as "true" | "false",
-      page: +page!,
-      priority: priorities,
-    });
+    let userTasks;
+
+    if (listingID && !contactID) {
+      userTasks = await getUsersListingTasks({
+        userID: userID,
+        completed: completed as "true" | "false",
+        page: +page!,
+        priority: priorities,
+        listingID: +listingID,
+      });
+    }
+
+    if (contactID && !listingID) {
+      userTasks = await getUsersContactTasks({
+        userID: userID,
+        completed: completed as "true" | "false",
+        page: +page!,
+        priority: priorities,
+        contactID: +contactID,
+      });
+    }
+
+    if (!listingID && !contactID) {
+      userTasks = await getUserTasks({
+        userID: userID,
+        completed: completed as "true" | "false",
+        page: +page!,
+        priority: priorities,
+      });
+    }
 
     return res.status(200).json({
       message: "",
-      tasks: userTasks,
+      tasks: userTasks ?? [],
     });
   } catch (error) {
     console.log(error);
@@ -55,9 +85,9 @@ export const getTasks = async (req: Request, res: Response) => {
 };
 export const getTask = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { taskID } = req.params;
 
-    if (!id) {
+    if (!taskID) {
       return res.status(400).json({
         message: "Bad request.",
       });
@@ -76,24 +106,20 @@ export const getTask = async (req: Request, res: Response) => {
 export const createTask = async (req: Request, res: Response) => {
   try {
     const authUserID = req.user.id;
-    const { userID, title, description, notes, dueDate, completed, priority } = req.body;
+    const { userID, title, description, notes, dueDate, completed, priority, listingID, contactID } = req.body;
 
-    // TODO: should i be requiring userID on req body?
+    // TODO: ?
+    if (userID !== authUserID) {
+      return res.status(403).json({
+        message: "hmm...",
+      });
+    }
 
     if (!title) {
       return res.status(400).json({
         message: "Tasks require at least a title.",
       });
     }
-
-    // TODO: necessary?
-    // if (authUserID !== userID) {
-    //   return res.status(409).json({
-    //     message: "Cannot complete this operation.",
-    //   });
-    // }
-
-    const user = findUsersByID({ id: authUserID });
 
     const task: NewTask = {
       userID: authUserID,
@@ -103,6 +129,8 @@ export const createTask = async (req: Request, res: Response) => {
       dueDate: dueDate,
       // completed: completed,
       priority: priority,
+      listingID: listingID ?? null,
+      contactID: contactID ?? null,
     };
 
     const newTask = await insertNewTask(task);
@@ -117,13 +145,10 @@ export const createTask = async (req: Request, res: Response) => {
   }
 };
 
-// TODO: along with auth, contacts, user, need to validate inputs against zod schema
-// sanitize data (express-validator maybe just zod?)
-// error handling
 export const updateTask = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { id } = req.params;
+    const { taskID } = req.params;
 
     const { title, description, notes, dueDate, completed, priority } = req.body;
 
@@ -133,7 +158,7 @@ export const updateTask = async (req: Request, res: Response) => {
       });
     }
 
-    const updatedTask = await updateTaskByID({ userID: userID, contactID: id, newData: req.body });
+    const updatedTask = await updateTaskByID({ userID: userID, taskID: taskID, newData: req.body });
 
     return res.status(200).json({
       message: "Updated task.",
@@ -148,9 +173,9 @@ export const updateTask = async (req: Request, res: Response) => {
 export const deleteTask = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { id } = req.params;
+    const { taskID } = req.params;
 
-    const deletedTask = await deleteTaskByID({ userID: userID, contactID: id });
+    const deletedTask = await deleteTaskByID({ userID: userID, taskID: taskID });
 
     return res.status(200).json({
       message: "Deleted task",

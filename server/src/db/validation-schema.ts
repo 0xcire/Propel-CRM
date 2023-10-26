@@ -33,6 +33,41 @@ export const paramSchema = z
     id: param.id.trim(),
   }));
 
+export const listingIDParamSchema = z
+  .object({
+    listingID: z.string(),
+  })
+  .transform((param) => ({
+    id: param.listingID.trim(),
+  }));
+
+export const contactIDParamSchema = z
+  .object({
+    contactID: z.string(),
+  })
+  .transform((param) => ({
+    contactID: param.contactID.trim(),
+  }));
+
+export const taskIDParamSchema = z
+  .object({
+    taskID: z.string(),
+  })
+  .transform((param) => ({
+    contactID: param.taskID.trim(),
+  }));
+
+// TODO: better way?
+export const listingAndContactIDSchema = z
+  .object({
+    listingID: z.string(),
+    contactID: z.string(),
+  })
+  .transform((param) => ({
+    listingID: param.listingID.trim(),
+    contactID: param.contactID.trim(),
+  }));
+
 export const signupSchema = createInsertSchema(users)
   .pick({
     name: true,
@@ -206,16 +241,6 @@ export const listingQuerySchema = z
   .transform((listing) => ({
     page: listing.page.trim(),
     status: listing.status.trim(),
-  }));
-
-export const listingLeadSchema = z
-  .object({
-    id: z.string(),
-    contactID: z.string(),
-  })
-  .transform((lead) => ({
-    id: lead.id.trim(),
-    contactID: lead.contactID.trim(),
   }));
 
 export const analyticsQuerySchema = z

@@ -18,10 +18,11 @@ import {
   cookieSchema,
   createListingSchema,
   listingQuerySchema,
-  listingLeadSchema,
-  paramSchema,
   updateListingSchema,
+  listingIDParamSchema,
+  listingAndContactIDSchema,
 } from "../db/validation-schema";
+import { isContactOwner } from "../middlewares/contacts";
 
 export default (router: Router) => {
   router.get("/dashboard/listings", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardListings);
@@ -34,8 +35,8 @@ export default (router: Router) => {
   );
 
   router.get(
-    "/listings/:id",
-    validateRequest({ cookies: cookieSchema, params: paramSchema }),
+    "/listings/:listingID",
+    validateRequest({ cookies: cookieSchema, params: listingIDParamSchema }),
     isAuth,
     isListingOwner,
     getSpecificListing
@@ -49,42 +50,44 @@ export default (router: Router) => {
   );
 
   router.patch(
-    "/listings/:id",
-    validateRequest({ body: updateListingSchema, cookies: cookieSchema, params: paramSchema }),
+    "/listings/:listingID",
+    validateRequest({ body: updateListingSchema, cookies: cookieSchema, params: listingIDParamSchema }),
     isAuth,
     isListingOwner,
     updateListing
   );
 
   router.delete(
-    "/listings/:id",
-    validateRequest({ cookies: cookieSchema, params: paramSchema }),
+    "/listings/:listingID",
+    validateRequest({ cookies: cookieSchema, params: listingIDParamSchema }),
     isAuth,
     isListingOwner,
     deleteListing
   );
 
   router.post(
-    "/listings/status/:id",
-    validateRequest({ cookies: cookieSchema, params: paramSchema }),
+    "/listings/status/:listingID",
+    validateRequest({ cookies: cookieSchema, params: listingIDParamSchema }),
     isAuth,
     isListingOwner,
     markListingAsSold
   );
 
   router.post(
-    "/listings/:id/lead/:contactID",
-    validateRequest({ cookies: cookieSchema, params: listingLeadSchema }),
+    "/listings/:listingID/lead/:contactID",
+    validateRequest({ cookies: cookieSchema, params: listingAndContactIDSchema }),
     isAuth,
     isListingOwner,
+    isContactOwner,
     addListingLead
   );
 
   router.delete(
-    "/listings/:id/lead/:contactID",
-    validateRequest({ cookies: cookieSchema, params: listingLeadSchema }),
+    "/listings/:listingID/lead/:contactID",
+    validateRequest({ cookies: cookieSchema, params: listingAndContactIDSchema }),
     isAuth,
     isListingOwner,
+    isContactOwner,
     removeListingLead
   );
 };
