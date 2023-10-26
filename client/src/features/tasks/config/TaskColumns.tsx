@@ -1,14 +1,9 @@
 import { Link } from 'react-router-dom';
 
-import { parseISO } from 'date-fns';
-
-// index to clean this up
-import { dateIntl } from '@/utils/intl';
-import { removeTimeZone } from '@/utils/';
+import { formatDateString } from '@/utils/intl';
 
 import { MoreHorizontal } from 'lucide-react';
 
-import { toast } from '@/components/ui/use-toast';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,17 +13,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 
-// import { UpdateTask } from '../components/UpdateTask';
+import { TaskCheckbox } from '../components/TaskCheckbox';
 import { DeleteTask } from '../components/DeleteTask';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Task } from '../types';
-// import { useUser } from '@/lib/react-query-auth';
-
-import { TaskForm } from '../components/TaskForm';
-import { useUpdateTask } from '../hooks/useUpdateTask';
-import { useCallback } from 'react';
-import { CheckedState } from '@radix-ui/react-checkbox';
 
 export const taskColumns: Array<ColumnDef<Task>> = [
   {
@@ -36,34 +25,10 @@ export const taskColumns: Array<ColumnDef<Task>> = [
     cell: ({ row }): JSX.Element => {
       const task = row.original;
 
-      // TODO: Clean up :)
-      // same as Task.tsx
-      //eslint-disable-next-line
-      const updateTask = useUpdateTask({ isCheckbox: true });
-
-      //eslint-disable-next-line
-      const handleOnCheckedChange = useCallback(
-        (checked: CheckedState): void => {
-          updateTask.mutate({
-            id: task.id,
-            data: {
-              completed: checked as boolean,
-            },
-          });
-        },
-        //eslint-disable-next-line
-        []
-      );
-
       return (
-        <TaskForm
-          isCheckbox={true}
-          isCreate={true}
-          isLoading={updateTask.isLoading}
-          handleOnCheckedChange={handleOnCheckedChange}
-          defaultValues={{
-            completed: task.completed,
-          }}
+        <TaskCheckbox
+          taskID={task.id}
+          completed={task.completed as boolean}
         />
       );
     },
@@ -92,12 +57,7 @@ export const taskColumns: Array<ColumnDef<Task>> = [
     cell: ({ row }): JSX.Element => {
       const dueDate: string = row.getValue('dueDate');
 
-      // TODO: common with Task.tsx
-      return dueDate ? (
-        <p>{dateIntl.format(parseISO(removeTimeZone(dueDate)))}</p>
-      ) : (
-        <></>
-      );
+      return dueDate ? <p>{formatDateString(dueDate)}</p> : <></>;
     },
   },
 
@@ -105,10 +65,6 @@ export const taskColumns: Array<ColumnDef<Task>> = [
     id: 'actions',
     cell: ({ row }): JSX.Element => {
       const task = row.original;
-
-      // TODO: user context
-      //eslint-disable-next-line
-      // const user = useUser();
 
       return (
         <DropdownMenu>
@@ -123,17 +79,6 @@ export const taskColumns: Array<ColumnDef<Task>> = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              className='cursor-pointer'
-              onClick={(): Promise<void> => {
-                toast({
-                  description: `Task ID: ${task.id}`,
-                });
-                return navigator.clipboard.writeText(task.id.toString());
-              }}
-            >
-              Copy task ID
-            </DropdownMenuItem>
 
             <DropdownMenuItem
               className='cursor-pointer'

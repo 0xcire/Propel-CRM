@@ -1,20 +1,13 @@
-import { useCallback } from 'react';
-
-import { parseISO } from 'date-fns';
-
 import clsx from 'clsx';
-
-import { useUpdateTask } from '../hooks/useUpdateTask';
 
 import { Typography } from '@/components/ui/typography';
 
-import { TaskForm } from './TaskForm';
+import { TaskCheckbox } from './TaskCheckbox';
 import { UpdateTask } from './UpdateTask';
 
-import { removeTimeZone } from '@/utils/';
+import { formatDateString } from '@/utils/intl';
 
 import type { Task as TaskData } from '../types';
-import type { CheckedState } from '@radix-ui/react-checkbox';
 
 type TaskProps = {
   userID: number;
@@ -28,37 +21,16 @@ const taskPriorityLookup = {
 };
 
 export function Task({ task, userID }: TaskProps): JSX.Element {
-  const updateTask = useUpdateTask({ isCheckbox: true });
-
-  const handleOnCheckedChange = useCallback((checked: CheckedState): void => {
-    updateTask.mutate({
-      id: task.id,
-      data: {
-        completed: checked as boolean,
-      },
-    });
-
-    //eslint-disable-next-line
-  }, []);
-
   let localFormat;
   if (task.dueDate) {
-    // extract this
-    localFormat = new Intl.DateTimeFormat('en-US', {
-      dateStyle: 'short',
-    }).format(parseISO(removeTimeZone(task.dueDate)));
+    localFormat = formatDateString(task.dueDate);
   }
 
   return (
     <div className='my-2 flex w-full py-1'>
-      <TaskForm
-        isCheckbox={true}
-        isCreate={true}
-        isLoading={updateTask.isLoading}
-        handleOnCheckedChange={handleOnCheckedChange}
-        defaultValues={{
-          completed: task.completed,
-        }}
+      <TaskCheckbox
+        taskID={task.id}
+        completed={task.completed as boolean}
       />
       <div
         className={clsx(
