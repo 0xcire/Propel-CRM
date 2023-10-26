@@ -25,7 +25,7 @@ import { transformData } from '../../utils';
 
 import type { NewListing, ListingFields } from '../../types';
 
-// Currently just update form.
+// TODO: Currently just update form.
 // when adding file uploads, can improve this
 // then add <UpdateListing listing={row.original} /> to ListingColumns
 

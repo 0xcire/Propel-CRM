@@ -12,7 +12,7 @@ import {
 import { AddTask } from '@/features/tasks/components/AddTask';
 
 export function TaskDropdown(): JSX.Element {
-  const { state: showCompleted, setState: setShowCompleted } = useTaskContext();
+  const { showCompleted, setShowCompleted } = useTaskContext();
 
   return (
     <DropdownMenu>
