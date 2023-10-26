@@ -61,7 +61,7 @@ export const searchForContacts = async (userID: number, name: string) => {
     .select({
       id: contacts.id,
       name: contacts.name,
-      phone: contacts.phoneNumber,
+      phoneNumber: contacts.phoneNumber,
       email: contacts.email,
       address: contacts.address,
     })

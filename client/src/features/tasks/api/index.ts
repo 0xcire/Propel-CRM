@@ -18,6 +18,18 @@ export const getTasks = (): Promise<TaskResponse> => {
   );
 };
 
+export const getListingTasks = (listingID: number): Promise<TaskResponse> => {
+  return Get({
+    endpoint: `tasks/listings/${listingID}${window.location.search}`,
+  }).then(handleAPIResponse<TaskResponse>);
+};
+
+export const getContactTasks = (contactID: number): Promise<TaskResponse> => {
+  return Get({
+    endpoint: `tasks/contacts/${contactID}${window.location.search}`,
+  }).then(handleAPIResponse<TaskResponse>);
+};
+
 export const createTask = (data: NewTask): Promise<TaskResponse> => {
   return Post({ endpoint: 'tasks', body: JSON.stringify(data) }).then(
     handleAPIResponse<TaskResponse>
