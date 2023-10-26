@@ -10,7 +10,10 @@ export const useNameQuerySearchParams = (
 ): void => {
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const name = searchParams.get('name');
+
   useEffect(() => {
+    if (name && !debouncedNameQuery) return;
     if (
       (debouncedNameQuery === '' || !debouncedNameQuery) &&
       searchParams.get('name')

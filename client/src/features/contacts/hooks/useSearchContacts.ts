@@ -19,10 +19,10 @@ export const useSearchContacts = (): UseQueryResult<
   unknown
 > => {
   const searchParams = new URLSearchParams(window.location.search);
-  const query = { name: searchParams.get('name') };
+  const query = { name: searchParams.get('name'), search: true };
 
   return useQuery({
-    queryKey: ['search-contacts', query],
+    queryKey: ['contacts', query],
     queryFn: searchContacts,
     select: (data) => data?.contacts,
     enabled: !!query.name,
