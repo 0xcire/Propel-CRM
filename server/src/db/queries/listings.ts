@@ -163,25 +163,6 @@ export const updateListingByID = async ({ listing, listingID, userID }: updateLi
   return updatedListing[0];
 };
 
-export const deleteListingLeadsByID = async (listingID: number, userID: number) => {
-  const deleteLeads = await db.delete(listingsToContacts).where(eq(listingsToContacts.listingID, listingID)).returning({
-    id: listingsToContacts.listingID,
-  });
-
-  return deleteLeads[0];
-};
-
-export const deleteSoldListingByID = async (listingID: number, userID: number) => {
-  const deleteSoldListing = await db
-    .delete(soldListings)
-    .where(and(eq(soldListings.listingID, listingID), eq(soldListings.userID, userID)))
-    .returning({
-      id: soldListings.listingID,
-    });
-
-  return deleteSoldListing[0];
-};
-
 export const deleteListingByID = async (listingID: number, userID: number) => {
   const deletedListing = await db.delete(listings).where(eq(listings.id, listingID)).returning({
     id: listings.id,

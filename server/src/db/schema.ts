@@ -152,10 +152,10 @@ export const listingsToContacts = pgTable(
   {
     listingID: integer("listing_id")
       .notNull()
-      .references(() => listings.id),
+      .references(() => listings.id, { onDelete: "cascade" }),
     contactID: integer("contact_id")
       .notNull()
-      .references(() => contacts.id),
+      .references(() => contacts.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   },
   (t) => ({
@@ -182,8 +182,8 @@ export const listingsToContactsRelations = relations(listingsToContacts, ({ one 
 export const soldListings = pgTable("sold_listings", {
   id: serial("id").primaryKey(),
   userID: integer("user_id").references(() => users.id),
-  listingID: integer("listing_id").references(() => listings.id),
-  contactID: integer("contact_id").references(() => contacts.id),
+  listingID: integer("listing_id").references(() => listings.id, { onDelete: "cascade" }),
+  contactID: integer("contact_id").references(() => contacts.id, { onDelete: "cascade" }),
   salePrice: numeric("sale_price", { precision: 11, scale: 2 }).notNull(),
   soldAt: timestamp("sold_at", { withTimezone: true }).defaultNow(),
 });

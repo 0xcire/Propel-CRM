@@ -3,8 +3,6 @@ import { Request, Response } from "express";
 import { findContactByID } from "../db/queries/contacts";
 import {
   deleteListingByID,
-  deleteListingLeadsByID,
-  deleteSoldListingByID,
   findExistingLead,
   getAllUserListings,
   getUserDashboardListings,
@@ -121,9 +119,6 @@ export const deleteListing = async (req: Request, res: Response) => {
     const userID = req.user.id;
     const { listingID } = req.params;
 
-    // TODO: need to add delete cascade functionality
-    const deleteLeadsForListing = await deleteListingLeadsByID(+listingID, userID);
-    const deleteFromSoldListings = await deleteSoldListingByID(+listingID, userID);
     const deletedListingByID = await deleteListingByID(+listingID, userID);
 
     return res.status(200).json({
