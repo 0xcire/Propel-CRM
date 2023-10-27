@@ -22,6 +22,7 @@ import { filterUndefined } from '@/utils/form-data';
 import { removeTimeZone } from '@/utils';
 
 import type { CreateTaskFields } from '../TaskForm';
+// import { useDocumentTitle } from '@/hooks';
 
 // Is just UpdateTask for now
 // implement actual page
@@ -35,6 +36,12 @@ export function TaskRoute(): JSX.Element {
   const user = useUser();
   const task = useTask(+(id as string));
   const updateTask = useUpdateTask({ isCheckbox: false });
+
+  // useDocumentTitle(
+  //   task.data && task.data[0]
+  //     ? `${task.data[0].title} | Propel CRM`
+  //     : 'Tasks | Propel CRM'
+  // );
 
   if (task.isLoading) {
     return (

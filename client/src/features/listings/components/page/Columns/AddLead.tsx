@@ -33,7 +33,6 @@ interface AddLeadProps extends ComponentProps<'div'> {
 // could make generic: 'ContactSearch' or etc..
 export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
   const [query, setQuery] = useState<string | undefined>(undefined);
-
   const [searchParams, setSearchParams] = useSearchParams();
   const debouncedNameQuery = useDebounce(query, 200);
 
@@ -107,6 +106,7 @@ function Lead({
   contact: Contact;
   listingID: number;
 }): JSX.Element {
+  const [searchParams, setSearchParams] = useSearchParams();
   const addLead = useAddLead();
   return (
     <div
@@ -116,10 +116,18 @@ function Lead({
       <p>{contact.name}</p>
       <SubmitButton
         onClick={(): void => {
-          addLead.mutate({
-            listingID: listingID,
-            contactID: contact.id,
-          });
+          addLead.mutate(
+            {
+              listingID: listingID,
+              contactID: contact.id,
+            },
+            {
+              onSuccess: () => {
+                searchParams.delete('name');
+                setSearchParams(searchParams);
+              },
+            }
+          );
         }}
         isLoading={addLead.isLoading}
         text='Save'
