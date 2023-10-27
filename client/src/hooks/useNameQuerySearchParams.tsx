@@ -5,12 +5,18 @@ import { useSearchParams } from 'react-router-dom';
 // potentially moved this into shared directory containing other 'search contacts'
 // feature code
 
+// TODO: extend,
+// will eventually support search for contact 'name', listing 'address', task 'title'
+
 export const useNameQuerySearchParams = (
   debouncedNameQuery: string | undefined
 ): void => {
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const name = searchParams.get('name');
+
   useEffect(() => {
+    if (name && !debouncedNameQuery) return;
     if (
       (debouncedNameQuery === '' || !debouncedNameQuery) &&
       searchParams.get('name')

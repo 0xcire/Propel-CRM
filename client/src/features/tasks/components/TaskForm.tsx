@@ -18,16 +18,14 @@ import {
 } from '@/components/form';
 import { SubmitButton } from '@/components';
 
-import { DeleteTask } from './DeleteTask';
-
 import { taskSchema, checkboxSchema } from '@/lib/validations/tasks';
-import { priorityOptions } from '@/config';
+import { prioritySelectOptions } from '@/config/tasks';
 
 import { removeTimeZone } from '@/utils/';
 import { fieldsAreDirty } from '@/utils/form-data';
 
 import type { FormMode } from '@/types';
-import type { Priority, Task } from '../types';
+import type { Task } from '../types';
 import type { CheckedState } from '@radix-ui/react-checkbox';
 
 interface TaskFormProps extends FormMode {
@@ -131,29 +129,31 @@ export function TaskForm({
             className='flex-1'
           />
 
-          <div className='flex items-center justify-between pt-4'>
+          <div className='flex items-end justify-between pt-4'>
             <DateInput
               name='dueDate'
               label='Due Date'
               control={form.control}
             />
 
-            <SelectInput<CreateTaskFields, Priority, typeof priorityOptions>
+            <SelectInput
               name='priority'
               placeholder='Priority'
-              options={priorityOptions}
+              label='Priority'
+              options={prioritySelectOptions}
               control={form.control}
             />
           </div>
         </form>
       </Form>
       <DialogFooter>
-        {!isCreate && <DeleteTask id={task?.id as number} />}
         <DialogTrigger asChild>
           <Button variant='outline'>Close</Button>
         </DialogTrigger>
         <SubmitButton
-          disabled={isCreate ? !titleIsEmpty : !form.formState.isDirty}
+          disabled={
+            (isCreate ? !titleIsEmpty : !form.formState.isDirty) || isLoading
+          }
           form={isCreate ? 'add-task' : 'update-task'}
           isLoading={isLoading}
           text='Add'

@@ -16,7 +16,7 @@ export function DashboardTasks(): JSX.Element {
   const user = useUser();
   const incompleteTasks = useDashboardTasks('false');
 
-  const { state: showCompleted } = useTaskContext();
+  const { showCompleted } = useTaskContext();
 
   // extract this
   if (incompleteTasks.isLoading) {

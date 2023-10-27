@@ -41,7 +41,6 @@ export const fieldsAreDirty = <T extends FieldValues>(
   return dirtyFields.includes(fields as string);
 };
 
-// string | number | Date
 export const generateDefaultValues = (
   initialData: Record<string, unknown>
 ): Record<string, unknown> => {
@@ -50,13 +49,16 @@ export const generateDefaultValues = (
   ).map(([key, value]) => {
     if (!value) {
       value = '';
+      return [key, value];
     }
     if (typeof value === 'number') {
       value = value.toString();
+      return [key, value];
     }
 
     if (typeof value === 'string' && isValid(new Date(value))) {
       value = new Date(removeTimeZone(value));
+      return [key, value];
     }
 
     return [key, value];

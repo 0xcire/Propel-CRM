@@ -30,9 +30,7 @@ export const useUpdateContact = (): UseMutationResult<
       });
 
       keys.forEach((key) => {
-        queryClient.invalidateQueries(key, {
-          refetchType: 'none',
-        });
+        queryClient.invalidateQueries(key);
       });
     },
     onError: (error) => {

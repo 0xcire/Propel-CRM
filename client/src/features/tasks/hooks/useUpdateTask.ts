@@ -31,9 +31,6 @@ export const useUpdateTask = ({
         description: data.message,
       });
 
-      // TODO: ensure this works correctly
-      // way to differentiate checkbox action vs actual update task form
-
       // updating task via checkbox causes shift in paginated data
       if (isCheckbox) {
         queryClient.invalidateQueries(['tasks']);

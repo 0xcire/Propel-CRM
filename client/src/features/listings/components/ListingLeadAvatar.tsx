@@ -39,7 +39,7 @@ export function ListingLeadAvatar({
       >
         <Button variant='link'>{extractInitials(contactInfo.name)}</Button>
       </HoverCardTrigger>
-      <HoverCardContent onClick={(e): void => e.stopPropagation()}>
+      <HoverCardContent>
         <div className='flex justify-between gap-4'>
           <Avatar name={contactInfo.name} />
 
@@ -58,10 +58,7 @@ export function ListingLeadAvatar({
                   <div className='flex items-center gap-1'>
                     <PhoneIcon
                       className='mt-1 cursor-pointer'
-                      onClick={(e): void => {
-                        e.stopPropagation();
-                        window.location =
-                          `mailto:${contactInfo.email}` as string & Location;
+                      onClick={(): void => {
                         navigator.clipboard.writeText(contactInfo.phone);
                         toast({
                           description: `Copied ${contactInfo.name}'s number to your clipboard`,
@@ -80,8 +77,7 @@ export function ListingLeadAvatar({
                   <div className='flex items-center gap-1'>
                     <AtSignIcon
                       className='mt-1 cursor-pointer'
-                      onClick={(e): void => {
-                        e.stopPropagation();
+                      onClick={(): void => {
                         window.location =
                           `mailto:${contactInfo.email}` as string & Location;
                         navigator.clipboard.writeText(contactInfo.email);

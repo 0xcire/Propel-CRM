@@ -69,7 +69,7 @@ export const getAvgListingDaysOnMarket = async (req: Request, res: Response) => 
           average: unknown;
         }
       ).average,
-    "0 days"
+    "0"
   );
 
   return res.status(200).json({
@@ -128,7 +128,7 @@ export const getAvgTimeToCloseLead = async (req: Request, res: Response) => {
             days: unknown;
           }
         ).days,
-      "0 days"
+      "0"
     );
 
     return res.status(200).json({

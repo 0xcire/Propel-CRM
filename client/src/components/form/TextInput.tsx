@@ -1,5 +1,3 @@
-import type { ComponentProps, ReactElement, ChangeEvent } from 'react';
-import type { Control, FieldValues, Path } from 'react-hook-form';
 import {
   FormControl,
   FormField,
@@ -8,6 +6,9 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
+
+import type { ComponentProps, ReactElement, ChangeEvent } from 'react';
+import type { Control, FieldValues, Path } from 'react-hook-form';
 
 interface TextInputProps<TFieldValues extends FieldValues>
   extends ComponentProps<'input'> {
@@ -42,7 +43,6 @@ export function TextInput<TFieldValues extends FieldValues>({
               onBlur={field.onBlur}
               ref={field.ref}
               name={field.name}
-              // {...field}
             />
           </FormControl>
           <FormMessage />

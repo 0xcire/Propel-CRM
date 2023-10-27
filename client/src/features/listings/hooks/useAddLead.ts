@@ -29,7 +29,6 @@ export const useAddLead = (): UseMutationResult<
       toast({
         description: data.message,
       });
-      // TODO: verify this works correctly
       queryClient.invalidateQueries(['listings', query]);
     },
 

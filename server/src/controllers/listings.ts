@@ -3,16 +3,16 @@ import { Request, Response } from "express";
 import { findContactByID } from "../db/queries/contacts";
 import {
   deleteListingByID,
-  deleteListingLeadsByID,
   findExistingLead,
   getAllUserListings,
   getUserDashboardListings,
   insertNewLead,
   insertNewListing,
+  insertSoldListingData,
   removeLead,
   updateListingByID,
 } from "../db/queries/listings";
-import type { NewListing } from "../db/types";
+import type { NewListing, NewSoldListing } from "../db/types";
 
 export const getDashboardListings = async (req: Request, res: Response) => {
   try {
@@ -48,9 +48,9 @@ export const getAllListings = async (req: Request, res: Response) => {
 
 export const getSpecificListing = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { listingID } = req.params;
 
-    if (!id) {
+    if (!listingID) {
       return res.status(400).json({
         message: "Please provide a listing ID.",
       });
@@ -94,7 +94,7 @@ export const createListing = async (req: Request, res: Response) => {
 export const updateListing = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { id } = req.params;
+    const { listingID } = req.params;
 
     const { address, baths, bedrooms, description, price, propertyType, squareFeet }: Partial<NewListing> = req.body;
 
@@ -102,7 +102,7 @@ export const updateListing = async (req: Request, res: Response) => {
       return res.status(400).json({});
     }
 
-    const updatedListingByID = await updateListingByID({ listing: req.body, listingID: +id, userID: userID });
+    const updatedListingByID = await updateListingByID({ listing: req.body, listingID: +listingID, userID: userID });
 
     return res.status(200).json({
       message: "Updated listing.",
@@ -117,11 +117,9 @@ export const updateListing = async (req: Request, res: Response) => {
 export const deleteListing = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { id } = req.params;
+    const { listingID } = req.params;
 
-    const deleteLeadsForListing = await deleteListingLeadsByID(+id, userID);
-
-    const deletedListingByID = await deleteListingByID(+id, userID);
+    const deletedListingByID = await deleteListingByID(+listingID, userID);
 
     return res.status(200).json({
       message: `Deleted listing: ${deletedListingByID.id}`,
@@ -132,9 +130,46 @@ export const deleteListing = async (req: Request, res: Response) => {
   }
 };
 
+export const markListingAsSold = async (req: Request, res: Response) => {
+  try {
+    const userID = req.user.id;
+    const { listingID } = req.params;
+    const values: NewSoldListing = req.body;
+
+    if (values.userID !== userID) {
+      return res.status(400).json({
+        message: "",
+      });
+    }
+
+    if (values.listingID !== +listingID) {
+      return res.status(400).json({
+        message: "",
+      });
+    }
+
+    const contactByID = await findContactByID(values.contactID as number);
+
+    if (!contactByID) {
+      return res.status(400).json({
+        message: "That's weird, couldn't find that contact to add. Please try again.",
+      });
+    }
+
+    const listingMarkedAsSold = await insertSoldListingData(values);
+
+    return res.status(200).json({
+      message: `${values.listingID} marked sold.`,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
+
 export const addListingLead = async (req: Request, res: Response) => {
   try {
-    const { id: listingID, contactID } = req.params;
+    const { listingID, contactID } = req.params;
 
     const contactByID = await findContactByID(+contactID);
 
@@ -165,7 +200,7 @@ export const addListingLead = async (req: Request, res: Response) => {
 
 export const removeListingLead = async (req: Request, res: Response) => {
   try {
-    const { id: listingID, contactID } = req.params;
+    const { listingID, contactID } = req.params;
 
     const contactByID = await findContactByID(+contactID);
 

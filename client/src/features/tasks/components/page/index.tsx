@@ -1,17 +1,16 @@
 import { useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 
+import { useTaskContext } from '../../context/TaskContext';
+
 import { useTasks } from '../../hooks/useTasks';
 
-import { TaskTable } from './TasksTable';
+import { TasksTable } from './TasksTable';
 import { taskColumns } from '../../config/TaskColumns';
 
 export function TaskPage(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  // ?? only makes sense in dashboard,
-  // not in data table scenario
-  // const { state: completed } = useTaskContext();
+  const { setPageTitle } = useTaskContext();
 
   const { id } = useParams();
 
@@ -34,8 +33,12 @@ export function TaskPage(): JSX.Element {
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    setPageTitle('Tasks');
+  }, [setPageTitle]);
+
   return (
-    <TaskTable
+    <TasksTable
       data={tasks.data ?? []}
       columns={taskColumns}
       isLoading={tasks.isLoading}

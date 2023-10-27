@@ -1,25 +1,33 @@
 import { db } from "..";
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull } from "drizzle-orm";
 import { tasks } from "../schema";
 
 import type { NewTask } from "../types";
 
-type FindUserTasksParams = {
+interface GetUserTasksParams {
   userID: number;
   completed: "true" | "false";
   page?: number;
   priority?: Array<string>;
-};
+}
+
+// TODO: ?
+interface GetUsersListingTasksParams extends GetUserTasksParams {
+  listingID: number;
+}
+interface GetUsersContactTasksParams extends GetUserTasksParams {
+  contactID: number;
+}
 
 type UpdateTaskByIDParams = {
   userID: number;
-  contactID: string;
+  taskID: string;
   newData: Partial<NewTask>;
 };
 
 type DeleteTaskByIDParams = {
   userID: number;
-  contactID: string;
+  taskID: string;
 };
 
 export const findTaskByID = async (id: number) => {
@@ -32,30 +40,85 @@ export const findTaskByID = async (id: number) => {
   return task[0];
 };
 
-export const getUserDashboardTasks = async ({ userID, completed }: FindUserTasksParams) => {
+export const getUserDashboardTasks = async ({ userID, completed }: GetUserTasksParams) => {
   const userTasks = await db
     .select()
     .from(tasks)
-    .where(and(eq(tasks.userID, userID), eq(tasks.completed, JSON.parse(completed))))
-    .orderBy(asc(tasks.createdAt))
+    .where(
+      and(
+        eq(tasks.userID, userID),
+        eq(tasks.completed, JSON.parse(completed)),
+        isNull(tasks.listingID),
+        isNull(tasks.contactID)
+      )
+    )
+    .orderBy(desc(tasks.createdAt))
     .limit(15);
 
   return userTasks;
 };
 
-export const findUserTasks = async ({ userID, completed, page, priority }: FindUserTasksParams) => {
+export const getUserTasks = async ({ userID, completed, page, priority }: GetUserTasksParams) => {
   const userTasks = await db.query.tasks.findMany({
     where: and(
       eq(tasks.userID, userID),
       eq(tasks.completed, JSON.parse(completed)),
-      priority && inArray(tasks.priority, priority as Array<"low" | "medium" | "high">)
+      priority && inArray(tasks.priority, priority as Array<"low" | "medium" | "high">),
+      isNull(tasks.listingID),
+      isNull(tasks.contactID)
     ),
-    orderBy: [asc(tasks.createdAt)],
+    orderBy: [desc(tasks.createdAt)],
     limit: 10,
     ...(page && { offset: (page - 1) * 10 }),
   });
 
   return userTasks;
+};
+
+export const getUsersListingTasks = async ({
+  userID,
+  completed = "false",
+  page = 1,
+  priority,
+  listingID,
+}: GetUsersListingTasksParams) => {
+  const userListingTasks = await db.query.tasks.findMany({
+    where: and(
+      eq(tasks.userID, userID),
+      eq(tasks.completed, JSON.parse(completed)),
+      priority && inArray(tasks.priority, priority as Array<"low" | "medium" | "high">),
+      eq(tasks.listingID, listingID),
+      isNull(tasks.contactID)
+    ),
+    orderBy: [desc(tasks.createdAt)],
+    limit: 10,
+    ...(page && { offset: (page - 1) * 10 }),
+  });
+
+  return userListingTasks;
+};
+
+export const getUsersContactTasks = async ({
+  userID,
+  completed = "false",
+  page = 1,
+  priority,
+  contactID,
+}: GetUsersContactTasksParams) => {
+  const userContactTasks = await db.query.tasks.findMany({
+    where: and(
+      eq(tasks.userID, userID),
+      eq(tasks.completed, JSON.parse(completed)),
+      priority && inArray(tasks.priority, priority as Array<"low" | "medium" | "high">),
+      isNull(tasks.listingID),
+      eq(tasks.contactID, contactID)
+    ),
+    orderBy: [desc(tasks.createdAt)],
+    limit: 10,
+    ...(page && { offset: (page - 1) * 10 }),
+  });
+
+  return userContactTasks;
 };
 
 export const insertNewTask = async (task: NewTask) => {
@@ -73,7 +136,7 @@ export const insertNewTask = async (task: NewTask) => {
   return newTask[0];
 };
 
-export const updateTaskByID = async ({ userID, contactID, newData }: UpdateTaskByIDParams) => {
+export const updateTaskByID = async ({ userID, taskID, newData }: UpdateTaskByIDParams) => {
   const updatedTask = await db
     .update(tasks)
     .set({
@@ -108,7 +171,7 @@ export const updateTaskByID = async ({ userID, contactID, newData }: UpdateTaskB
           }
         : {}),
     })
-    .where(and(eq(tasks.id, +contactID), eq(tasks.userID, userID)))
+    .where(and(eq(tasks.id, +taskID), eq(tasks.userID, userID)))
     .returning({
       id: tasks.id,
       title: tasks.title,
@@ -123,10 +186,10 @@ export const updateTaskByID = async ({ userID, contactID, newData }: UpdateTaskB
   return updatedTask[0];
 };
 
-export const deleteTaskByID = async ({ userID, contactID }: DeleteTaskByIDParams) => {
+export const deleteTaskByID = async ({ userID, taskID }: DeleteTaskByIDParams) => {
   const deletedTask = await db
     .delete(tasks)
-    .where(and(eq(tasks.id, +contactID), eq(tasks.userID, userID)))
+    .where(and(eq(tasks.id, +taskID), eq(tasks.userID, userID)))
     .returning({ id: tasks.id });
 
   if (deletedTask.length === 0) {

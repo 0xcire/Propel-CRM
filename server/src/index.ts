@@ -40,12 +40,12 @@ const server = app.listen(PORT, () => {
 
 app.use("/", router());
 
-async function close() {
-  console.log("closing...");
-  await sql`sql.end( {timeout: 5 })`;
-  await new Promise((r) => server.close(r));
-}
+// async function close() {
+//   console.log("closing...");
+//   await sql`sql.end( {timeout: 5 })`;
+//   await new Promise((r) => server.close(r));
+// }
 
-process.on("SIGINT", close);
-process.on("SIGTERM", close);
+// process.on("SIGINT", close);
+// process.on("SIGTERM", close);
 // process.on("warning", (e) => console.warn(e.stack));

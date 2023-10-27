@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { useSearchContacts } from '@/features/contacts/hooks/useSearchContacts';
-import { useAddLead } from '../../hooks/useAddLead';
+import { useAddLead } from '../../../hooks/useAddLead';
 
 import { useDebounce } from '@/hooks/useDebounce';
+import { useNameQuerySearchParams } from '@/hooks';
 
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
   Sheet,
@@ -20,10 +22,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { SubmitButton } from '@/components';
 
 import type { ComponentProps } from 'react';
-
 // ?
 import type { Contact } from '@/features/contacts/types';
-import { useNameQuerySearchParams } from '@/hooks';
 
 interface AddLeadProps extends ComponentProps<'div'> {
   listingID: number;
@@ -33,7 +33,6 @@ interface AddLeadProps extends ComponentProps<'div'> {
 // could make generic: 'ContactSearch' or etc..
 export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
   const [query, setQuery] = useState<string | undefined>(undefined);
-
   const [searchParams, setSearchParams] = useSearchParams();
   const debouncedNameQuery = useDebounce(query, 200);
 
@@ -60,7 +59,12 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
         }}
       >
         <SheetTrigger asChild>
-          <p>Add Lead</p>
+          <DropdownMenuItem
+            className='cursor-pointer'
+            onSelect={(e): void => e.preventDefault()}
+          >
+            Add Lead
+          </DropdownMenuItem>
         </SheetTrigger>
         <SheetContent className='flex flex-col'>
           <SheetHeader className='px-4'>
@@ -102,6 +106,7 @@ function Lead({
   contact: Contact;
   listingID: number;
 }): JSX.Element {
+  const [searchParams, setSearchParams] = useSearchParams();
   const addLead = useAddLead();
   return (
     <div
@@ -111,10 +116,18 @@ function Lead({
       <p>{contact.name}</p>
       <SubmitButton
         onClick={(): void => {
-          addLead.mutate({
-            listingID: listingID,
-            contactID: contact.id,
-          });
+          addLead.mutate(
+            {
+              listingID: listingID,
+              contactID: contact.id,
+            },
+            {
+              onSuccess: () => {
+                searchParams.delete('name');
+                setSearchParams(searchParams);
+              },
+            }
+          );
         }}
         isLoading={addLead.isLoading}
         text='Save'

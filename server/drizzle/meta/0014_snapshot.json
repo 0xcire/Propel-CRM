@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "12e577e2-c8c0-4cb5-a37f-a23682085ca9",
-  "prevId": "083a6919-a780-4c46-9768-cda25b28f0a5",
+  "id": "59dc0d51-f348-42ca-9121-aa1a35d2b228",
+  "prevId": "12e577e2-c8c0-4cb5-a37f-a23682085ca9",
   "tables": {
     "contacts": {
       "name": "contacts",
@@ -172,7 +172,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "listings_to_contacts_contact_id_contacts_id_fk": {
@@ -185,7 +185,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -267,7 +267,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "sold_listings_contact_id_contacts_id_fk": {
@@ -280,7 +280,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },

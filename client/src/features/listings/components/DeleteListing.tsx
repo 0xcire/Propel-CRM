@@ -4,70 +4,80 @@ import { useDeleteListing } from '../hooks/useDeleteListing';
 
 import { Button } from '@/components/ui/button';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 import { SubmitButton } from '@/components';
-import { useNavigate } from 'react-router-dom';
 
 export function DeleteListing({
   listingID,
+  asDropdownMenuItem,
 }: {
   listingID: number;
+  asDropdownMenuItem?: boolean;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
   const deleteListing = useDeleteListing();
 
-  const navigate = useNavigate();
-
   return (
-    <AlertDialog
+    <Dialog
       open={open}
       onOpenChange={setOpen}
     >
-      <AlertDialogTrigger asChild>
-        <Button
-          className='mr-auto'
-          variant='destructive'
-        >
-          Delete
-        </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
+      <DialogTrigger asChild>
+        {asDropdownMenuItem ? (
+          <DropdownMenuItem
+            onSelect={(e): void => e.preventDefault()}
+            className='cursor-pointer'
+          >
+            Delete
+          </DropdownMenuItem>
+        ) : (
+          <Button
+            className='mr-auto'
+            variant='destructive'
+          >
+            Delete
+          </Button>
+        )}
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogDescription>
             This action cannot be undone. This will permanently delete this
             listing.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <SubmitButton
-              variant='destructive'
-              text='Remove'
-              isLoading={deleteListing.isLoading}
-              onClick={(): void =>
-                deleteListing.mutate(listingID, {
-                  onSuccess: () => {
-                    setOpen(false);
-                    navigate(-1);
-                  },
-                })
-              }
-            />
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button
+            variant='outline'
+            onClick={(): void => setOpen(false)}
+          >
+            Cancel
+          </Button>
+
+          <SubmitButton
+            variant='destructive'
+            text='Remove'
+            isLoading={deleteListing.isLoading}
+            onClick={(): void =>
+              deleteListing.mutate(listingID, {
+                onSuccess: () => {
+                  setOpen(false);
+                },
+              })
+            }
+          />
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

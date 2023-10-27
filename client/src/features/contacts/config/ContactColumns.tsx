@@ -1,6 +1,6 @@
-import { MoreHorizontal } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-import { toast } from '@/components/ui/use-toast';
+import { MoreHorizontal } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +17,7 @@ import { UpdateContact } from '../components/UpdateContact';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Contact } from '../types';
+import { AddTask } from '@/features/common/tasks/components/AddTask';
 
 export const listingColumns: Array<ColumnDef<Contact>> = [
   {
@@ -59,41 +60,35 @@ export const listingColumns: Array<ColumnDef<Contact>> = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               className='cursor-pointer'
-              onClick={(): Promise<void> => {
-                toast({
-                  description: `Contact ID: ${contact.id} copied to clipboard`,
-                });
-                return navigator.clipboard.writeText(contact.id.toString());
-              }}
+              asChild
             >
-              Copy contact ID
+              <Link to={`/contacts/${contact.id}`}>View Details</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <UpdateContact
-                text='Update'
-                contact={contact}
-              />
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={(e): void => {
-                e.stopPropagation();
-              }}
-            >
-              <RemoveContact
-                text='Delete'
-                contact={contact}
-              />
-            </DropdownMenuItem>
-
             <DropdownMenuSeparator />
+            <UpdateContact
+              asDropdownMenuItem
+              contact={contact}
+            />
+            <RemoveContact
+              asDropdownMenuItem
+              contact={contact}
+            />
+            <DropdownMenuSeparator />
+
+            <AddTask
+              asDropdownMenuItem
+              contactID={contact.id}
+            >
+              <>Add new task for {contact.name}</>
+            </AddTask>
 
             <DropdownMenuItem
               className='cursor-pointer'
-              onClick={(e): void => {
-                e.stopPropagation();
-              }}
+              asChild
             >
-              Add Task
+              <Link to={`/tasks/contacts/${contact.id}?page=1&completed=false`}>
+                View Tasks
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

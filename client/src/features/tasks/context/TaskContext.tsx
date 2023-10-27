@@ -1,11 +1,6 @@
-import {
-  useState,
-  createContext,
-  type ReactNode,
-  type Dispatch,
-  type SetStateAction,
-  useContext,
-} from 'react';
+import { useState, createContext, useContext } from 'react';
+
+import type { ReactNode, Dispatch, SetStateAction } from 'react';
 
 // TODO: another place where ComponentWithChild could be used
 type TaskProviderProps = {
@@ -13,16 +8,25 @@ type TaskProviderProps = {
 };
 
 type TaskState = {
-  state: boolean;
-  setState: Dispatch<SetStateAction<boolean>>;
+  showCompleted: boolean;
+  setShowCompleted: Dispatch<SetStateAction<boolean>>;
+  pageTitle: string;
+  setPageTitle: Dispatch<SetStateAction<string>>;
 };
 
 const taskContext = createContext<TaskState | undefined>(undefined);
 
 export function TaskProvider({ children }: TaskProviderProps): JSX.Element {
   const [showCompleted, setShowCompleted] = useState(false);
+  const [pageTitle, setPageTitle] = useState('Tasks');
 
-  const value = { state: showCompleted, setState: setShowCompleted };
+  //TODO: address
+  const value = {
+    showCompleted,
+    setShowCompleted,
+    pageTitle,
+    setPageTitle,
+  };
   return <taskContext.Provider value={value}>{children}</taskContext.Provider>;
 }
 

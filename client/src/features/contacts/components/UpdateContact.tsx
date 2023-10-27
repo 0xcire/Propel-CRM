@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { useUpdateContact } from '../hooks/useUpdateContact';
 
 import { PencilIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import {
   Dialog,
   DialogContent,
@@ -23,14 +24,13 @@ import type { UpdateContactFields } from './ContactForm';
 import type { ContactAsProp, NewContact } from '../types';
 
 interface UpdateContactProps extends ContactAsProp {
-  text?: string;
-  asButton?: boolean;
+  asDropdownMenuItem?: boolean;
 }
 
 export function UpdateContact({
   contact,
-  text,
-  asButton,
+
+  asDropdownMenuItem,
 }: UpdateContactProps): JSX.Element {
   const [open, setOpen] = useState(false);
   const updateContact = useUpdateContact();
@@ -63,24 +63,14 @@ export function UpdateContact({
       open={open}
       onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
     >
-      {/* TODO: cleanup */}
-      {text && asButton ? (
-        <DialogTrigger
-          onClick={(e): void => e.stopPropagation()}
-          asChild
-        >
-          <Button>{text}</Button>
-        </DialogTrigger>
-      ) : text && !asButton ? (
+      {asDropdownMenuItem ? (
         <DialogTrigger asChild>
-          <p
-            onClick={(e): void => {
-              e.stopPropagation();
-            }}
-            className='h-full w-full cursor-pointer'
+          <DropdownMenuItem
+            className='cursor-pointer'
+            onSelect={(e): void => e.preventDefault()}
           >
-            {text}
-          </p>
+            Update
+          </DropdownMenuItem>
         </DialogTrigger>
       ) : (
         <Tooltip content='edit'>
@@ -94,8 +84,7 @@ export function UpdateContact({
         </Tooltip>
       )}
 
-      {/* TODO: just make this a util... */}
-      <DialogContent onClick={(e): void => e.stopPropagation()}>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Update Contact</DialogTitle>
         </DialogHeader>

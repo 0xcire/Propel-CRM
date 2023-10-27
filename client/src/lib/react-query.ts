@@ -41,6 +41,7 @@ export const queryClient = new QueryClient({ defaultOptions: queryConfig });
 // can only use on update, create / delete cause shift in paginated data
 export const findRelevantKeys = (
   queryClient: QueryClient,
+
   contextKey: string,
   id: number
 ): Array<QueryKey> => {
@@ -50,6 +51,12 @@ export const findRelevantKeys = (
   if (relevantCachedKeys.length === 1 && relevantCachedKeys[0]) {
     return [relevantCachedKeys[0].queryKey];
   }
+
+  // TODO: need to address
+  // currently hard coded to listen to 'name' param for searching contacts
+  // what about address or title when searching listings/tasks in future.
+  const searchParams = new URLSearchParams(window.location.search);
+  const name = searchParams.get('name');
 
   const keys: Array<QueryKey> = [];
 
@@ -70,6 +77,12 @@ export const findRelevantKeys = (
       if (cachedData[contextKey].some((data) => data.id === +(id as string))) {
         keys.push(queryKey);
       }
+    }
+
+    // eslint-disable-next-line
+    // @ts-ignore
+    if (name && queryKey[1].name && queryKey[1].name === name) {
+      keys.push(queryKey);
     }
   }
   return keys;

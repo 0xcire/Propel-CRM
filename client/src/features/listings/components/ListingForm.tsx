@@ -1,8 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { DeleteListing } from './DeleteListing';
-
 import { Button } from '@/components/ui/button';
 import { DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
@@ -11,6 +9,10 @@ import { SelectInput, TextAreaInput, TextInput } from '@/components/form';
 import { SubmitButton } from '@/components';
 
 import { listingSchema } from '@/lib/validations/listings';
+import {
+  propertyTypeSelectOptions,
+  roomsSelectOptions,
+} from '@/config/listings';
 
 import type { DeepPartial } from 'react-hook-form';
 import type { ListingFields } from '../types';
@@ -22,39 +24,9 @@ interface ListingFormProps extends FormMode {
   listingID?: number;
 }
 
-// TODO: propertyType
-// single family, apartment, townhome, condo, duplex, etc..
-
-const propertyTypes = [
-  'single family',
-  'apartment',
-  'townhome',
-  'condo',
-  'duplex',
-] as const;
-type PropertyTypes = (typeof propertyTypes)[number];
-
-const rooms = [
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '10',
-  '11',
-  '12',
-  '13',
-] as const;
-type Rooms = (typeof rooms)[number];
-
 export function ListingForm({
   isCreate,
   isLoading,
-  listingID,
   defaultValues,
   onSubmit,
 }: ListingFormProps): JSX.Element {
@@ -99,22 +71,25 @@ export function ListingForm({
           </div>
 
           <div className='flex items-center justify-between pt-2'>
-            <SelectInput<ListingFields, PropertyTypes, typeof propertyTypes>
+            <SelectInput
               name='propertyType'
-              options={propertyTypes}
+              options={propertyTypeSelectOptions}
               placeholder='Property Type'
+              label='Property Type'
               control={form.control}
             />
-            <div className='flex items-center gap-2'>
-              <SelectInput<ListingFields, Rooms, typeof rooms>
+            <div className='flex items-center gap-4'>
+              <SelectInput
                 name='bedrooms'
-                options={rooms}
+                options={roomsSelectOptions}
+                label='Bedrooms'
                 placeholder='Bedrooms'
                 control={form.control}
               />
-              <SelectInput<ListingFields, Rooms, typeof rooms>
+              <SelectInput
                 name='baths'
-                options={rooms}
+                options={roomsSelectOptions}
+                label='Baths'
                 placeholder='Baths'
                 control={form.control}
               />
@@ -124,7 +99,6 @@ export function ListingForm({
       </Form>
 
       <DialogFooter>
-        {!isCreate && listingID && <DeleteListing listingID={listingID} />}
         <DialogTrigger asChild>
           <Button variant='outline'>Close</Button>
         </DialogTrigger>

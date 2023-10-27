@@ -17,6 +17,7 @@ import {
 } from "../db/queries/contacts";
 
 import type { NewContact } from "../db/types";
+import { objectNotEmpty } from "../utils";
 
 export const getDashboardContacts = async (req: Request, res: Response) => {
   try {
@@ -79,9 +80,9 @@ export const getMyContacts = async (req: Request, res: Response) => {
 
 export const getSpecificContact = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { contactID } = req.params;
 
-    if (!id) {
+    if (!contactID) {
       return res.status(400).json({
         message: "bad request",
       });
@@ -110,10 +111,6 @@ export const createContact = async (req: Request, res: Response) => {
 
     if (!name || !email || !phoneNumber || !address) {
       return res.status(400).json({});
-    }
-
-    if (name) {
-      return res.status(400).json({ message: "error adding contact to your network" });
     }
 
     const contact: NewContact = {
@@ -158,25 +155,19 @@ export const createContact = async (req: Request, res: Response) => {
 export const updateContact = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { id } = req.params;
-    const { name, email, phoneNumber, address } = req.body;
+    const { contactID } = req.params;
 
-    const fields = {
-      name: name,
-      email: email,
-      phoneNumber: phoneNumber,
-      address: address,
-    };
-
-    if (!name && !email && !phoneNumber && !address) {
+    if (!objectNotEmpty(req.body)) {
       return res.status(400).json({
         message: "Nothing to update.",
       });
     }
 
+    const fields = { ...req.body };
+
     const userByID = await findUsersByID({ id: +userID, updating: true });
 
-    const updatedContact = await updateContactByID({ contactID: +id, inputs: fields });
+    const updatedContact = await updateContactByID({ contactID: +contactID, inputs: fields });
 
     return res.status(200).json({
       message: `Updated ${req.contact.name} successfully.`,
@@ -191,18 +182,18 @@ export const updateContact = async (req: Request, res: Response) => {
 export const deleteContact = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { id } = req.params;
+    const { contactID } = req.params;
 
     let deletedContact;
 
-    const relations = await getContactRelations(+id);
+    const relations = await getContactRelations(+contactID);
 
     if (relations.length === 1) {
-      const deletedRelation = await deleteUserContactRelation({ userID: userID, contactID: +id });
+      const deletedRelation = await deleteUserContactRelation({ userID: userID, contactID: +contactID });
 
-      deletedContact = await deleteContactByID(+id);
+      deletedContact = await deleteContactByID(+contactID);
     } else {
-      const deletedRelation = await deleteUserContactRelation({ userID: userID, contactID: +id });
+      const deletedRelation = await deleteUserContactRelation({ userID: userID, contactID: +contactID });
     }
 
     return res.status(200).json({

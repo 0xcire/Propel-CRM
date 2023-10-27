@@ -11,6 +11,7 @@ import {
 import { isAuth } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
 import {
+  contactIDParamSchema,
   contactQuerySchema,
   contactSearchQuerySchema,
   cookieSchema,
@@ -33,14 +34,12 @@ export default (router: Router) => {
   );
 
   router.get(
-    "/contacts/:id",
-    validateRequest({ cookies: cookieSchema, query: contactSearchQuerySchema, params: paramSchema }),
+    "/contacts/:contactID",
+    validateRequest({ cookies: cookieSchema, query: contactSearchQuerySchema, params: contactIDParamSchema }),
     isAuth,
     isContactOwner,
     getSpecificContact
   );
-
-  // router.get("/contacts/:id/listings");
 
   router.post(
     "/contacts",
@@ -50,16 +49,16 @@ export default (router: Router) => {
   );
 
   router.patch(
-    "/contacts/:id",
-    validateRequest({ body: updateContactSchema, cookies: cookieSchema, params: paramSchema }),
+    "/contacts/:contactID",
+    validateRequest({ body: updateContactSchema, cookies: cookieSchema, params: contactIDParamSchema }),
     isAuth,
     isContactOwner,
     updateContact
   );
 
   router.delete(
-    "/contacts/:id",
-    validateRequest({ cookies: cookieSchema, params: paramSchema }),
+    "/contacts/:contactID",
+    validateRequest({ cookies: cookieSchema, params: contactIDParamSchema }),
     isAuth,
     isContactOwner,
     deleteContact

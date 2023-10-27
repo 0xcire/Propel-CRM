@@ -5,20 +5,19 @@ import { useRemoveLead } from '../hooks/useRemoveLead';
 import { Trash2Icon } from 'lucide-react';
 
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 import { SubmitButton } from '@/components';
 
 import type { ContactInfo } from '../types';
+import { Button } from '@/components/ui/button';
 
 export function RemoveLead({
   contactInfo,
@@ -31,52 +30,47 @@ export function RemoveLead({
   const removeLead = useRemoveLead();
 
   return (
-    <AlertDialog
+    <Dialog
       open={open}
       onOpenChange={setOpen}
     >
-      <AlertDialogTrigger asChild>
+      <DialogTrigger asChild>
         <Trash2Icon
-          onClick={(e): void => e.stopPropagation()}
           className='cursor-pointer'
           size={16}
           tabIndex={0}
         />
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-          <AlertDialogDescription>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Are you sure?</DialogTitle>
+          <DialogDescription>
             This will remove{' '}
             <span className='font-black'>{contactInfo.name} </span>
             from your lead list.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={(e): void => e.stopPropagation()}>
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <SubmitButton
-              variant='destructive'
-              text='Remove'
-              isLoading={removeLead.isLoading}
-              onClick={(e): void => {
-                e.stopPropagation();
-                removeLead.mutate(
-                  {
-                    listingID: listingID,
-                    contactID: contactInfo.id,
-                  },
-                  {
-                    onSuccess: () => setOpen(false),
-                  }
-                );
-              }}
-            />
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant='outline'>Cancel</Button>
+
+          <SubmitButton
+            variant='destructive'
+            text='Remove'
+            isLoading={removeLead.isLoading}
+            onClick={(): void => {
+              removeLead.mutate(
+                {
+                  listingID: listingID,
+                  contactID: contactInfo.id,
+                },
+                {
+                  onSuccess: () => setOpen(false),
+                }
+              );
+            }}
+          />
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

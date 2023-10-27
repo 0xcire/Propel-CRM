@@ -28,9 +28,7 @@ export const useUpdateListing = (): UseMutationResult<
       });
 
       keys.forEach((key) => {
-        queryClient.invalidateQueries(key, {
-          refetchType: 'none',
-        });
+        queryClient.invalidateQueries(key);
       });
     },
 

@@ -3,15 +3,15 @@ import { findTaskByID } from "../db/queries/tasks";
 
 export const isTaskOwner = async (req: Request, res: Response, next: NextFunction) => {
   const userID = req.user.id;
-  const { id } = req.params;
+  const { taskID } = req.params;
 
   const method = req.method;
 
-  const taskByID = await findTaskByID(+id);
+  const taskByID = await findTaskByID(+taskID);
 
   if (!taskByID) {
     return res.status(404).json({
-      message: `Task by id: ${id} does not exist`,
+      message: `Task by id: ${taskID} does not exist`,
     });
   }
 

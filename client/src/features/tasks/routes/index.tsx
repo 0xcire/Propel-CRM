@@ -1,16 +1,27 @@
 import { Suspense } from 'react';
 import { lazyImport } from '@/utils/lazyImport';
 
+import { TaskProvider } from '../context/TaskContext';
+
 import { TaskLayout } from '../components/Layout';
 
+import { TaskPageWrapper } from '@/features/listings/components/page/TaskPageWrapper';
 const { TaskPage } = lazyImport(() => import('../components/page'), 'TaskPage');
 const { TaskRoute } = lazyImport(
   () => import('../components/page/TaskRoute'),
   'TaskRoute'
 );
 
-import type { RouteObject } from 'react-router-dom';
+const { ListingTaskPage } = lazyImport(
+  () => import('../components/page/ListingTaskPage'),
+  'ListingTaskPage'
+);
+const { ContactTaskPage } = lazyImport(
+  () => import('../components/page/ContactTaskPage'),
+  'ContactTaskPage'
+);
 
+import type { RouteObject } from 'react-router-dom';
 // /tasks
 // /tasks/:id
 // /tasks/:projectID
@@ -23,13 +34,20 @@ import type { RouteObject } from 'react-router-dom';
 
 export const taskRoutes: RouteObject = {
   path: 'tasks',
-  element: <TaskLayout />,
+
+  element: (
+    <TaskProvider>
+      <TaskLayout />
+    </TaskProvider>
+  ),
   children: [
     {
       index: true,
       element: (
         <Suspense>
-          <TaskPage />
+          <TaskPageWrapper>
+            <TaskPage />
+          </TaskPageWrapper>
         </Suspense>
       ),
     },
@@ -38,6 +56,26 @@ export const taskRoutes: RouteObject = {
       element: (
         <Suspense>
           <TaskRoute />
+        </Suspense>
+      ),
+    },
+    {
+      path: 'listings/:id',
+      element: (
+        <Suspense>
+          <TaskPageWrapper>
+            <ListingTaskPage />
+          </TaskPageWrapper>
+        </Suspense>
+      ),
+    },
+    {
+      path: 'contacts/:id',
+      element: (
+        <Suspense>
+          <TaskPageWrapper>
+            <ContactTaskPage />
+          </TaskPageWrapper>
         </Suspense>
       ),
     },

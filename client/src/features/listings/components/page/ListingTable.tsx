@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import {
-  createSearchParams,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import {
   flexRender,
@@ -44,8 +40,6 @@ import type {
 } from '@tanstack/react-table';
 import type { Listing } from '../../types';
 
-// sold listings need a contact field like a sold_to column
-
 interface ListingTableProps<TData extends Listing> {
   columns: Array<ColumnDef<Listing>>;
   data: Array<TData>;
@@ -60,7 +54,6 @@ export function ListingTable<TData extends Listing>({
   isLoading,
   isFetching,
 }: ListingTableProps<TData>): JSX.Element {
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -176,12 +169,9 @@ export function ListingTable<TData extends Listing>({
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
-                    className='row cursor-pointer'
+                    className='row'
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    onClick={(): void => {
-                      navigate(`/listings/${row.original.id}`);
-                    }}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
@@ -240,13 +230,10 @@ export function ListingTable<TData extends Listing>({
           size='sm'
           onClick={(): void => {
             const status = searchParams.get('status');
-            navigate({
-              pathname: '/listings',
-              search: createSearchParams({
-                page: (+currentPage + 1).toString(),
-                status: status ?? 'active',
-              }).toString(),
-            });
+            setSearchParams([
+              ['page', (+currentPage + 1).toString()],
+              ['status', status as string],
+            ]);
           }}
           // 10 could be a dynamic 'results per page' number
           disabled={data.length < 10}
