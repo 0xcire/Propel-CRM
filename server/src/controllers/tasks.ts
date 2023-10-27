@@ -32,9 +32,6 @@ export const getDashboardTasks = async (req: Request, res: Response) => {
   }
 };
 
-// listing/:id/tasks
-// contact/:id/tasks
-
 export const getTasks = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;

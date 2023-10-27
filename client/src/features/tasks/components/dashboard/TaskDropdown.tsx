@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { AddTask } from '@/features/tasks/components/AddTask';
+import { AddTask } from '@/features/common/tasks/components/AddTask';
 
 export function TaskDropdown(): JSX.Element {
   const { showCompleted, setShowCompleted } = useTaskContext();
@@ -26,9 +26,7 @@ export function TaskDropdown(): JSX.Element {
         align='end'
         data-align='start'
       >
-        <DropdownMenuItem>
-          <AddTask onDashboard={true} />
-        </DropdownMenuItem>
+        <AddTask asDropdownMenuItem />
 
         <DropdownMenuItem
           onClick={(): void => setShowCompleted(!showCompleted)}

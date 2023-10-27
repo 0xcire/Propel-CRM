@@ -2,8 +2,6 @@ import { Link } from 'react-router-dom';
 
 import { MoreHorizontal } from 'lucide-react';
 
-import { toast } from '@/components/ui/use-toast';
-
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -19,6 +17,7 @@ import { UpdateContact } from '../components/UpdateContact';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Contact } from '../types';
+import { AddTask } from '@/features/common/tasks/components/AddTask';
 
 export const listingColumns: Array<ColumnDef<Contact>> = [
   {
@@ -61,37 +60,35 @@ export const listingColumns: Array<ColumnDef<Contact>> = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               className='cursor-pointer'
-              onClick={(): Promise<void> => {
-                toast({
-                  description: `Contact ID: ${contact.id} copied to clipboard`,
-                });
-                return navigator.clipboard.writeText(contact.id.toString());
-              }}
+              asChild
             >
-              Copy contact ID
+              <Link to={`/contacts/${contact.id}`}>View Details</Link>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <UpdateContact
+              asDropdownMenuItem
+              contact={contact}
+            />
+            <RemoveContact
+              asDropdownMenuItem
+              contact={contact}
+            />
+            <DropdownMenuSeparator />
+
+            <AddTask
+              asDropdownMenuItem
+              contactID={contact.id}
+            >
+              <>Add new task for {contact.name}</>
+            </AddTask>
 
             <DropdownMenuItem
               className='cursor-pointer'
               asChild
             >
-              <Link to={`/contacts/${contact.id}`}>View Details</Link>
-            </DropdownMenuItem>
-
-            <UpdateContact
-              asDropdownMenuItem
-              contact={contact}
-            />
-
-            <RemoveContact
-              asDropdownMenuItem
-              contact={contact}
-            />
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem className='cursor-pointer'>
-              Add Task
+              <Link to={`/tasks/contacts/${contact.id}?page=1&completed=false`}>
+                View Tasks
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

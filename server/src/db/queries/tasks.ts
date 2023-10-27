@@ -77,8 +77,8 @@ export const getUserTasks = async ({ userID, completed, page, priority }: GetUse
 
 export const getUsersListingTasks = async ({
   userID,
-  completed,
-  page,
+  completed = "false",
+  page = 1,
   priority,
   listingID,
 }: GetUsersListingTasksParams) => {
@@ -100,8 +100,8 @@ export const getUsersListingTasks = async ({
 
 export const getUsersContactTasks = async ({
   userID,
-  completed,
-  page,
+  completed = "false",
+  page = 1,
   priority,
   contactID,
 }: GetUsersContactTasksParams) => {

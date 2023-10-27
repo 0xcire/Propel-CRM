@@ -13,15 +13,15 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { ListingLeadAvatar } from '../components/ListingLeadAvatar';
-import { AddListingTask } from '../components/page/Columns/AddListingTask';
 import { AddLead } from '../components/page/Columns/AddLead';
 import { MarkSold } from '../components/page/Columns/MarkSold';
 import { DeleteListing } from '../components/DeleteListing';
 
-import { currency, dateIntl, number } from '@/utils/intl';
+import { currency, formatDateString, number } from '@/utils/intl';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Listing } from '../types';
+import { AddTask } from '@/features/common/tasks/components/AddTask';
 
 type ContactInfo = {
   id: number;
@@ -185,8 +185,8 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
       );
     },
     cell: ({ row }): JSX.Element => {
-      const date = new Date(row.getValue('createdAt'));
-      return <p className='text-center'>{dateIntl.format(date)}</p>;
+      const createdAt: string = row.getValue('createdAt');
+      return <p className='text-center'>{formatDateString(createdAt)}</p>;
     },
   },
   {
@@ -237,10 +237,20 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
 
             <DropdownMenuSeparator />
 
-            <AddListingTask listingID={listing.id} />
+            <AddTask
+              asDropdownMenuItem
+              listingID={listing.id}
+            >
+              <>Add new task for listing {listing.id}</>
+            </AddTask>
 
-            <DropdownMenuItem>
-              <Link to={`/tasks/listings/${listing.id}`}>View Tasks</Link>
+            <DropdownMenuItem
+              className='cursor-pointer'
+              asChild
+            >
+              <Link to={`/tasks/listings/${listing.id}?page=1&completed=false`}>
+                View Tasks
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

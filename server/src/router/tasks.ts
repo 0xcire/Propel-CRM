@@ -39,7 +39,6 @@ export default (router: Router) => {
     getTasks
   );
 
-  // TODO: listingOwner middleware should expect a listingID, id too generic
   router.get(
     "/tasks/listings/:listingID",
     validateRequest({ query: taskQuerySchema, params: listingIDParamSchema, cookies: cookieSchema }),

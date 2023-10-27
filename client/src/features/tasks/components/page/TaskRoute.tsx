@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { useUser } from '@/lib/react-query-auth';
 import { useTask } from '../../hooks/useTask';
+import { useUpdateTask } from '../../hooks/useUpdateTask';
 
 import {
   Dialog,
@@ -11,16 +13,19 @@ import {
 } from '@/components/ui/dialog';
 
 import { Spinner } from '@/components';
-
 import { NestedNotFound } from '@/components/Layout/page/NestedNotFound';
+import { TaskForm } from '../TaskForm';
 
-import { CreateTaskFields, TaskForm } from '../TaskForm';
+import { format } from 'date-fns';
 
 import { filterUndefined } from '@/utils/form-data';
-import { useUser } from '@/lib/react-query-auth';
-import { format } from 'date-fns';
-import { useUpdateTask } from '../../hooks/useUpdateTask';
 import { removeTimeZone } from '@/utils';
+
+import type { CreateTaskFields } from '../TaskForm';
+
+// Is just UpdateTask for now
+// implement actual page
+// add <UpdateTask task={row.original} /> to TaskColums, similar to ListingRoute
 
 export function TaskRoute(): JSX.Element {
   const [open, setOpen] = useState(true);
@@ -74,7 +79,6 @@ export function TaskRoute(): JSX.Element {
       { id: (task.data && task.data[0]?.id) as number, data: data },
       {
         onSuccess: () => {
-          // setOpen(false);
           navigate(-1);
         },
       }
@@ -86,8 +90,8 @@ export function TaskRoute(): JSX.Element {
 
   const defaultValues = {
     title: task.data[0].title,
-    description: task.data[0].description,
-    notes: task.data[0].notes,
+    description: task.data[0].description ?? '',
+    notes: task.data[0].notes ?? '',
     dueDate: task.data[0].dueDate
       ? new Date(removeTimeZone(task.data[0].dueDate))
       : undefined,

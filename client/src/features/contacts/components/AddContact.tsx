@@ -11,11 +11,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { ContactForm } from './ContactForm';
 
 import type { DeepPartial } from 'react-hook-form';
 import type { CreateContactFields } from './ContactForm';
-import { Button } from '@/components/ui/button';
 
 export function AddContact({ text }: { text?: string }): JSX.Element {
   const [open, setOpen] = useState(false);
