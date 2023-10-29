@@ -2,36 +2,71 @@
 
 A CRM for real estate agents.
 
+... the timing is great 😅
+
 ## Features
 
-- Docker setup for Development and Production.
+- Production ready Docker configuration
+  - Nginx rate limiting
 - Session based cookie authentication
+  - password salt & hashing w/ bcrypt
+- Dashboard overview of recent listings, contacts, tasks, and analytics
+
+- Protected routes on client only shown when valid user data is returned from server
+
+- Listings, Contacts, & Tasks page that show user data in a searchable, filterable & paginated table
+
+  - Contacts searchable by name
+  - tasks filterable by priority
+  - listings by status (active or sold)
+
+  - each row contains a dropdown menu to perform full CRUD operations on that entity & manage potential relationships w/ other data
+    - Add lead (contact) to a listing
+    - mark listings as sold to specific lead @ specified price
+    - add listing & contact specific tasks
+
+- Analytics page that shows the following for a specified time frame:
+
+  - Sales volume & total sales volume
+  - GCI
+  - average days to close lead
+  - average days on market
+  - sale to list ratio
+
+- Broken Object Level Authorization considered at router level
 
 ## Architecture
 
 ### Client
 
 - Tailwind / Shadcn UI (Radix)
-  - `./client/src/components/ui` contain shadcn components and everything in
-  - `./client/src/components` contain my extension / customization of them as well as my own
+  - `./client/src/components/ui` contain shadcn components
+  - `./client/src/components` contain my extension of shadcn as well as my own
 - Vite
+- TypeScript
 - React
 - React Router
 - React Query / React Context
+- Bullet Proof React inspired
 
 ### Server
 
+- TypeScript
 - Node
 - Express
 
 ### Database
 
-- PostgreSQL (Neon)
+- PostgreSQL on [Neon](https://neon.tech/)
 - Drizzle ORM
 
 ### Containerization
 
 - Docker
+
+### Web Server
+
+- Nginx
 
 ## Getting Started
 
@@ -46,7 +81,7 @@ from `propel-crm` ... \
 `cd client && npm install && npm run dev` \
 open up `http://localhost:5173/` in your browser
 
-### With Docker (recommended)
+### With Docker
 
 `git clone https://github.com/0xcire/Propel-CRM.git propel-crm` \
 `cd propel-crm` \
@@ -65,37 +100,50 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 
 ## Learning Points
 
+- Getting a better understanding of TypeScript generics
+
+  - useful for data transforming utility functions
+  - helped create typesafe, reusable form components based off Shadcn implementation
+
 - Docker
 
-  - Containerizing both client and server separately
-  - Writing separate configs for dev and prod
-    - Trying to follow best practices as necessary
-  - Using nginx as a reverse proxy server
-  - Using docker-compose to sync app together
+  - Multi stage builds to optimize for production
+  - Using docker-compose to sync client, server, and nginx services together
+
+- Nginx
+
+  - Reverse proxy
+  - Rate Limiting
+
+- Back end development concepts and getting a much better grasp of feature development from db design to ui
 
 - Authentication
 
   - Differences between JWT and Session/Cookie based auth
 
-## Successes
-
-<!-- - Combine my knowledge of front end development -->
-
-- Implemented Session/Cookie based user authentication
-- Creating generic Shadcn (Radix) and React Hook Form Input components
-  - text, textarea, select, date, etc
+- Pros/Cons of using SQL vs NoSQL
+- SQL aggregate functions
 
 ## Issues
 
 - React Query and Forms.
+
   - Ran into issues where default values were not updated after invalidating queries on mutation success.
   - [this TK Dodo article](https://tkdodo.eu/blog/react-query-and-forms) really helped me out
+
+- Struggled initally with configuring Nginx
+
+- Also had trouble initially wrapping my head around SQL aggregate functions when creating the analytics view
 
 ## Notes
 
 - Demo account listings are mostly seeded with data from faker js.
+
   - please see `/server/src/lib/faker.ts` to see how that was done
   - data in analytics and some listing details may not make 100% sense
+
+- While best practices and not reinventing the wheel were considered in most parts of this project, one area where that does not apply is user auth.
+  - I don't intend to use this commercially, it's mainly just a learning project and a good opportunity to learn how auth is roughly done under the hood.
 
 ## Roadmap
 
@@ -113,8 +161,8 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - [x] user can CRUD a task
 - listings-slice MVP
   - [x] user can CRUD a listing
-- [ ] analytics-slice MVP
-  - [ ] filterable performance analytics for listings sold by year, quarter, month
+- [x] analytics-slice MVP
+  - [x] filterable performance analytics for listings sold by year/quarter
 
 ### Full Features
 
@@ -123,11 +171,11 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - [ ] <-> page transition between <Public /> routes
   - [ ] contact, task, listing layout animation
   - [ ] page transition layout animation between dashboard and individual pages
-  - [ ] any not from-center chart animations
+  - [x] any not from-center chart animations
 
 - React Query
 
-  - [ ] optimistic UI
+  - [x] optimistic UI, only applied to delete mutations
 
 - Resend (Email Service)
 
@@ -152,35 +200,28 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 
 - contacts-slice
 
-  - [ ] full contacts page, grid layout, also like some game's ui
-  - [ ] certain tasks may have associated contacts
   - [ ] sending follow up texts or emails to contacts, etc
-
   - [ ] members of same team can send contacts to eachother
-  - [ ] infinite scroll pagination
-  - [ ] filter sort by date added, alphabetical, etc
-  - [ ] search for contacts
+  - [x] search for contacts
 
 - tasks-slice
 
   - [ ] can use something like @<Name> and autocomplete based on your contacts in notes section
-  - [ ] can tag listing by listingID
-  - [ ] can tag contact by name or contactID
+  - [x] can add listing specific tasks
+  - [x] can tag contact specific tasks
 
 - listings-slice
 
-  - [ ] tag interested contacts to listings
-  - [ ] image upload, s3
-  - [ ] tag contacts to listings
+  - [x] add leads to listings
   - [ ] suggest contacts based on proximity?
+    - currently based off fake data...
 
 - analytics-slice
 
   - [ ] generate pdf reports with email functionality ( resend )
-  - [ ] lead conversion rates
-  - [ ] avg days on market
-  - [ ] price trends / fluctuations (hmm...)
-  - [ ] # of listings handled, avg time to close lead, overall sales vol.
+  - [x] avg days on market
+  - [x] avg days on market
+  - [x] avg time to close lead, overall sales vol.
 
 - mobile dialog components
 

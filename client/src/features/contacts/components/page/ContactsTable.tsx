@@ -105,6 +105,12 @@ export function ContactTable<TData extends Contact>({
           onChange={(e): void => {
             setNameQuery(e.currentTarget.value);
           }}
+          onKeyUp={(e): void => {
+            if (e.key === 'Backspace' && e.currentTarget.value === '') {
+              searchParams.delete('name');
+              setSearchParams(searchParams);
+            }
+          }}
           className='max-w-sm'
         />
         <div className='ml-auto flex items-center gap-2'>

@@ -16,7 +16,7 @@ export const useNameQuerySearchParams = (
   const name = searchParams.get('name');
 
   useEffect(() => {
-    if (name && !debouncedNameQuery) return;
+    if (name && !debouncedNameQuery) return; //handles page refreshes
     if (
       (debouncedNameQuery === '' || !debouncedNameQuery) &&
       searchParams.get('name')
