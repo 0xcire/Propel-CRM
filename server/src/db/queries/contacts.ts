@@ -40,7 +40,6 @@ export const getUserDashboardContacts = async (userID: number) => {
 };
 
 export const getUsersContacts = async (userID: number, page: number) => {
-  // pagination options
   const userContactJoin = await db
     .select()
     .from(usersToContacts)
