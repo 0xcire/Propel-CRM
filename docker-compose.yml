@@ -16,14 +16,14 @@ services:
     env_file:
       - ./server/.env
   nginx:
-    image: nginx
-    container_name: nginx
+    image: nginx-prod
+    container_name: nginx-prod
     build:
       context: ./nginx
       dockerfile: Dockerfile
     ports:
       - 9090:80
     restart: always
-    depends_on:
-      - client
-      - api
+    # depends_on:
+    #   - client
+    #   - api
