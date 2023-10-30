@@ -3,6 +3,8 @@ type NavLinksProps = Array<{
   path: string;
 }>;
 
+const currentYear = new Date().getFullYear();
+
 export const navLinks: NavLinksProps = [
   {
     name: 'Home',
@@ -22,6 +24,6 @@ export const navLinks: NavLinksProps = [
   },
   {
     name: 'Analytics',
-    path: '/analytics',
+    path: `/analytics?year=${currentYear}`,
   },
 ];

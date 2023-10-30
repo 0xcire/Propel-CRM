@@ -8,11 +8,11 @@ import { getMe, signin, signup, signout } from '@/features/auth';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
+import type { User } from '@/types';
 import type {
   SignInFields,
   SignUpFields,
 } from '@/features/auth/components/AuthForm';
-import type { User } from '@/types';
 
 const userFn = async (): Promise<User | undefined> => {
   const { user } = await getMe();
@@ -42,10 +42,8 @@ export const useUser = (): UseQueryResult<User | undefined, unknown> => {
     queryKey: ['user'],
     queryFn: userFn,
     retry: 0,
-    staleTime: 30 * 60 * 1000, // 30 min
-
-    onSuccess: () => undefined,
-    onError: () => undefined,
+    staleTime: 30 * 60 * 1000, // 30 min stale
+    // refetchInterval: 30 * 60 * 1000,
   });
 };
 

@@ -7,8 +7,6 @@ import { useListings } from '../../hooks/useListings';
 import { ListingTable } from './ListingTable';
 import { listingColumns } from '../../config/ListingColumns';
 
-import type { Listings } from '../../types';
-
 // TODO: from page layout flow in contacts -> use here
 export function ListingPage(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -39,7 +37,7 @@ export function ListingPage(): JSX.Element {
   return (
     <ListingTable
       columns={listingColumns}
-      data={listings.data as Listings}
+      data={listings.data ?? []}
       isLoading={listings.isLoading}
       isFetching={listings.isFetching}
     />

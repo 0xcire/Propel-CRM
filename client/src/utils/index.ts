@@ -1,5 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react';
-import type { BaseResponse } from '@/types';
+import type { UseQueryResult } from '@tanstack/react-query';
+import type { BaseResponse, User } from '@/types';
 
 // API Error
 
@@ -11,6 +12,12 @@ export const isAPIError = (error: unknown): error is Required<BaseResponse> => {
     'status' in error
   );
 };
+
+// user status
+
+export const isLoggedIn = (
+  user: UseQueryResult<User | undefined, unknown>
+): boolean => user.isSuccess && user.data !== null;
 
 // name
 

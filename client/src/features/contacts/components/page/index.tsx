@@ -9,8 +9,6 @@ import { useSearchContacts } from '../../hooks/useSearchContacts';
 import { ContactTable } from './ContactsTable';
 import { listingColumns } from '../../config/ContactColumns';
 
-import type { Contacts } from '../../types';
-
 export function ContactPage(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   const [nameQuery, setNameQuery] = useState<string | undefined>(undefined);
@@ -43,11 +41,7 @@ export function ContactPage(): JSX.Element {
 
   return (
     <ContactTable
-      data={
-        isSearching
-          ? (queriedContacts.data as Contacts)
-          : (contacts.data as Contacts)
-      }
+      data={isSearching ? queriedContacts.data ?? [] : contacts.data ?? []}
       isFetching={
         isSearching ? queriedContacts.isFetching : contacts.isFetching
       }

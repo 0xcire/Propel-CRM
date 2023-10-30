@@ -1,4 +1,4 @@
-import { QueryClient } from '@tanstack/react-query';
+import { QueryCache, QueryClient } from '@tanstack/react-query';
 
 import { toast } from '@/components/ui/use-toast';
 
@@ -11,13 +11,14 @@ const handleApiError = (error: unknown): void => {
   if (isAPIError(error)) {
     if (error.status === 403) {
       queryClient.setQueryData(['user'], null);
-      // queryClient.invalidateQueries(['user']);
     } else {
       toast({
         description: `${error.message}`,
       });
     }
   }
+
+  return;
 };
 
 const isServerError = (error: unknown): boolean =>
@@ -27,7 +28,6 @@ const queryConfig: DefaultOptions = {
   queries: {
     refetchOnWindowFocus: false,
     retry: false,
-    onError: (error) => handleApiError(error),
     useErrorBoundary: (error) => isServerError(error),
   },
   mutations: {
@@ -36,7 +36,13 @@ const queryConfig: DefaultOptions = {
   },
 };
 
-export const queryClient = new QueryClient({ defaultOptions: queryConfig });
+export const queryClient = new QueryClient({
+  defaultOptions: queryConfig,
+  queryCache: new QueryCache({
+    // recommended use of onError for tanstack v5, have yet to upgrade..s
+    onError: (error): void => handleApiError(error),
+  }),
+});
 
 // can only use on update, create / delete cause shift in paginated data
 export const findRelevantKeys = (

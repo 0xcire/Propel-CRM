@@ -11,6 +11,7 @@ const { NotFound } = lazyImport(() => import('@/features/misc'), 'NotFound');
 import { Spinner } from '@/components';
 
 import { lazyImport } from '@/utils/lazyImport';
+import { isLoggedIn } from '@/utils';
 
 import type { RouteObject } from 'react-router-dom';
 
@@ -22,8 +23,8 @@ export const Routes = (): JSX.Element => {
     { path: '*', element: <NotFound /> },
   ];
 
-  const isLoggedIn = user.isSuccess && user.data !== null;
-  const routes = isLoggedIn ? privateRoutes : publicRoutes;
+  const loggedIn = isLoggedIn(user);
+  const routes = loggedIn ? privateRoutes : publicRoutes;
   const element = useRoutes([...welcome, ...routes]);
 
   // TODO: yet another place to replace
@@ -35,6 +36,15 @@ export const Routes = (): JSX.Element => {
     );
   }
 
-  // should add fallback here
-  return <Suspense>{element}</Suspense>;
+  return (
+    <Suspense
+      fallback={
+        <div className='grid h-screen place-items-center'>
+          <Spinner variant='md' />
+        </div>
+      }
+    >
+      {element}
+    </Suspense>
+  );
 };
