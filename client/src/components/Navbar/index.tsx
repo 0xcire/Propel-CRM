@@ -1,33 +1,16 @@
-import { Link } from 'react-router-dom';
-
 import { useUser } from '@/lib/react-query-auth';
 
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 
 import { Menu, Settings } from 'lucide-react';
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '../ui/sheet';
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuList,
-} from '../ui/navigation-menu';
-import { Typography } from '../ui/typography';
 
-import { CustomLink } from './CustomLink';
-import { Avatar } from '../Avatar';
+import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '../ui/sheet';
 
-import { navLinks } from '@/config';
+import { LinkButton } from '../LinkButton';
+import { NavDropdown } from './NavDropdown';
+import { NavMenu } from './NavMenu';
 
-type NavProps = {
-  name: string | undefined;
-};
+import type { NavProps } from './types';
 
 export function Navbar(): JSX.Element {
   const isDesktop = useIsDesktop();
@@ -36,103 +19,74 @@ export function Navbar(): JSX.Element {
   return (
     <>
       {isDesktop ? (
-        <SideNav name={user.data?.name} />
+        <SideNav
+          name={user.data?.name}
+          username={user.data?.username}
+        />
       ) : (
-        <MobileSideNav name={user.data?.name} />
+        <MobileSideNav
+          name={user.data?.name}
+          username={user.data?.username}
+        />
       )}
     </>
   );
 }
 
-function MobileSideNav({ name }: NavProps): JSX.Element {
+function MobileSideNav({ name, username }: NavProps): JSX.Element {
   return (
     <Sheet>
-      <SheetTrigger className=''>
-        <Menu />
+      <SheetTrigger>
+        <Menu
+          className='mt-[2px]'
+          size={20}
+        />
       </SheetTrigger>
       <SheetContent
         side='left'
-        className='flex w-[300px] flex-col py-10'
+        className='flex w-[225px] flex-col py-10'
       >
         <SheetHeader>
-          <SheetTitle className='mx-auto text-2xl'>Propel CRM</SheetTitle>
+          <NavDropdown
+            name={name}
+            username={username}
+          />
         </SheetHeader>
-        <NavigationMenu
-          orientation='vertical'
-          className='m-auto'
-        >
-          <NavigationMenuList
-            aria-orientation='vertical'
-            className='flex-col items-start'
-          >
-            {navLinks.map((link) => (
-              <NavigationMenuItem key={link.name}>
-                <SheetClose asChild>
-                  <CustomLink path={link.path}>{link.name}</CustomLink>
-                </SheetClose>
-              </NavigationMenuItem>
-            ))}
-          </NavigationMenuList>
-        </NavigationMenu>
-        <div className='mx-auto flex items-center'>
-          <Avatar name={name as string} />
+        <NavMenu />
 
-          <Typography
-            variant='p'
-            className='mx-3 text-sm'
-          >
-            {name as string}
-          </Typography>
-
-          <SheetClose asChild>
-            <Link to='/profile'>
-              <Settings size={18} />
-            </Link>
-          </SheetClose>
-        </div>
+        <SettingsLink />
       </SheetContent>
     </Sheet>
   );
 }
 
-function SideNav({ name }: NavProps): JSX.Element {
+function SideNav({ name, username }: NavProps): JSX.Element {
   return (
-    <div className='flex h-full w-1/6 max-w-[300px] flex-col border-r-2 px-4 py-10'>
-      <Typography
-        variant='h2'
-        className='text-center'
-      >
-        Propel CRM
-      </Typography>
-      <NavigationMenu
-        orientation='vertical'
-        className='m-auto'
-      >
-        <NavigationMenuList
-          aria-orientation='vertical'
-          className='flex-col items-start'
-        >
-          {navLinks.map((link) => (
-            <NavigationMenuItem key={link.name}>
-              <CustomLink path={link.path}>{link.name}</CustomLink>
-            </NavigationMenuItem>
-          ))}
-        </NavigationMenuList>
-      </NavigationMenu>
-      <div className='mx-auto flex items-center'>
-        <Avatar name={name as string} />
+    <div className='flex h-full w-1/6 max-w-[200px] flex-col border-r-2 px-4 py-4'>
+      <NavDropdown
+        name={name}
+        username={username}
+      />
 
-        <Typography
-          variant='p'
-          className='mx-3 text-sm'
-        >
-          {name as string}
-        </Typography>
+      <NavMenu />
 
-        <Link to='/profile'>
-          <Settings size={20} />
-        </Link>
-      </div>
+      <SettingsLink />
     </div>
+  );
+}
+
+function SettingsLink(): JSX.Element {
+  return (
+    <LinkButton
+      className='flex items-center justify-start gap-2 px-8 text-sm'
+      path='/profile'
+      variant='ghost'
+    >
+      <Settings
+        className='mt-[2px]'
+        size={18}
+      />
+      Settings
+    </LinkButton>
   );
 }

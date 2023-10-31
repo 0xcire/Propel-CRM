@@ -1,15 +1,18 @@
 // per: https://www.radix-ui.com/docs/primitives/components/navigation-menu#with-client-side-routing
 
 import { Link, useLocation } from 'react-router-dom';
+
+import { Link as RadixLink } from '@radix-ui/react-navigation-menu';
 import { NavigationMenuLink } from '../ui/navigation-menu';
+
 import { navigationMenuTriggerStyle } from '../ui/navigation-menu';
+import { twMerge } from 'tailwind-merge';
 
-type CustomLinkProps = {
+import type { ComponentProps, ReactNode } from 'react';
+interface CustomLinkProps extends ComponentProps<typeof RadixLink> {
   path: string;
-  children: string;
-};
-
-// matchRoutes?
+  children: ReactNode;
+}
 
 export function CustomLink({
   path,
@@ -17,15 +20,19 @@ export function CustomLink({
   ...props
 }: CustomLinkProps): JSX.Element {
   const location = useLocation();
-  const isActive = location.pathname === path;
+  const isActive = location.pathname === path.split('?')[0];
   return (
     <NavigationMenuLink
-      className={navigationMenuTriggerStyle()}
       active={isActive}
       {...props}
       asChild
     >
-      <Link to={path}>{children}</Link>
+      <Link
+        className={twMerge(navigationMenuTriggerStyle() + props.className)}
+        to={path}
+      >
+        {children}
+      </Link>
     </NavigationMenuLink>
   );
 }

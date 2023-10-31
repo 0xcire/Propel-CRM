@@ -48,8 +48,9 @@ export function ListingLeadAvatar({
               className='pl-0 font-bold'
               path={`/contacts/${contactInfo.id}`}
               variant='link'
-              text={contactInfo.name}
-            />
+            >
+              {contactInfo.name}
+            </LinkButton>
             {/* <p className='text-sm'>This lead was established X days ago.</p> */}
 
             <div className='flex items-center gap-2 pt-0'>
