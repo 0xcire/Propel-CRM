@@ -13,6 +13,7 @@ import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -27,6 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { DataTableFilter } from '@/components/ui/table/data-table-filter';
 
 import { Spinner } from '@/components';
 
@@ -36,9 +38,7 @@ import type {
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
-
 import type { Task } from '../../types';
-import { DataTableFilter } from '@/components/ui/table/data-table-filter';
 
 interface ContactTableProps<TData extends Task> {
   columns: Array<ColumnDef<Task>>;
@@ -176,7 +176,7 @@ ContactTableProps<TData>): JSX.Element {
           fillContainer
         />
       ) : (
-        <div className='flex-1 overflow-auto rounded-md border shadow'>
+        <ScrollArea className='flex-1 overflow-auto rounded-md border shadow'>
           <Table>
             <TableHeader className='w-full'>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -227,7 +227,7 @@ ContactTableProps<TData>): JSX.Element {
               )}
             </TableBody>
           </Table>
-        </div>
+        </ScrollArea>
       )}
 
       <div className='flex items-center justify-end space-x-2 py-4 pb-0'>

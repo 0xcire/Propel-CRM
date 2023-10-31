@@ -27,6 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 import { Spinner } from '@/components';
 import { StatusToggle } from './StatusToggle';
@@ -140,7 +141,7 @@ export function ListingTable<TData extends Listing>({
           fillContainer
         />
       ) : (
-        <div className='flex-1 overflow-auto rounded-md border shadow'>
+        <ScrollArea className='flex-1 overflow-auto rounded-md border shadow'>
           <Table>
             <TableHeader className='w-full'>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -191,7 +192,7 @@ export function ListingTable<TData extends Listing>({
               )}
             </TableBody>
           </Table>
-        </div>
+        </ScrollArea>
       )}
 
       <div className='flex items-center justify-end space-x-2 py-4 pb-0'>
