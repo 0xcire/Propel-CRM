@@ -27,7 +27,7 @@ export function RemoveLead({
   contactInfo: ContactInfo;
 }): JSX.Element {
   const [open, setOpen] = useState(false);
-  const removeLead = useRemoveLead();
+  const removeLead = useRemoveLead(listingID);
 
   return (
     <Dialog
@@ -51,7 +51,12 @@ export function RemoveLead({
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant='outline'>Cancel</Button>
+          <Button
+            onClick={(): void => setOpen(false)}
+            variant='outline'
+          >
+            Cancel
+          </Button>
 
           <SubmitButton
             variant='destructive'
