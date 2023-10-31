@@ -15,15 +15,12 @@ const MemoizedContact = memo(Contact);
 export function DashboardContacts(): JSX.Element {
   const contacts = useDashboardContacts();
 
-  // TODO: could extract
   if (contacts.isLoading) {
     return (
-      <div className='grid h-full w-full place-items-center'>
-        <Spinner
-          className='mx-auto'
-          variant='md'
-        />
-      </div>
+      <Spinner
+        variant='md'
+        fillContainer
+      />
     );
   }
 

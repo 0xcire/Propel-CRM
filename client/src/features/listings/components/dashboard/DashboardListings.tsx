@@ -19,15 +19,13 @@ export function DashboardListings(): JSX.Element {
   //   ));
   // }, [listings]);
 
-  // TODO: common. extract.
   if (listings.isLoading) {
     return (
-      <div className='grid h-full w-full place-items-center'>
-        <Spinner
-          className='mx-auto'
-          variant='md'
-        />
-      </div>
+      <Spinner
+        className='mx-auto'
+        variant='md'
+        fillContainer
+      />
     );
   }
 

@@ -32,12 +32,10 @@ export function ContactRoute(): JSX.Element {
 
   if (contact.isLoading) {
     return (
-      <div className='grid h-full w-full flex-1 place-items-center'>
-        <Spinner
-          className='mx-auto'
-          variant='md'
-        />
-      </div>
+      <Spinner
+        variant='md'
+        fillContainer
+      />
     );
   }
 
@@ -46,8 +44,8 @@ export function ContactRoute(): JSX.Element {
   }
 
   return (
-    <div className='grid h-full grid-cols-12 grid-rows-6 gap-4'>
-      <div className='col-start-1 col-end-13 row-start-1 row-end-2 flex items-center justify-between rounded-md border-b p-4'>
+    <div className='mt-4 grid h-full grid-cols-12 grid-rows-6 gap-4 rounded-md border'>
+      <div className='col-start-1 col-end-13 row-start-1 row-end-2 flex items-center justify-between rounded-md border-b p-4 pt-0'>
         <div className='flex items-start gap-2'>
           <Avatar
             className='h-16 w-16 text-lg'

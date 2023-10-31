@@ -1,8 +1,9 @@
 import { twMerge } from 'tailwind-merge';
 
 type SpinnerProps = {
-  variant: keyof typeof VariantMap;
+  variant?: keyof typeof VariantMap;
   className?: string;
+  fillContainer?: boolean;
 };
 
 const VariantMap = {
@@ -12,12 +13,24 @@ const VariantMap = {
   lg: 'loading-lg',
 };
 
-export const Spinner = ({ variant, className }: SpinnerProps): JSX.Element => {
+export const Spinner = ({
+  variant = 'xs',
+  className,
+  fillContainer,
+}: SpinnerProps): JSX.Element => {
   const modifier = VariantMap[variant];
 
-  return (
-    <span
-      className={twMerge(`loading loading-spinner ${modifier}`, className)}
-    ></span>
-  );
+  if (fillContainer) {
+    return (
+      <div
+        className={twMerge(
+          `grid h-full w-full place-items-center ${modifier}`,
+          className
+        )}
+      >
+        <span className={`loading loading-spinner ${modifier}`}></span>
+      </div>
+    );
+  }
+  return <span className={`loading loading-spinner ${modifier}`}></span>;
 };

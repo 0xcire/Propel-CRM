@@ -6,7 +6,6 @@ import { useAnalyticsContext } from '@/features/analytics/context/AnalyticsConte
 import { Spinner } from '@/components';
 import { Typography } from '@/components/ui/typography';
 
-import { twMerge } from 'tailwind-merge';
 import { calculateAverage } from '@/features/analytics/utils';
 
 import type { AnalyticsDataPoint } from '@/features/analytics/types';
@@ -23,14 +22,11 @@ export function TimeToCloseCard({
 
   if (timeToClose.isLoading) {
     return (
-      <div
-        className={twMerge('grid h-full w-full place-items-center', className)}
-      >
-        <Spinner
-          className='mx-auto'
-          variant='md'
-        />
-      </div>
+      <Spinner
+        className={className}
+        variant='md'
+        fillContainer
+      />
     );
   }
 

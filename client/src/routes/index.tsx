@@ -27,21 +27,22 @@ export const Routes = (): JSX.Element => {
   const routes = loggedIn ? privateRoutes : publicRoutes;
   const element = useRoutes([...welcome, ...routes]);
 
-  // TODO: yet another place to replace
   if (user.isInitialLoading || user.isLoading || user.isFetching) {
     return (
-      <div className='grid h-screen place-items-center'>
-        <Spinner variant='md' />
-      </div>
+      <Spinner
+        variant='md'
+        fillContainer
+      />
     );
   }
 
   return (
     <Suspense
       fallback={
-        <div className='grid h-screen place-items-center'>
-          <Spinner variant='md' />
-        </div>
+        <Spinner
+          variant='md'
+          fillContainer
+        />
       }
     >
       {element}

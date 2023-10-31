@@ -81,12 +81,10 @@ export function ListingTable<TData extends Listing>({
 
   if ((!data && isLoading) || (!data && isFetching)) {
     return (
-      <div className='grid h-full w-full flex-1 place-items-center'>
-        <Spinner
-          className='mx-auto'
-          variant='md'
-        />
-      </div>
+      <Spinner
+        variant='md'
+        fillContainer
+      />
     );
   }
 
@@ -137,12 +135,10 @@ export function ListingTable<TData extends Listing>({
       </div>
 
       {isLoading || isFetching ? (
-        <div className='grid h-full w-full flex-1 place-items-center'>
-          <Spinner
-            className='mx-auto'
-            variant='md'
-          />
-        </div>
+        <Spinner
+          variant='md'
+          fillContainer
+        />
       ) : (
         <div className='flex-1 overflow-auto rounded-md border shadow'>
           <Table>

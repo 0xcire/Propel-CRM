@@ -39,12 +39,10 @@ export function GCILineChart(): JSX.Element {
 
   if (salesVolume.isInitialLoading) {
     return (
-      <div className='grid h-full w-full place-items-center'>
-        <Spinner
-          className='mx-auto'
-          variant='md'
-        />
-      </div>
+      <Spinner
+        variant='md'
+        fillContainer
+      />
     );
   }
 

@@ -34,12 +34,10 @@ export function SalesVolumeChart(): JSX.Element {
 
   if (salesVolume.isLoading) {
     return (
-      <div className='grid h-full w-full place-items-center'>
-        <Spinner
-          className='mx-auto'
-          variant='md'
-        />
-      </div>
+      <Spinner
+        variant='md'
+        fillContainer
+      />
     );
   }
 
