@@ -33,9 +33,9 @@ export function AnalyticsPage(): JSX.Element {
 
   return (
     <div className='flex h-full flex-col'>
-      <AnalyticsPageHeader className='flex items-center justify-between p-4 pb-0' />
+      <AnalyticsPageHeader className='flex items-center justify-between pb-0 pt-4' />
 
-      <div className=' grid h-full min-h-0 flex-1 grid-cols-12 grid-rows-6 gap-4 p-4'>
+      <div className=' grid h-full min-h-0 flex-1 grid-cols-12 grid-rows-6 gap-4 py-4 pb-0'>
         <TotalVolumeCard className='col-start-1 col-end-4 row-start-1 row-end-3 grid place-items-center rounded-md border shadow' />
 
         <DaysOnMarketCard className='col-start-4 col-end-7 row-start-1 row-end-3 grid place-items-center rounded-md border shadow' />
@@ -43,7 +43,7 @@ export function AnalyticsPage(): JSX.Element {
         <div className='col-start-7 col-end-13 row-start-1 row-end-3 flex min-h-0 flex-col rounded-md border shadow'>
           <Typography
             variant='h4'
-            className='p-2'
+            className='p-2 pr-3 font-normal'
           >
             GCI
           </Typography>
@@ -54,7 +54,7 @@ export function AnalyticsPage(): JSX.Element {
         <div className='col-start-1 col-end-10 row-start-3 row-end-7 flex min-h-0 flex-col rounded-md border shadow'>
           <Typography
             variant='h4'
-            className='p-2'
+            className='p-2 pl-4 font-normal'
           >
             Sales Volume
           </Typography>

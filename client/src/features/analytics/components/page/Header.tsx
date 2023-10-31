@@ -18,7 +18,10 @@ export function AnalyticsPageHeader({
 
   return (
     <div className={className}>
-      <Typography variant='h4'>
+      <Typography
+        variant='h4'
+        className='text-xl font-normal'
+      >
         {`Showing Results for ${searchParams.get('year')}`}
         {currentTimeFrame !== 'year' ? `, ${currentTimeFrame}` : ''}
       </Typography>

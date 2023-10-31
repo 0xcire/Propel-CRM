@@ -84,7 +84,7 @@ function SettingsLink(): JSX.Element {
     >
       <Settings
         className='mt-[2px]'
-        size={18}
+        size={16}
       />
       Settings
     </LinkButton>

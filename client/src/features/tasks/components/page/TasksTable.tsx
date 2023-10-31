@@ -99,7 +99,7 @@ ContactTableProps<TData>): JSX.Element {
 
   return (
     <>
-      <div className='flex items-center gap-2 p-4'>
+      <div className='flex items-center gap-2 py-4'>
         <Input
           autoFocus={true}
           placeholder='Search your tasks'
@@ -180,7 +180,7 @@ ContactTableProps<TData>): JSX.Element {
           />
         </div>
       ) : (
-        <div className='mx-4 flex-1 overflow-auto rounded-md border shadow'>
+        <div className='sflex-1 overflow-auto rounded-md border shadow'>
           <Table>
             <TableHeader className='w-full'>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -234,7 +234,7 @@ ContactTableProps<TData>): JSX.Element {
         </div>
       )}
 
-      <div className='flex items-center justify-end space-x-2 p-4'>
+      <div className='flex items-center justify-end space-x-2 py-4 pb-0'>
         <Typography
           variant='p'
           className='text-sm'

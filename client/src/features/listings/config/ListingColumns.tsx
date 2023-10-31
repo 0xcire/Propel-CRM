@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { ListingLeadAvatar } from '../components/ListingLeadAvatar';
+import { AddTask } from '@/features/common/tasks/components/AddTask';
 import { AddLead } from '../components/page/Columns/AddLead';
 import { MarkSold } from '../components/page/Columns/MarkSold';
 import { DeleteListing } from '../components/DeleteListing';
@@ -21,7 +22,6 @@ import { currency, formatDateString, number } from '@/utils/intl';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Listing } from '../types';
-import { AddTask } from '@/features/common/tasks/components/AddTask';
 
 type ContactInfo = {
   id: number;

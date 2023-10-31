@@ -13,6 +13,7 @@ import { DashboardListingView } from '@/features/listings/components/dashboard';
 import { DashboardContactsView } from '@/features/contacts/components/dashboard';
 import { DashboardTasksView } from '@/features/tasks/components/dashboard';
 import { DashboardAnalyticsView } from '@/features/analytics/components/dashboard';
+import { dateIntl } from '@/utils/intl';
 
 export const Dashboard = (): JSX.Element => {
   const user = useUser();
@@ -22,15 +23,25 @@ export const Dashboard = (): JSX.Element => {
 
   useDocumentTitle('Dashboard | Propel CRM');
 
+  const date = new Date();
+
   return (
     <>
-      <div className='flex h-full w-full flex-1 flex-col py-10'>
-        <div className='flex w-full items-center justify-between px-10'>
+      <div className='flex h-full w-full flex-1 flex-col px-6 py-4 pb-0'>
+        <div className='flex w-full items-center justify-between'>
           <div className='flex items-center gap-2'>
             {!isDesktop && <Navbar />}
-            <Typography variant='h3'>
-              Welcome, {user.data?.name as string}
-            </Typography>
+            <div>
+              <Typography
+                variant='h3'
+                className='text-[22px] font-black antialiased'
+              >
+                Welcome, {user.data?.name as string}
+              </Typography>
+              <p className='text-sm'>
+                Today is {dateIntl('long').format(date)}
+              </p>
+            </div>
           </div>
           <SubmitButton
             text='Logout'
@@ -39,7 +50,7 @@ export const Dashboard = (): JSX.Element => {
           />
         </div>
 
-        <div className='grid h-full max-h-screen flex-1 grid-cols-12 grid-rows-6 gap-4 p-10 pb-0  xl:flex-1'>
+        <div className='grid h-full max-h-screen flex-1 grid-cols-12 grid-rows-6 gap-4 py-4 xl:flex-1'>
           <DashboardGridItem className='col-start-1 col-end-10 row-start-1 row-end-4 2xl:col-end-11'>
             <DashboardListingView />
           </DashboardGridItem>

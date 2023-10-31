@@ -8,10 +8,13 @@ export const currency = new Intl.NumberFormat('en-US', {
 
 export const number = new Intl.NumberFormat();
 
-export const dateIntl = new Intl.DateTimeFormat('en-US', {
-  dateStyle: 'short',
-});
+export const dateIntl = (
+  style: 'full' | 'long' | 'medium' | 'short' | undefined
+): Intl.DateTimeFormat =>
+  new Intl.DateTimeFormat('en-US', {
+    dateStyle: style,
+  });
 
 export const formatDateString = (dateString: string): string => {
-  return dateIntl.format(parseISO(removeTimeZone(dateString)));
+  return dateIntl('short').format(parseISO(removeTimeZone(dateString)));
 };

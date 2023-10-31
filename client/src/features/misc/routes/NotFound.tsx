@@ -32,9 +32,10 @@ export const NotFound = (): JSX.Element => {
         </div>
         <LinkButton
           delta={-1}
-          text='Go Back'
           className='mt-3'
-        />
+        >
+          Go Back
+        </LinkButton>
       </div>
     </div>
   );

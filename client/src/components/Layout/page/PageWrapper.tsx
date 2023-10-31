@@ -10,6 +10,8 @@ export function PageWrapper({
 }): JSX.Element {
   useDocumentTitle(title);
   return (
-    <div className='flex h-full w-full flex-1 flex-col p-10'>{children}</div>
+    <div className='flex h-full w-full flex-1 flex-col px-6 py-4'>
+      {children}
+    </div>
   );
 }

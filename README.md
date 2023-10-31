@@ -137,13 +137,22 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 
 ## Notes
 
+- Project is still a WIP. Everything that does not require a third party service and UI enhancements are roughly 90% complete. Excited to then add,
+
+  - Framer Motion animations
+  - Verify account email
+  - Account recovery email
+  - MapBox address autocomplete
+  - S3 file upload
+  - AWS hosting
+
 - Demo account listings are mostly seeded with data from faker js.
 
   - please see `/server/src/lib/faker.ts` to see how that was done
   - data in analytics and some listing details may not make 100% sense
 
 - While best practices and not reinventing the wheel were considered in most parts of this project, one area where that does not apply is user auth.
-  - I don't intend to use this commercially, it's mainly just a learning project and a good opportunity to learn how auth is roughly done under the hood.
+  - The more efficient solution would be to used a managed solution, or even OAuth, however would like to take this opportunity to learn how auth is roughly done, under the hood
 
 ## Roadmap
 

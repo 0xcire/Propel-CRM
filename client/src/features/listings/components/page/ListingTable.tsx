@@ -92,7 +92,7 @@ export function ListingTable<TData extends Listing>({
 
   return (
     <>
-      <div className='flex items-center p-4'>
+      <div className='flex items-center py-4'>
         <Input
           placeholder='Search by address'
           value={(table.getColumn('address')?.getFilterValue() as string) ?? ''}
@@ -144,7 +144,7 @@ export function ListingTable<TData extends Listing>({
           />
         </div>
       ) : (
-        <div className='mx-4 flex-1 overflow-auto rounded-md border shadow'>
+        <div className='flex-1 overflow-auto rounded-md border shadow'>
           <Table>
             <TableHeader className='w-full'>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -198,7 +198,7 @@ export function ListingTable<TData extends Listing>({
         </div>
       )}
 
-      <div className='flex items-center justify-end space-x-2 p-4'>
+      <div className='flex items-center justify-end space-x-2 py-4 pb-0'>
         <Typography
           variant='p'
           className='text-sm'

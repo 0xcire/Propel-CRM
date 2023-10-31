@@ -17,7 +17,12 @@ export function PageHeader({
     <div className='flex w-full items-center justify-between'>
       <div className='flex items-center gap-2'>
         {!isDesktop && <Navbar />}
-        <Typography variant='h3'>{text}</Typography>
+        <Typography
+          variant='h3'
+          className='text-[22px] font-black antialiased'
+        >
+          {text}
+        </Typography>
       </div>
       {children}
     </div>

@@ -68,6 +68,6 @@ export const handleOnOpenChange = (
     setOpen(true);
   } else {
     setOpen(false);
-    document.body.style.pointerEvents = ''; // best solution?
+    document.body.style.pointerEvents = '';
   }
 };
