@@ -38,10 +38,11 @@ export function DeleteAccount(): JSX.Element {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction asChild>
               <SubmitButton
-                text='Continue'
                 isLoading={isLoading}
                 onClick={(): void => mutate(user.data?.id as number)}
-              />
+              >
+                Continue
+              </SubmitButton>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

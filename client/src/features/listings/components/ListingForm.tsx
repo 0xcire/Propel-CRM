@@ -106,8 +106,9 @@ export function ListingForm({
           disabled={!form.formState.isDirty}
           form={isCreate ? 'add-listing' : 'update-listing'}
           isLoading={isLoading}
-          text={isCreate ? 'Add' : 'Save'}
-        />
+        >
+          {isCreate ? 'Add' : 'Save'}
+        </SubmitButton>
       </DialogFooter>
     </div>
   );

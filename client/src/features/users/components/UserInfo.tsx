@@ -135,8 +135,9 @@ export function UserInfo(): JSX.Element {
                   form='user-info'
                   isLoading={isLoading}
                   disabled={!userFieldsAreEmpty}
-                  text='Save Changes'
-                />
+                >
+                  Save Changes
+                </SubmitButton>
               </DialogFooter>
             </DialogContent>
           </Dialog>

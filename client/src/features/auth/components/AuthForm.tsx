@@ -71,10 +71,11 @@ export function AuthForm({
           control={form.control}
         />
         <SubmitButton
-          text={'Sign In'}
           disabled={!passwordFilledIn}
           isLoading={isLoading}
-        />
+        >
+          Sign In
+        </SubmitButton>
       </form>
     </Form>
   );

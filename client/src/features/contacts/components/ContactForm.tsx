@@ -85,8 +85,9 @@ export function ContactForm({
           disabled={isCreate ? !formComplete : !form.formState.isDirty}
           form={isCreate ? 'add-contact' : 'update-contact'}
           isLoading={isLoading}
-          text='Update'
-        />
+        >
+          Update
+        </SubmitButton>
       </DialogFooter>
     </>
   );

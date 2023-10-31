@@ -60,7 +60,6 @@ export function RemoveLead({
 
           <SubmitButton
             variant='destructive'
-            text='Remove'
             isLoading={removeLead.isLoading}
             onClick={(): void => {
               removeLead.mutate(
@@ -73,7 +72,9 @@ export function RemoveLead({
                 }
               );
             }}
-          />
+          >
+            Remove
+          </SubmitButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

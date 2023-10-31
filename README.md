@@ -33,7 +33,7 @@ A CRM for real estate agents.
   - average days on market
   - sale to list ratio
 
-- Broken Object Level Authorization considered at router level
+- Broken Object Level Authorization consideration
 
 ## Architecture
 
@@ -152,7 +152,7 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - data in analytics and some listing details may not make 100% sense
 
 - While best practices and not reinventing the wheel were considered in most parts of this project, one area where that does not apply is user auth.
-  - The more efficient solution would be to used a managed solution, or even OAuth, however would like to take this opportunity to learn how auth is roughly done, under the hood
+  - The more efficient solution would be to used a managed solution/OAuth, however would like to take this opportunity to learn how auth is roughly done, under the hood
 
 ## Roadmap
 

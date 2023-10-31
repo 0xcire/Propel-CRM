@@ -130,8 +130,9 @@ function Lead({
           );
         }}
         isLoading={addLead.isLoading}
-        text='Save'
-      ></SubmitButton>
+      >
+        Save
+      </SubmitButton>
     </div>
   );
 }

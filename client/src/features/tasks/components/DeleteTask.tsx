@@ -61,7 +61,6 @@ export function DeleteTask({
 
           <SubmitButton
             variant='destructive'
-            text='Remove'
             isLoading={deleteTask.isLoading}
             onClick={(): void =>
               deleteTask.mutate(id, {
@@ -70,7 +69,9 @@ export function DeleteTask({
                 },
               })
             }
-          />
+          >
+            Remove
+          </SubmitButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -156,8 +156,9 @@ export function TaskForm({
           }
           form={isCreate ? 'add-task' : 'update-task'}
           isLoading={isLoading}
-          text='Add'
-        />
+        >
+          Add
+        </SubmitButton>
       </DialogFooter>
     </div>
   );

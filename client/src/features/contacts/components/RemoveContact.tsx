@@ -70,14 +70,15 @@ export function RemoveContact({
           <AlertDialogAction asChild>
             <SubmitButton
               variant='destructive'
-              text='Remove'
               isLoading={deleteContact.isLoading}
               onClick={(): void =>
                 deleteContact.mutate(contact.id, {
                   onSuccess: () => setOpen(false),
                 })
               }
-            />
+            >
+              Remove
+            </SubmitButton>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

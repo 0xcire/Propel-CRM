@@ -120,8 +120,9 @@ export function Authentication(): JSX.Element {
                 <SubmitButton
                   isLoading={isLoading}
                   disabled={false}
-                  text='Save Changes'
-                />
+                >
+                  Save Changes
+                </SubmitButton>
               </DialogFooter>
             </form>
           </Form>

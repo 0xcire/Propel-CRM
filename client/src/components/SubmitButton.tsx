@@ -1,18 +1,19 @@
-import { buttonVariants } from '@/components/ui/button';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Spinner } from '@/components';
+
 import { cn } from '@/lib/utils';
 
+import type { ReactNode } from 'react';
 import type { ButtonProps } from '@/components/ui/button';
 
 interface SubmitButtonProps extends ButtonProps {
-  text: string;
+  children: ReactNode;
   isLoading: boolean;
   disabled?: boolean;
 }
 
 export const SubmitButton = ({
-  text,
+  children,
   isLoading,
   disabled,
   size,
@@ -25,12 +26,11 @@ export const SubmitButton = ({
       {...props}
       disabled={isLoading || disabled}
       aria-disabled={isLoading || disabled}
-      // variant={variant}
       className={cn(buttonVariants({ variant, size, className }))}
       type='submit'
     >
-      {isLoading && <Spinner variant='xs' />}
-      <span className={isLoading ? 'ml-1' : ''}>{text}</span>
+      {isLoading && <Spinner />}
+      <span className={isLoading ? 'ml-1' : ''}>{children}</span>
     </Button>
   );
 };

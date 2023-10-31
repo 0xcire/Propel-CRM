@@ -66,7 +66,6 @@ export function DeleteListing({
 
           <SubmitButton
             variant='destructive'
-            text='Remove'
             isLoading={deleteListing.isLoading}
             onClick={(): void =>
               deleteListing.mutate(listingID, {
@@ -75,7 +74,9 @@ export function DeleteListing({
                 },
               })
             }
-          />
+          >
+            Remove
+          </SubmitButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

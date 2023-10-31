@@ -44,10 +44,11 @@ export const Dashboard = (): JSX.Element => {
             </div>
           </div>
           <SubmitButton
-            text='Logout'
             isLoading={logout.isLoading}
             onClick={(): void => logout.mutate()}
-          />
+          >
+            Logout
+          </SubmitButton>
         </div>
 
         <div className='grid h-full max-h-screen flex-1 grid-cols-12 grid-rows-6 gap-4 py-4 xl:flex-1'>

@@ -140,9 +140,10 @@ export function MarkSold({
             <SubmitButton
               isLoading={markSold.isLoading}
               form='mark-sold'
-              text='Save changes'
               disabled={!form.formState.isDirty}
-            />
+            >
+              Save Changes
+            </SubmitButton>
           </DialogFooter>
         </DialogContent>
       </>
