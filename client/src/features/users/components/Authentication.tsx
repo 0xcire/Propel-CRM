@@ -82,7 +82,12 @@ export function Authentication(): JSX.Element {
         onOpenChange={setOpen}
       >
         <DialogTrigger asChild>
-          <Button variant='outline'>Change Password</Button>
+          <Button
+            className='mt-4'
+            variant='outline'
+          >
+            Change Password
+          </Button>
         </DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <Form {...form}>

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -39,6 +39,11 @@ export function UserInfo(): JSX.Element {
   const { mutate, isLoading } = useUpdateAccount();
   const form = useForm<UserInfoFields>({
     resolver: zodResolver(UserInfoSchema),
+    defaultValues: {
+      email: user.data?.username ?? '',
+      username: user.data?.email ?? '',
+      verifyPassword: '',
+    },
   });
 
   const userFieldsAreEmpty = fieldsAreDirty<UserInfoFields>(form, [
@@ -46,22 +51,16 @@ export function UserInfo(): JSX.Element {
     'email',
   ]);
 
-  const handleEditToggle = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      e.preventDefault();
-      const previousEl = e.currentTarget.previousElementSibling
-        ?.children[1] as HTMLInputElement;
-      const isDisabled = previousEl?.disabled;
+  const handleEditToggle = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ): void => {
+    e.preventDefault();
+    const previousEl = e.currentTarget.previousElementSibling
+      ?.children[1] as HTMLInputElement;
+    const isDisabled = previousEl?.disabled;
 
-      previousEl.disabled = !isDisabled;
-    },
-    []
-  );
-
-  useEffect(() => {
-    form.setValue('username', user.data?.username as string);
-    form.setValue('email', user.data?.email as string);
-  }, [form, user.data]);
+    previousEl.disabled = !isDisabled;
+  };
 
   function onSubmit(values: UserInfoFields): void {
     let data;
@@ -89,7 +88,7 @@ export function UserInfo(): JSX.Element {
           id='user-info'
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div className='input-wrap flex items-end justify-between gap-8'>
+          <div className='input-wrap flex items-end justify-between gap-4'>
             <TextInput
               name='username'
               disabled={true}
@@ -98,7 +97,7 @@ export function UserInfo(): JSX.Element {
             <Button onClick={(e): void => handleEditToggle(e)}>Edit</Button>
           </div>
 
-          <div className='input-wrap flex items-end justify-between gap-8'>
+          <div className='input-wrap flex items-end justify-between gap-4'>
             <TextInput
               name='email'
               disabled={true}
@@ -112,7 +111,12 @@ export function UserInfo(): JSX.Element {
             onOpenChange={setOpen}
           >
             <DialogTrigger asChild>
-              <Button variant='outline'>Save Changes</Button>
+              <Button
+                className='mt-4'
+                variant='outline'
+              >
+                Save Changes
+              </Button>
             </DialogTrigger>
             <DialogContent className='sm:max-w-[425px]'>
               <DialogHeader>
