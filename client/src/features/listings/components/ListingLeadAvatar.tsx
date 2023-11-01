@@ -43,7 +43,7 @@ export function ListingLeadAvatar({
         <div className='flex justify-between gap-4'>
           <Avatar name={contactInfo.name} />
 
-          <div className='mr-auto w-fit space-y-1'>
+          <div className='-m-[2px] mr-auto w-fit space-y-1'>
             <LinkButton
               className='pl-0 font-bold'
               path={`/contacts/${contactInfo.id}`}
@@ -51,7 +51,7 @@ export function ListingLeadAvatar({
             >
               {contactInfo.name}
             </LinkButton>
-            {/* <p className='text-sm'>This lead was established X days ago.</p> */}
+            <p className='text-sm'>This lead was established X days ago.</p>
 
             <div className='flex items-center gap-2 pt-0'>
               <div className='flex cursor-pointer items-center gap-1'>

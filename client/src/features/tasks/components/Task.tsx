@@ -7,12 +7,7 @@ import { UpdateTask } from './UpdateTask';
 
 import { formatDateString } from '@/utils/intl';
 
-import type { Task as TaskData } from '../types';
-
-type TaskProps = {
-  userID: number;
-  task: TaskData;
-};
+import type { TaskProps } from '../types';
 
 const taskPriorityLookup = {
   low: '!',

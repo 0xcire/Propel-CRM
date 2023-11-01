@@ -5,9 +5,8 @@ import { useDashboardTasks } from '../../hooks/useDashboardTasks';
 import { useTaskContext } from '../../context/TaskContext';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Typography } from '@/components/ui/typography';
 
-import { Spinner } from '@/components';
+import { ListEmpty, Spinner } from '@/components';
 
 import { Task } from '../Task';
 import { CompletedTasks } from '../CompletedTasks';
@@ -16,7 +15,7 @@ export function DashboardTasks(): JSX.Element {
   const user = useUser();
   const incompleteTasks = useDashboardTasks('false');
 
-  const { showCompleted } = useTaskContext();
+  const [showCompleted] = useTaskContext()['completed'];
 
   if (incompleteTasks.isLoading) {
     return (
@@ -27,16 +26,8 @@ export function DashboardTasks(): JSX.Element {
     );
   }
 
-  // extract this
   if (incompleteTasks.data && !incompleteTasks.data[0]) {
-    return (
-      <Typography
-        className='px-4 text-slate-500'
-        variant='p'
-      >
-        No tasks to display.
-      </Typography>
-    );
+    return <ListEmpty>No tasks to display.</ListEmpty>;
   }
 
   return (

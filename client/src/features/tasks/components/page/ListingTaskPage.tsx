@@ -8,7 +8,7 @@ import { useListingTasks } from '../../hooks/useListingTasks';
 import { useEffect } from 'react';
 
 export function ListingTaskPage(): JSX.Element {
-  const { setPageTitle } = useTaskContext();
+  const [, setPageTitle] = useTaskContext()['title'];
   const { id } = useParams();
 
   const listingTasks = useListingTasks(+(id as string));

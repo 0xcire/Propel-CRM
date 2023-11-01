@@ -12,7 +12,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-import { Spinner } from '@/components';
+import { ListEmpty, Spinner } from '@/components';
 import { CustomTooltip } from './CustomTooltip';
 
 import { yAxisRange } from '@/utils/';
@@ -47,11 +47,7 @@ export function SalesVolumeChart(): JSX.Element {
   );
 
   if (salesVolume.data?.length === 0) {
-    return (
-      <div className='grid h-full w-full place-items-center'>
-        <p className='text-slate-500'>Go out and close some deals!</p>
-      </div>
-    );
+    return <ListEmpty>Go out and close some deals!</ListEmpty>;
   }
 
   return (

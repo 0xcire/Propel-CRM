@@ -29,3 +29,9 @@ export type UpdateTaskParams = {
 export type TaskContext = {
   previousTasks: Tasks | undefined;
 };
+
+export type TaskProps = {
+  task: Task;
+  text?: string;
+  userID: number;
+};

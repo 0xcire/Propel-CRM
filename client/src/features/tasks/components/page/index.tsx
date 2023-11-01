@@ -10,7 +10,7 @@ import { taskColumns } from '../../config/TaskColumns';
 
 export function TaskPage(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { setPageTitle } = useTaskContext();
+  const [, setPageTitle] = useTaskContext()['title'];
 
   const { id } = useParams();
 

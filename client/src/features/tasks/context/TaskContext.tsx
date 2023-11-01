@@ -3,10 +3,8 @@ import { useState, createContext, useContext } from 'react';
 import type { PropsWithChildren, Dispatch, SetStateAction } from 'react';
 
 type TaskState = {
-  showCompleted: boolean;
-  setShowCompleted: Dispatch<SetStateAction<boolean>>;
-  pageTitle: string;
-  setPageTitle: Dispatch<SetStateAction<string>>;
+  completed: [boolean, Dispatch<SetStateAction<boolean>>];
+  title: [string, Dispatch<SetStateAction<string>>];
 };
 
 type TaskProviderProps = PropsWithChildren;
@@ -17,12 +15,9 @@ export function TaskProvider({ children }: TaskProviderProps): JSX.Element {
   const [showCompleted, setShowCompleted] = useState(false);
   const [pageTitle, setPageTitle] = useState('Tasks');
 
-  //TODO: address
-  const value = {
-    showCompleted,
-    setShowCompleted,
-    pageTitle,
-    setPageTitle,
+  const value: TaskState = {
+    completed: [showCompleted, setShowCompleted],
+    title: [pageTitle, setPageTitle],
   };
   return <taskContext.Provider value={value}>{children}</taskContext.Provider>;
 }

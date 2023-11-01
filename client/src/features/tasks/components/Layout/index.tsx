@@ -7,7 +7,7 @@ import { PageContent, PageHeader, PageWrapper } from '@/components/Layout/page';
 import { AddTask } from '@/features/common/tasks/components/AddTask';
 
 export function TaskLayout(): JSX.Element {
-  const { pageTitle } = useTaskContext();
+  const [pageTitle] = useTaskContext()['title'];
 
   const documentTitle = `${pageTitle} | Propel CRM`;
 

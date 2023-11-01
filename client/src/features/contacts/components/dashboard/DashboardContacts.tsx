@@ -3,11 +3,9 @@ import { Link } from 'react-router-dom';
 
 import { useDashboardContacts } from '../../hooks/useDashboardContacts';
 
-import { Typography } from '@/components/ui/typography';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-import { Spinner } from '@/components';
-
+import { ListEmpty, Spinner } from '@/components';
 import { Contact } from './Contact';
 
 const MemoizedContact = memo(Contact);
@@ -25,14 +23,7 @@ export function DashboardContacts(): JSX.Element {
   }
 
   if (contacts.data && !contacts.data[0]) {
-    return (
-      <Typography
-        className='px-4 text-slate-500'
-        variant='p'
-      >
-        No contacts to display.
-      </Typography>
-    );
+    return <ListEmpty>No contacts to display.</ListEmpty>;
   }
 
   return (

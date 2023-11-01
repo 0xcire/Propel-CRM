@@ -20,16 +20,8 @@ import { handleOnOpenChange, removeTimeZone } from '@/utils/';
 import { filterUndefined } from '@/utils/form-data';
 
 import type { DeepPartial } from 'react-hook-form';
-import type { Task as TaskData } from '../types';
+import type { TaskProps } from '../types';
 import type { CreateTaskFields } from './TaskForm';
-
-// TODO: as dashboard and per page components have been built out,
-// can extract common typing
-type TaskProps = {
-  task: TaskData;
-  text?: string;
-  userID: number;
-};
 
 export function UpdateTask({ task, text, userID }: TaskProps): JSX.Element {
   const [open, setOpen] = useState(false);

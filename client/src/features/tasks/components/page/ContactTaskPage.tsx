@@ -11,7 +11,7 @@ import { useContactTasks } from '../../hooks/useContactTasks';
 import { TasksTable } from './TasksTable';
 
 export function ContactTaskPage(): JSX.Element {
-  const { setPageTitle } = useTaskContext();
+  const [, setPageTitle] = useTaskContext()['title'];
   const { id } = useParams();
 
   const contactTasks = useContactTasks(+(id as string));
