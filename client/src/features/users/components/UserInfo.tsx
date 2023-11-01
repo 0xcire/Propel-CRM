@@ -40,8 +40,8 @@ export function UserInfo(): JSX.Element {
   const form = useForm<UserInfoFields>({
     resolver: zodResolver(UserInfoSchema),
     defaultValues: {
-      email: user.data?.username ?? '',
-      username: user.data?.email ?? '',
+      email: user.data?.email ?? '',
+      username: user.data?.username ?? '',
       verifyPassword: '',
     },
   });

@@ -1,11 +1,9 @@
-import {
-  type UseMutationResult,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateAccount } from '../api';
+
 import { useToast } from '@/components/ui/use-toast';
 
+import type { UseMutationResult } from '@tanstack/react-query';
 import type { UpdateAccountParams } from '../types';
 import type { UserResponse } from '@/types';
 
@@ -24,7 +22,7 @@ export const useUpdateAccount = (): UseMutationResult<
         description: data.message,
       });
       return queryClient.invalidateQueries({
-        queryKey: ['authenticated-user'],
+        queryKey: ['user'],
       });
     },
   });
