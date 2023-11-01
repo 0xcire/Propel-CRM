@@ -1,11 +1,9 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-export function TaskPageWrapper({
-  children,
-}: {
-  children: JSX.Element;
-}): JSX.Element {
+import type { PropsWithChildren } from 'react';
+
+export function TaskPageWrapper({ children }: PropsWithChildren): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     if (!searchParams.get('page') || !searchParams.get('completed')) {

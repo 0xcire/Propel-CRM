@@ -1,10 +1,10 @@
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
-import { ReactNode } from 'react';
 
-type LayoutProps = {
+import type { PropsWithChildren } from 'react';
+
+type LayoutProps = PropsWithChildren<{
   title: string;
-  children: ReactNode;
-};
+}>;
 
 export function Layout({ title, children }: LayoutProps): JSX.Element {
   useDocumentTitle(title);

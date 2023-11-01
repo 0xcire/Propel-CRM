@@ -1,7 +1,7 @@
-import type { ComponentWithChild } from '@/types';
+import type { PropsWithChildren } from 'react';
 
 export function DashboardItemContent({
   children,
-}: ComponentWithChild): JSX.Element {
+}: PropsWithChildren): JSX.Element {
   return <div className='absolute h-[calc(100%-60px)] w-full'>{children}</div>;
 }

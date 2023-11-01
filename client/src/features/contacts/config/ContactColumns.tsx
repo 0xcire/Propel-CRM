@@ -79,7 +79,7 @@ export const listingColumns: Array<ColumnDef<Contact>> = [
               asDropdownMenuItem
               contactID={contact.id}
             >
-              <>Add new task for {contact.name}</>
+              Add new task for {contact.name}
             </AddTask>
 
             <DropdownMenuItem

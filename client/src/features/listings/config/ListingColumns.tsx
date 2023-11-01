@@ -241,7 +241,7 @@ export const listingColumns: Array<ColumnDef<Listing>> = [
               asDropdownMenuItem
               listingID={listing.id}
             >
-              <>Add new task for listing {listing.id}</>
+              Add new task for listing {listing.id}
             </AddTask>
 
             <DropdownMenuItem

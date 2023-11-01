@@ -1,4 +1,4 @@
-type UpdateFields = {
+export type UpdateFields = {
   verifyPassword?: string;
   username?: string;
   email?: string;

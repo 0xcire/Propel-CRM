@@ -3,11 +3,10 @@ import { Spinner } from '@/components';
 
 import { cn } from '@/lib/utils';
 
-import type { ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 import type { ButtonProps } from '@/components/ui/button';
 
-interface SubmitButtonProps extends ButtonProps {
-  children: ReactNode;
+interface SubmitButtonProps extends ButtonProps, PropsWithChildren {
   isLoading: boolean;
   disabled?: boolean;
 }

@@ -3,15 +3,11 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { signUpPassword, verifyPassword } from '@/lib/validations/schema';
+
 import { useUser } from '@/lib/react-query-auth';
 import { useUpdateAccount } from '../hooks/useUpdateAccount';
 
-import { signUpPassword, verifyPassword } from '@/lib/validations/schema';
-
-import { Typography } from '@/components/ui/typography';
-import { Button } from '@/components/ui/button';
-import { Form } from '@/components/ui/form';
-import { TextInput } from '@/components/form';
 import {
   Dialog,
   DialogContent,
@@ -21,8 +17,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Typography } from '@/components/ui/typography';
+import { Button } from '@/components/ui/button';
+import { Form } from '@/components/ui/form';
+import { useToast } from '@/components/ui/use-toast';
+
+import { TextInput } from '@/components/form';
 import { SubmitButton } from '@/components';
-import { toast } from '@/components/ui/use-toast';
 
 import type { Toast } from '@/types';
 
@@ -37,6 +38,7 @@ type PasswordFields = z.infer<typeof PasswordSchema>;
 export function Authentication(): JSX.Element {
   const [open, setOpen] = useState(false);
   const user = useUser();
+  const { toast } = useToast();
 
   const { mutate, isLoading } = useUpdateAccount();
 

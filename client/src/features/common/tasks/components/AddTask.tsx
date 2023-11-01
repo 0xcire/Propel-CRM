@@ -23,15 +23,15 @@ import { formatISO } from 'date-fns';
 import { filterUndefined } from '@/utils/form-data';
 import { handleOnOpenChange } from '@/utils';
 
+import type { PropsWithChildren } from 'react';
 import type { CreateTaskFields } from '@/features/tasks/components/TaskForm';
 import type { DeepPartial } from 'react-hook-form';
 
-type AddTaskProps = {
-  children?: JSX.Element;
+interface AddTaskProps extends PropsWithChildren {
   asDropdownMenuItem?: boolean;
   contactID?: number;
   listingID?: number;
-};
+}
 
 export function AddTask({
   children,

@@ -1,8 +1,8 @@
 import { twMerge } from 'tailwind-merge';
 
-import type { ComponentWithChild } from '@/types';
+import type { PropsWithChildren } from 'react';
 
-interface DashboardGridItemProps extends ComponentWithChild {
+interface DashboardGridItemProps extends PropsWithChildren {
   className: string;
 }
 

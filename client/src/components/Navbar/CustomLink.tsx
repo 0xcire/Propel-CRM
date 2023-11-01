@@ -8,10 +8,12 @@ import { NavigationMenuLink } from '../ui/navigation-menu';
 import { navigationMenuTriggerStyle } from '../ui/navigation-menu';
 import { twMerge } from 'tailwind-merge';
 
-import type { ComponentProps, ReactNode } from 'react';
-interface CustomLinkProps extends ComponentProps<typeof RadixLink> {
+import type { ComponentProps, PropsWithChildren } from 'react';
+
+interface CustomLinkProps
+  extends ComponentProps<typeof RadixLink>,
+    PropsWithChildren {
   path: string;
-  children: ReactNode;
 }
 
 export function CustomLink({

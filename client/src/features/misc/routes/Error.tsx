@@ -1,14 +1,12 @@
-import type { ReactNode } from 'react';
+import { ErrorBoundary as ErrorBoundaryWrapper } from 'react-error-boundary';
 import { useQueryErrorResetBoundary } from '@tanstack/react-query';
-import { ErrorBoundary as ErrorWrapper } from 'react-error-boundary';
 
 import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
 
-// TODO: this children: ReactNode type is common. extract.
-type ErrorBoundaryProps = {
-  children: ReactNode | Array<ReactNode>;
-};
+import type { PropsWithChildren, ReactNode } from 'react';
+
+type ErrorBoundaryProps = PropsWithChildren;
 
 type ErrorProps = {
   resetErrorBoundary: () => void;
@@ -17,14 +15,14 @@ type ErrorProps = {
 export function ErrorBoundary({ children }: ErrorBoundaryProps): JSX.Element {
   const { reset } = useQueryErrorResetBoundary();
   return (
-    <ErrorWrapper
+    <ErrorBoundaryWrapper
       onReset={reset}
       fallbackRender={({ resetErrorBoundary }): ReactNode => (
         <Error resetErrorBoundary={resetErrorBoundary} />
       )}
     >
       {children}
-    </ErrorWrapper>
+    </ErrorBoundaryWrapper>
   );
 }
 

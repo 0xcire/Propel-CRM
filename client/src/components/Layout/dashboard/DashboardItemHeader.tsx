@@ -1,8 +1,8 @@
-import type { ComponentWithChild } from '@/types';
+import type { PropsWithChildren } from 'react';
 
 export function DashboardItemHeader({
   children,
-}: ComponentWithChild): JSX.Element {
+}: PropsWithChildren): JSX.Element {
   return (
     <div className='flex h-[60px] items-center justify-between px-4'>
       {children}

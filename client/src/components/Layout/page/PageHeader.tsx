@@ -3,15 +3,13 @@ import { useIsDesktop } from '@/hooks/useIsDesktop';
 import { Typography } from '../../ui/typography';
 import { Navbar } from '../../Navbar';
 
-import type { ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 
-export function PageHeader({
-  children,
-  text,
-}: {
-  children: ReactNode;
+interface PageHeaderProps extends PropsWithChildren {
   text: string;
-}): JSX.Element {
+}
+
+export function PageHeader({ children, text }: PageHeaderProps): JSX.Element {
   const isDesktop = useIsDesktop();
   return (
     <div className='flex w-full items-center justify-between'>

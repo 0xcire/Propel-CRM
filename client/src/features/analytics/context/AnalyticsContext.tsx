@@ -1,12 +1,7 @@
 import { useState, createContext, useContext } from 'react';
 
-import type { ReactNode, Dispatch, SetStateAction } from 'react';
+import type { PropsWithChildren, Dispatch, SetStateAction } from 'react';
 import type { Quarters } from '../types';
-
-// TODO: another place where ComponentWithChild could be used
-type AnalyticsProviderProps = {
-  children: ReactNode;
-};
 
 type TaskState = {
   state: Quarters;
@@ -17,7 +12,7 @@ const analyticsContext = createContext<TaskState | undefined>(undefined);
 
 export function AnalyticsProvider({
   children,
-}: AnalyticsProviderProps): JSX.Element {
+}: PropsWithChildren): JSX.Element {
   const [currentTimeFrame, setCurrentTimeFrame] = useState<Quarters>('year');
 
   const value = { state: currentTimeFrame, setState: setCurrentTimeFrame };

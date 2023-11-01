@@ -1,17 +1,13 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+
+import { username, verifyPassword } from '@/lib/validations/schema';
 
 import { useUser } from '@/lib/react-query-auth';
 import { useUpdateAccount } from '../hooks/useUpdateAccount';
 
-import { username, verifyPassword } from '@/lib/validations/schema';
-
-import { Typography } from '@/components/ui/typography';
-import { Button } from '@/components/ui/button';
-import { Form } from '@/components/ui/form';
-import { TextInput } from '@/components/form';
 import {
   Dialog,
   DialogContent,
@@ -21,8 +17,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Typography } from '@/components/ui/typography';
+import { Button } from '@/components/ui/button';
+import { Form } from '@/components/ui/form';
+
+import { TextInput } from '@/components/form';
 import { SubmitButton } from '@/components';
+
 import { fieldsAreDirty, filterEqualFields } from '@/utils/form-data';
+
+import type { User } from '@/types';
+import type { UpdateFields } from '../types';
 
 const UserInfoSchema = z.object({
   username: username,
@@ -63,19 +68,17 @@ export function UserInfo(): JSX.Element {
   };
 
   function onSubmit(values: UserInfoFields): void {
-    let data;
-    if (user.data) {
-      data = filterEqualFields({ newData: values, originalData: user.data });
-    }
+    const data: UpdateFields = filterEqualFields({
+      newData: values,
+      originalData: user.data as User,
+    });
 
-    // TODO: fix this Record<string, string> type
     mutate(
-      { id: user.data?.id as number, data: data as Record<string, string> },
+      { id: user.data?.id as number, data: data },
       {
         onSuccess: () => {
           setOpen(false);
           form.reset();
-          form.setValue('verifyPassword', '');
         },
       }
     );

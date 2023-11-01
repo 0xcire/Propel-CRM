@@ -1,13 +1,17 @@
-import { type DeepPartial, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { signInSchema, signUpSchema } from '@/lib/validations/auth';
+
 import { Form } from '@/components/ui/form';
+
 import { TextInput } from '@/components/form';
 import { SubmitButton } from '@/components';
 
-import { signInSchema, signUpSchema } from '@/lib/validations/auth';
 import { fieldsAreDirty } from '@/utils/form-data';
+
+import type { DeepPartial } from 'react-hook-form';
 import type { FormMode } from '@/types';
 
 interface AuthFormProps extends FormMode {

@@ -1,11 +1,6 @@
 import { useState, createContext, useContext } from 'react';
 
-import type { ReactNode, Dispatch, SetStateAction } from 'react';
-
-// TODO: another place where ComponentWithChild could be used
-type TaskProviderProps = {
-  children: ReactNode;
-};
+import type { PropsWithChildren, Dispatch, SetStateAction } from 'react';
 
 type TaskState = {
   showCompleted: boolean;
@@ -13,6 +8,8 @@ type TaskState = {
   pageTitle: string;
   setPageTitle: Dispatch<SetStateAction<string>>;
 };
+
+type TaskProviderProps = PropsWithChildren;
 
 const taskContext = createContext<TaskState | undefined>(undefined);
 

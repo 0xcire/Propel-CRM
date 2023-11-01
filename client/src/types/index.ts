@@ -1,6 +1,4 @@
-import type { ReactNode } from 'react';
 import type { ToasterToast } from '@/components/ui/use-toast';
-// import type { Control, FieldValues, Path } from 'react-hook-form';
 
 export type Toast = {
   id: string;
@@ -28,15 +26,4 @@ export interface UserResponse extends BaseResponse {
 export interface FormMode {
   isCreate?: boolean;
   isLoading: boolean;
-}
-
-// export interface RHFCustomInput<TFieldValues extends FieldValues> {
-//   control: Control<TFieldValues>;
-//   name: Path<TFieldValues>;
-// }
-
-// TODO: export interface ComponentWithChildren
-
-export interface ComponentWithChild {
-  children: ReactNode;
 }

@@ -1,14 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 
-import type { ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 import type { ButtonProps } from './ui/button';
 
-interface LinkButtonProps extends ButtonProps {
+interface LinkButtonProps extends ButtonProps, PropsWithChildren {
   path?: string;
   delta?: number;
   className?: string;
-  children: ReactNode;
 }
 
 export function LinkButton({

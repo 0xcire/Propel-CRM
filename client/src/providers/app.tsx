@@ -6,15 +6,11 @@ import { queryClient } from '@/lib/react-query';
 
 import { ErrorBoundary } from '@/features/misc';
 
-import type { ReactNode } from 'react';
-
-type AppProviderProps = {
-  children: ReactNode | Array<ReactNode>;
-};
+import type { PropsWithChildren } from 'react';
 
 export default function AppProvider({
   children,
-}: AppProviderProps): JSX.Element {
+}: PropsWithChildren): JSX.Element {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>

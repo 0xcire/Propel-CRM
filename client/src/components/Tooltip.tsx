@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import {
   Tooltip as TooltipRoot,
   TooltipContent,
@@ -6,10 +5,11 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-type TooptipProps = {
-  children: ReactNode;
+import type { PropsWithChildren } from 'react';
+
+type TooptipProps = PropsWithChildren<{
   content: string;
-};
+}>;
 
 export function Tooltip({ children, content }: TooptipProps): JSX.Element {
   return (

@@ -1,10 +1,6 @@
-import type { ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 
-export function PageContent({
-  children,
-}: {
-  children: ReactNode;
-}): JSX.Element {
+export function PageContent({ children }: PropsWithChildren): JSX.Element {
   return (
     <div className='h-full'>
       <div className='relative flex h-full flex-col rounded-md'>
