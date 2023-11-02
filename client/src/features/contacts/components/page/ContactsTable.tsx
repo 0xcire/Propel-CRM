@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import {
@@ -45,23 +45,24 @@ interface ContactTableProps<TData extends Contact> {
   data: Array<TData>;
   isLoading: boolean;
   isFetching: boolean;
-  nameQuery: string | undefined;
-  setNameQuery: Dispatch<SetStateAction<string | undefined>>;
+  setQuery: Dispatch<SetStateAction<string | undefined>>;
 }
 
-// cant see use case for TValue
 export function ContactTable<TData extends Contact>({
   columns,
   data,
   isLoading,
   isFetching,
-  nameQuery,
-  setNameQuery,
+  setQuery,
 }: ContactTableProps<TData>): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const name = searchParams.get('name');
 
   const table = useReactTable({
     data,
@@ -98,11 +99,11 @@ export function ContactTable<TData extends Contact>({
     <>
       <div className='flex items-center py-4'>
         <Input
+          ref={inputRef}
           autoFocus={true}
           placeholder='Search your contacts'
-          value={nameQuery ?? ''}
           onChange={(e): void => {
-            setNameQuery(e.currentTarget.value);
+            setQuery(e.currentTarget.value);
           }}
           onKeyUp={(e): void => {
             if (e.key === 'Backspace' && e.currentTarget.value === '') {
@@ -112,6 +113,23 @@ export function ContactTable<TData extends Contact>({
           }}
           className='max-w-sm'
         />
+        {name && (
+          <Button
+            className='ml-4 h-full'
+            variant='outline'
+            onClick={(): void => {
+              searchParams.delete('name');
+              setSearchParams(searchParams);
+
+              if (inputRef.current) {
+                inputRef.current.value = '';
+              }
+            }}
+          >
+            Reset
+          </Button>
+        )}
+
         <div className='ml-auto flex items-center gap-2'>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

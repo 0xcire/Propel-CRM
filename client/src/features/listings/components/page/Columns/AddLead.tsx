@@ -1,11 +1,9 @@
-import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { useSearchContacts } from '@/features/contacts/hooks/useSearchContacts';
 import { useAddLead } from '../../../hooks/useAddLead';
 
-import { useDebounce } from '@/hooks/useDebounce';
-import { useNameQuerySearchParams } from '@/hooks';
+import { useQuerySearchParams } from '@/hooks';
 
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
@@ -19,7 +17,7 @@ import {
 } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-import { SubmitButton } from '@/components';
+import { Spinner, SubmitButton } from '@/components';
 
 import type { ComponentProps } from 'react';
 // ?
@@ -29,21 +27,15 @@ interface AddLeadProps extends ComponentProps<'div'> {
   listingID: number;
 }
 
-// TODO: revisit when building tasks page
-// could make generic: 'ContactSearch' or etc..
 export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
-  const [query, setQuery] = useState<string | undefined>(undefined);
   const [searchParams, setSearchParams] = useSearchParams();
-  const debouncedNameQuery = useDebounce(query, 200);
 
-  // TODO: consider extracting into shared dir. revisit when building tasks page
   const searchContacts = useSearchContacts();
+  const { setQuery } = useQuerySearchParams('name');
 
   const handleInputChange = (value: string): void => {
     setQuery(value);
   };
-
-  useNameQuerySearchParams(debouncedNameQuery);
 
   return (
     <div
@@ -78,21 +70,35 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
               onChange={(e): void => {
                 handleInputChange(e.currentTarget.value);
               }}
+              onKeyUp={(e): void => {
+                if (e.key === 'Backspace' && e.currentTarget.value === '') {
+                  searchParams.delete('name');
+                  setSearchParams(searchParams);
+                }
+              }}
             />
           </div>
 
-          <ScrollArea className='w-full flex-1 px-4'>
-            {searchContacts.data?.length === 0 && (
-              <p className='text-center text-gray-400'>No contacts found.</p>
-            )}
-            {searchContacts.data?.map((contact) => (
-              <Lead
-                key={`${contact.id}-${contact.name}`}
-                listingID={listingID}
-                contact={contact}
-              />
-            ))}
-          </ScrollArea>
+          {searchContacts.isInitialLoading ? (
+            <Spinner
+              className='mb-auto'
+              variant='md'
+              fillContainer
+            />
+          ) : (
+            <ScrollArea className='w-full flex-1 px-4'>
+              {searchContacts.data?.length === 0 && (
+                <p className='text-center text-gray-400'>No contacts found.</p>
+              )}
+              {searchContacts.data?.map((contact) => (
+                <Lead
+                  key={`${contact.id}-${contact.name}`}
+                  listingID={listingID}
+                  contact={contact}
+                />
+              ))}
+            </ScrollArea>
+          )}
         </SheetContent>
       </Sheet>
     </div>

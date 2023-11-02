@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { useDebounce, useNameQuerySearchParams } from '@/hooks';
+import { useQuerySearchParams } from '@/hooks';
 
 import { useContacts } from '../../hooks/useContacts';
 import { useSearchContacts } from '../../hooks/useSearchContacts';
@@ -11,12 +11,10 @@ import { listingColumns } from '../../config/ContactColumns';
 
 export function ContactPage(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [nameQuery, setNameQuery] = useState<string | undefined>(undefined);
-  const debouncedNameQuery = useDebounce(nameQuery, 200);
 
   const contacts = useContacts();
-
   const queriedContacts = useSearchContacts();
+  const { setQuery } = useQuerySearchParams('name');
 
   const isSearching = !!searchParams.get('name');
 
@@ -30,13 +28,8 @@ export function ContactPage(): JSX.Element {
     // eslint-disable-next-line
   }, []);
 
-  useNameQuerySearchParams(debouncedNameQuery);
-
   {
     /* TODO: create reusable <DataTable /> component */
-  }
-  {
-    /* TODO: handle undefined or [] data */
   }
 
   return (
@@ -47,8 +40,7 @@ export function ContactPage(): JSX.Element {
       }
       isLoading={isSearching ? queriedContacts.isLoading : contacts.isLoading}
       columns={listingColumns}
-      nameQuery={nameQuery}
-      setNameQuery={setNameQuery}
+      setQuery={setQuery}
     />
   );
 }

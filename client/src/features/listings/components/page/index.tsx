@@ -7,7 +7,6 @@ import { useListings } from '../../hooks/useListings';
 import { ListingTable } from './ListingTable';
 import { listingColumns } from '../../config/ListingColumns';
 
-// TODO: from page layout flow in contacts -> use here
 export function ListingPage(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   const listings = useListings();
@@ -19,6 +18,10 @@ export function ListingPage(): JSX.Element {
 
   useEffect(() => {
     if (id) return;
+    if (searchParams.get('name')) {
+      searchParams.delete('name');
+      setSearchParams(searchParams, { replace: true });
+    }
     if (!searchParams.get('page') || !searchParams.get('status')) {
       setSearchParams(
         [

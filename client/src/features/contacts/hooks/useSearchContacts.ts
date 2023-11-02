@@ -4,16 +4,6 @@ import { searchContacts } from '../api';
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { Contacts } from '../types';
 
-// TODO:
-// need to differentiate between AddLead and Contacts Table
-// add lead should return name and id
-// contacts table should return everything
-
-// AddLead => id , name
-// going to be in Tasks as TagContact ? => id, name
-// Contacts => everything
-// ?name=aust?$select=id,name
-
 export const useSearchContacts = (): UseQueryResult<
   Contacts | undefined,
   unknown
