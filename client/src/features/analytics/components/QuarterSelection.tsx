@@ -12,12 +12,12 @@ export function QuarterSelection(): JSX.Element {
   const handleSelectChange = (val: string): void => {
     setCurrentTimeFrame(val as Quarters);
   };
+
   return (
     <Select
-      placeholder='Filter by quarter'
+      defaultValue='year'
       options={quarters}
       handleSelectChange={(val): void => handleSelectChange(val)}
-      className='w-full'
     />
   );
 }

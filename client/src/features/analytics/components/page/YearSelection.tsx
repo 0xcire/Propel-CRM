@@ -3,9 +3,9 @@ import { useSearchParams } from 'react-router-dom';
 import { useUser } from '@/lib/react-query-auth';
 import { useSalesYears } from '../../hooks/useSalesYears';
 
-import { Select } from '@/components';
+import { Select, Spinner } from '@/components';
 
-import { Spinner } from '@/components';
+import { getCurrentYear } from '@/utils';
 
 export function YearSelection(): JSX.Element | null {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,7 +33,7 @@ export function YearSelection(): JSX.Element | null {
           ? (years.data as ReadonlyArray<string>)
           : ['No available data.']
       }
-      placeholder='Select year'
+      defaultValue={getCurrentYear().toString()}
     />
   );
 }

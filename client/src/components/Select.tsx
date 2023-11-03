@@ -10,7 +10,7 @@ import {
 
 import type { ComponentProps } from 'react';
 
-interface SelectProps extends ComponentProps<'select'> {
+interface SelectProps extends ComponentProps<typeof SelectValue> {
   options: Readonly<Array<string>>;
   label?: string;
   handleSelectChange?: (value: string) => void;
@@ -22,10 +22,14 @@ export function Select({
   handleSelectChange,
   ...props
 }: SelectProps): JSX.Element {
+  console.log(props.defaultValue);
   return (
-    <SelectRoot onValueChange={handleSelectChange}>
+    <SelectRoot
+      defaultValue={props.defaultValue?.toString()}
+      onValueChange={handleSelectChange}
+    >
       <SelectTrigger className='w-[180px]'>
-        <SelectValue placeholder={props.placeholder} />
+        <SelectValue placeholder={props.placeholder ?? null} />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

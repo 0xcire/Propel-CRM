@@ -6,13 +6,13 @@ import {
   LayoutDashboardIcon,
 } from 'lucide-react';
 
+import { getCurrentYear } from '@/utils';
+
 type NavLinksProps = Array<{
   name: string;
   path: string;
   icon: JSX.Element;
 }>;
-
-const currentYear = new Date().getFullYear();
 
 export const navLinks: NavLinksProps = [
   {
@@ -37,7 +37,7 @@ export const navLinks: NavLinksProps = [
   },
   {
     name: 'Analytics',
-    path: `/analytics?year=${currentYear}`,
+    path: `/analytics?year=${getCurrentYear()}`,
     icon: <BarChart3 size={16} />,
   },
 ];
