@@ -1,6 +1,7 @@
 import { and, desc, eq, isNotNull, isNull, not, sql } from "drizzle-orm";
 import { db } from "..";
 import { contacts, listings, listingsToContacts, soldListings } from "../schema";
+
 import type { NewListing, NewSoldListing } from "../types";
 
 type updateListingByIDParams = {
@@ -9,7 +10,25 @@ type updateListingByIDParams = {
   userID: number;
 };
 
-const contactsAggregate = sql`JSON_AGG(json_build_object('id', ${contacts.id},'name', ${contacts.name}, 'email', ${contacts.email}, 'phone', ${contacts.phoneNumber}))`;
+const activeContactsAggregate = sql`JSON_AGG(
+  json_build_object(
+    'id', ${contacts.id},
+    'name', ${contacts.name}, 
+    'email', ${contacts.email}, 
+    'phone', ${contacts.phoneNumber},
+    'days', ${sql`EXTRACT(DAYS FROM CURRENT_DATE - ${listingsToContacts.createdAt})`}
+  )
+)`;
+
+const soldContactAggregate = sql`JSON_AGG(
+  json_build_object(
+    'id', ${contacts.id},
+    'name', ${contacts.name}, 
+    'email', ${contacts.email}, 
+    'phone', ${contacts.phoneNumber},
+    'days', ${sql`EXTRACT(DAYS FROM ${soldListings.soldAt} - ${listingsToContacts.createdAt})`}
+  )
+)`;
 
 export const getUserDashboardListings = async (userID: number) => {
   const userListings = await db
@@ -23,7 +42,7 @@ export const getUserDashboardListings = async (userID: number) => {
       squareFeet: listings.squareFeet,
       description: listings.description,
       createdAt: listings.createdAt,
-      contacts: contactsAggregate,
+      contacts: activeContactsAggregate,
     })
     .from(listings)
     .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
@@ -53,7 +72,7 @@ export const getAllUserListings = async (userID: number, page: number, status: s
         squareFeet: listings.squareFeet,
         description: listings.description,
         createdAt: listings.createdAt,
-        contacts: contactsAggregate,
+        contacts: activeContactsAggregate,
       })
       .from(listings)
       .where(eq(listings.id, userID))
@@ -77,17 +96,17 @@ export const getAllUserListings = async (userID: number, page: number, status: s
         squareFeet: listings.squareFeet,
         description: listings.description,
         createdAt: listings.createdAt,
-        contacts: contactsAggregate,
+        contacts: soldContactAggregate,
       })
       .from(listings)
-      .where(eq(listings.id, userID))
+      .where(eq(listings.userID, userID))
       .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
-      .where(
-        and(eq(listings.userID, userID), eq(listings.id, soldListings.listingID), isNotNull(soldListings.listingID))
-      )
+      .where(and(eq(listings.userID, userID), isNotNull(soldListings.listingID)))
+      .leftJoin(listingsToContacts, eq(soldListings.contactID, listingsToContacts.contactID))
+      .where(eq(soldListings.listingID, listingsToContacts.listingID))
       .leftJoin(contacts, eq(soldListings.contactID, contacts.id))
       .orderBy(desc(listings.createdAt))
-      .groupBy(listings.id, soldListings.salePrice)
+      .groupBy(listings.id, contacts.id, soldListings.salePrice)
       .limit(10)
       .offset((page - 1) * 10);
   }

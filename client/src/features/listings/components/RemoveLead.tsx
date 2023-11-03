@@ -34,12 +34,13 @@ export function RemoveLead({
       open={open}
       onOpenChange={setOpen}
     >
-      <DialogTrigger asChild>
+      <DialogTrigger className='mr-auto flex items-center gap-1'>
         <Trash2Icon
-          className='cursor-pointer'
+          className='cursor-pointer pt-[2px]'
           size={16}
           tabIndex={0}
         />
+        Remove
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

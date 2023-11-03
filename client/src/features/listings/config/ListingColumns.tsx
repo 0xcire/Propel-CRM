@@ -22,13 +22,7 @@ import { currency, formatDateString, number } from '@/utils/intl';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Listing } from '../types';
-
-type ContactInfo = {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-};
+import type { ContactInfo } from '../types';
 
 export const listingColumns: Array<ColumnDef<Listing>> = [
   {

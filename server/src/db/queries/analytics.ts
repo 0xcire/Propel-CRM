@@ -69,7 +69,6 @@ export const getAvgDays = async (userID: number, year: number) => {
   return average;
 };
 
-// address. does not seem accurate
 export const getAvgTimeToClose = async (userID: number, year: number) => {
   const timeToClose = await db
     .select({

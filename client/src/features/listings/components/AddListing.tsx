@@ -81,7 +81,7 @@ export function AddListing({ text }: AddListingProps): JSX.Element {
             price: '',
             bedrooms: undefined,
             baths: undefined,
-            squareFeet: undefined,
+            squareFeet: '',
           }}
         />
       </DialogContent>

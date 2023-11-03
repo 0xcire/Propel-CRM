@@ -53,4 +53,5 @@ export type ContactInfo = {
   name: string;
   phone: string;
   email: string;
+  days: string;
 };

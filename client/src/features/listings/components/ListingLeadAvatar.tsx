@@ -29,7 +29,11 @@ export function ListingLeadAvatar({
   listingID,
   onClick,
 }: HoverAvatarProps): JSX.Element {
+  const searchParams = new URLSearchParams(window.location.search);
   const { toast } = useToast();
+
+  const status = searchParams.get('status');
+
   return (
     <HoverCard>
       <HoverCardTrigger
@@ -43,57 +47,62 @@ export function ListingLeadAvatar({
         <div className='flex justify-between gap-4'>
           <Avatar name={contactInfo.name} />
 
-          <div className='-m-[2px] mr-auto w-fit space-y-1'>
+          <div className='-m-1 mr-auto w-fit'>
             <LinkButton
-              className='pl-0 font-bold'
+              className='pb-0 pl-0 font-bold'
               path={`/contacts/${contactInfo.id}`}
               variant='link'
             >
               {contactInfo.name}
             </LinkButton>
-            <p className='text-sm'>This lead was established X days ago.</p>
+            <p className='pb-2 text-sm text-gray-500'>
+              {status === 'active' || !status
+                ? `Added ${contactInfo.days} days ago.`
+                : `Closed in ${contactInfo.days} days.`}
+            </p>
 
-            <div className='flex items-center gap-2 pt-0'>
-              <div className='flex cursor-pointer items-center gap-1'>
-                <Tooltip content={contactInfo.phone}>
-                  <div className='flex items-center gap-1'>
-                    <PhoneIcon
-                      className='mt-1 cursor-pointer'
-                      onClick={(): void => {
-                        navigator.clipboard.writeText(contactInfo.phone);
-                        toast({
-                          description: `Copied ${contactInfo.name}'s number to your clipboard`,
-                        });
-                      }}
-                      size={16}
-                    />
+            <div className='flex flex-col items-center gap-2 pt-2'>
+              <div className='mr-auto flex items-center gap-2'>
+                <div className='flex cursor-pointer items-center gap-1'>
+                  <Tooltip content={contactInfo.phone}>
+                    <div className='flex items-center gap-1'>
+                      <PhoneIcon
+                        className='mt-1 cursor-pointer'
+                        onClick={(): void => {
+                          navigator.clipboard.writeText(contactInfo.phone);
+                          toast({
+                            description: `Copied ${contactInfo.name}'s number to your clipboard`,
+                          });
+                        }}
+                        size={16}
+                      />
 
-                    <p>phone</p>
-                  </div>
-                </Tooltip>
+                      <p>Phone</p>
+                    </div>
+                  </Tooltip>
+                </div>
+
+                <div className='flex cursor-pointer items-center gap-1'>
+                  <Tooltip content={contactInfo.email}>
+                    <div className='flex items-center gap-1'>
+                      <AtSignIcon
+                        className='mt-1 cursor-pointer'
+                        onClick={(): void => {
+                          window.location =
+                            `mailto:${contactInfo.email}` as string & Location;
+                          navigator.clipboard.writeText(contactInfo.email);
+                          toast({
+                            description: `Copied ${contactInfo.name}'s email to your clipboard`,
+                          });
+                        }}
+                        size={16}
+                      />
+
+                      <p>Email</p>
+                    </div>
+                  </Tooltip>
+                </div>
               </div>
-
-              <div className='flex cursor-pointer items-center gap-1'>
-                <Tooltip content={contactInfo.email}>
-                  <div className='flex items-center gap-1'>
-                    <AtSignIcon
-                      className='mt-1 cursor-pointer'
-                      onClick={(): void => {
-                        window.location =
-                          `mailto:${contactInfo.email}` as string & Location;
-                        navigator.clipboard.writeText(contactInfo.email);
-                        toast({
-                          description: `Copied ${contactInfo.name}'s email to your clipboard`,
-                        });
-                      }}
-                      size={16}
-                    />
-
-                    <p>email</p>
-                  </div>
-                </Tooltip>
-              </div>
-
               <RemoveLead
                 listingID={listingID}
                 contactInfo={contactInfo}
