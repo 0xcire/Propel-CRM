@@ -23,7 +23,7 @@ export const useDeleteAccount = (): UseMutationResult<
   return useMutation({
     mutationFn: deleteAccount,
     onSuccess: (data) => {
-      queryClient.setQueryData(['authenticated-user'], null);
+      queryClient.setQueryData(['user'], null);
       toast({
         description: `Deleted ${data.user?.username}'s account`,
       });
