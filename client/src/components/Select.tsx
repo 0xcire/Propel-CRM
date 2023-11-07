@@ -22,7 +22,6 @@ export function Select({
   handleSelectChange,
   ...props
 }: SelectProps): JSX.Element {
-  console.log(props.defaultValue);
   return (
     <SelectRoot
       defaultValue={props.defaultValue?.toString()}

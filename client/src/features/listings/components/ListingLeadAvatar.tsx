@@ -103,10 +103,12 @@ export function ListingLeadAvatar({
                   </Tooltip>
                 </div>
               </div>
-              <RemoveLead
-                listingID={listingID}
-                contactInfo={contactInfo}
-              />
+              {status === 'active' && (
+                <RemoveLead
+                  listingID={listingID}
+                  contactInfo={contactInfo}
+                />
+              )}
             </div>
           </div>
         </div>
