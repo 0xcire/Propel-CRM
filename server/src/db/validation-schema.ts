@@ -1,14 +1,9 @@
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { users, contacts, tasks, listings } from "./schema";
 import { z } from "zod";
-import isEmail from "validator/lib/isEmail.js";
 
-// TODO:
-// user-validation
-// task-validation
-// contact-validation
-// listing-validation
-// analytics-validation
+import { createInsertSchema } from "drizzle-zod";
+import { users, contacts, tasks, listings } from "./schema";
+
+import isEmail from "validator/lib/isEmail.js";
 
 const password = z.object({ password: z.string().max(255) });
 
@@ -16,7 +11,6 @@ const verifyPassword = z.object({
   verifyPassword: z.string().max(255),
 });
 
-// TODO: cookie and param schema may become more specific in future but for now can stay here
 export const cookieSchema = z
   .object({
     "propel-session": z.string().min(1).endsWith("=="),
@@ -172,6 +166,16 @@ export const taskQuerySchema = z
     page: task.page.trim(),
   }));
 
+export const taskSearchQuerySchema = z
+  .object({
+    title: z.string(),
+    completed: z.enum(["true", "false"]),
+  })
+  .transform((schema) => ({
+    title: schema.title.trim(),
+    completed: schema.completed.trim(),
+  }));
+
 export const createTaskSchema = createInsertSchema(tasks)
   .omit({ id: true, userID: true, completed: true, createdAt: true })
   .partial()
@@ -241,6 +245,16 @@ export const listingQuerySchema = z
   .transform((listing) => ({
     page: listing.page.trim(),
     status: listing.status.trim(),
+  }));
+
+export const listingSearchQuerySchema = z
+  .object({
+    address: z.string(),
+    status: z.string(),
+  })
+  .transform((schema) => ({
+    address: schema.address.trim(),
+    status: schema.status.trim(),
   }));
 
 export const analyticsQuerySchema = z
