@@ -19,6 +19,7 @@ import {
 import { objectNotEmpty } from "../utils";
 
 import type { NewContact } from "../db/types";
+import type { Limit } from "../types";
 
 export const getDashboardContacts = async (req: Request, res: Response) => {
   try {
@@ -71,9 +72,9 @@ export const searchUsersContacts = async (req: Request, res: Response) => {
 export const getMyContacts = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { page } = req.query;
+    const { page, limit } = req.query;
 
-    const userContacts = await getUsersContacts(userID, +(page ?? "1"));
+    const userContacts = await getUsersContacts(userID, +(page ?? "1"), limit as Limit);
 
     return res.status(200).json({
       message: "",

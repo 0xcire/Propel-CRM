@@ -27,6 +27,10 @@ export const paramSchema = z
     id: param.id.trim(),
   }));
 
+export const limitSchema = z.object({
+  limit: z.enum(["10", "20", "30", "40", "50"]),
+});
+
 export const listingIDParamSchema = z
   .object({
     listingID: z.string(),
@@ -117,8 +121,10 @@ export const contactQuerySchema = z
   .object({
     page: z.string(),
   })
+  .merge(limitSchema)
   .transform((contact) => ({
     page: contact.page.trim(),
+    limit: contact.limit.trim(),
   }));
 
 export const createContactSchema = createInsertSchema(contacts)
@@ -160,10 +166,12 @@ export const taskQuerySchema = z
     priority: z.union([z.string(), z.undefined()]),
     page: z.string(),
   })
+  .merge(limitSchema)
   .transform((task) => ({
     completed: task.completed.trim(),
     priority: task.priority?.trim(),
     page: task.page.trim(),
+    limit: task.limit.trim(),
   }));
 
 export const taskSearchQuerySchema = z
@@ -240,11 +248,13 @@ export const updateListingSchema = createInsertSchema(listings, {
 export const listingQuerySchema = z
   .object({
     page: z.string(),
-    status: z.string(),
+    status: z.enum(["active", "sold"]),
   })
+  .merge(limitSchema)
   .transform((listing) => ({
     page: listing.page.trim(),
     status: listing.status.trim(),
+    limit: listing.limit.trim(),
   }));
 
 export const listingSearchQuerySchema = z

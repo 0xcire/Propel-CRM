@@ -36,12 +36,7 @@ export default (router: Router) => {
     getDashboardTasks
   );
 
-  router.get(
-    "/tasks",
-    validateRequest({ query: taskQuerySchema, params: taskIDParamSchema, cookies: cookieSchema }),
-    isAuth,
-    getTasks
-  );
+  router.get("/tasks", validateRequest({ query: taskQuerySchema, cookies: cookieSchema }), isAuth, getTasks);
 
   router.get(
     "/tasks/search",

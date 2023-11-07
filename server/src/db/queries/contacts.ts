@@ -1,7 +1,9 @@
 import { and, eq, ilike, sql } from "drizzle-orm";
 import { db } from "../";
 import { contacts, listings, listingsToContacts, users, usersToContacts } from "../schema";
+
 import type { Contact, NewContact, NewUserContactRelation, UserContactRelation } from "../types";
+import type { Limit } from "../../types";
 
 type UpdateContactByIDParams = {
   contactID: number;
@@ -39,7 +41,7 @@ export const getUserDashboardContacts = async (userID: number) => {
   return userContacts;
 };
 
-export const getUsersContacts = async (userID: number, page: number) => {
+export const getUsersContacts = async (userID: number, page: number, limit: Limit) => {
   const userContactJoin = await db
     .select()
     .from(usersToContacts)
@@ -47,8 +49,8 @@ export const getUsersContacts = async (userID: number, page: number) => {
     .leftJoin(users, eq(usersToContacts.userID, users.id))
     .where(eq(users.id, userID))
     .orderBy(sql`${usersToContacts.createdAt} asc`)
-    .limit(10)
-    .offset((page - 1) * 10);
+    .limit(+limit)
+    .offset((page - 1) * +limit);
 
   const userContacts = userContactJoin.map((result) => result.contacts);
   return userContacts;

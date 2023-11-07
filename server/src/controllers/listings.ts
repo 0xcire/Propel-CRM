@@ -13,7 +13,9 @@ import {
   searchForListings,
   updateListingByID,
 } from "../db/queries/listings";
+
 import type { NewListing, NewSoldListing } from "../db/types";
+import type { Limit, ListingStatus } from "../types";
 
 export const getDashboardListings = async (req: Request, res: Response) => {
   try {
@@ -33,9 +35,14 @@ export const getDashboardListings = async (req: Request, res: Response) => {
 export const getAllListings = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { page, status } = req.query;
+    const { page, status, limit } = req.query;
 
-    const userListings = await getAllUserListings(userID, +page!, status as string);
+    const userListings = await getAllUserListings({
+      userID: userID,
+      page: +page!,
+      status: status as ListingStatus,
+      limit: limit as Limit,
+    });
 
     return res.status(200).json({
       message: "",

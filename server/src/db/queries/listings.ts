@@ -3,6 +3,14 @@ import { db } from "..";
 import { contacts, listings, listingsToContacts, soldListings } from "../schema";
 
 import type { NewListing, NewSoldListing } from "../types";
+import type { Limit, ListingStatus } from "../../types";
+
+type getAllUserListingsParams = {
+  userID: number;
+  page: number;
+  status: ListingStatus;
+  limit: Limit;
+};
 
 type updateListingByIDParams = {
   listing: Partial<NewListing>;
@@ -78,7 +86,7 @@ export const getUserDashboardListings = async (userID: number) => {
 };
 
 // better way?
-export const getAllUserListings = async (userID: number, page: number, status: string) => {
+export const getAllUserListings = async ({ userID, page, status, limit = "10" }: getAllUserListingsParams) => {
   let userListings;
 
   if (status === "active") {
@@ -97,8 +105,8 @@ export const getAllUserListings = async (userID: number, page: number, status: s
       )
       .orderBy(desc(listings.createdAt))
       .groupBy(listings.id)
-      .limit(10)
-      .offset((page - 1) * 10);
+      .limit(+limit)
+      .offset((page - 1) * +limit);
   } else {
     userListings = await db
       .select(soldListingSelect)
@@ -115,8 +123,8 @@ export const getAllUserListings = async (userID: number, page: number, status: s
       )
       .orderBy(desc(listings.createdAt))
       .groupBy(listings.id, contacts.id, soldListings.salePrice)
-      .limit(10)
-      .offset((page - 1) * 10);
+      .limit(+limit)
+      .offset((page - 1) * +limit);
   }
 
   return userListings;

@@ -2,15 +2,15 @@ import { db } from "..";
 import { and, asc, desc, eq, ilike, inArray, isNull } from "drizzle-orm";
 import { tasks } from "../schema";
 
+import type { Completed, Limit } from "../../types";
 import type { NewTask } from "../types";
-
-type Completed = "true" | "false";
 
 interface GetUserTasksParams {
   userID: number;
   completed: Completed;
   page?: number;
   priority?: Array<string>;
+  limit: Limit | number;
 }
 
 type SearchForTasksParams = {
@@ -48,7 +48,7 @@ export const findTaskByID = async (id: number) => {
   return task[0];
 };
 
-export const getUserDashboardTasks = async ({ userID, completed }: GetUserTasksParams) => {
+export const getUserDashboardTasks = async ({ userID, completed, limit }: GetUserTasksParams) => {
   const userTasks = await db
     .select()
     .from(tasks)
@@ -61,12 +61,12 @@ export const getUserDashboardTasks = async ({ userID, completed }: GetUserTasksP
       )
     )
     .orderBy(desc(tasks.createdAt))
-    .limit(15);
+    .limit(+limit);
 
   return userTasks;
 };
 
-export const getUserTasks = async ({ userID, completed, page, priority }: GetUserTasksParams) => {
+export const getUserTasks = async ({ userID, completed, page, priority, limit }: GetUserTasksParams) => {
   const userTasks = await db.query.tasks.findMany({
     where: and(
       eq(tasks.userID, userID),
@@ -76,8 +76,8 @@ export const getUserTasks = async ({ userID, completed, page, priority }: GetUse
       isNull(tasks.contactID)
     ),
     orderBy: [desc(tasks.createdAt)],
-    limit: 10,
-    ...(page && { offset: (page - 1) * 10 }),
+    limit: +limit,
+    ...(page && { offset: (page - 1) * +limit }),
   });
 
   return userTasks;

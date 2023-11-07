@@ -12,6 +12,7 @@ import {
 } from "../db/queries/tasks";
 
 import type { NewTask } from "../db/types";
+import type { Completed, Limit } from "../types";
 
 export const getDashboardTasks = async (req: Request, res: Response) => {
   try {
@@ -20,7 +21,8 @@ export const getDashboardTasks = async (req: Request, res: Response) => {
 
     const userDashboardTasks = await getUserDashboardTasks({
       userID: userID,
-      completed: completed as "true" | "false",
+      completed: completed as Completed,
+      limit: 15,
     });
 
     return res.status(200).json({
@@ -36,7 +38,7 @@ export const getDashboardTasks = async (req: Request, res: Response) => {
 export const getTasks = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { completed, page, priority } = req.query;
+    const { completed, page, priority, limit } = req.query;
     const { listingID, contactID } = req.params;
 
     const priorities = (priority as string)?.split(",");
@@ -46,29 +48,32 @@ export const getTasks = async (req: Request, res: Response) => {
     if (listingID && !contactID) {
       userTasks = await getUsersListingTasks({
         userID: userID,
-        completed: completed as "true" | "false",
+        completed: completed as Completed,
         page: +page!,
         priority: priorities,
         listingID: +listingID,
+        limit: limit as Limit,
       });
     }
 
     if (contactID && !listingID) {
       userTasks = await getUsersContactTasks({
         userID: userID,
-        completed: completed as "true" | "false",
+        completed: completed as Completed,
         page: +page!,
         priority: priorities,
         contactID: +contactID,
+        limit: limit as Limit,
       });
     }
 
     if (!listingID && !contactID) {
       userTasks = await getUserTasks({
         userID: userID,
-        completed: completed as "true" | "false",
+        completed: completed as Completed,
         page: +page!,
         priority: priorities,
+        limit: limit as Limit,
       });
     }
 
@@ -102,7 +107,7 @@ export const searchUsersTasks = async (req: Request, res: Response) => {
     if (title) {
       usersSearchedTasks = await searchForTasks({
         userID: userID,
-        completed: completed as "true" | "false",
+        completed: completed as Completed,
         title: title as string,
       });
     }
