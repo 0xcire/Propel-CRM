@@ -13,7 +13,7 @@ export function ContactPage(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const contacts = useContacts();
-  const queriedContacts = useSearchContacts();
+  const searchContacts = useSearchContacts();
   const { setQuery } = useQuerySearchParams('name');
 
   const isSearching = !!searchParams.get('name');
@@ -34,11 +34,9 @@ export function ContactPage(): JSX.Element {
 
   return (
     <ContactTable
-      data={isSearching ? queriedContacts.data ?? [] : contacts.data ?? []}
-      isFetching={
-        isSearching ? queriedContacts.isFetching : contacts.isFetching
-      }
-      isLoading={isSearching ? queriedContacts.isLoading : contacts.isLoading}
+      data={isSearching ? searchContacts.data ?? [] : contacts.data ?? []}
+      isFetching={isSearching ? searchContacts.isFetching : contacts.isFetching}
+      isLoading={isSearching ? searchContacts.isLoading : contacts.isLoading}
       columns={listingColumns}
       setQuery={setQuery}
     />

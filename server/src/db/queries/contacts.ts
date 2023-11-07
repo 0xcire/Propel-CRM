@@ -55,7 +55,6 @@ export const getUsersContacts = async (userID: number, page: number) => {
 };
 
 export const searchForContacts = async (userID: number, name: string) => {
-  // TODO: need param for addlead vs contactstable
   const userContacts = await db
     .select({
       id: contacts.id,
@@ -72,10 +71,7 @@ export const searchForContacts = async (userID: number, name: string) => {
   return userContacts;
 };
 
-// listings view,
-// id, address, click to link to /listings/:id
 export const findContactByID = async (id: number) => {
-  // : Array<Contact>
   const contact = await db
     .select({
       id: contacts.id,

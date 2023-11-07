@@ -84,8 +84,6 @@ export function ContactTable<TData extends Contact>({
 
   const currentPage: string = searchParams.get('page') ?? '1';
 
-  // TODO: remove table flash on search, loading should only take over table content
-
   if ((!data && isLoading) || (!data && isFetching)) {
     return (
       <Spinner
@@ -253,7 +251,7 @@ export function ContactTable<TData extends Contact>({
             setSearchParams([['page', (+currentPage + 1).toString()]]);
           }}
           // 10 could be a dynamic 'results per page' number
-          disabled={data.length < 10}
+          disabled={data.length < 10 || !!name}
         >
           Next
         </Button>

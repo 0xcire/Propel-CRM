@@ -16,8 +16,9 @@ import {
   updateContactByID,
 } from "../db/queries/contacts";
 
-import type { NewContact } from "../db/types";
 import { objectNotEmpty } from "../utils";
+
+import type { NewContact } from "../db/types";
 
 export const getDashboardContacts = async (req: Request, res: Response) => {
   try {
@@ -35,10 +36,16 @@ export const getDashboardContacts = async (req: Request, res: Response) => {
   }
 };
 
-export const searchMyContacts = async (req: Request, res: Response) => {
+export const searchUsersContacts = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
     const { name } = req.query;
+
+    if (!name) {
+      return res.status(400).json({
+        message: "Please enter a name to search.",
+      });
+    }
 
     let usersSearchedContacts;
 

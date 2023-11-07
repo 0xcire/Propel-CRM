@@ -48,7 +48,7 @@ export const deleteContact = (id: number): Promise<ContactResponse> => {
 export const searchContacts = (): Promise<ContactResponse> => {
   const searchParams = new URLSearchParams(window.location.search);
   const name = searchParams.get('name');
-  return Get({ endpoint: `search_contacts/?name=${name}` }).then(
+  return Get({ endpoint: `contacts/search?name=${name}` }).then(
     handleAPIResponse<ContactResponse>
   );
 };
