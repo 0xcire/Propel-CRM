@@ -19,10 +19,16 @@ export function ContactPage(): JSX.Element {
   const isSearching = !!searchParams.get('name');
 
   useEffect(() => {
-    if (!searchParams.get('page')) {
-      setSearchParams([['page', '1']], {
-        replace: true,
-      });
+    if (!searchParams.get('page') || !searchParams.get('limit')) {
+      setSearchParams(
+        [
+          ['page', '1'],
+          ['limit', '10'],
+        ],
+        {
+          replace: true,
+        }
+      );
     }
 
     // eslint-disable-next-line

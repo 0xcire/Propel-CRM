@@ -9,6 +9,7 @@ export const useListings = (): UseQueryResult<Listings, unknown> => {
   const query = {
     page: searchParams.get('page'),
     status: searchParams.get('status'),
+    limit: searchParams.get('limit'),
   };
 
   return useQuery({

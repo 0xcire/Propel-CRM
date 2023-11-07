@@ -30,6 +30,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 import { Spinner } from '@/components';
+import { LimitSelection } from '@/components/Table/';
 
 import type { Dispatch, SetStateAction } from 'react';
 import type {
@@ -82,6 +83,7 @@ export function ContactTable<TData extends Contact>({
     },
   });
 
+  const limit = searchParams.get('limit') ?? '10';
   const currentPage: string = searchParams.get('page') ?? '1';
 
   if ((!data && isLoading) || (!data && isFetching)) {
@@ -221,40 +223,45 @@ export function ContactTable<TData extends Contact>({
         </ScrollArea>
       )}
 
-      <div className='flex items-center justify-end space-x-2 py-4 pb-0'>
-        <Typography
-          variant='p'
-          className='text-sm'
-        >
-          Page: {currentPage}
-        </Typography>
-        <Typography
-          variant='p'
-          className='text-sm'
-        >
-          {`${+currentPage * 10 - 10 + 1} - ${+currentPage * 10}`}
-        </Typography>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={(): void => {
-            setSearchParams([['page', (+currentPage - 1).toString()]]);
-          }}
-          disabled={searchParams.get('page') === '1'}
-        >
-          Previous
-        </Button>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={(): void => {
-            setSearchParams([['page', (+currentPage + 1).toString()]]);
-          }}
-          // 10 could be a dynamic 'results per page' number
-          disabled={data.length < 10 || !!name}
-        >
-          Next
-        </Button>
+      {/* <TableFooter></TableFooter> */}
+      <div className='flex items-center justify-between space-x-2 py-4 pb-0'>
+        <LimitSelection className='flex items-center gap-4' />
+        <div className='flex items-center gap-2'>
+          <Typography
+            variant='p'
+            className='text-sm'
+          >
+            Page: {currentPage}
+          </Typography>
+          <Typography
+            variant='p'
+            className='text-sm'
+          >
+            {`${+currentPage * +limit - +limit + 1} - ${+currentPage * +limit}`}
+          </Typography>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={(): void => {
+              searchParams.set('page', (+currentPage - 1).toString());
+              setSearchParams(searchParams);
+            }}
+            disabled={searchParams.get('page') === '1'}
+          >
+            Previous
+          </Button>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={(): void => {
+              searchParams.set('page', (+currentPage + 1).toString());
+              setSearchParams(searchParams);
+            }}
+            disabled={data.length < +limit || !!name}
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </>
   );

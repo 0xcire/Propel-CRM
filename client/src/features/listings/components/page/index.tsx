@@ -29,10 +29,15 @@ export function ListingPage(): JSX.Element {
       searchParams.delete('name');
       setSearchParams(searchParams, { replace: true });
     }
-    if (!searchParams.get('page') || !searchParams.get('status')) {
+    if (
+      !searchParams.get('page') ||
+      !searchParams.get('status') ||
+      !searchParams.get('limit')
+    ) {
       setSearchParams(
         [
           ['page', '1'],
+          ['limit', '10'],
           ['status', 'active'],
         ],
         {

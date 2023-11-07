@@ -8,11 +8,13 @@ export const useContacts = (): UseQueryResult<
   unknown
 > => {
   const searchParams = new URLSearchParams(window.location.search);
-  const query = { page: searchParams.get('page') ?? '1' };
+  const query = {
+    page: searchParams.get('page'),
+    limit: searchParams.get('limit'),
+  };
   return useQuery({
     queryKey: ['contacts', query],
     queryFn: getContacts,
     select: (data) => data.contacts,
-    // refetchOnMount
   });
 };
