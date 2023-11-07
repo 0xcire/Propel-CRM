@@ -5,7 +5,7 @@ import { useDebounce } from './useDebounce';
 
 import type { Dispatch, SetStateAction } from 'react';
 
-export const useQuerySearchParams = (
+export const useDebouncedQuerySearchParams = (
   param: 'name' | 'address' | 'title'
 ): { setQuery: Dispatch<SetStateAction<string | undefined>> } => {
   const [searchParams, setSearchParams] = useSearchParams();

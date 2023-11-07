@@ -1,53 +1,34 @@
-import { useEffect } from 'react';
-
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import { useListings } from '../../hooks/useListings';
+import { useSearchListings } from '../../hooks/useSearchListings';
 
 import { ListingTable } from './ListingTable';
 import { listingColumns } from '../../config/ListingColumns';
-import { useQuerySearchParams } from '@/hooks';
-import { useSearchListings } from '../../hooks/useSearchListings';
+
+import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
+
+import type { DefaultParams } from '@/types';
+
+const defaultParams: DefaultParams = [
+  { name: 'page', value: '1' },
+  { name: 'limit', value: '10' },
+  { name: 'status', value: 'active' },
+];
 
 export function ListingPage(): JSX.Element {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const { setQuery } = useDebouncedQuerySearchParams('address');
+  useDefaultSearchParams(defaultParams);
+
   const listings = useListings();
   const searchListings = useSearchListings();
-  const { id } = useParams();
-
-  const { setQuery } = useQuerySearchParams('address');
 
   // TODO: when linking to /listing/:id from non listing route. if deviating away from modal route
   // remove this functionality.
   // sync with /contacts/page if so
 
   const isSearching = !!searchParams.get('address');
-
-  useEffect(() => {
-    if (id) return;
-    if (searchParams.get('name')) {
-      searchParams.delete('name');
-      setSearchParams(searchParams, { replace: true });
-    }
-    if (
-      !searchParams.get('page') ||
-      !searchParams.get('status') ||
-      !searchParams.get('limit')
-    ) {
-      setSearchParams(
-        [
-          ['page', '1'],
-          ['limit', '10'],
-          ['status', 'active'],
-        ],
-        {
-          replace: true,
-        }
-      );
-    }
-
-    // eslint-disable-next-line
-  }, []);
 
   return (
     <ListingTable

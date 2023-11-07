@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useSearchContacts } from '@/features/contacts/hooks/useSearchContacts';
 import { useAddLead } from '../../../hooks/useAddLead';
 
-import { useQuerySearchParams } from '@/hooks';
+import { useDebouncedQuerySearchParams } from '@/hooks';
 
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
@@ -31,7 +31,7 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const searchContacts = useSearchContacts();
-  const { setQuery } = useQuerySearchParams('name');
+  const { setQuery } = useDebouncedQuerySearchParams('name');
 
   const handleInputChange = (value: string): void => {
     setQuery(value);

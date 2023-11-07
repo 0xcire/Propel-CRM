@@ -1,7 +1,6 @@
-import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { useQuerySearchParams } from '@/hooks';
+import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
 
 import { useContacts } from '../../hooks/useContacts';
 import { useSearchContacts } from '../../hooks/useSearchContacts';
@@ -9,30 +8,22 @@ import { useSearchContacts } from '../../hooks/useSearchContacts';
 import { ContactTable } from './ContactsTable';
 import { listingColumns } from '../../config/ContactColumns';
 
+import type { DefaultParams } from '@/types';
+
+const defaultParams: DefaultParams = [
+  { name: 'page', value: '1' },
+  { name: 'limit', value: '10' },
+];
+
 export function ContactPage(): JSX.Element {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const { setQuery } = useDebouncedQuerySearchParams('name');
+  useDefaultSearchParams(defaultParams);
 
   const contacts = useContacts();
   const searchContacts = useSearchContacts();
-  const { setQuery } = useQuerySearchParams('name');
 
   const isSearching = !!searchParams.get('name');
-
-  useEffect(() => {
-    if (!searchParams.get('page') || !searchParams.get('limit')) {
-      setSearchParams(
-        [
-          ['page', '1'],
-          ['limit', '10'],
-        ],
-        {
-          replace: true,
-        }
-      );
-    }
-
-    // eslint-disable-next-line
-  }, []);
 
   {
     /* TODO: create reusable <DataTable /> component */

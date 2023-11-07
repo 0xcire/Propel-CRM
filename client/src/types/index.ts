@@ -27,3 +27,5 @@ export interface FormMode {
   isCreate?: boolean;
   isLoading: boolean;
 }
+
+export type DefaultParams = Array<{ name: string; value: string }>;
