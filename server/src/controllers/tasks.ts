@@ -8,6 +8,7 @@ import {
   updateTaskByID,
   getUsersListingTasks,
   getUsersContactTasks,
+  searchForTasks,
 } from "../db/queries/tasks";
 
 import type { NewTask } from "../db/types";
@@ -80,6 +81,41 @@ export const getTasks = async (req: Request, res: Response) => {
     res.status(500).json({});
   }
 };
+
+export const searchUsersTasks = async (req: Request, res: Response) => {
+  try {
+    const userID = req.user.id;
+    const { title, completed } = req.query;
+
+    if (!title) {
+      return res.status(400).json({
+        message: "Please enter a title to search your tasks.",
+      });
+    }
+
+    let usersSearchedTasks;
+
+    if (title && title === "") {
+      usersSearchedTasks = [];
+    }
+
+    if (title) {
+      usersSearchedTasks = await searchForTasks({
+        userID: userID,
+        completed: completed as "true" | "false",
+        title: title as string,
+      });
+    }
+
+    return res.status(200).json({
+      tasks: usersSearchedTasks,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
+
 export const getTask = async (req: Request, res: Response) => {
   try {
     const { taskID } = req.params;

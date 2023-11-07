@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import {
@@ -32,6 +32,7 @@ import { DataTableFilter } from '@/components/ui/table/data-table-filter';
 
 import { Spinner } from '@/components';
 
+import type { Dispatch, SetStateAction } from 'react';
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -45,23 +46,22 @@ interface ContactTableProps<TData extends Task> {
   data: Array<TData>;
   isLoading: boolean;
   isFetching: boolean;
-  // nameQuery: string | undefined;
-  // setNameQuery: Dispatch<SetStateAction<string | undefined>>;
+  setQuery: Dispatch<SetStateAction<string | undefined>>;
 }
 
-// cant see use case for TValue
 export function TasksTable<TData extends Task>({
   columns,
   data,
   isLoading,
   isFetching,
-}: // nameQuery,
-// setNameQuery,
-ContactTableProps<TData>): JSX.Element {
+  setQuery,
+}: ContactTableProps<TData>): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const table = useReactTable({
     data,
@@ -82,6 +82,7 @@ ContactTableProps<TData>): JSX.Element {
     },
   });
 
+  const title = searchParams.get('title');
   const currentPage: string = searchParams.get('page') ?? '1';
 
   // TODO: remove table flash on search, loading should only take over table content
@@ -99,14 +100,35 @@ ContactTableProps<TData>): JSX.Element {
     <>
       <div className='flex items-center gap-2 py-4'>
         <Input
+          ref={inputRef}
           autoFocus={true}
           placeholder='Search your tasks'
-          // value={nameQuery ?? ''}
-          // onChange={(e): void => {
-          //   setNameQuery(e.currentTarget.value);
-          // }}
           className='max-w-sm'
+          onChange={(e): void => setQuery(e.currentTarget.value)}
+          onKeyUp={(e): void => {
+            if (e.key === 'Backspace' && e.currentTarget.value === '') {
+              searchParams.delete('title');
+              setSearchParams(searchParams);
+            }
+          }}
         />
+
+        {title && (
+          <Button
+            className='ml-4 h-full'
+            variant='outline'
+            onClick={(): void => {
+              searchParams.delete('name');
+              setSearchParams(searchParams);
+
+              if (inputRef.current) {
+                inputRef.current.value = '';
+              }
+            }}
+          >
+            Reset
+          </Button>
+        )}
 
         <Button
           variant='outline'

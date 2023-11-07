@@ -1,15 +1,23 @@
 import { db } from "..";
-import { and, asc, desc, eq, inArray, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, inArray, isNull } from "drizzle-orm";
 import { tasks } from "../schema";
 
 import type { NewTask } from "../types";
 
+type Completed = "true" | "false";
+
 interface GetUserTasksParams {
   userID: number;
-  completed: "true" | "false";
+  completed: Completed;
   page?: number;
   priority?: Array<string>;
 }
+
+type SearchForTasksParams = {
+  userID: number;
+  completed: Completed;
+  title: string;
+};
 
 // TODO: ?
 interface GetUsersListingTasksParams extends GetUserTasksParams {
@@ -119,6 +127,23 @@ export const getUsersContactTasks = async ({
   });
 
   return userContactTasks;
+};
+
+export const searchForTasks = async ({ userID, completed, title }: SearchForTasksParams) => {
+  const userTasks = await db
+    .select()
+    .from(tasks)
+    .where(
+      and(
+        eq(tasks.userID, userID),
+        eq(tasks.completed, JSON.parse(completed)),
+        ilike(tasks.title, `%${title}%`)
+        //
+      )
+    )
+    .orderBy(desc(tasks.createdAt));
+
+  return userTasks;
 };
 
 export const insertNewTask = async (task: NewTask) => {

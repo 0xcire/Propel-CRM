@@ -18,6 +18,16 @@ export const getTasks = (): Promise<TaskResponse> => {
   );
 };
 
+export const searchTasks = (): Promise<TaskResponse> => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const completed = searchParams.get('completed');
+  const title = searchParams.get('title');
+
+  return Get({
+    endpoint: `tasks/search?title=${title}&completed=${completed}`,
+  }).then(handleAPIResponse<TaskResponse>);
+};
+
 export const getListingTasks = (listingID: number): Promise<TaskResponse> => {
   return Get({
     endpoint: `tasks/listings/${listingID}${window.location.search}`,

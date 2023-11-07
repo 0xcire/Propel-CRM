@@ -7,14 +7,20 @@ import { useTasks } from '../../hooks/useTasks';
 
 import { TasksTable } from './TasksTable';
 import { taskColumns } from '../../config/TaskColumns';
+import { useQuerySearchParams } from '@/hooks';
+import { useSearchTasks } from '../../hooks/useSearchTasks';
 
 export function TaskPage(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   const [, setPageTitle] = useTaskContext()['title'];
+  const { setQuery } = useQuerySearchParams('title');
 
   const { id } = useParams();
 
   const tasks = useTasks();
+  const searchTasks = useSearchTasks();
+
+  const isSearching = !!searchParams.get('title');
 
   useEffect(() => {
     if (id) return;
@@ -39,10 +45,11 @@ export function TaskPage(): JSX.Element {
 
   return (
     <TasksTable
-      data={tasks.data ?? []}
+      data={isSearching ? searchTasks.data ?? [] : tasks.data ?? []}
       columns={taskColumns}
-      isLoading={tasks.isLoading}
-      isFetching={tasks.isFetching}
+      isLoading={isSearching ? searchTasks.isLoading : tasks.isLoading}
+      isFetching={isSearching ? searchTasks.isFetching : tasks.isFetching}
+      setQuery={setQuery}
     />
   );
 }

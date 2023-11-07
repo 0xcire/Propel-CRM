@@ -1,8 +1,21 @@
 import { Router } from "express";
-import { getTasks, createTask, updateTask, deleteTask, getDashboardTasks, getTask } from "../controllers/tasks";
+
+import {
+  getTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  getDashboardTasks,
+  getTask,
+  searchUsersTasks,
+} from "../controllers/tasks";
+
 import { isAuth } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
 import { isTaskOwner } from "../middlewares/tasks";
+import { isListingOwner } from "../middlewares/listings";
+import { isContactOwner } from "../middlewares/contacts";
+
 import {
   cookieSchema,
   createTaskSchema,
@@ -12,9 +25,8 @@ import {
   listingIDParamSchema,
   contactIDParamSchema,
   taskIDParamSchema,
+  taskSearchQuerySchema,
 } from "../db/validation-schema";
-import { isListingOwner } from "../middlewares/listings";
-import { isContactOwner } from "../middlewares/contacts";
 
 export default (router: Router) => {
   router.get(
@@ -25,18 +37,25 @@ export default (router: Router) => {
   );
 
   router.get(
+    "/tasks",
+    validateRequest({ query: taskQuerySchema, params: taskIDParamSchema, cookies: cookieSchema }),
+    isAuth,
+    getTasks
+  );
+
+  router.get(
+    "/tasks/search",
+    validateRequest({ cookies: cookieSchema, query: taskSearchQuerySchema }),
+    isAuth,
+    searchUsersTasks
+  );
+
+  router.get(
     "/tasks/:taskID",
     validateRequest({ params: taskIDParamSchema, cookies: cookieSchema }),
     isAuth,
     isTaskOwner,
     getTask
-  );
-
-  router.get(
-    "/tasks",
-    validateRequest({ query: taskQuerySchema, params: taskIDParamSchema, cookies: cookieSchema }),
-    isAuth,
-    getTasks
   );
 
   router.get(
