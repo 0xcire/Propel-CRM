@@ -10,6 +10,7 @@ import {
   insertNewListing,
   insertSoldListingData,
   removeLead,
+  searchForListings,
   updateListingByID,
 } from "../db/queries/listings";
 import type { NewListing, NewSoldListing } from "../db/types";
@@ -39,6 +40,40 @@ export const getAllListings = async (req: Request, res: Response) => {
     return res.status(200).json({
       message: "",
       listings: userListings,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
+
+export const searchUsersListings = async (req: Request, res: Response) => {
+  try {
+    const userID = req.user.id;
+    const { address, status } = req.query;
+
+    if (!address) {
+      return res.status(400).json({
+        message: "Please enter an address to search.",
+      });
+    }
+
+    let usersSearchedListings;
+
+    if (address && address === "") {
+      usersSearchedListings = [];
+    }
+
+    if (address) {
+      usersSearchedListings = await searchForListings({
+        userID: userID,
+        address: address as string,
+        status: status as string,
+      });
+    }
+
+    return res.status(200).json({
+      listings: usersSearchedListings,
     });
   } catch (error) {
     console.log(error);

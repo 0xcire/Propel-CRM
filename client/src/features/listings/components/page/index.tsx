@@ -6,15 +6,22 @@ import { useListings } from '../../hooks/useListings';
 
 import { ListingTable } from './ListingTable';
 import { listingColumns } from '../../config/ListingColumns';
+import { useQuerySearchParams } from '@/hooks';
+import { useSearchListings } from '../../hooks/useSearchListings';
 
 export function ListingPage(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   const listings = useListings();
+  const searchListings = useSearchListings();
   const { id } = useParams();
+
+  const { setQuery } = useQuerySearchParams('address');
 
   // TODO: when linking to /listing/:id from non listing route. if deviating away from modal route
   // remove this functionality.
   // sync with /contacts/page if so
+
+  const isSearching = !!searchParams.get('address');
 
   useEffect(() => {
     if (id) return;
@@ -40,9 +47,10 @@ export function ListingPage(): JSX.Element {
   return (
     <ListingTable
       columns={listingColumns}
-      data={listings.data ?? []}
-      isLoading={listings.isLoading}
-      isFetching={listings.isFetching}
+      data={isSearching ? searchListings.data ?? [] : listings.data ?? []}
+      isLoading={isSearching ? searchListings.isLoading : listings.isLoading}
+      isFetching={isSearching ? searchListings.isFetching : listings.isFetching}
+      setQuery={setQuery}
     />
   );
 }

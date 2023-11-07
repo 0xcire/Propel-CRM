@@ -1,4 +1,4 @@
-import { and, desc, eq, isNotNull, isNull, not, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, isNotNull, isNull, not, sql } from "drizzle-orm";
 import { db } from "..";
 import { contacts, listings, listingsToContacts, soldListings } from "../schema";
 
@@ -8,6 +8,12 @@ type updateListingByIDParams = {
   listing: Partial<NewListing>;
   listingID: number;
   userID: number;
+};
+
+type SearchForListingsParams = {
+  userID: number;
+  address: string;
+  status: string;
 };
 
 const activeContactsAggregate = sql`JSON_AGG(
@@ -30,20 +36,35 @@ const soldContactAggregate = sql`JSON_AGG(
   )
 )`;
 
+const activeListingSelect = {
+  id: listings.id,
+  address: listings.address,
+  propertyType: listings.propertyType,
+  price: listings.price,
+  bedrooms: listings.bedrooms,
+  baths: listings.baths,
+  squareFeet: listings.squareFeet,
+  description: listings.description,
+  createdAt: listings.createdAt,
+  contacts: activeContactsAggregate,
+};
+
+const soldListingSelect = {
+  id: listings.id,
+  address: listings.address,
+  propertyType: listings.propertyType,
+  price: soldListings.salePrice,
+  bedrooms: listings.bedrooms,
+  baths: listings.baths,
+  squareFeet: listings.squareFeet,
+  description: listings.description,
+  createdAt: listings.createdAt,
+  contacts: soldContactAggregate,
+};
+
 export const getUserDashboardListings = async (userID: number) => {
   const userListings = await db
-    .select({
-      id: listings.id,
-      address: listings.address,
-      propertyType: listings.propertyType,
-      price: listings.price,
-      bedrooms: listings.bedrooms,
-      baths: listings.baths,
-      squareFeet: listings.squareFeet,
-      description: listings.description,
-      createdAt: listings.createdAt,
-      contacts: activeContactsAggregate,
-    })
+    .select(activeListingSelect)
     .from(listings)
     .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
     .where(and(eq(listings.userID, userID), isNull(soldListings.listingID)))
@@ -62,53 +83,82 @@ export const getAllUserListings = async (userID: number, page: number, status: s
 
   if (status === "active") {
     userListings = await db
-      .select({
-        id: listings.id,
-        address: listings.address,
-        propertyType: listings.propertyType,
-        price: listings.price,
-        bedrooms: listings.bedrooms,
-        baths: listings.baths,
-        squareFeet: listings.squareFeet,
-        description: listings.description,
-        createdAt: listings.createdAt,
-        contacts: activeContactsAggregate,
-      })
+      .select(activeListingSelect)
       .from(listings)
-      .where(eq(listings.id, userID))
       .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
-      .where(and(eq(listings.userID, userID), isNull(soldListings.listingID)))
       .leftJoin(listingsToContacts, eq(listings.id, listingsToContacts.listingID))
       .leftJoin(contacts, eq(listingsToContacts.contactID, contacts.id))
+      .where(
+        and(
+          eq(listings.userID, userID),
+          isNull(soldListings.listingID)
+          //
+        )
+      )
       .orderBy(desc(listings.createdAt))
       .groupBy(listings.id)
       .limit(10)
       .offset((page - 1) * 10);
   } else {
     userListings = await db
-      .select({
-        id: listings.id,
-        address: listings.address,
-        propertyType: listings.propertyType,
-        price: soldListings.salePrice,
-        bedrooms: listings.bedrooms,
-        baths: listings.baths,
-        squareFeet: listings.squareFeet,
-        description: listings.description,
-        createdAt: listings.createdAt,
-        contacts: soldContactAggregate,
-      })
+      .select(soldListingSelect)
       .from(listings)
-      .where(eq(listings.userID, userID))
       .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
-      .where(and(eq(listings.userID, userID), isNotNull(soldListings.listingID)))
       .leftJoin(listingsToContacts, eq(soldListings.contactID, listingsToContacts.contactID))
-      .where(eq(soldListings.listingID, listingsToContacts.listingID))
       .leftJoin(contacts, eq(soldListings.contactID, contacts.id))
+      .where(
+        and(
+          eq(listings.userID, userID),
+          isNotNull(soldListings.listingID),
+          eq(soldListings.listingID, listingsToContacts.listingID)
+        )
+      )
       .orderBy(desc(listings.createdAt))
       .groupBy(listings.id, contacts.id, soldListings.salePrice)
       .limit(10)
       .offset((page - 1) * 10);
+  }
+
+  return userListings;
+};
+
+export const searchForListings = async ({ userID, address, status }: SearchForListingsParams) => {
+  let userListings;
+
+  if (status === "active") {
+    userListings = await db
+      .select(activeListingSelect)
+      .from(listings)
+      .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
+      .leftJoin(listingsToContacts, eq(listings.id, listingsToContacts.listingID))
+      .leftJoin(contacts, eq(listingsToContacts.contactID, contacts.id))
+      .where(
+        and(
+          eq(listings.userID, userID),
+          isNull(soldListings.listingID),
+          ilike(listings.address, `%${address}%`)
+          //
+        )
+      )
+      .orderBy(desc(listings.createdAt))
+      .groupBy(listings.id);
+  } else {
+    userListings = await db
+      .select(soldListingSelect)
+      .from(listings)
+      .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
+      .leftJoin(listingsToContacts, eq(soldListings.contactID, listingsToContacts.contactID))
+      .leftJoin(contacts, eq(soldListings.contactID, contacts.id))
+      .where(
+        and(
+          eq(listings.userID, userID),
+          isNotNull(soldListings.listingID),
+          ilike(listings.address, `%${address}%`),
+          eq(soldListings.listingID, listingsToContacts.listingID)
+        )
+      )
+      .orderBy(desc(listings.createdAt))
+      .groupBy(listings.id, contacts.id, soldListings.salePrice);
   }
 
   return userListings;

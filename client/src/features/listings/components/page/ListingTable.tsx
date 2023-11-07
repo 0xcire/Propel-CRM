@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import {
@@ -32,7 +32,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Spinner } from '@/components';
 import { StatusToggle } from './StatusToggle';
 
-import type { ChangeEvent } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -46,19 +46,22 @@ interface ListingTableProps<TData extends Listing> {
   data: Array<TData>;
   isLoading: boolean;
   isFetching: boolean;
+  setQuery: Dispatch<SetStateAction<string | undefined>>;
 }
 
-// cant see use case for TValue
 export function ListingTable<TData extends Listing>({
   columns,
   data,
   isLoading,
   isFetching,
+  setQuery,
 }: ListingTableProps<TData>): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const table = useReactTable({
     data,
@@ -78,6 +81,7 @@ export function ListingTable<TData extends Listing>({
     },
   });
 
+  const address = searchParams.get('address');
   const currentPage: string = searchParams.get('page') ?? '1';
 
   if ((!data && isLoading) || (!data && isFetching)) {
@@ -93,13 +97,33 @@ export function ListingTable<TData extends Listing>({
     <>
       <div className='flex items-center py-4'>
         <Input
+          ref={inputRef}
           placeholder='Search by address'
-          value={(table.getColumn('address')?.getFilterValue() as string) ?? ''}
-          onChange={(event: ChangeEvent<HTMLInputElement>): void =>
-            table.getColumn('address')?.setFilterValue(event.target.value)
-          }
+          onChange={(e): void => setQuery(e.currentTarget.value)}
+          onKeyUp={(e): void => {
+            if (e.key === 'Backspace' && e.currentTarget.value === '') {
+              searchParams.delete('address');
+              setSearchParams(searchParams);
+            }
+          }}
           className='max-w-sm'
         />
+        {address && (
+          <Button
+            className='ml-4 h-full'
+            variant='outline'
+            onClick={(): void => {
+              searchParams.delete('address');
+              setSearchParams(searchParams);
+
+              if (inputRef.current) {
+                inputRef.current.value = '';
+              }
+            }}
+          >
+            Reset
+          </Button>
+        )}
         <div className='ml-auto flex items-center gap-2'>
           <StatusToggle />
 

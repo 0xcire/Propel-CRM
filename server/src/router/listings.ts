@@ -1,4 +1,5 @@
 import { Router } from "express";
+
 import {
   getDashboardListings,
   getAllListings,
@@ -9,10 +10,13 @@ import {
   addListingLead,
   removeListingLead,
   markListingAsSold,
+  searchUsersListings,
 } from "../controllers/listings";
+
 import { validateRequest } from "../middlewares/validate-input";
 import { isAuth } from "../middlewares";
 import { isListingOwner } from "../middlewares/listings";
+import { isContactOwner } from "../middlewares/contacts";
 
 import {
   cookieSchema,
@@ -21,8 +25,8 @@ import {
   updateListingSchema,
   listingIDParamSchema,
   listingAndContactIDSchema,
+  listingSearchQuerySchema,
 } from "../db/validation-schema";
-import { isContactOwner } from "../middlewares/contacts";
 
 export default (router: Router) => {
   router.get("/dashboard/listings", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardListings);
@@ -32,6 +36,13 @@ export default (router: Router) => {
     validateRequest({ cookies: cookieSchema, query: listingQuerySchema }),
     isAuth,
     getAllListings
+  );
+
+  router.get(
+    "/listings/search",
+    validateRequest({ cookies: cookieSchema, query: listingSearchQuerySchema }),
+    isAuth,
+    searchUsersListings
   );
 
   router.get(
