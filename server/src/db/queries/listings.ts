@@ -21,7 +21,7 @@ type updateListingByIDParams = {
 type SearchForListingsParams = {
   userID: number;
   address: string;
-  status: string;
+  status: ListingStatus;
 };
 
 const activeContactsAggregate = sql`JSON_AGG(

@@ -75,7 +75,7 @@ export const searchUsersListings = async (req: Request, res: Response) => {
       usersSearchedListings = await searchForListings({
         userID: userID,
         address: address as string,
-        status: status as string,
+        status: status as ListingStatus,
       });
     }
 
