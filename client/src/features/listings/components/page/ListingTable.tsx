@@ -167,7 +167,7 @@ export function ListingTable<TData extends Listing>({
           fillContainer
         />
       ) : (
-        <ScrollArea className='flex-1 overflow-auto rounded-md border shadow'>
+        <ScrollArea className='flex-1 rounded-md border shadow'>
           <Table>
             <TableHeader className='w-full'>
               {table.getHeaderGroups().map((headerGroup) => (
