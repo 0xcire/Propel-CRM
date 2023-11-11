@@ -15,7 +15,7 @@ export function LimitSelection({
         variant='p'
         className='text-sm'
       >
-        Rows per page:
+        Results per page:
       </Typography>
       <Select
         className='mr-auto h-9 w-[70px]'
