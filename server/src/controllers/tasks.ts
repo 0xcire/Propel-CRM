@@ -22,7 +22,8 @@ export const getDashboardTasks = async (req: Request, res: Response) => {
     const userDashboardTasks = await getUserDashboardTasks({
       userID: userID,
       completed: completed as Completed,
-      limit: 15,
+      limit: "20",
+      page: 1,
     });
 
     return res.status(200).json({
@@ -90,7 +91,7 @@ export const getTasks = async (req: Request, res: Response) => {
 export const searchUsersTasks = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { title, completed } = req.query;
+    const { title, completed, limit, page } = req.query;
 
     if (!title) {
       return res.status(400).json({
@@ -109,6 +110,8 @@ export const searchUsersTasks = async (req: Request, res: Response) => {
         userID: userID,
         completed: completed as Completed,
         title: title as string,
+        limit: limit as Limit,
+        page: +page!,
       });
     }
 

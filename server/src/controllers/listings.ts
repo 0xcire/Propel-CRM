@@ -57,7 +57,7 @@ export const getAllListings = async (req: Request, res: Response) => {
 export const searchUsersListings = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { address, status } = req.query;
+    const { address, status, limit, page } = req.query;
 
     if (!address) {
       return res.status(400).json({
@@ -76,6 +76,8 @@ export const searchUsersListings = async (req: Request, res: Response) => {
         userID: userID,
         address: address as string,
         status: status as ListingStatus,
+        page: +page!,
+        limit: limit as Limit,
       });
     }
 

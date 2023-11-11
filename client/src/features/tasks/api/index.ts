@@ -19,12 +19,8 @@ export const getTasks = (): Promise<TaskResponse> => {
 };
 
 export const searchTasks = (): Promise<TaskResponse> => {
-  const searchParams = new URLSearchParams(window.location.search);
-  const completed = searchParams.get('completed');
-  const title = searchParams.get('title');
-
   return Get({
-    endpoint: `tasks/search?title=${title}&completed=${completed}`,
+    endpoint: `tasks/search${window.location.search}`,
   }).then(handleAPIResponse<TaskResponse>);
 };
 

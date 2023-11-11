@@ -27,8 +27,9 @@ export const paramSchema = z
     id: param.id.trim(),
   }));
 
-export const limitSchema = z.object({
+export const paginationSchema = z.object({
   limit: z.enum(["10", "20", "30", "40", "50"]),
+  page: z.string(),
 });
 
 export const listingIDParamSchema = z
@@ -98,7 +99,6 @@ export const updateUserSchema = createInsertSchema(users)
   }));
 
 export const signinSchema = createInsertSchema(users)
-  // .strict()
   .pick({
     email: true,
   })
@@ -109,23 +109,24 @@ export const signinSchema = createInsertSchema(users)
     password: user.password.trim(),
   }));
 
-export const contactSearchQuerySchema = z
-  .object({
+const contactQuerySchema = paginationSchema;
+
+export const contactSearchQuerySchema = contactQuerySchema.partial().merge(
+  z.object({
     name: z.string(),
   })
-  .transform((contact) => ({
-    name: contact.name.trim(),
-  }));
+);
 
-export const contactQuerySchema = z
-  .object({
-    page: z.string(),
-  })
-  .merge(limitSchema)
-  .transform((contact) => ({
-    page: contact.page.trim(),
-    limit: contact.limit.trim(),
-  }));
+export const contactQueryValidator = contactQuerySchema.transform((schema) => ({
+  page: schema.page.trim(),
+  limit: schema.limit.trim(),
+}));
+
+export const contactSearchQueryValidator = contactSearchQuerySchema.transform((schema) => ({
+  page: schema.page?.trim(),
+  limit: schema.limit?.trim(),
+  name: schema.name.trim(),
+}));
 
 export const createContactSchema = createInsertSchema(contacts)
   .omit({
@@ -160,29 +161,33 @@ export const dashboardTaskQuerySchema = z
     completed: task.completed.trim(),
   }));
 
-export const taskQuerySchema = z
+const taskQuerySchema = z
   .object({
     completed: z.enum(["true", "false"]),
     priority: z.union([z.string(), z.undefined()]),
-    page: z.string(),
   })
-  .merge(limitSchema)
-  .transform((task) => ({
-    completed: task.completed.trim(),
-    priority: task.priority?.trim(),
-    page: task.page.trim(),
-    limit: task.limit.trim(),
-  }));
+  .merge(paginationSchema);
 
-export const taskSearchQuerySchema = z
-  .object({
+const taskQuerySearchSchema = taskQuerySchema.merge(
+  z.object({
     title: z.string(),
-    completed: z.enum(["true", "false"]),
   })
-  .transform((schema) => ({
-    title: schema.title.trim(),
-    completed: schema.completed.trim(),
-  }));
+);
+
+export const taskQueryValidator = taskQuerySchema.transform((schema) => ({
+  completed: schema.completed.trim(),
+  priority: schema.priority?.trim(),
+  page: schema.page.trim(),
+  limit: schema.limit.trim(),
+}));
+
+export const taskQuerySearchValidator = taskQuerySearchSchema.transform((schema) => ({
+  completed: schema.completed.trim(),
+  priority: schema.priority?.trim(),
+  page: schema.page.trim(),
+  limit: schema.limit.trim(),
+  title: schema.title.trim(),
+}));
 
 export const createTaskSchema = createInsertSchema(tasks)
   .omit({ id: true, userID: true, completed: true, createdAt: true })
@@ -247,25 +252,28 @@ export const updateListingSchema = createInsertSchema(listings, {
 
 export const listingQuerySchema = z
   .object({
-    page: z.string(),
     status: z.enum(["active", "sold"]),
   })
-  .merge(limitSchema)
-  .transform((listing) => ({
-    page: listing.page.trim(),
-    status: listing.status.trim(),
-    limit: listing.limit.trim(),
-  }));
+  .merge(paginationSchema);
 
-export const listingSearchQuerySchema = z
-  .object({
+export const listingSearchQuerySchema = listingQuerySchema.merge(
+  z.object({
     address: z.string(),
-    status: z.string(),
   })
-  .transform((schema) => ({
-    address: schema.address.trim(),
-    status: schema.status.trim(),
-  }));
+);
+
+export const listingQueryValidator = listingQuerySchema.transform((schema) => ({
+  page: schema.page.trim(),
+  limit: schema.limit.trim(),
+  status: schema.status.trim(),
+}));
+
+export const listingSearchQueryValidator = listingSearchQuerySchema.transform((schema) => ({
+  page: schema.page.trim(),
+  limit: schema.limit.trim(),
+  status: schema.status.trim(),
+  address: schema.address.trim(),
+}));
 
 export const analyticsQuerySchema = z
   .object({

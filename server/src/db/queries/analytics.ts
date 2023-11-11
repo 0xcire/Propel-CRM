@@ -77,18 +77,13 @@ export const getAvgTimeToClose = async (userID: number, year: number) => {
     })
     .from(listings)
     .leftJoin(soldListings, eq(soldListings.listingID, listings.id))
-    .where(
-      and(
-        eq(listings.userID, userID),
-        isNotNull(soldListings.listingID),
-        between(soldListings.soldAt, new Date(`1-1-${year}`), new Date(`12-31-${year}`))
-      )
-    )
     .leftJoin(listingsToContacts, eq(listingsToContacts.contactID, soldListings.contactID))
     .where(
       and(
         eq(listings.userID, userID),
         eq(listingsToContacts.listingID, soldListings.listingID),
+        isNotNull(soldListings.listingID),
+        between(soldListings.soldAt, new Date(`1-1-${year}`), new Date(`12-31-${year}`)),
         between(listingsToContacts.createdAt, new Date(`1-1-${year}`), new Date(`12-31-${year}`))
       )
     )

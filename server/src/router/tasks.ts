@@ -20,12 +20,12 @@ import {
   cookieSchema,
   createTaskSchema,
   updateTaskSchema,
-  taskQuerySchema,
   dashboardTaskQuerySchema,
   listingIDParamSchema,
   contactIDParamSchema,
   taskIDParamSchema,
-  taskSearchQuerySchema,
+  taskQueryValidator,
+  taskQuerySearchValidator,
 } from "../db/validation-schema";
 
 export default (router: Router) => {
@@ -36,11 +36,11 @@ export default (router: Router) => {
     getDashboardTasks
   );
 
-  router.get("/tasks", validateRequest({ query: taskQuerySchema, cookies: cookieSchema }), isAuth, getTasks);
+  router.get("/tasks", validateRequest({ query: taskQueryValidator, cookies: cookieSchema }), isAuth, getTasks);
 
   router.get(
     "/tasks/search",
-    validateRequest({ cookies: cookieSchema, query: taskSearchQuerySchema }),
+    validateRequest({ cookies: cookieSchema, query: taskQuerySearchValidator }),
     isAuth,
     searchUsersTasks
   );
@@ -55,7 +55,7 @@ export default (router: Router) => {
 
   router.get(
     "/tasks/listings/:listingID",
-    validateRequest({ query: taskQuerySchema, params: listingIDParamSchema, cookies: cookieSchema }),
+    validateRequest({ query: taskQueryValidator, params: listingIDParamSchema, cookies: cookieSchema }),
     isAuth,
     isListingOwner,
     getTasks
@@ -63,7 +63,7 @@ export default (router: Router) => {
 
   router.get(
     "/tasks/contacts/:contactID",
-    validateRequest({ query: taskQuerySchema, params: contactIDParamSchema, cookies: cookieSchema }),
+    validateRequest({ query: taskQueryValidator, params: contactIDParamSchema, cookies: cookieSchema }),
     isAuth,
     isContactOwner,
     getTasks

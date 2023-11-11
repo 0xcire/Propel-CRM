@@ -2,24 +2,22 @@ import { db } from "..";
 import { and, asc, desc, eq, ilike, inArray, isNull } from "drizzle-orm";
 import { tasks } from "../schema";
 
-import type { Completed, Limit } from "../../types";
+import type { Completed } from "../../types";
 import type { NewTask } from "../types";
+import type { PaginationParams } from "../../types";
 
-interface GetUserTasksParams {
+interface GetUserTasksParams extends PaginationParams {
   userID: number;
   completed: Completed;
-  page?: number;
   priority?: Array<string>;
-  limit: Limit | number;
 }
 
-type SearchForTasksParams = {
+interface SearchForTasksParams extends PaginationParams {
   userID: number;
   completed: Completed;
   title: string;
-};
+}
 
-// TODO: ?
 interface GetUsersListingTasksParams extends GetUserTasksParams {
   listingID: number;
 }
@@ -48,7 +46,7 @@ export const findTaskByID = async (id: number) => {
   return task[0];
 };
 
-export const getUserDashboardTasks = async ({ userID, completed, limit }: GetUserTasksParams) => {
+export const getUserDashboardTasks = async ({ userID, completed, page, limit }: GetUserTasksParams) => {
   const userTasks = await db
     .select()
     .from(tasks)
@@ -61,7 +59,8 @@ export const getUserDashboardTasks = async ({ userID, completed, limit }: GetUse
       )
     )
     .orderBy(desc(tasks.createdAt))
-    .limit(+limit);
+    .limit(+limit)
+    .offset((page - 1) * +limit);
 
   return userTasks;
 };
@@ -129,7 +128,7 @@ export const getUsersContactTasks = async ({
   return userContactTasks;
 };
 
-export const searchForTasks = async ({ userID, completed, title }: SearchForTasksParams) => {
+export const searchForTasks = async ({ userID, completed, title, page, limit }: SearchForTasksParams) => {
   const userTasks = await db
     .select()
     .from(tasks)
@@ -141,7 +140,9 @@ export const searchForTasks = async ({ userID, completed, title }: SearchForTask
         //
       )
     )
-    .orderBy(desc(tasks.createdAt));
+    .orderBy(desc(tasks.createdAt))
+    .limit(+limit)
+    .offset((page - 1) * +limit);
 
   return userTasks;
 };

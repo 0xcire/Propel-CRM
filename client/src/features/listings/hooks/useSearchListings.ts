@@ -6,11 +6,11 @@ import type { Listings } from '../types';
 
 export const useSearchListings = (): UseQueryResult<Listings, unknown> => {
   const searchParams = new URLSearchParams(window.location.search);
-  const address = searchParams.get('address');
-  const status = searchParams.get('status');
   const query = {
-    address: address,
-    status: status,
+    address: searchParams.get('address'),
+    status: searchParams.get('status'),
+    page: searchParams.get('page'),
+    limit: searchParams.get('limit'),
     search: true,
   };
   return useQuery({

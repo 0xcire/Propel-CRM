@@ -6,25 +6,19 @@ import { useTaskContext } from '../../context/TaskContext';
 import { useTasks } from '../../hooks/useTasks';
 import { useSearchTasks } from '../../hooks/useSearchTasks';
 
-import { TasksTable } from './TasksTable';
-import { taskColumns } from '../../config/TaskColumns';
-
 import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
 
-import type { DefaultParams } from '@/types';
+import { TasksTable } from './TasksTable';
 
-const defaultParams: DefaultParams = [
-  { name: 'page', value: '1' },
-  { name: 'limit', value: '10' },
-  { name: 'completed', value: 'false' },
-];
+import { taskColumns } from '../../config/TaskColumns';
+import { defaultTaskPageParams } from '../../config';
 
 export function TaskPage(): JSX.Element {
   const [searchParams] = useSearchParams();
   const [, setPageTitle] = useTaskContext()['title'];
   const { setQuery } = useDebouncedQuerySearchParams('title');
 
-  useDefaultSearchParams(defaultParams);
+  useDefaultSearchParams(defaultTaskPageParams);
 
   const tasks = useTasks();
   const searchTasks = useSearchTasks();

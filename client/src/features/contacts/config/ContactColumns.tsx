@@ -86,7 +86,9 @@ export const listingColumns: Array<ColumnDef<Contact>> = [
               className='cursor-pointer'
               asChild
             >
-              <Link to={`/tasks/contacts/${contact.id}?page=1&completed=false`}>
+              <Link
+                to={`/tasks/contacts/${contact.id}?page=1&limit=10&completed=false`}
+              >
                 View Tasks
               </Link>
             </DropdownMenuItem>

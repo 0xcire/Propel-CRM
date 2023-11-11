@@ -3,14 +3,7 @@ import { db } from "..";
 import { contacts, listings, listingsToContacts, soldListings } from "../schema";
 
 import type { NewListing, NewSoldListing } from "../types";
-import type { Limit, ListingStatus } from "../../types";
-
-type getAllUserListingsParams = {
-  userID: number;
-  page: number;
-  status: ListingStatus;
-  limit: Limit;
-};
+import type { ListingStatus, PaginationParams } from "../../types";
 
 type updateListingByIDParams = {
   listing: Partial<NewListing>;
@@ -18,11 +11,15 @@ type updateListingByIDParams = {
   userID: number;
 };
 
-type SearchForListingsParams = {
+interface UserListingQuery {
   userID: number;
-  address: string;
   status: ListingStatus;
-};
+}
+
+type getAllUserListingsParams = PaginationParams & UserListingQuery;
+interface SearchForListingsParams extends PaginationParams, UserListingQuery {
+  address: string;
+}
 
 const activeContactsAggregate = sql`JSON_AGG(
   json_build_object(
@@ -130,7 +127,7 @@ export const getAllUserListings = async ({ userID, page, status, limit = "10" }:
   return userListings;
 };
 
-export const searchForListings = async ({ userID, address, status }: SearchForListingsParams) => {
+export const searchForListings = async ({ userID, address, status, page, limit }: SearchForListingsParams) => {
   let userListings;
 
   if (status === "active") {
@@ -149,7 +146,9 @@ export const searchForListings = async ({ userID, address, status }: SearchForLi
         )
       )
       .orderBy(desc(listings.createdAt))
-      .groupBy(listings.id);
+      .groupBy(listings.id)
+      .limit(+limit)
+      .offset((page - 1) * +limit);
   } else {
     userListings = await db
       .select(soldListingSelect)
@@ -166,7 +165,9 @@ export const searchForListings = async ({ userID, address, status }: SearchForLi
         )
       )
       .orderBy(desc(listings.createdAt))
-      .groupBy(listings.id, contacts.id, soldListings.salePrice);
+      .groupBy(listings.id, contacts.id, soldListings.salePrice)
+      .limit(+limit)
+      .offset((page - 1) * +limit);
   }
 
   return userListings;

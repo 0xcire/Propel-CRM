@@ -21,11 +21,11 @@ import { isContactOwner } from "../middlewares/contacts";
 import {
   cookieSchema,
   createListingSchema,
-  listingQuerySchema,
   updateListingSchema,
   listingIDParamSchema,
   listingAndContactIDSchema,
-  listingSearchQuerySchema,
+  listingQueryValidator,
+  listingSearchQueryValidator,
 } from "../db/validation-schema";
 
 export default (router: Router) => {
@@ -33,14 +33,14 @@ export default (router: Router) => {
 
   router.get(
     "/listings",
-    validateRequest({ cookies: cookieSchema, query: listingQuerySchema }),
+    validateRequest({ cookies: cookieSchema, query: listingQueryValidator }),
     isAuth,
     getAllListings
   );
 
   router.get(
     "/listings/search",
-    validateRequest({ cookies: cookieSchema, query: listingSearchQuerySchema }),
+    validateRequest({ cookies: cookieSchema, query: listingSearchQueryValidator }),
     isAuth,
     searchUsersListings
   );

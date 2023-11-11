@@ -5,7 +5,6 @@ import { TaskProvider } from '../context/TaskContext';
 
 import { TaskLayout } from '../components/Layout';
 
-import { TaskPageWrapper } from '@/features/listings/components/page/TaskPageWrapper';
 const { TaskPage } = lazyImport(() => import('../components/page'), 'TaskPage');
 const { TaskRoute } = lazyImport(
   () => import('../components/page/TaskRoute'),
@@ -22,15 +21,6 @@ const { ContactTaskPage } = lazyImport(
 );
 
 import type { RouteObject } from 'react-router-dom';
-// /tasks
-// /tasks/:id
-// /tasks/:projectID
-// /tasks/:projectID/task/:taskID
-
-// /tasks/:listingID/task/:taskID
-// /tasks/:contactID/task/:taskID
-
-// :categoryID -> task categories / listings / contacts?
 
 export const taskRoutes: RouteObject = {
   path: 'tasks',
@@ -45,9 +35,7 @@ export const taskRoutes: RouteObject = {
       index: true,
       element: (
         <Suspense>
-          <TaskPageWrapper>
-            <TaskPage />
-          </TaskPageWrapper>
+          <TaskPage />
         </Suspense>
       ),
     },
@@ -63,9 +51,7 @@ export const taskRoutes: RouteObject = {
       path: 'listings/:id',
       element: (
         <Suspense>
-          <TaskPageWrapper>
-            <ListingTaskPage />
-          </TaskPageWrapper>
+          <ListingTaskPage />
         </Suspense>
       ),
     },
@@ -73,9 +59,7 @@ export const taskRoutes: RouteObject = {
       path: 'contacts/:id',
       element: (
         <Suspense>
-          <TaskPageWrapper>
-            <ContactTaskPage />
-          </TaskPageWrapper>
+          <ContactTaskPage />
         </Suspense>
       ),
     },

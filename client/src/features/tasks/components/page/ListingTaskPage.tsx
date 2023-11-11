@@ -1,17 +1,29 @@
-import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 import { useTaskContext } from '../../context/TaskContext';
 
-import { TasksTable } from './TasksTable';
-import { taskColumns } from '../../config/TaskColumns';
 import { useListingTasks } from '../../hooks/useListingTasks';
-import { useEffect } from 'react';
+import { useSearchTasks } from '../../hooks/useSearchTasks';
+import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
+
+import { TasksTable } from './TasksTable';
+
+import { taskColumns } from '../../config/TaskColumns';
+import { defaultTaskPageParams } from '../../config';
 
 export function ListingTaskPage(): JSX.Element {
+  const [searchParams] = useSearchParams();
   const [, setPageTitle] = useTaskContext()['title'];
   const { id } = useParams();
+  const { setQuery } = useDebouncedQuerySearchParams('title');
+
+  useDefaultSearchParams(defaultTaskPageParams);
 
   const listingTasks = useListingTasks(+(id as string));
+  const searchTasks = useSearchTasks();
+
+  const isSearching = !!searchParams.get('title');
 
   useEffect(() => {
     setPageTitle(`Tasks for Listing ${id}`);
@@ -19,10 +31,13 @@ export function ListingTaskPage(): JSX.Element {
 
   return (
     <TasksTable
-      data={listingTasks.data ?? []}
+      data={isSearching ? searchTasks.data ?? [] : listingTasks.data ?? []}
       columns={taskColumns}
-      isLoading={listingTasks.isLoading}
-      isFetching={listingTasks.isFetching}
+      isLoading={isSearching ? searchTasks.isLoading : listingTasks.isLoading}
+      isFetching={
+        isSearching ? searchTasks.isFetching : listingTasks.isFetching
+      }
+      setQuery={setQuery}
     />
   );
 }
