@@ -5,7 +5,6 @@ import {
   deleteContactByID,
   deleteUserContactRelation,
   findContactByDetails,
-  findContactByID,
   findRelation,
   getContactRelations,
   getUserDashboardContacts,
@@ -40,7 +39,7 @@ export const getDashboardContacts = async (req: Request, res: Response) => {
 export const searchUsersContacts = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { name } = req.query;
+    const { name, page, limit } = req.query;
 
     if (!name) {
       return res.status(400).json({
@@ -56,7 +55,12 @@ export const searchUsersContacts = async (req: Request, res: Response) => {
     }
 
     if (name) {
-      usersSearchedContacts = await searchForContacts(userID, name as string);
+      usersSearchedContacts = await searchForContacts({
+        userID: userID,
+        name: name as string,
+        limit: limit as Limit,
+        page: +page!,
+      });
     }
 
     return res.status(200).json({

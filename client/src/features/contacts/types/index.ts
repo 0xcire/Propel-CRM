@@ -29,3 +29,7 @@ export type UpdateContactParams = {
 export type ContactContext = {
   previousContacts: Contacts | undefined;
 };
+
+export type AddLead = {
+  addLead: boolean;
+};

@@ -36,8 +36,12 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
   );
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const searchContacts = useSearchContacts();
+  const searchContacts = useSearchContacts({ addLead: true });
   const { setQuery } = useDebouncedQuerySearchParams('name');
+
+  const scrollAreaViewport = parentElement?.children[1] as
+    | HTMLElement
+    | undefined;
 
   const handleInputChange = (value: string): void => {
     setQuery(value);
@@ -63,6 +67,7 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
         );
       }
 
+      // this isn't 100% necesssary, more so want to play around with the concept
       if (searchContacts.data.length >= 50) {
         return (
           <Virtuoso
@@ -74,9 +79,7 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
                 contact={contact}
               />
             )}
-            customScrollParent={
-              (parentElement?.children[1] as HTMLElement) ?? undefined
-            }
+            customScrollParent={scrollAreaViewport}
           />
         );
       }
@@ -166,7 +169,7 @@ function Lead({ contact, listingID, ...props }: LeadProps): JSX.Element {
     >
       <p>{contact.name}</p>
       <SubmitButton
-        className='h-8'
+        className='mr-1 h-8'
         onClick={(): void => {
           addLead.mutate(
             {

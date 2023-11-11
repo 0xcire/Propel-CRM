@@ -21,13 +21,9 @@ export function ContactPage(): JSX.Element {
   useDefaultSearchParams(defaultParams);
 
   const contacts = useContacts();
-  const searchContacts = useSearchContacts();
+  const searchContacts = useSearchContacts({ addLead: false });
 
   const isSearching = !!searchParams.get('name');
-
-  {
-    /* TODO: create reusable <DataTable /> component */
-  }
 
   return (
     <ContactTable

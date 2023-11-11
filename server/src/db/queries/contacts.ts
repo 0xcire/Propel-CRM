@@ -2,8 +2,14 @@ import { and, eq, ilike, sql } from "drizzle-orm";
 import { db } from "../";
 import { contacts, listings, listingsToContacts, users, usersToContacts } from "../schema";
 
+import type { PgSelect } from "drizzle-orm/pg-core";
 import type { Contact, NewContact, NewUserContactRelation, UserContactRelation } from "../types";
-import type { Limit } from "../../types";
+import type { Limit, PaginationParams } from "../../types";
+
+interface SearchForContactsParams extends PaginationParams {
+  name: string;
+  userID: number;
+}
 
 type UpdateContactByIDParams = {
   contactID: number;
@@ -56,8 +62,12 @@ export const getUsersContacts = async (userID: number, page: number, limit: Limi
   return userContacts;
 };
 
-export const searchForContacts = async (userID: number, name: string) => {
-  const userContacts = await db
+function withPagination<T extends PgSelect>(qb: T, page: number, limit: number = 10) {
+  return qb.limit(limit).offset((page - 1) * limit);
+}
+
+export const searchForContacts = async ({ userID, name, page, limit }: SearchForContactsParams) => {
+  const query = db
     .select({
       id: contacts.id,
       name: contacts.name,
@@ -70,7 +80,14 @@ export const searchForContacts = async (userID: number, name: string) => {
     .leftJoin(users, eq(usersToContacts.userID, users.id))
     .where(and(eq(users.id, userID), ilike(contacts.name, `%${name}%`)));
 
-  return userContacts;
+  const dynamicQuery = query.$dynamic();
+
+  if (page && limit) {
+    withPagination(dynamicQuery, page, +limit as number);
+    return dynamicQuery.execute();
+  }
+
+  return dynamicQuery.execute();
 };
 
 export const findContactByID = async (id: number) => {

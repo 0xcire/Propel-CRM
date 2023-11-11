@@ -16,8 +16,8 @@ import { isContactOwner } from "../middlewares/contacts";
 
 import {
   contactIDParamSchema,
-  contactQuerySchema,
-  contactSearchQuerySchema,
+  contactQueryValidator,
+  contactSearchQueryValidator,
   cookieSchema,
   createContactSchema,
   updateContactSchema,
@@ -26,11 +26,16 @@ import {
 export default (router: Router) => {
   router.get("/dashboard/contacts", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardContacts);
 
-  router.get("/contacts", validateRequest({ cookies: cookieSchema, query: contactQuerySchema }), isAuth, getMyContacts);
+  router.get(
+    "/contacts",
+    validateRequest({ cookies: cookieSchema, query: contactQueryValidator }),
+    isAuth,
+    getMyContacts
+  );
 
   router.get(
     "/contacts/search",
-    validateRequest({ cookies: cookieSchema, query: contactSearchQuerySchema }),
+    validateRequest({ cookies: cookieSchema, query: contactSearchQueryValidator }),
     isAuth,
     searchUsersContacts
   );

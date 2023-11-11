@@ -3,6 +3,7 @@ import type {
   NewContact,
   ContactResponse,
   UpdateContactParams,
+  AddLead,
 } from '../types';
 
 export const getDashboardContacts = (): Promise<ContactResponse> => {
@@ -44,11 +45,14 @@ export const deleteContact = (id: number): Promise<ContactResponse> => {
   );
 };
 
-// shared dir?
-export const searchContacts = (): Promise<ContactResponse> => {
+export const searchContacts = ({
+  addLead,
+}: AddLead): Promise<ContactResponse> => {
   const searchParams = new URLSearchParams(window.location.search);
   const name = searchParams.get('name');
-  return Get({ endpoint: `contacts/search?name=${name}` }).then(
+  const params = addLead ? `?name=${name}` : window.location.search;
+
+  return Get({ endpoint: `contacts/search${params}` }).then(
     handleAPIResponse<ContactResponse>
   );
 };
