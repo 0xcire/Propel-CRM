@@ -87,18 +87,6 @@ export function ListingTable({
               table={table}
               columns={columns}
             />
-            {/* {test ? (
-              <VirtualTable
-                table={table}
-                columns={columns}
-                customScrollParent={scrollAreaViewport}
-              />
-            ) : (
-              <Table
-                table={table}
-                columns={columns}
-              />
-            )} */}
           </ScrollArea>
         </>
       )}

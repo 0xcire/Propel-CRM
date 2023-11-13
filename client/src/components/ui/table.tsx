@@ -1,3 +1,5 @@
+// NOTE: removed div around <table> to allow for sticky header. Be aware if updating in future.
+
 import * as React from "react"
  
 import { cn } from "@/lib/utils"
