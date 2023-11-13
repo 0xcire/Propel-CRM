@@ -1,4 +1,8 @@
-import { ChevronDownIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+import { useLogout } from '@/lib/react-query-auth';
+
+import { ChevronDownIcon, LogOutIcon } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -15,6 +19,8 @@ import { Avatar } from '../Avatar';
 import type { NavProps } from './types';
 
 export function NavDropdown({ name, username }: NavProps): JSX.Element {
+  const logout = useLogout();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -41,9 +47,24 @@ export function NavDropdown({ name, username }: NavProps): JSX.Element {
       <DropdownMenuContent>
         <DropdownMenuLabel>{username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Settings</DropdownMenuItem>
+        <DropdownMenuItem
+          className='cursor-pointer'
+          asChild
+        >
+          <Link to='/profile'>Settings</Link>
+        </DropdownMenuItem>
         <DropdownMenuItem>Theme</DropdownMenuItem>
-        <DropdownMenuItem>Logout</DropdownMenuItem>
+
+        <DropdownMenuItem
+          className='cursor-pointer'
+          onClick={(): void => logout.mutate()}
+        >
+          <LogOutIcon
+            className='mr-1 mt-[2px]'
+            size={18}
+          />
+          Logout
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
