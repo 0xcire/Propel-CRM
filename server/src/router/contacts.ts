@@ -15,34 +15,34 @@ import { validateRequest } from "../middlewares/validate-input";
 import { isContactOwner } from "../middlewares/contacts";
 
 import {
-  contactIDParamSchema,
+  contactIDValidator,
   contactQueryValidator,
   contactSearchQueryValidator,
-  cookieSchema,
-  createContactSchema,
-  updateContactSchema,
+  authCookieValidator,
+  createContactValidator,
+  updateContactValidator,
 } from "../db/validation-schema";
 
 export default (router: Router) => {
-  router.get("/dashboard/contacts", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardContacts);
+  router.get("/dashboard/contacts", validateRequest({ cookies: authCookieValidator }), isAuth, getDashboardContacts);
 
   router.get(
     "/contacts",
-    validateRequest({ cookies: cookieSchema, query: contactQueryValidator }),
+    validateRequest({ cookies: authCookieValidator, query: contactQueryValidator }),
     isAuth,
     getMyContacts
   );
 
   router.get(
     "/contacts/search",
-    validateRequest({ cookies: cookieSchema, query: contactSearchQueryValidator }),
+    validateRequest({ cookies: authCookieValidator, query: contactSearchQueryValidator }),
     isAuth,
     searchUsersContacts
   );
 
   router.get(
     "/contacts/:contactID",
-    validateRequest({ cookies: cookieSchema, params: contactIDParamSchema }),
+    validateRequest({ cookies: authCookieValidator, params: contactIDValidator }),
     isAuth,
     isContactOwner,
     getSpecificContact
@@ -50,14 +50,14 @@ export default (router: Router) => {
 
   router.post(
     "/contacts",
-    validateRequest({ body: createContactSchema, cookies: cookieSchema }),
+    validateRequest({ body: createContactValidator, cookies: authCookieValidator }),
     isAuth,
     createContact
   );
 
   router.patch(
     "/contacts/:contactID",
-    validateRequest({ body: updateContactSchema, cookies: cookieSchema, params: contactIDParamSchema }),
+    validateRequest({ body: updateContactValidator, cookies: authCookieValidator, params: contactIDValidator }),
     isAuth,
     isContactOwner,
     updateContact
@@ -65,7 +65,7 @@ export default (router: Router) => {
 
   router.delete(
     "/contacts/:contactID",
-    validateRequest({ cookies: cookieSchema, params: contactIDParamSchema }),
+    validateRequest({ cookies: authCookieValidator, params: contactIDValidator }),
     isAuth,
     isContactOwner,
     deleteContact

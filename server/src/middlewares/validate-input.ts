@@ -8,7 +8,7 @@ type SchemaParams = {
   body?: AnyZodObject | ZodEffects<ZodEffects<AnyZodObject>> | ZodEffects<AnyZodObject>;
   cookies?: ZodEffects<AnyZodObject>;
   query?: ZodEffects<AnyZodObject>;
-  params?: AnyZodObject | ZodEffects<AnyZodObject>;
+  params?: ZodEffects<AnyZodObject>;
 };
 
 export const validateRequest = (schema: SchemaParams) => {
@@ -17,9 +17,10 @@ export const validateRequest = (schema: SchemaParams) => {
       const requestBodies = getRequestBodies(req);
 
       for (let body of requestBodies) {
-        if (schema[body.source as keyof SchemaParams] && objectNotEmpty(body.data)) {
-          const validatedBody = await schema[body.source as keyof SchemaParams]?.parseAsync(body.data);
-          body.data = validatedBody;
+        const context = body.context as keyof SchemaParams;
+        if (schema[context] && objectNotEmpty(body.data)) {
+          const validatedData = await schema[context]?.parseAsync(body.data);
+          body.data = validatedData;
         }
       }
 

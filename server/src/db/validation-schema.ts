@@ -11,13 +11,13 @@ const verifyPassword = z.object({
   verifyPassword: z.string().max(255),
 });
 
-export const cookieSchema = z
-  .object({
-    "propel-session": z.string().min(1).endsWith("=="),
-  })
-  .transform((cookie) => ({
-    "propel-session": cookie["propel-session"].trim(),
-  }));
+const authCookieSchema = z.object({
+  "propel-session": z.string().min(1).endsWith("=="),
+});
+
+export const authCookieValidator = authCookieSchema.transform((schema) => ({
+  "propel-sesion": schema["propel-session"].trim(),
+}));
 
 export const paramSchema = z
   .object({
@@ -32,42 +32,36 @@ export const paginationSchema = z.object({
   page: z.string(),
 });
 
-export const listingIDParamSchema = z
-  .object({
-    listingID: z.string(),
-  })
-  .transform((param) => ({
-    id: param.listingID.trim(),
-  }));
+const listingIDSchema = z.object({
+  listingID: z.string(),
+});
 
-export const contactIDParamSchema = z
-  .object({
-    contactID: z.string(),
-  })
-  .transform((param) => ({
-    contactID: param.contactID.trim(),
-  }));
+const contactIDSchema = z.object({
+  contactID: z.string(),
+});
 
-export const taskIDParamSchema = z
-  .object({
-    taskID: z.string(),
-  })
-  .transform((param) => ({
-    contactID: param.taskID.trim(),
-  }));
+const taskIDSchema = z.object({
+  taskID: z.string(),
+});
 
-// TODO: better way?
-export const listingAndContactIDSchema = z
-  .object({
-    listingID: z.string(),
-    contactID: z.string(),
-  })
-  .transform((param) => ({
-    listingID: param.listingID.trim(),
-    contactID: param.contactID.trim(),
-  }));
+export const listingIDValidator = listingIDSchema.transform((schema) => ({
+  listingID: schema.listingID.trim(),
+}));
 
-export const signupSchema = createInsertSchema(users)
+export const contactIDValidator = contactIDSchema.transform((schema) => ({
+  contactID: schema.contactID.trim(),
+}));
+
+export const taskIDValidator = taskIDSchema.transform((schema) => ({
+  taskID: schema.taskID.trim(),
+}));
+
+export const listingAndContactIDValidator = listingIDSchema.merge(contactIDSchema).transform((schema) => ({
+  listingID: schema.listingID.trim(),
+  contactID: schema.contactID.trim(),
+}));
+
+export const signupValidator = createInsertSchema(users)
   .pick({
     name: true,
     username: true,
@@ -79,10 +73,10 @@ export const signupSchema = createInsertSchema(users)
     name: user.name.trim(),
     username: user.username.trim(),
     email: user.email.trim(),
-    password: user.password.trim(),
+    passwrd: user.password.trim(),
   }));
 
-export const updateUserSchema = createInsertSchema(users)
+export const updateUserValidator = createInsertSchema(users)
   .pick({
     username: true,
     email: true,
@@ -98,7 +92,7 @@ export const updateUserSchema = createInsertSchema(users)
     verifyPassword: user.verifyPassword.trim(),
   }));
 
-export const signinSchema = createInsertSchema(users)
+export const signinValidator = createInsertSchema(users)
   .pick({
     email: true,
   })
@@ -128,38 +122,27 @@ export const contactSearchQueryValidator = contactSearchQuerySchema.transform((s
   name: schema.name.trim(),
 }));
 
-export const createContactSchema = createInsertSchema(contacts)
+export const createContactValidator = createInsertSchema(contacts, {
+  name: (schema) => schema.name.trim(),
+  email: (schema) => schema.email.trim(),
+  phoneNumber: (schema) => schema.phoneNumber.trim(),
+  address: (schema) => schema.address.trim(),
+}).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const updateContactValidator = createInsertSchema(contacts, {
+  name: (schema) => schema.name.trim(),
+  email: (schema) => schema.email.trim(),
+  phoneNumber: (schema) => schema.phoneNumber.trim(),
+  address: (schema) => schema.address.trim(),
+})
   .omit({
     id: true,
     createdAt: true,
   })
-  .transform((contact) => ({
-    name: contact.name.trim(),
-    email: contact.email.trim(),
-    phoneNumber: contact.phoneNumber.trim(),
-    address: contact.address.trim(),
-  }));
-
-export const updateContactSchema = createInsertSchema(contacts)
-  .omit({
-    id: true,
-    createdAt: true,
-  })
-  .partial()
-  .transform((contact) => ({
-    name: contact.name?.trim(),
-    email: contact.email?.trim(),
-    phoneNumber: contact.phoneNumber?.trim(),
-    address: contact.address?.trim(),
-  }));
-
-export const dashboardTaskQuerySchema = z
-  .object({
-    completed: z.enum(["true", "false"]),
-  })
-  .transform((task) => ({
-    completed: task.completed.trim(),
-  }));
+  .partial();
 
 const taskQuerySchema = z
   .object({
@@ -167,6 +150,14 @@ const taskQuerySchema = z
     priority: z.union([z.string(), z.undefined()]),
   })
   .merge(paginationSchema);
+
+export const dashboardTaskQueryValidator = taskQuerySchema
+  .pick({
+    completed: true,
+  })
+  .transform((schema) => ({
+    completed: schema.completed.trim(),
+  }));
 
 const taskQuerySearchSchema = taskQuerySchema.merge(
   z.object({
@@ -189,38 +180,36 @@ export const taskQuerySearchValidator = taskQuerySearchSchema.transform((schema)
   title: schema.title.trim(),
 }));
 
-export const createTaskSchema = createInsertSchema(tasks)
+const createTaskSchema = createInsertSchema(tasks);
+
+export const createTaskValidator = createTaskSchema
   .omit({ id: true, userID: true, completed: true, createdAt: true })
   .partial()
-  .refine(({ title }) => title && title?.length > 0)
-  .transform((task) => ({
-    title: task.title?.trim(),
-    description: task.description?.trim(),
-    notes: task.notes?.trim(),
-    dueDate: task.dueDate?.trim(),
-    priority: task.priority,
+  .refine(({ title }) => title && title.length > 0)
+  .transform((schema) => ({
+    title: schema.title?.trim(),
+    description: schema.description?.trim(),
+    notes: schema.notes?.trim(),
+    dueDate: schema.dueDate?.trim(),
+    priority: schema.priority?.trim(),
   }));
 
-export const updateTaskSchema = createInsertSchema(tasks)
+export const updateTaskValidator = createTaskSchema
   .omit({ id: true, userID: true, createdAt: true })
   .partial()
-  // .refine(({ completed }) => (completed ? completed instanceof Boolean : true))
-  .transform((task) => ({
-    title: task.title?.trim(),
-    description: task.description?.trim(),
-    notes: task.notes?.trim(),
-    dueDate: task.dueDate?.trim(),
-    completed: task.completed,
-    priority: task.priority?.trim(),
+  .transform((schema) => ({
+    title: schema.title?.trim(),
+    description: schema.description?.trim(),
+    notes: schema.notes?.trim(),
+    dueDate: schema.dueDate?.trim(),
+    completed: schema.completed?.valueOf(),
+    priority: schema.priority?.trim(),
   }));
 
-// TODO: unknowingly created schemas based on old package, go back and rewrite to match below
 export const createListingSchema = createInsertSchema(listings, {
   address: (listings) => listings.address.trim(),
   description: (listings) => listings.description.trim(),
   propertyType: (listings) => listings.propertyType.trim(),
-  // price: (listings) => listings.price.transform((v) => +v),
-  // TODO: address price
   price: (listings) => listings.price.trim(),
   bedrooms: (listings) => listings.bedrooms.nonnegative().int().finite(),
   baths: (listings) => listings.baths.positive(),
@@ -235,9 +224,7 @@ export const updateListingSchema = createInsertSchema(listings, {
   address: (listings) => listings?.address.trim(),
   description: (listings) => listings?.description.trim(),
   propertyType: (listings) => listings?.propertyType.trim(),
-  // price: (listings) => listings.price.transform((v) => +v),
-  // TODO: address price
-  price: (listings) => listings?.price,
+  price: (listings) => listings?.price.trim(),
   bedrooms: (listings) => listings?.bedrooms.nonnegative().int().finite(),
   baths: (listings) => listings?.baths.positive(),
   squareFeet: (listings) => listings?.squareFeet.positive().int().finite(),
