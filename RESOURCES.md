@@ -10,6 +10,10 @@
 - [BulletProof React](https://github.com/alan2207/bulletproof-react)
 - [Shadcn UI Taxonomy](https://github.com/shadcn/taxonomy)
 
+## Shadcn UI
+
+- [Sticky table header in ScrollArea](https://github.com/shadcn-ui/ui/issues/1151#issuecomment-1746339659)
+
 ## Node / Express
 
 - [Best Practices](https://github.com/goldbergyoni/nodebestpractices)

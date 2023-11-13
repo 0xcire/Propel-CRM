@@ -2,20 +2,22 @@ import { Router } from "express";
 import { deleteUser, getMyInfo, updateUser } from "../controllers/user";
 import { isAuth, isOwner } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
-import { cookieSchema, paramSchema, updateUserSchema } from "../db/validation-schema";
+import { authCookieValidator, paramSchema, updateUserValidator } from "../db/validation-schema";
 
 export default (router: Router) => {
-  router.get("/user/me", validateRequest({ cookies: cookieSchema }), isAuth, getMyInfo);
+  router.get("/user/me", validateRequest({ cookies: authCookieValidator }), isAuth, getMyInfo);
+
   router.patch(
     "/user/:id",
-    validateRequest({ body: updateUserSchema, params: paramSchema, cookies: cookieSchema }),
+    validateRequest({ body: updateUserValidator, params: paramSchema, cookies: authCookieValidator }),
     isAuth,
     isOwner,
     updateUser
   );
+
   router.delete(
     "/user/:id",
-    validateRequest({ params: paramSchema, cookies: cookieSchema }),
+    validateRequest({ params: paramSchema, cookies: authCookieValidator }),
     isAuth,
     isOwner,
     deleteUser

@@ -13,6 +13,8 @@ const SheetClose = SheetPrimitive.Close
  
 const SheetPortal = SheetPrimitive.Portal
  
+
+// consider removing backdrop-blur-sm if performance can't be improved
 const SheetOverlay = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay>

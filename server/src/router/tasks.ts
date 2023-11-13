@@ -1,47 +1,61 @@
 import { Router } from "express";
-import { getTasks, createTask, updateTask, deleteTask, getDashboardTasks, getTask } from "../controllers/tasks";
+
+import {
+  getTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  getDashboardTasks,
+  getTask,
+  searchUsersTasks,
+} from "../controllers/tasks";
+
 import { isAuth } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
 import { isTaskOwner } from "../middlewares/tasks";
-import {
-  cookieSchema,
-  createTaskSchema,
-  updateTaskSchema,
-  taskQuerySchema,
-  dashboardTaskQuerySchema,
-  listingIDParamSchema,
-  contactIDParamSchema,
-  taskIDParamSchema,
-} from "../db/validation-schema";
 import { isListingOwner } from "../middlewares/listings";
 import { isContactOwner } from "../middlewares/contacts";
+
+import {
+  authCookieValidator,
+  createTaskValidator,
+  updateTaskValidator,
+  dashboardTaskQueryValidator,
+  listingIDValidator,
+  contactIDValidator,
+  taskIDValidator,
+  taskQueryValidator,
+  taskQuerySearchValidator,
+} from "../db/validation-schema";
 
 export default (router: Router) => {
   router.get(
     "/dashboard/tasks",
-    validateRequest({ query: dashboardTaskQuerySchema, cookies: cookieSchema }),
+    validateRequest({ query: dashboardTaskQueryValidator, cookies: authCookieValidator }),
     isAuth,
     getDashboardTasks
   );
 
+  router.get("/tasks", validateRequest({ query: taskQueryValidator, cookies: authCookieValidator }), isAuth, getTasks);
+
+  router.get(
+    "/tasks/search",
+    validateRequest({ cookies: authCookieValidator, query: taskQuerySearchValidator }),
+    isAuth,
+    searchUsersTasks
+  );
+
   router.get(
     "/tasks/:taskID",
-    validateRequest({ params: taskIDParamSchema, cookies: cookieSchema }),
+    validateRequest({ params: taskIDValidator, cookies: authCookieValidator }),
     isAuth,
     isTaskOwner,
     getTask
   );
 
   router.get(
-    "/tasks",
-    validateRequest({ query: taskQuerySchema, params: taskIDParamSchema, cookies: cookieSchema }),
-    isAuth,
-    getTasks
-  );
-
-  router.get(
     "/tasks/listings/:listingID",
-    validateRequest({ query: taskQuerySchema, params: listingIDParamSchema, cookies: cookieSchema }),
+    validateRequest({ query: taskQueryValidator, params: listingIDValidator, cookies: authCookieValidator }),
     isAuth,
     isListingOwner,
     getTasks
@@ -49,17 +63,22 @@ export default (router: Router) => {
 
   router.get(
     "/tasks/contacts/:contactID",
-    validateRequest({ query: taskQuerySchema, params: contactIDParamSchema, cookies: cookieSchema }),
+    validateRequest({ query: taskQueryValidator, params: contactIDValidator, cookies: authCookieValidator }),
     isAuth,
     isContactOwner,
     getTasks
   );
 
-  router.post("/tasks", validateRequest({ body: createTaskSchema, cookies: cookieSchema }), isAuth, createTask);
+  router.post(
+    "/tasks",
+    validateRequest({ body: createTaskValidator, cookies: authCookieValidator }),
+    isAuth,
+    createTask
+  );
 
   router.patch(
     "/tasks/:taskID",
-    validateRequest({ body: updateTaskSchema, cookies: cookieSchema, params: taskIDParamSchema }),
+    validateRequest({ body: updateTaskValidator, cookies: authCookieValidator, params: taskIDValidator }),
     isAuth,
     isTaskOwner,
     updateTask
@@ -67,7 +86,7 @@ export default (router: Router) => {
 
   router.delete(
     "/tasks/:taskID",
-    validateRequest({ params: taskIDParamSchema, cookies: cookieSchema }),
+    validateRequest({ params: taskIDValidator, cookies: authCookieValidator }),
     isAuth,
     isTaskOwner,
     deleteTask

@@ -10,19 +10,19 @@ export const SESSION_COOKIE_LENGTH = process.env.SESSION_COOKIE_LENGTH;
 export const getRequestBodies = (req: Request) => {
   return [
     {
-      source: "body",
+      context: "body",
       data: req.body,
     },
     {
-      source: "cookies",
+      context: "cookies",
       data: req.cookies,
     },
     {
-      source: "query",
+      context: "query",
       data: req.query,
     },
     {
-      source: "params",
+      context: "params",
       data: req.params,
     },
   ];

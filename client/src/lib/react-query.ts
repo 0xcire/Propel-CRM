@@ -47,7 +47,6 @@ export const queryClient = new QueryClient({
 // can only use on update, create / delete cause shift in paginated data
 export const findRelevantKeys = (
   queryClient: QueryClient,
-
   contextKey: string,
   id: number
 ): Array<QueryKey> => {
@@ -58,11 +57,10 @@ export const findRelevantKeys = (
     return [relevantCachedKeys[0].queryKey];
   }
 
-  // TODO: need to address
-  // currently hard coded to listen to 'name' param for searching contacts
-  // what about address or title when searching listings/tasks in future.
   const searchParams = new URLSearchParams(window.location.search);
   const name = searchParams.get('name');
+  const title = searchParams.get('title');
+  const address = searchParams.get('address');
 
   const keys: Array<QueryKey> = [];
 
@@ -75,19 +73,35 @@ export const findRelevantKeys = (
 
     // eslint-disable-next-line
     // @ts-ignore
-    if (queryKey[1].page) {
+    if (!searchParams.get(contextKey) && queryKey[1].page) {
       const cachedData = queryClient.getQueryData(queryKey);
 
-      // eslint-disable-next-line
-      // @ts-ignore
-      if (cachedData[contextKey].some((data) => data.id === +(id as string))) {
-        keys.push(queryKey);
+      if (cachedData) {
+        if (
+          // eslint-disable-next-line
+          // @ts-ignore
+          cachedData[contextKey].some((data) => data.id === +(id as string))
+        ) {
+          keys.push(queryKey);
+        }
       }
     }
 
     // eslint-disable-next-line
     // @ts-ignore
     if (name && queryKey[1].name && queryKey[1].name === name) {
+      keys.push(queryKey);
+    }
+
+    // eslint-disable-next-line
+    // @ts-ignore
+    if (title && queryKey[1].title && queryKey[1].title === title) {
+      keys.push(queryKey);
+    }
+
+    // eslint-disable-next-line
+    // @ts-ignore
+    if (address && queryKey[1].address && queryKey[1].address === address) {
       keys.push(queryKey);
     }
   }

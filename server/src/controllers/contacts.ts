@@ -5,7 +5,6 @@ import {
   deleteContactByID,
   deleteUserContactRelation,
   findContactByDetails,
-  findContactByID,
   findRelation,
   getContactRelations,
   getUserDashboardContacts,
@@ -16,8 +15,10 @@ import {
   updateContactByID,
 } from "../db/queries/contacts";
 
-import type { NewContact } from "../db/types";
 import { objectNotEmpty } from "../utils";
+
+import type { NewContact } from "../db/types";
+import type { Limit } from "../types";
 
 export const getDashboardContacts = async (req: Request, res: Response) => {
   try {
@@ -35,10 +36,16 @@ export const getDashboardContacts = async (req: Request, res: Response) => {
   }
 };
 
-export const searchMyContacts = async (req: Request, res: Response) => {
+export const searchUsersContacts = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { name } = req.query;
+    const { name, page, limit } = req.query;
+
+    if (!name) {
+      return res.status(400).json({
+        message: "Please enter a name to search.",
+      });
+    }
 
     let usersSearchedContacts;
 
@@ -48,7 +55,12 @@ export const searchMyContacts = async (req: Request, res: Response) => {
     }
 
     if (name) {
-      usersSearchedContacts = await searchForContacts(userID, name as string);
+      usersSearchedContacts = await searchForContacts({
+        userID: userID,
+        name: name as string,
+        limit: limit as Limit,
+        page: +page!,
+      });
     }
 
     return res.status(200).json({
@@ -64,9 +76,9 @@ export const searchMyContacts = async (req: Request, res: Response) => {
 export const getMyContacts = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { page } = req.query;
+    const { page, limit } = req.query;
 
-    const userContacts = await getUsersContacts(userID, +(page ?? "1"));
+    const userContacts = await getUsersContacts(userID, +(page ?? "1"), limit as Limit);
 
     return res.status(200).json({
       message: "",

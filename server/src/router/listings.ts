@@ -1,4 +1,5 @@
 import { Router } from "express";
+
 import {
   getDashboardListings,
   getAllListings,
@@ -9,34 +10,44 @@ import {
   addListingLead,
   removeListingLead,
   markListingAsSold,
+  searchUsersListings,
 } from "../controllers/listings";
+
 import { validateRequest } from "../middlewares/validate-input";
 import { isAuth } from "../middlewares";
 import { isListingOwner } from "../middlewares/listings";
-
-import {
-  cookieSchema,
-  createListingSchema,
-  listingQuerySchema,
-  updateListingSchema,
-  listingIDParamSchema,
-  listingAndContactIDSchema,
-} from "../db/validation-schema";
 import { isContactOwner } from "../middlewares/contacts";
 
+import {
+  authCookieValidator,
+  createListingSchema,
+  updateListingSchema,
+  listingIDValidator,
+  listingAndContactIDValidator,
+  listingQueryValidator,
+  listingSearchQueryValidator,
+} from "../db/validation-schema";
+
 export default (router: Router) => {
-  router.get("/dashboard/listings", validateRequest({ cookies: cookieSchema }), isAuth, getDashboardListings);
+  router.get("/dashboard/listings", validateRequest({ cookies: authCookieValidator }), isAuth, getDashboardListings);
 
   router.get(
     "/listings",
-    validateRequest({ cookies: cookieSchema, query: listingQuerySchema }),
+    validateRequest({ cookies: authCookieValidator, query: listingQueryValidator }),
     isAuth,
     getAllListings
   );
 
   router.get(
+    "/listings/search",
+    validateRequest({ cookies: authCookieValidator, query: listingSearchQueryValidator }),
+    isAuth,
+    searchUsersListings
+  );
+
+  router.get(
     "/listings/:listingID",
-    validateRequest({ cookies: cookieSchema, params: listingIDParamSchema }),
+    validateRequest({ cookies: authCookieValidator, params: listingIDValidator }),
     isAuth,
     isListingOwner,
     getSpecificListing
@@ -44,14 +55,14 @@ export default (router: Router) => {
 
   router.post(
     "/listings",
-    validateRequest({ body: createListingSchema, cookies: cookieSchema }),
+    validateRequest({ body: createListingSchema, cookies: authCookieValidator }),
     isAuth,
     createListing
   );
 
   router.patch(
     "/listings/:listingID",
-    validateRequest({ body: updateListingSchema, cookies: cookieSchema, params: listingIDParamSchema }),
+    validateRequest({ body: updateListingSchema, cookies: authCookieValidator, params: listingIDValidator }),
     isAuth,
     isListingOwner,
     updateListing
@@ -59,7 +70,7 @@ export default (router: Router) => {
 
   router.delete(
     "/listings/:listingID",
-    validateRequest({ cookies: cookieSchema, params: listingIDParamSchema }),
+    validateRequest({ cookies: authCookieValidator, params: listingIDValidator }),
     isAuth,
     isListingOwner,
     deleteListing
@@ -67,7 +78,7 @@ export default (router: Router) => {
 
   router.post(
     "/listings/status/:listingID",
-    validateRequest({ cookies: cookieSchema, params: listingIDParamSchema }),
+    validateRequest({ cookies: authCookieValidator, params: listingIDValidator }),
     isAuth,
     isListingOwner,
     markListingAsSold
@@ -75,7 +86,7 @@ export default (router: Router) => {
 
   router.post(
     "/listings/:listingID/lead/:contactID",
-    validateRequest({ cookies: cookieSchema, params: listingAndContactIDSchema }),
+    validateRequest({ cookies: authCookieValidator, params: listingAndContactIDValidator }),
     isAuth,
     isListingOwner,
     isContactOwner,
@@ -84,7 +95,7 @@ export default (router: Router) => {
 
   router.delete(
     "/listings/:listingID/lead/:contactID",
-    validateRequest({ cookies: cookieSchema, params: listingAndContactIDSchema }),
+    validateRequest({ cookies: authCookieValidator, params: listingAndContactIDValidator }),
     isAuth,
     isListingOwner,
     isContactOwner,

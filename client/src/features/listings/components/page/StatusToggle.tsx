@@ -14,11 +14,8 @@ export function StatusToggle(): JSX.Element {
         variant='outline'
         onClick={(): void => {
           const status = searchParams.get('status');
-
-          setSearchParams([
-            ['page', '1'],
-            ['status', status === 'active' ? 'sold' : 'active'],
-          ]);
+          searchParams.set('status', status === 'active' ? 'sold' : 'active');
+          setSearchParams(searchParams);
         }}
       >
         {searchParams.get('status') === 'active' ? (

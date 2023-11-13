@@ -1,37 +1,29 @@
 import { useEffect } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import { useTaskContext } from '../../context/TaskContext';
 
 import { useTasks } from '../../hooks/useTasks';
+import { useSearchTasks } from '../../hooks/useSearchTasks';
+
+import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
 
 import { TasksTable } from './TasksTable';
+
 import { taskColumns } from '../../config/TaskColumns';
+import { defaultTaskPageParams } from '../../config';
 
 export function TaskPage(): JSX.Element {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [, setPageTitle] = useTaskContext()['title'];
+  const { setQuery } = useDebouncedQuerySearchParams('title');
 
-  const { id } = useParams();
+  useDefaultSearchParams(defaultTaskPageParams);
 
   const tasks = useTasks();
+  const searchTasks = useSearchTasks();
 
-  useEffect(() => {
-    if (id) return;
-    if (!searchParams.get('page') || !searchParams.get('completed')) {
-      setSearchParams(
-        [
-          ['page', '1'],
-          ['completed', 'false'],
-        ],
-        {
-          replace: true,
-        }
-      );
-    }
-
-    // eslint-disable-next-line
-  }, []);
+  const isSearching = !!searchParams.get('title');
 
   useEffect(() => {
     setPageTitle('Tasks');
@@ -39,10 +31,11 @@ export function TaskPage(): JSX.Element {
 
   return (
     <TasksTable
-      data={tasks.data ?? []}
+      data={isSearching ? searchTasks.data ?? [] : tasks.data ?? []}
       columns={taskColumns}
-      isLoading={tasks.isLoading}
-      isFetching={tasks.isFetching}
+      isLoading={isSearching ? searchTasks.isLoading : tasks.isLoading}
+      isFetching={isSearching ? searchTasks.isFetching : tasks.isFetching}
+      setQuery={setQuery}
     />
   );
 }

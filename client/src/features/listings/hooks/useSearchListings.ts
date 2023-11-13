@@ -1,22 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
-import { getListings } from '../api';
+import { searchListings } from '../api';
 
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { Listings } from '../types';
 
-export const useListings = (): UseQueryResult<Listings, unknown> => {
+export const useSearchListings = (): UseQueryResult<Listings, unknown> => {
   const searchParams = new URLSearchParams(window.location.search);
   const query = {
-    page: searchParams.get('page'),
+    address: searchParams.get('address'),
     status: searchParams.get('status'),
+    page: searchParams.get('page'),
     limit: searchParams.get('limit'),
+    search: true,
   };
-
   return useQuery({
     queryKey: ['listings', query],
-    queryFn: getListings,
+    queryFn: searchListings,
     select: (data) => data.listings,
-    keepPreviousData: true,
-    enabled: !!query.page && !!query.status,
+    enabled: !!query.address,
   });
 };

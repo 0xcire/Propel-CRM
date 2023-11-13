@@ -1,7 +1,6 @@
-import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { useQuerySearchParams } from '@/hooks';
+import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
 
 import { useContacts } from '../../hooks/useContacts';
 import { useSearchContacts } from '../../hooks/useSearchContacts';
@@ -9,36 +8,28 @@ import { useSearchContacts } from '../../hooks/useSearchContacts';
 import { ContactTable } from './ContactsTable';
 import { listingColumns } from '../../config/ContactColumns';
 
+import type { DefaultParams } from '@/types';
+
+const defaultParams: DefaultParams = [
+  { name: 'page', value: '1' },
+  { name: 'limit', value: '10' },
+];
+
 export function ContactPage(): JSX.Element {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const { setQuery } = useDebouncedQuerySearchParams('name');
+  useDefaultSearchParams(defaultParams);
 
   const contacts = useContacts();
-  const queriedContacts = useSearchContacts();
-  const { setQuery } = useQuerySearchParams('name');
+  const searchContacts = useSearchContacts({ addLead: false });
 
   const isSearching = !!searchParams.get('name');
 
-  useEffect(() => {
-    if (!searchParams.get('page')) {
-      setSearchParams([['page', '1']], {
-        replace: true,
-      });
-    }
-
-    // eslint-disable-next-line
-  }, []);
-
-  {
-    /* TODO: create reusable <DataTable /> component */
-  }
-
   return (
     <ContactTable
-      data={isSearching ? queriedContacts.data ?? [] : contacts.data ?? []}
-      isFetching={
-        isSearching ? queriedContacts.isFetching : contacts.isFetching
-      }
-      isLoading={isSearching ? queriedContacts.isLoading : contacts.isLoading}
+      data={isSearching ? searchContacts.data ?? [] : contacts.data ?? []}
+      isFetching={isSearching ? searchContacts.isFetching : contacts.isFetching}
+      isLoading={isSearching ? searchContacts.isLoading : contacts.isLoading}
       columns={listingColumns}
       setQuery={setQuery}
     />

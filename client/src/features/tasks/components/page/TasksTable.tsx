@@ -2,63 +2,36 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import {
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-
-import { Typography } from '@/components/ui/typography';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-
-import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { DataTableFilter } from '@/components/ui/table/data-table-filter';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 import { Spinner } from '@/components';
+import { CompletedToggle } from './CompletedToggle';
+import { Table, TableFilterOptions, TableFooter } from '@/components/Table/';
 
 import type {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
+import type { TableProps } from '@/types';
 import type { Task } from '../../types';
 
-interface ContactTableProps<TData extends Task> {
-  columns: Array<ColumnDef<Task>>;
-  data: Array<TData>;
-  isLoading: boolean;
-  isFetching: boolean;
-  // nameQuery: string | undefined;
-  // setNameQuery: Dispatch<SetStateAction<string | undefined>>;
-}
+type TaskTableProps = TableProps<Task>;
 
-// cant see use case for TValue
-export function TasksTable<TData extends Task>({
+export function TasksTable({
   columns,
   data,
   isLoading,
   isFetching,
-}: // nameQuery,
-// setNameQuery,
-ContactTableProps<TData>): JSX.Element {
-  const [searchParams, setSearchParams] = useSearchParams();
+  setQuery,
+}: TaskTableProps): JSX.Element {
+  const [searchParams] = useSearchParams();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -82,9 +55,7 @@ ContactTableProps<TData>): JSX.Element {
     },
   });
 
-  const currentPage: string = searchParams.get('page') ?? '1';
-
-  // TODO: remove table flash on search, loading should only take over table content
+  const limit = searchParams.get('limit') ?? '10';
 
   if ((!data && isLoading) || (!data && isFetching)) {
     return (
@@ -97,32 +68,13 @@ ContactTableProps<TData>): JSX.Element {
 
   return (
     <>
-      <div className='flex items-center gap-2 py-4'>
-        <Input
-          autoFocus={true}
-          placeholder='Search your tasks'
-          // value={nameQuery ?? ''}
-          // onChange={(e): void => {
-          //   setNameQuery(e.currentTarget.value);
-          // }}
-          className='max-w-sm'
-        />
-
-        <Button
-          variant='outline'
-          onClick={(): void => {
-            searchParams.set('page', '1');
-            searchParams.set(
-              'completed',
-              searchParams.get('completed') === 'true' ? 'false' : 'true'
-            );
-            setSearchParams(searchParams);
-          }}
-        >
-          {searchParams.get('completed') === 'true'
-            ? 'Hide Completed'
-            : 'Show Completed'}
-        </Button>
+      <TableFilterOptions
+        table={table}
+        isSorted={sorting.length >= 1}
+        context='title'
+        setQuery={setQuery}
+      >
+        <CompletedToggle />
 
         <DataTableFilter
           title='Priority'
@@ -136,39 +88,7 @@ ContactTableProps<TData>): JSX.Element {
             { label: 'High', value: 'high' },
           ]}
         />
-
-        <div className='ml-auto flex items-center gap-2'>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant='outline'
-                className='ml-auto'
-              >
-                Columns
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className='capitalize'
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value): void =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+      </TableFilterOptions>
 
       {isLoading || isFetching ? (
         <Spinner
@@ -176,97 +96,16 @@ ContactTableProps<TData>): JSX.Element {
           fillContainer
         />
       ) : (
-        <ScrollArea className='flex-1 overflow-auto rounded-md border shadow'>
-          <Table>
-            <TableHeader className='w-full'>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    className='row'
-                    key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className='h-24 text-center'
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+        <ScrollArea className='flex-1 rounded-md border shadow'>
+          <Table
+            table={table}
+            columns={columns}
+          />
+          <ScrollBar orientation='horizontal' />
         </ScrollArea>
       )}
 
-      <div className='flex items-center justify-end space-x-2 py-4 pb-0'>
-        <Typography
-          variant='p'
-          className='text-sm'
-        >
-          Page: {currentPage}
-        </Typography>
-        <Typography
-          variant='p'
-          className='text-sm'
-        >
-          {`${+currentPage * 10 - 10 + 1} - ${+currentPage * 10}`}
-        </Typography>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={(): void => {
-            searchParams.set('page', (+currentPage - 1).toString());
-            setSearchParams(searchParams);
-          }}
-          disabled={searchParams.get('page') === '1'}
-        >
-          Previous
-        </Button>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={(): void => {
-            searchParams.set('page', (+currentPage + 1).toString());
-            setSearchParams(searchParams);
-          }}
-          // 10 could be a dynamic 'results per page' number
-          disabled={data.length < 10}
-        >
-          Next
-        </Button>
-      </div>
+      <TableFooter isLastPage={data.length < +limit} />
     </>
   );
 }

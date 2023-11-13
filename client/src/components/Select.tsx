@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/select';
 
 import type { ComponentProps } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface SelectProps extends ComponentProps<typeof SelectValue> {
   options: Readonly<Array<string>>;
@@ -22,13 +23,12 @@ export function Select({
   handleSelectChange,
   ...props
 }: SelectProps): JSX.Element {
-  console.log(props.defaultValue);
   return (
     <SelectRoot
       defaultValue={props.defaultValue?.toString()}
       onValueChange={handleSelectChange}
     >
-      <SelectTrigger className='w-[180px]'>
+      <SelectTrigger className={twMerge('w-[180px]', props.className)}>
         <SelectValue placeholder={props.placeholder ?? null} />
       </SelectTrigger>
       <SelectContent>

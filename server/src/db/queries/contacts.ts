@@ -1,7 +1,16 @@
 import { and, eq, ilike, sql } from "drizzle-orm";
 import { db } from "../";
 import { contacts, listings, listingsToContacts, users, usersToContacts } from "../schema";
+
+import { withPagination } from "../utils";
+
 import type { Contact, NewContact, NewUserContactRelation, UserContactRelation } from "../types";
+import type { Limit, PaginationParams } from "../../types";
+
+interface SearchForContactsParams extends PaginationParams {
+  name: string;
+  userID: number;
+}
 
 type UpdateContactByIDParams = {
   contactID: number;
@@ -39,7 +48,7 @@ export const getUserDashboardContacts = async (userID: number) => {
   return userContacts;
 };
 
-export const getUsersContacts = async (userID: number, page: number) => {
+export const getUsersContacts = async (userID: number, page: number, limit: Limit) => {
   const userContactJoin = await db
     .select()
     .from(usersToContacts)
@@ -47,16 +56,15 @@ export const getUsersContacts = async (userID: number, page: number) => {
     .leftJoin(users, eq(usersToContacts.userID, users.id))
     .where(eq(users.id, userID))
     .orderBy(sql`${usersToContacts.createdAt} asc`)
-    .limit(10)
-    .offset((page - 1) * 10);
+    .limit(+limit)
+    .offset((page - 1) * +limit);
 
   const userContacts = userContactJoin.map((result) => result.contacts);
   return userContacts;
 };
 
-export const searchForContacts = async (userID: number, name: string) => {
-  // TODO: need param for addlead vs contactstable
-  const userContacts = await db
+export const searchForContacts = async ({ userID, name, page, limit }: SearchForContactsParams) => {
+  const query = db
     .select({
       id: contacts.id,
       name: contacts.name,
@@ -69,13 +77,17 @@ export const searchForContacts = async (userID: number, name: string) => {
     .leftJoin(users, eq(usersToContacts.userID, users.id))
     .where(and(eq(users.id, userID), ilike(contacts.name, `%${name}%`)));
 
-  return userContacts;
+  const dynamicQuery = query.$dynamic();
+
+  if (page && limit) {
+    withPagination(dynamicQuery, page, +limit as number);
+    return dynamicQuery.execute();
+  }
+
+  return dynamicQuery.execute();
 };
 
-// listings view,
-// id, address, click to link to /listings/:id
 export const findContactByID = async (id: number) => {
-  // : Array<Contact>
   const contact = await db
     .select({
       id: contacts.id,

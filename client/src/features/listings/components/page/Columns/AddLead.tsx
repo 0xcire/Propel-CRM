@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { useSearchContacts } from '@/features/contacts/hooks/useSearchContacts';
 import { useAddLead } from '../../../hooks/useAddLead';
 
-import { useQuerySearchParams } from '@/hooks';
+import { useDebouncedQuerySearchParams } from '@/hooks';
 
+import { Virtuoso } from 'react-virtuoso';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
@@ -19,22 +21,71 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 import { Spinner, SubmitButton } from '@/components';
 
+import { twMerge } from 'tailwind-merge';
+
 import type { ComponentProps } from 'react';
-// ?
-import type { Contact } from '@/features/contacts/types';
+import type { Contact } from '@/features/contacts/types'; // ?
 
 interface AddLeadProps extends ComponentProps<'div'> {
   listingID: number;
 }
 
 export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
+  const [parentElement, setParentElement] = useState<HTMLDivElement | null>(
+    null
+  );
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const searchContacts = useSearchContacts();
-  const { setQuery } = useQuerySearchParams('name');
+  const searchContacts = useSearchContacts({ addLead: true });
+  const { setQuery } = useDebouncedQuerySearchParams('name');
+
+  const scrollAreaViewport = parentElement?.children[1] as
+    | HTMLElement
+    | undefined;
 
   const handleInputChange = (value: string): void => {
     setQuery(value);
+  };
+
+  const renderSearchResults = (): JSX.Element => {
+    if (searchContacts.data) {
+      if (searchContacts.data.length === 0) {
+        return <p className='text-center text-gray-400'>No contacts found.</p>;
+      }
+
+      if (searchContacts.data.length < 50) {
+        return (
+          <>
+            {searchContacts.data.map((contact) => (
+              <Lead
+                key={`${contact.id}-${contact.name}`}
+                contact={contact}
+                listingID={listingID}
+              />
+            ))}
+          </>
+        );
+      }
+
+      // this isn't 100% necesssary, more so want to play around with the concept
+      if (searchContacts.data.length >= 50) {
+        return (
+          <Virtuoso
+            data={searchContacts.data}
+            itemContent={(index, contact): JSX.Element => (
+              <Lead
+                key={`${index}-${contact}`}
+                listingID={listingID}
+                contact={contact}
+              />
+            )}
+            customScrollParent={scrollAreaViewport}
+          />
+        );
+      }
+    }
+
+    return <></>;
   };
 
   return (
@@ -86,17 +137,11 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
               fillContainer
             />
           ) : (
-            <ScrollArea className='w-full flex-1 px-4'>
-              {searchContacts.data?.length === 0 && (
-                <p className='text-center text-gray-400'>No contacts found.</p>
-              )}
-              {searchContacts.data?.map((contact) => (
-                <Lead
-                  key={`${contact.id}-${contact.name}`}
-                  listingID={listingID}
-                  contact={contact}
-                />
-              ))}
+            <ScrollArea
+              ref={setParentElement}
+              className='h-full px-4'
+            >
+              {renderSearchResults()}
             </ScrollArea>
           )}
         </SheetContent>
@@ -105,22 +150,26 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
   );
 }
 
-function Lead({
-  contact,
-  listingID,
-}: {
+interface LeadProps extends ComponentProps<'div'> {
   contact: Contact;
   listingID: number;
-}): JSX.Element {
+}
+
+function Lead({ contact, listingID, ...props }: LeadProps): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   const addLead = useAddLead();
   return (
     <div
+      style={props.style}
       key={contact.name}
-      className='flex items-center justify-between py-2'
+      className={twMerge(
+        'flex items-center justify-between py-2',
+        props.className
+      )}
     >
       <p>{contact.name}</p>
       <SubmitButton
+        className='mr-1 h-8'
         onClick={(): void => {
           addLead.mutate(
             {

@@ -1,17 +1,22 @@
 import { db } from "..";
-import { and, asc, desc, eq, inArray, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, inArray, isNull } from "drizzle-orm";
 import { tasks } from "../schema";
 
+import type { Completed, Priority, PaginationParams } from "../../types";
 import type { NewTask } from "../types";
 
-interface GetUserTasksParams {
+interface GetUserTasksParams extends PaginationParams {
   userID: number;
-  completed: "true" | "false";
-  page?: number;
-  priority?: Array<string>;
+  completed: Completed;
+  priority?: Array<Priority>;
 }
 
-// TODO: ?
+interface SearchForTasksParams extends PaginationParams {
+  userID: number;
+  completed: Completed;
+  title: string;
+}
+
 interface GetUsersListingTasksParams extends GetUserTasksParams {
   listingID: number;
 }
@@ -40,7 +45,7 @@ export const findTaskByID = async (id: number) => {
   return task[0];
 };
 
-export const getUserDashboardTasks = async ({ userID, completed }: GetUserTasksParams) => {
+export const getUserDashboardTasks = async ({ userID, completed, page, limit }: GetUserTasksParams) => {
   const userTasks = await db
     .select()
     .from(tasks)
@@ -53,12 +58,13 @@ export const getUserDashboardTasks = async ({ userID, completed }: GetUserTasksP
       )
     )
     .orderBy(desc(tasks.createdAt))
-    .limit(15);
+    .limit(+limit)
+    .offset((page - 1) * +limit);
 
   return userTasks;
 };
 
-export const getUserTasks = async ({ userID, completed, page, priority }: GetUserTasksParams) => {
+export const getUserTasks = async ({ userID, completed, page, priority, limit }: GetUserTasksParams) => {
   const userTasks = await db.query.tasks.findMany({
     where: and(
       eq(tasks.userID, userID),
@@ -68,8 +74,8 @@ export const getUserTasks = async ({ userID, completed, page, priority }: GetUse
       isNull(tasks.contactID)
     ),
     orderBy: [desc(tasks.createdAt)],
-    limit: 10,
-    ...(page && { offset: (page - 1) * 10 }),
+    limit: +limit,
+    ...(page && { offset: (page - 1) * +limit }),
   });
 
   return userTasks;
@@ -86,7 +92,7 @@ export const getUsersListingTasks = async ({
     where: and(
       eq(tasks.userID, userID),
       eq(tasks.completed, JSON.parse(completed)),
-      priority && inArray(tasks.priority, priority as Array<"low" | "medium" | "high">),
+      priority && inArray(tasks.priority, priority as Array<Priority>),
       eq(tasks.listingID, listingID),
       isNull(tasks.contactID)
     ),
@@ -109,7 +115,7 @@ export const getUsersContactTasks = async ({
     where: and(
       eq(tasks.userID, userID),
       eq(tasks.completed, JSON.parse(completed)),
-      priority && inArray(tasks.priority, priority as Array<"low" | "medium" | "high">),
+      priority && inArray(tasks.priority, priority as Array<Priority>),
       isNull(tasks.listingID),
       eq(tasks.contactID, contactID)
     ),
@@ -119,6 +125,25 @@ export const getUsersContactTasks = async ({
   });
 
   return userContactTasks;
+};
+
+export const searchForTasks = async ({ userID, completed, title, page, limit }: SearchForTasksParams) => {
+  const userTasks = await db
+    .select()
+    .from(tasks)
+    .where(
+      and(
+        eq(tasks.userID, userID),
+        eq(tasks.completed, JSON.parse(completed)),
+        ilike(tasks.title, `%${title}%`)
+        //
+      )
+    )
+    .orderBy(desc(tasks.createdAt))
+    .limit(+limit)
+    .offset((page - 1) * +limit);
+
+  return userTasks;
 };
 
 export const insertNewTask = async (task: NewTask) => {
@@ -178,8 +203,7 @@ export const updateTaskByID = async ({ userID, taskID, newData }: UpdateTaskByID
       description: tasks.description,
       notes: tasks.notes,
       dueDate: tasks.dueDate,
-      // status: tasks.status,
-      // completed: tasks.completed,
+      completed: tasks.completed,
       priority: tasks.priority,
     });
 

@@ -10,9 +10,12 @@ import {
   insertNewListing,
   insertSoldListingData,
   removeLead,
+  searchForListings,
   updateListingByID,
 } from "../db/queries/listings";
+
 import type { NewListing, NewSoldListing } from "../db/types";
+import type { Limit, ListingStatus } from "../types";
 
 export const getDashboardListings = async (req: Request, res: Response) => {
   try {
@@ -32,13 +35,54 @@ export const getDashboardListings = async (req: Request, res: Response) => {
 export const getAllListings = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { page, status } = req.query;
+    const { page, status, limit } = req.query;
 
-    const userListings = await getAllUserListings(userID, +page!, status as string);
+    const userListings = await getAllUserListings({
+      userID: userID,
+      page: +page!,
+      status: status as ListingStatus,
+      limit: limit as Limit,
+    });
 
     return res.status(200).json({
       message: "",
       listings: userListings,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
+
+export const searchUsersListings = async (req: Request, res: Response) => {
+  try {
+    const userID = req.user.id;
+    const { address, status, limit, page } = req.query;
+
+    if (!address) {
+      return res.status(400).json({
+        message: "Please enter an address to search.",
+      });
+    }
+
+    let usersSearchedListings;
+
+    if (address && address === "") {
+      usersSearchedListings = [];
+    }
+
+    if (address) {
+      usersSearchedListings = await searchForListings({
+        userID: userID,
+        address: address as string,
+        status: status as ListingStatus,
+        page: +page!,
+        limit: limit as Limit,
+      });
+    }
+
+    return res.status(200).json({
+      listings: usersSearchedListings,
     });
   } catch (error) {
     console.log(error);

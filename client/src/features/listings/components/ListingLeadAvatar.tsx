@@ -13,6 +13,8 @@ import { Tooltip } from '@/components';
 
 import { RemoveLead } from './RemoveLead';
 
+import { twMerge } from 'tailwind-merge';
+
 import { extractInitials } from '@/utils/';
 
 import type { MouseEventHandler } from 'react';
@@ -22,12 +24,14 @@ type HoverAvatarProps = {
   contactInfo: ContactInfo;
   listingID: number;
   onClick?: MouseEventHandler<HTMLAnchorElement>;
+  className?: string;
 };
 
 export function ListingLeadAvatar({
   contactInfo,
   listingID,
   onClick,
+  className,
 }: HoverAvatarProps): JSX.Element {
   const searchParams = new URLSearchParams(window.location.search);
   const { toast } = useToast();
@@ -38,7 +42,7 @@ export function ListingLeadAvatar({
     <HoverCard>
       <HoverCardTrigger
         onClick={onClick}
-        className='p-0 px-2'
+        className={twMerge('p-0 px-2', className)}
         asChild
       >
         <Button variant='link'>{extractInitials(contactInfo.name)}</Button>
@@ -103,10 +107,12 @@ export function ListingLeadAvatar({
                   </Tooltip>
                 </div>
               </div>
-              <RemoveLead
-                listingID={listingID}
-                contactInfo={contactInfo}
-              />
+              {status === 'active' && (
+                <RemoveLead
+                  listingID={listingID}
+                  contactInfo={contactInfo}
+                />
+              )}
             </div>
           </div>
         </div>

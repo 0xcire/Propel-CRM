@@ -3,7 +3,7 @@ import { Router } from "express";
 import { isAuth, isOwner } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
 
-import { analyticsQuerySchema, cookieSchema, paramSchema } from "../db/validation-schema";
+import { analyticsQuerySchema, authCookieValidator, paramSchema } from "../db/validation-schema";
 
 import {
   getAvgListingDaysOnMarket,
@@ -16,7 +16,7 @@ import {
 export default (router: Router) => {
   router.get(
     "/analytics/sales/:id",
-    validateRequest({ cookies: cookieSchema, params: paramSchema, query: analyticsQuerySchema }),
+    validateRequest({ cookies: authCookieValidator, params: paramSchema, query: analyticsQuerySchema }),
     isAuth,
     isOwner,
     getSalesVolumeForYear
@@ -24,7 +24,7 @@ export default (router: Router) => {
 
   router.get(
     "/analytics/years/:id",
-    validateRequest({ cookies: cookieSchema, params: paramSchema }),
+    validateRequest({ cookies: authCookieValidator, params: paramSchema }),
     isAuth,
     isOwner,
     getExistingSalesYears
@@ -32,7 +32,7 @@ export default (router: Router) => {
 
   router.get(
     "/analytics/days-on-market/:id",
-    validateRequest({ cookies: cookieSchema, params: paramSchema, query: analyticsQuerySchema }),
+    validateRequest({ cookies: authCookieValidator, params: paramSchema, query: analyticsQuerySchema }),
     isAuth,
     isOwner,
     getAvgListingDaysOnMarket
@@ -40,7 +40,7 @@ export default (router: Router) => {
 
   router.get(
     "/analytics/list-sale-ratio/:id",
-    validateRequest({ cookies: cookieSchema, params: paramSchema, query: analyticsQuerySchema }),
+    validateRequest({ cookies: authCookieValidator, params: paramSchema, query: analyticsQuerySchema }),
     isAuth,
     isOwner,
     getListToSaleRatioForYear
@@ -48,7 +48,7 @@ export default (router: Router) => {
 
   router.get(
     "/analytics/time-to-close/:id",
-    validateRequest({ cookies: cookieSchema, params: paramSchema, query: analyticsQuerySchema }),
+    validateRequest({ cookies: authCookieValidator, params: paramSchema, query: analyticsQuerySchema }),
     isAuth,
     isOwner,
     getAvgTimeToCloseLead

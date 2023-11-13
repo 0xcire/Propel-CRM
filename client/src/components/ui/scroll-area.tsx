@@ -1,3 +1,5 @@
+// NOTE: added <ScrollBar orientation='horizontal' /> and 'relative' to Viewport className
+
 import * as React from 'react';
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 
@@ -12,10 +14,11 @@ const ScrollArea = React.forwardRef<
     className={cn('relative overflow-hidden', className)}
     {...props}
   >
-    <ScrollAreaPrimitive.Viewport className='h-full w-full rounded-[inherit]'>
+    <ScrollAreaPrimitive.Viewport className='h-full relative w-full rounded-[inherit]'>
       {children}
     </ScrollAreaPrimitive.Viewport>
     <ScrollBar />
+    <ScrollBar orientation='horizontal' />
     <ScrollAreaPrimitive.Corner />
   </ScrollAreaPrimitive.Root>
 ));

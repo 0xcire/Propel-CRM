@@ -25,6 +25,12 @@ export const getListing = (id: number): Promise<ListingResponse> => {
   );
 };
 
+export const searchListings = (): Promise<ListingResponse> => {
+  return Get({
+    endpoint: `listings/search${window.location.search}`,
+  }).then(handleAPIResponse<ListingResponse>);
+};
+
 export const createListing = (data: NewListing): Promise<ListingResponse> => {
   return Post({ endpoint: 'listings', body: JSON.stringify(data) }).then(
     handleAPIResponse<ListingResponse>

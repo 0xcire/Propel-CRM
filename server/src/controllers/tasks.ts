@@ -8,9 +8,11 @@ import {
   updateTaskByID,
   getUsersListingTasks,
   getUsersContactTasks,
+  searchForTasks,
 } from "../db/queries/tasks";
 
 import type { NewTask } from "../db/types";
+import type { Completed, Limit, Priority } from "../types";
 
 export const getDashboardTasks = async (req: Request, res: Response) => {
   try {
@@ -19,7 +21,9 @@ export const getDashboardTasks = async (req: Request, res: Response) => {
 
     const userDashboardTasks = await getUserDashboardTasks({
       userID: userID,
-      completed: completed as "true" | "false",
+      completed: completed as Completed,
+      limit: "20",
+      page: 1,
     });
 
     return res.status(200).json({
@@ -35,39 +39,42 @@ export const getDashboardTasks = async (req: Request, res: Response) => {
 export const getTasks = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
-    const { completed, page, priority } = req.query;
+    const { completed, page, priority, limit } = req.query;
     const { listingID, contactID } = req.params;
 
-    const priorities = (priority as string)?.split(",");
+    const priorities = (priority as string)?.split(",") as Array<Priority>;
 
     let userTasks;
 
     if (listingID && !contactID) {
       userTasks = await getUsersListingTasks({
         userID: userID,
-        completed: completed as "true" | "false",
+        completed: completed as Completed,
         page: +page!,
         priority: priorities,
         listingID: +listingID,
+        limit: limit as Limit,
       });
     }
 
     if (contactID && !listingID) {
       userTasks = await getUsersContactTasks({
         userID: userID,
-        completed: completed as "true" | "false",
+        completed: completed as Completed,
         page: +page!,
         priority: priorities,
         contactID: +contactID,
+        limit: limit as Limit,
       });
     }
 
     if (!listingID && !contactID) {
       userTasks = await getUserTasks({
         userID: userID,
-        completed: completed as "true" | "false",
+        completed: completed as Completed,
         page: +page!,
         priority: priorities,
+        limit: limit as Limit,
       });
     }
 
@@ -80,6 +87,43 @@ export const getTasks = async (req: Request, res: Response) => {
     res.status(500).json({});
   }
 };
+
+export const searchUsersTasks = async (req: Request, res: Response) => {
+  try {
+    const userID = req.user.id;
+    const { title, completed, limit, page } = req.query;
+
+    if (!title) {
+      return res.status(400).json({
+        message: "Please enter a title to search your tasks.",
+      });
+    }
+
+    let usersSearchedTasks;
+
+    if (title && title === "") {
+      usersSearchedTasks = [];
+    }
+
+    if (title) {
+      usersSearchedTasks = await searchForTasks({
+        userID: userID,
+        completed: completed as Completed,
+        title: title as string,
+        limit: limit as Limit,
+        page: +page!,
+      });
+    }
+
+    return res.status(200).json({
+      tasks: usersSearchedTasks,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
+
 export const getTask = async (req: Request, res: Response) => {
   try {
     const { taskID } = req.params;

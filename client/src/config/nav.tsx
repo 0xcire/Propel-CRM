@@ -22,17 +22,17 @@ export const navLinks: NavLinksProps = [
   },
   {
     name: 'Listings',
-    path: '/listings?page=1&status=active',
+    path: '/listings?page=1&limit=10&status=active',
     icon: <HomeIcon size={16} />,
   },
   {
     name: 'Contacts',
-    path: '/contacts?page=1',
+    path: '/contacts?page=1&limit=10',
     icon: <ContactIcon size={16} />,
   },
   {
     name: 'Tasks',
-    path: '/tasks?page=1&completed=false',
+    path: '/tasks?page=1&limit=10&completed=false',
     icon: <ListTodoIcon size={16} />,
   },
   {
