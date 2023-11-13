@@ -12,7 +12,7 @@ import {
 } from "../db/queries/tasks";
 
 import type { NewTask } from "../db/types";
-import type { Completed, Limit } from "../types";
+import type { Completed, Limit, Priority } from "../types";
 
 export const getDashboardTasks = async (req: Request, res: Response) => {
   try {
@@ -42,7 +42,7 @@ export const getTasks = async (req: Request, res: Response) => {
     const { completed, page, priority, limit } = req.query;
     const { listingID, contactID } = req.params;
 
-    const priorities = (priority as string)?.split(",");
+    const priorities = (priority as string)?.split(",") as Array<Priority>;
 
     let userTasks;
 

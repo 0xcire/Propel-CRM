@@ -2,7 +2,8 @@ import { and, eq, ilike, sql } from "drizzle-orm";
 import { db } from "../";
 import { contacts, listings, listingsToContacts, users, usersToContacts } from "../schema";
 
-import type { PgSelect } from "drizzle-orm/pg-core";
+import { withPagination } from "../utils";
+
 import type { Contact, NewContact, NewUserContactRelation, UserContactRelation } from "../types";
 import type { Limit, PaginationParams } from "../../types";
 
@@ -61,10 +62,6 @@ export const getUsersContacts = async (userID: number, page: number, limit: Limi
   const userContacts = userContactJoin.map((result) => result.contacts);
   return userContacts;
 };
-
-function withPagination<T extends PgSelect>(qb: T, page: number, limit: number = 10) {
-  return qb.limit(limit).offset((page - 1) * limit);
-}
 
 export const searchForContacts = async ({ userID, name, page, limit }: SearchForContactsParams) => {
   const query = db

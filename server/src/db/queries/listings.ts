@@ -82,7 +82,6 @@ export const getUserDashboardListings = async (userID: number) => {
   return userListings;
 };
 
-// better way?
 export const getAllUserListings = async ({ userID, page, status, limit = "10" }: getAllUserListingsParams) => {
   let userListings;
 

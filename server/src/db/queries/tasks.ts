@@ -2,14 +2,13 @@ import { db } from "..";
 import { and, asc, desc, eq, ilike, inArray, isNull } from "drizzle-orm";
 import { tasks } from "../schema";
 
-import type { Completed } from "../../types";
+import type { Completed, Priority, PaginationParams } from "../../types";
 import type { NewTask } from "../types";
-import type { PaginationParams } from "../../types";
 
 interface GetUserTasksParams extends PaginationParams {
   userID: number;
   completed: Completed;
-  priority?: Array<string>;
+  priority?: Array<Priority>;
 }
 
 interface SearchForTasksParams extends PaginationParams {
@@ -93,7 +92,7 @@ export const getUsersListingTasks = async ({
     where: and(
       eq(tasks.userID, userID),
       eq(tasks.completed, JSON.parse(completed)),
-      priority && inArray(tasks.priority, priority as Array<"low" | "medium" | "high">),
+      priority && inArray(tasks.priority, priority as Array<Priority>),
       eq(tasks.listingID, listingID),
       isNull(tasks.contactID)
     ),
@@ -116,7 +115,7 @@ export const getUsersContactTasks = async ({
     where: and(
       eq(tasks.userID, userID),
       eq(tasks.completed, JSON.parse(completed)),
-      priority && inArray(tasks.priority, priority as Array<"low" | "medium" | "high">),
+      priority && inArray(tasks.priority, priority as Array<Priority>),
       isNull(tasks.listingID),
       eq(tasks.contactID, contactID)
     ),
@@ -204,8 +203,7 @@ export const updateTaskByID = async ({ userID, taskID, newData }: UpdateTaskByID
       description: tasks.description,
       notes: tasks.notes,
       dueDate: tasks.dueDate,
-      // status: tasks.status,
-      // completed: tasks.completed,
+      completed: tasks.completed,
       priority: tasks.priority,
     });
 

@@ -14,8 +14,6 @@ import { TasksTable } from './TasksTable';
 import { taskColumns } from '../../config/TaskColumns';
 import { defaultTaskPageParams } from '../../config';
 
-// TODO: need to add endpoints to allow user to search tasks from specific contact/listing
-
 export function ContactTaskPage(): JSX.Element {
   const [searchParams] = useSearchParams();
   const [, setPageTitle] = useTaskContext()['title'];
