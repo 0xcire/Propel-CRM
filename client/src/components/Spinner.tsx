@@ -28,9 +28,15 @@ export const Spinner = ({
           className
         )}
       >
-        <span className={`loading loading-spinner ${modifier}`}></span>
+        <span
+          className={`loading loading-spinner text-foreground ${modifier}`}
+        ></span>
       </div>
     );
   }
-  return <span className={`loading loading-spinner ${modifier}`}></span>;
+  return (
+    <span
+      className={`loading loading-spinner text-foreground ${modifier}`}
+    ></span>
+  );
 };

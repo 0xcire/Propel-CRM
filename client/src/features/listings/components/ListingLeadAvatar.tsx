@@ -47,7 +47,7 @@ export function ListingLeadAvatar({
       >
         <Button variant='link'>{extractInitials(contactInfo.name)}</Button>
       </HoverCardTrigger>
-      <HoverCardContent>
+      <HoverCardContent className='border-border'>
         <div className='flex justify-between gap-4'>
           <Avatar name={contactInfo.name} />
 

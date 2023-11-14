@@ -13,7 +13,7 @@ export function ListingCard({ listing }: { listing: Listing }): JSX.Element {
   return (
     <div className='flex h-full flex-1 basis-[31%] flex-col justify-between rounded-sm border border-border shadow 2xl:basis-[20%] 3xl:basis-[18%]'>
       {/* img placeholder  */}
-      <div className='mx-auto h-[45%] w-full rounded-sm bg-gray-300'></div>
+      <div className='mx-auto h-[45%] w-full rounded-sm bg-accent'></div>
 
       <div className='flex-1 p-2'>
         <Typography

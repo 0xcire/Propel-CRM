@@ -31,7 +31,7 @@ function Error({ resetErrorBoundary }: ErrorProps): JSX.Element {
     <div className='grid h-screen w-full place-items-center'>
       <div>
         <Typography variant='h3'>Uh Oh! Something went wrong.</Typography>
-        <Button onClick={(): void => resetErrorBoundary()}>Try Again</Button>
+        <Button className='mt-4' onClick={(): void => resetErrorBoundary()}>Try Again</Button>
       </div>
     </div>
   );
