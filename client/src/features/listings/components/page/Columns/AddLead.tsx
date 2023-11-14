@@ -109,7 +109,7 @@ export function AddLead({ listingID, ...props }: AddLeadProps): JSX.Element {
             Add Lead
           </DropdownMenuItem>
         </SheetTrigger>
-        <SheetContent className='flex flex-col'>
+        <SheetContent className='flex flex-col border-l-accent'>
           <SheetHeader className='px-4'>
             <SheetTitle>Add Leads</SheetTitle>
             <SheetDescription>For Listing: {listingID}</SheetDescription>

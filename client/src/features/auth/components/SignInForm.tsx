@@ -35,7 +35,7 @@ export function SignInForm(): JSX.Element {
       />
       <Link
         to='/auth/signup'
-        className='text-sm text-slate-900'
+        className='text-sm text-muted-foreground'
       >
         No account yet? Sign up here.
       </Link>

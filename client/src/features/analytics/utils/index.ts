@@ -60,3 +60,16 @@ export const calculateAverage = ({
     ? `${Math.floor(average * 100).toString()} %`
     : Math.floor(average).toString();
 };
+
+// expected input: --css-variable-name
+export const hslValueFromComputedProperty = (
+  variableName: string
+): string | undefined => {
+  const computedHslStyle = getComputedStyle(document.body).getPropertyValue(
+    variableName
+  ); // as '240 5% 64.9%' for ex.
+
+  const values = computedHslStyle.split(' ');
+
+  return `hsl(${values[0]}, ${values[1]}, ${values[2]})`;
+};

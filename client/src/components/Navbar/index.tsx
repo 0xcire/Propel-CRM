@@ -44,7 +44,7 @@ function MobileSideNav({ name, username }: NavProps): JSX.Element {
       </SheetTrigger>
       <SheetContent
         side='left'
-        className='flex w-[225px] flex-col py-10'
+        className='flex w-[225px] flex-col border-r-accent py-10'
       >
         <SheetHeader>
           <NavDropdown
@@ -62,7 +62,7 @@ function MobileSideNav({ name, username }: NavProps): JSX.Element {
 
 function SideNav({ name, username }: NavProps): JSX.Element {
   return (
-    <div className='flex h-full w-1/6 max-w-[200px] flex-col border-r-2 px-4 py-4'>
+    <div className='flex h-full w-1/6 max-w-[200px] flex-col border-r-2 border-accent px-4 py-4'>
       <NavDropdown
         name={name}
         username={username}

@@ -11,7 +11,12 @@ export function DashboardGridItem({
   className,
 }: DashboardGridItemProps): JSX.Element {
   return (
-    <div className={twMerge('relative rounded border shadow', className)}>
+    <div
+      className={twMerge(
+        'relative rounded border border-border shadow',
+        className
+      )}
+    >
       {children}
     </div>
   );
