@@ -82,7 +82,7 @@ export function ListingTable({
         />
       ) : (
         <>
-          <ScrollArea className='flex-1 rounded-md border shadow'>
+          <ScrollArea className='flex-1 rounded-md border border-border shadow'>
             <Table
               table={table}
               columns={columns}

@@ -16,15 +16,20 @@ import { ListEmpty, Spinner } from '@/components';
 import { CustomTooltip } from './CustomTooltip';
 
 import { yAxisRange } from '@/utils/';
-import { filterAnalyticsData, getMinMax } from '../utils';
+import {
+  filterAnalyticsData,
+  getMinMax,
+  hslValueFromComputedProperty,
+} from '../utils';
 
 import type { SalesVolumes } from '../types';
 
 export function SalesVolumeChart(): JSX.Element {
   const { state: currentTimeFrame } = useAnalyticsContext();
-
   const user = useUser();
   const salesVolume = useSalesVolume(user.data?.id as number);
+
+  const mutedForegroundHsl = hslValueFromComputedProperty('--muted-foreground');
 
   const minmax = getMinMax(() => {
     if (salesVolume.data) {
@@ -69,18 +74,23 @@ export function SalesVolumeChart(): JSX.Element {
         <XAxis
           dataKey={'month'}
           tickLine={false}
-          stroke='#010101'
+          stroke={mutedForegroundHsl}
+          className='stroke-foreground'
         />
         <YAxis
           domain={yAxisRange(minmax as [number, number])}
           fontSize={10}
           tickLine={false}
-          stroke='#010101'
+          stroke={mutedForegroundHsl}
+          className='stroke-black'
         />
-        <Tooltip content={<CustomTooltip />} />
+        <Tooltip
+          cursor={false}
+          content={<CustomTooltip />}
+        />
         <Bar
           dataKey='value'
-          fill='#010101'
+          className='fill-primary'
           radius={3}
         />
       </BarChart>

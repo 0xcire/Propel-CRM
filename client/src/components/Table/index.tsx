@@ -116,7 +116,7 @@ export function Table<TData>({
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
             <TableRow
-              className='row'
+              className='row border-border'
               key={row.id}
               data-state={row.getIsSelected() && 'selected'}
             >

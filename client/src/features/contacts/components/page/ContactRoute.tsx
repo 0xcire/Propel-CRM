@@ -58,7 +58,7 @@ export function ContactRoute(): JSX.Element {
             >
               {contact.data[0].name}
             </Typography>
-            <div className='mt-2 text-sm text-slate-700'>
+            <div className='mt-2 text-sm text-muted-foreground'>
               <div className='flex items-center gap-4'>
                 <PhoneIcon
                   className='mt-[2px]'
@@ -78,11 +78,11 @@ export function ContactRoute(): JSX.Element {
         </div>
         <div>
           <p className='font-bold'>2</p>
-          <p className='text-sm text-slate-700'>listings</p>
+          <p className='text-sm text-muted-foreground'>listings</p>
         </div>
         <div>
           <p className='font-bold'>4</p>
-          <p className='text-sm text-slate-700'>related tasks</p>
+          <p className='text-sm text-muted-foreground'>related tasks</p>
         </div>
 
         <UpdateContact contact={contact.data[0]} />

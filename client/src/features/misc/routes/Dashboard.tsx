@@ -1,26 +1,21 @@
-import { useLogout, useUser } from '@/lib/react-query-auth';
+import { useUser } from '@/lib/react-query-auth';
 
 import { useIsDesktop, useDocumentTitle } from '@/hooks';
 
 import { Typography } from '@/components/ui/typography';
 
 import { Navbar } from '@/components/Navbar';
-import { SubmitButton } from '@/components/SubmitButton';
-
 import { DashboardGridItem } from '@/components/Layout/dashboard';
-
 import { DashboardListingView } from '@/features/listings/components/dashboard';
 import { DashboardContactsView } from '@/features/contacts/components/dashboard';
 import { DashboardTasksView } from '@/features/tasks/components/dashboard';
 import { DashboardAnalyticsView } from '@/features/analytics/components/dashboard';
+
 import { dateIntl } from '@/utils/intl';
 
 export const Dashboard = (): JSX.Element => {
   const user = useUser();
-  const logout = useLogout();
-
   const isDesktop = useIsDesktop();
-
   useDocumentTitle('Dashboard | Propel CRM');
 
   const date = new Date();
@@ -43,12 +38,6 @@ export const Dashboard = (): JSX.Element => {
               </p>
             </div>
           </div>
-          <SubmitButton
-            isLoading={logout.isLoading}
-            onClick={(): void => logout.mutate()}
-          >
-            Logout
-          </SubmitButton>
         </div>
 
         <div className='grid h-full max-h-screen flex-1 grid-cols-12 grid-rows-6 gap-4 py-4 xl:flex-1'>

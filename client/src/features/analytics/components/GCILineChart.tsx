@@ -18,7 +18,11 @@ import { Spinner } from '@/components';
 import { CustomTooltip } from './CustomTooltip';
 
 import { yAxisRange } from '@/utils';
-import { filterAnalyticsData, getMinMax } from '../utils';
+import {
+  filterAnalyticsData,
+  getMinMax,
+  hslValueFromComputedProperty,
+} from '../utils';
 
 // extend when implementing teams
 // admin can set rates for their team members for example...
@@ -26,9 +30,11 @@ const COMMISSION_RATE = 0.15;
 
 export function GCILineChart(): JSX.Element {
   const { state: currentTimeFrame } = useAnalyticsContext();
-
   const user = useUser();
   const salesVolume = useSalesVolume(user.data?.id as number);
+
+  const primaryHsl = hslValueFromComputedProperty('--primary');
+  const mutedForegroundHsl = hslValueFromComputedProperty('--muted-foreground');
 
   const salesVolumeToGCI = useMemo(() => {
     return salesVolume.data?.map((data) => ({
@@ -84,20 +90,20 @@ export function GCILineChart(): JSX.Element {
         <XAxis
           dataKey='month'
           fontSize={12}
-          stroke='#010101'
+          stroke={mutedForegroundHsl}
           tickLine={false}
         />
         <YAxis
           domain={yAxisRange(minmax as [number, number])}
           fontSize={10}
-          stroke='#010101'
+          stroke={mutedForegroundHsl}
           tickLine={false}
         />
         <Tooltip content={<CustomTooltip />} />
         <Line
           type='monotone'
           dataKey='gci'
-          stroke='#010101'
+          stroke={primaryHsl}
           strokeWidth={2}
         />
       </LineChart>
