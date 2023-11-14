@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 import { useLogout } from '@/lib/react-query-auth';
 
-import { ChevronDownIcon, LogOutIcon } from 'lucide-react';
+import { ChevronDownIcon, LogOutIcon, SettingsIcon } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -15,6 +15,7 @@ import {
 import { Button } from '../ui/button';
 
 import { Avatar } from '../Avatar';
+import { ThemeToggle } from './ThemeToggle';
 
 import type { NavProps } from './types';
 
@@ -31,10 +32,7 @@ export function NavDropdown({ name, username }: NavProps): JSX.Element {
           variant='ghost'
           className='focus-visible:ring-0 focus-visible:ring-offset-0'
         >
-          <Avatar
-            className=''
-            name={name as string}
-          />
+          <Avatar name={name as string} />
 
           <span className='text-sm'>{name as string}</span>
 
@@ -51,9 +49,16 @@ export function NavDropdown({ name, username }: NavProps): JSX.Element {
           className='cursor-pointer'
           asChild
         >
-          <Link to='/profile'>Settings</Link>
+          <Link to='/profile'>
+            <SettingsIcon
+              size={18}
+              className='mr-1 mt-[2px]'
+            />
+            Settings
+          </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>Theme</DropdownMenuItem>
+
+        <ThemeToggle />
 
         <DropdownMenuItem
           className='cursor-pointer'
