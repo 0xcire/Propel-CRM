@@ -17,14 +17,14 @@ import { defaultTaskPageParams } from '../../config';
 export function ContactTaskPage(): JSX.Element {
   const [searchParams] = useSearchParams();
   const [, setPageTitle] = useTaskContext()['title'];
-  const { id } = useParams();
+  const { contactID } = useParams();
   const { setQuery } = useDebouncedQuerySearchParams('title');
 
   useDefaultSearchParams(defaultTaskPageParams);
 
-  const contactTasks = useContactTasks(+(id as string));
+  const contactTasks = useContactTasks(+(contactID as string));
   const searchTasks = useSearchTasks();
-  const contact = useContact(+(id as string));
+  const contact = useContact(+(contactID as string));
 
   const isSearching = !!searchParams.get('title');
 
@@ -35,7 +35,7 @@ export function ContactTaskPage(): JSX.Element {
     if (contact.data) {
       setPageTitle(`Tasks for ${contact.data[0]?.name}`);
     }
-  }, [id, setPageTitle, contact.data, contact.isLoading]);
+  }, [contactID, setPageTitle, contact.data, contact.isLoading]);
 
   return (
     <TasksTable

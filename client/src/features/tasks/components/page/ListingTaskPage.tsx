@@ -15,19 +15,19 @@ import { defaultTaskPageParams } from '../../config';
 export function ListingTaskPage(): JSX.Element {
   const [searchParams] = useSearchParams();
   const [, setPageTitle] = useTaskContext()['title'];
-  const { id } = useParams();
+  const { listingID } = useParams();
   const { setQuery } = useDebouncedQuerySearchParams('title');
 
   useDefaultSearchParams(defaultTaskPageParams);
 
-  const listingTasks = useListingTasks(+(id as string));
+  const listingTasks = useListingTasks(+(listingID as string));
   const searchTasks = useSearchTasks();
 
   const isSearching = !!searchParams.get('title');
 
   useEffect(() => {
-    setPageTitle(`Tasks for Listing ${id}`);
-  }, [id, setPageTitle]);
+    setPageTitle(`Tasks for Listing ${listingID}`);
+  }, [listingID, setPageTitle]);
 
   return (
     <TasksTable

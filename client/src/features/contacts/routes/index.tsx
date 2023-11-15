@@ -29,7 +29,7 @@ export const contactRoutes: RouteObject = {
       ),
     },
     {
-      path: ':id',
+      path: ':contactID',
       element: (
         <Suspense>
           <ContactRoute />

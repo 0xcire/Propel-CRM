@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { useUser } from '@/lib/react-query-auth';
 import { useCreateTask } from '@/features/tasks/hooks/useCreateTask';
@@ -41,6 +42,8 @@ export function AddTask({
 }: AddTaskProps): JSX.Element {
   const [open, setOpen] = useState(false);
 
+  const { listingID: listingIDParam, contactID: contactIDParam } = useParams();
+
   const user = useUser();
 
   const createTask = useCreateTask();
@@ -61,8 +64,12 @@ export function AddTask({
       notes: values.notes,
       dueDate: values.dueDate && formatISO(values.dueDate),
       priority: values.priority,
-      ...(contactID && { contactID: contactID }),
-      ...(listingID && { listingID: listingID }),
+      ...(!!(contactID || contactIDParam) && {
+        contactID: contactIDParam ? +contactIDParam : contactID,
+      }),
+      ...(!!(listingID || listingIDParam) && {
+        listingID: listingIDParam ? +listingIDParam : listingID,
+      }),
     };
 
     filterUndefined(data);
