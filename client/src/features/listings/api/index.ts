@@ -19,6 +19,14 @@ export const getListings = (): Promise<ListingResponse> => {
   );
 };
 
+export const getContactListings = (
+  contactID: number
+): Promise<ListingResponse> => {
+  return Get({ endpoint: `listings/contacts/${contactID}` }).then(
+    handleAPIResponse<ListingResponse>
+  );
+};
+
 export const getListing = (id: number): Promise<ListingResponse> => {
   return Get({ endpoint: `listings/${id}` }).then(
     handleAPIResponse<ListingResponse>
