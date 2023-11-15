@@ -1,6 +1,7 @@
 //https://github.com/shadcn-ui/ui/blob/main/apps/www/app/examples/tasks/components/data-table-faceted-filter.tsx
 
 // modified, assumes table is set to manualFiltering: true
+// NOTE: added border-border to popover-content
 
 import { useSearchParams } from 'react-router-dom';
 
@@ -125,7 +126,7 @@ export function DataTableFilter<TData, TValue>({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className='w-[200px] p-0'
+        className='w-[200px] p-0 border-border'
         align='start'
       >
         <Command>
