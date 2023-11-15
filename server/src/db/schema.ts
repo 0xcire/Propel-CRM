@@ -68,9 +68,11 @@ export const usersToContacts = pgTable(
       .references(() => contacts.id),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   },
-  (t) => ({
-    pk: primaryKey(t.userID, t.contactID),
-  })
+  (table) => {
+    return {
+      pk: primaryKey({ columns: [table.userID, table.contactID] }),
+    };
+  }
 );
 
 export const usersToContactsRelations = relations(usersToContacts, ({ one }) => ({
@@ -117,10 +119,6 @@ export const tasksRelations = relations(tasks, ({ one }) => ({
 
 // TODO: propertyType
 // single family, apartment, townhome, condo, duplex, etc..
-
-// status: 'sold' | 'market'
-// sold_at: Date
-
 export const listings = pgTable("listings", {
   id: serial("id").primaryKey(),
   userID: integer("user_id").references(() => users.id),
@@ -158,9 +156,11 @@ export const listingsToContacts = pgTable(
       .references(() => contacts.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   },
-  (t) => ({
-    pk: primaryKey(t.listingID, t.contactID),
-  })
+  (table) => {
+    return {
+      pk: primaryKey({ columns: [table.listingID, table.contactID] }),
+    };
+  }
 );
 
 export const listingsToContactsRelations = relations(listingsToContacts, ({ one }) => ({

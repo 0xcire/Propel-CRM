@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { findContactByID } from "../db/queries/contacts";
 import {
   deleteListingByID,
+  findContactsRelatedListings,
   findExistingLead,
   getAllUserListings,
   getUserDashboardListings,
@@ -83,6 +84,23 @@ export const searchUsersListings = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       listings: usersSearchedListings,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
+
+export const getContactsRelatedListings = async (req: Request, res: Response) => {
+  try {
+    const userID = req.user.id;
+    const { contactID } = req.params;
+
+    const contactsListings = await findContactsRelatedListings({ userID: userID, contactID: +contactID });
+
+    return res.status(200).json({
+      message: "",
+      listings: contactsListings,
     });
   } catch (error) {
     console.log(error);
@@ -192,7 +210,8 @@ export const markListingAsSold = async (req: Request, res: Response) => {
       });
     }
 
-    const contactByID = await findContactByID(values.contactID as number);
+    // TODO: refactor to have contactID & isContactOwner check at router
+    const contactByID = await findContactByID(values.contactID as number, userID);
 
     if (!contactByID) {
       return res.status(400).json({
@@ -214,27 +233,20 @@ export const markListingAsSold = async (req: Request, res: Response) => {
 export const addListingLead = async (req: Request, res: Response) => {
   try {
     const { listingID, contactID } = req.params;
-
-    const contactByID = await findContactByID(+contactID);
-
-    if (!contactByID) {
-      return res.status(400).json({
-        message: "That's weird, couldn't find that contact to add. Please try again.",
-      });
-    }
+    const { name } = req.contact;
 
     const existingLead = await findExistingLead(+listingID, +contactID);
 
     if (existingLead) {
       return res.status(400).json({
-        message: `${contactByID?.name} is already an established lead for listing: ${listingID}`,
+        message: `${name} is already an established lead for listing: ${listingID}`,
       });
     }
 
     const newListingLead = await insertNewLead(+listingID, +contactID);
 
     return res.status(201).json({
-      message: `Added ${contactByID?.name} to listing: ${listingID}`,
+      message: `Added ${name} to listing: ${listingID}`,
     });
   } catch (error) {
     console.log(error);
@@ -245,13 +257,12 @@ export const addListingLead = async (req: Request, res: Response) => {
 export const removeListingLead = async (req: Request, res: Response) => {
   try {
     const { listingID, contactID } = req.params;
-
-    const contactByID = await findContactByID(+contactID);
+    const { name } = req.contact;
 
     const removedLead = await removeLead(+listingID, +contactID);
 
     return res.status(200).json({
-      message: `Successfully removed lead: ${contactByID?.name} from listing: ${listingID}`,
+      message: `Successfully removed lead: ${name} from listing: ${listingID}`,
     });
   } catch (error) {
     console.log(error);
