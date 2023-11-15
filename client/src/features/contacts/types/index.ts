@@ -6,7 +6,7 @@ export type Contact = {
   email: string;
   phoneNumber: string;
   address: string;
-  createdAt: Date;
+  createdAt: string;
 };
 
 export type Contacts = Array<Contact>;

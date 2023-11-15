@@ -126,6 +126,34 @@ export const getAllUserListings = async ({ userID, page, status, limit = "10" }:
   return userListings;
 };
 
+// TODO: commmon type
+type FindContactsRelatedListingsParams = {
+  userID: number;
+  contactID: number;
+};
+export const findContactsRelatedListings = async ({ userID, contactID }: FindContactsRelatedListingsParams) => {
+  const contactListings = await db
+    .select({
+      id: listings.id,
+      address: listings.address,
+    })
+    .from(listings)
+    .leftJoin(soldListings, eq(soldListings.listingID, listings.id))
+    .leftJoin(listingsToContacts, eq(listingsToContacts.listingID, listings.id))
+    .leftJoin(contacts, eq(contacts.id, listingsToContacts.contactID))
+    .where(
+      and(
+        eq(listings.userID, userID),
+        eq(listingsToContacts.contactID, contactID),
+        isNull(soldListings.listingID)
+        //
+      )
+    )
+    .orderBy(desc(listings.createdAt));
+
+  return contactListings;
+};
+
 export const searchForListings = async ({ userID, address, status, page, limit }: SearchForListingsParams) => {
   let userListings;
 

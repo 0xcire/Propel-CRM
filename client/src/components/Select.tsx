@@ -31,7 +31,7 @@ export function Select({
       <SelectTrigger className={twMerge('w-[180px]', props.className)}>
         <SelectValue placeholder={props.placeholder ?? null} />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className='border-border'>
         <SelectGroup>
           {label && <SelectLabel>{label}</SelectLabel>}
           {options.map((option) => (

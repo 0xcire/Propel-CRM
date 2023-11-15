@@ -11,6 +11,7 @@ import {
   removeListingLead,
   markListingAsSold,
   searchUsersListings,
+  getContactsRelatedListings,
 } from "../controllers/listings";
 
 import { validateRequest } from "../middlewares/validate-input";
@@ -26,6 +27,7 @@ import {
   listingAndContactIDValidator,
   listingQueryValidator,
   listingSearchQueryValidator,
+  contactIDValidator,
 } from "../db/validation-schema";
 
 export default (router: Router) => {
@@ -43,6 +45,14 @@ export default (router: Router) => {
     validateRequest({ cookies: authCookieValidator, query: listingSearchQueryValidator }),
     isAuth,
     searchUsersListings
+  );
+
+  router.get(
+    "/listings/contacts/:contactID",
+    validateRequest({ cookies: authCookieValidator, params: contactIDValidator }),
+    isAuth,
+    isContactOwner,
+    getContactsRelatedListings
   );
 
   router.get(

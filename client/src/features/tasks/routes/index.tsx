@@ -48,7 +48,7 @@ export const taskRoutes: RouteObject = {
       ),
     },
     {
-      path: 'listings/:id',
+      path: 'listings/:listingID',
       element: (
         <Suspense>
           <ListingTaskPage />
@@ -56,7 +56,7 @@ export const taskRoutes: RouteObject = {
       ),
     },
     {
-      path: 'contacts/:id',
+      path: 'contacts/:contactID',
       element: (
         <Suspense>
           <ContactTaskPage />

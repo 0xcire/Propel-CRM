@@ -12,7 +12,12 @@ export function NestedNotFound({ context }: NestedNotFoundProps): JSX.Element {
     <div className='grid h-full w-full place-items-center'>
       <div>
         <Typography variant='h4'>404! We can't find that {context}.</Typography>
-        <Button onClick={(): void => navigate(-1)}>Go back</Button>
+        <Button
+          className='mt-2'
+          onClick={(): void => navigate(-1)}
+        >
+          Go back
+        </Button>
       </div>
     </div>
   );

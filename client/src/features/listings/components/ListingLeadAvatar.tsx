@@ -51,7 +51,7 @@ export function ListingLeadAvatar({
         <div className='flex justify-between gap-4'>
           <Avatar name={contactInfo.name} />
 
-          <div className='-m-1 mr-auto w-fit'>
+          <div className='-m-[5px] mr-auto w-fit'>
             <LinkButton
               className='pb-0 pl-0 font-bold'
               path={`/contacts/${contactInfo.id}`}

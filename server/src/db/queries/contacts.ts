@@ -1,6 +1,6 @@
-import { and, eq, ilike, sql } from "drizzle-orm";
+import { and, eq, ilike, isNull, sql } from "drizzle-orm";
 import { db } from "../";
-import { contacts, listings, listingsToContacts, users, usersToContacts } from "../schema";
+import { contacts, listings, listingsToContacts, soldListings, tasks, users, usersToContacts } from "../schema";
 
 import { withPagination } from "../utils";
 
@@ -29,6 +29,7 @@ type InsertRelationParams = {
   newContactID: number;
 };
 
+// TODO: common type
 type DeleteUserContactRelationParams = {
   userID: number;
   contactID: number;
@@ -87,19 +88,19 @@ export const searchForContacts = async ({ userID, name, page, limit }: SearchFor
   return dynamicQuery.execute();
 };
 
-export const findContactByID = async (id: number) => {
-  const contact = await db
+export const findContactByID = async (contactID: number, userID: number) => {
+  let contact = await db
     .select({
       id: contacts.id,
       name: contacts.name,
       email: contacts.email,
       phoneNumber: contacts.phoneNumber,
       address: contacts.address,
+      createdAt: usersToContacts.createdAt,
     })
     .from(contacts)
-    .where(eq(contacts.id, +id))
-    .leftJoin(listingsToContacts, eq(listingsToContacts.contactID, id))
-    .leftJoin(listings, eq(listings.id, listingsToContacts.listingID));
+    .leftJoin(usersToContacts, eq(usersToContacts.contactID, contactID))
+    .where(and(eq(contacts.id, contactID), eq(usersToContacts.userID, userID)));
 
   if (!contact[0]) {
     return undefined;

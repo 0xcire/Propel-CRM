@@ -1,34 +1,45 @@
 import { useParams } from 'react-router-dom';
 
 import { useContact } from '../../hooks/useContact';
+import { useContactTasks } from '@/features/tasks/hooks/useContactTasks';
+import { useContactListings } from '@/features/listings/hooks/useContactListings';
 
-import { AtSignIcon, PhoneIcon } from 'lucide-react';
+import {
+  AtSignIcon,
+  Building2Icon,
+  CakeIcon,
+  FlagIcon,
+  MapPinIcon,
+  PhoneIcon,
+  SendIcon,
+  UserIcon,
+} from 'lucide-react';
 
 import { Typography } from '@/components/ui/typography';
 
 import { NestedNotFound } from '@/components/Layout/page/NestedNotFound';
-
 import { Avatar, Spinner } from '@/components';
-
 import { UpdateContact } from '../UpdateContact';
+import { ContactGridItem } from './ContactGridItem';
+import { ContactTasks } from './ContactTasks';
+import { ContactListings } from './ContactListings';
+
+import { formatDateString } from '@/utils/intl';
+
+// TODO: instead of string manipulation, just create more individual columns
+// would need to refactor contact form
+// to add:
+// relationships (other team members)
+// related notes
+// emails
+// invididual qualifying info, interested property type, occupation, price range, etc
 
 export function ContactRoute(): JSX.Element {
-  const { id } = useParams();
+  const { contactID } = useParams();
 
-  const contact = useContact(+(id as string));
-
-  // TODO: need to reseed and update some columns before finishing this page.
-
-  // current available data points:
-  // interested listings
-  // related tasks
-  // relationships (other team members)
-
-  // to add:
-
-  // related notes
-  // emails
-  // invididual qualifying info, interested property type, occupation, price range, etc
+  const contact = useContact(+(contactID as string));
+  const tasks = useContactTasks(+(contactID as string));
+  const listings = useContactListings(+(contactID as string));
 
   if (contact.isLoading) {
     return (
@@ -43,9 +54,20 @@ export function ContactRoute(): JSX.Element {
     return <NestedNotFound context='contact' />;
   }
 
+  // TODO: as mentioned above, this is fragile. works due to uniform seed data
+  // or maybe create regex to match
+  const address = contact.data[0].address;
+  const addressSplit = address.split(',');
+  const stateAndZipcode = addressSplit[2];
+  const stateAndZipcodeSplit = stateAndZipcode?.split(' ');
+  const street = addressSplit[0];
+  const city = addressSplit[1]?.trim();
+  const state = stateAndZipcodeSplit && stateAndZipcodeSplit[1];
+  const zipcode = stateAndZipcodeSplit && stateAndZipcodeSplit[2];
+
   return (
     <div className='mt-4 grid h-full grid-cols-12 grid-rows-6 gap-4 rounded-md border border-border'>
-      <div className='col-start-1 col-end-13 row-start-1 row-end-2 flex items-center justify-between rounded-md border-b border-border p-4 pt-0'>
+      <ContactGridItem className='col-start-1 col-end-13 row-start-1 row-end-2 flex items-center justify-between rounded-none border-l-0 border-r-0 border-t-0 shadow-none'>
         <div className='flex items-start gap-2'>
           <Avatar
             className='h-16 w-16 text-lg'
@@ -77,73 +99,115 @@ export function ContactRoute(): JSX.Element {
           </div>
         </div>
         <div>
-          <p className='font-bold'>2</p>
+          <p className='font-bold'>{listings.data?.length}</p>
           <p className='text-sm text-muted-foreground'>listings</p>
         </div>
         <div>
-          <p className='font-bold'>4</p>
-          <p className='text-sm text-muted-foreground'>related tasks</p>
+          <p className='font-bold'>{tasks.data?.length}</p>
+          <p className='text-sm text-muted-foreground'>upcoming tasks</p>
         </div>
 
         <UpdateContact contact={contact.data[0]} />
-      </div>
+      </ContactGridItem>
 
-      {/* <div className='col-start-1 col-end-4 row-start-2 row-end-7 mb-4 ml-4 rounded-md border shadow'>
+      <ContactGridItem className='col-start-1 col-end-5 row-start-2 row-end-7 mb-4 ml-4'>
         <Typography
           variant='h4'
-          className='text-md'
+          className='text-lg'
         >
           Account Info
         </Typography>
-        <div className='text-sm'>
-          <p>first:</p>
-          <p>last:</p>
-          <p>DOB:</p>
-          <p>Occupation:</p>
-          <p>Account Type:</p>
-        </div>
-      </div>
+        <div className='mt-4 flex flex-col gap-2 text-sm'>
+          <div className='flex items-center gap-2'>
+            <UserIcon size={18} />
+            <p>
+              First Name:{' '}
+              <span className='font-bold'>
+                {contact.data[0].name.split(' ')[0]}
+              </span>
+            </p>
+          </div>
 
-      <div className='col-start-4 col-end-8 row-start-2 row-end-7 mb-4 rounded-md border shadow'>
+          <div className='flex items-center gap-2'>
+            <UserIcon size={18} />
+            <p>
+              Last Name:{' '}
+              <span className='font-bold'>
+                {contact.data[0].name.split(' ')[1]}
+              </span>
+            </p>
+          </div>
+
+          <div className='flex items-center gap-2'>
+            <CakeIcon size={18} />
+            <p>
+              Added:{' '}
+              <span className='font-bold'>
+                {formatDateString(contact.data[0].createdAt)}
+              </span>
+            </p>
+          </div>
+        </div>
+      </ContactGridItem>
+
+      <ContactGridItem className='col-start-5 col-end-9 row-start-2 row-end-7 mb-4'>
         <Typography
           variant='h4'
-          className='text-md'
+          className='text-lg'
         >
           Contact Info
         </Typography>
-        <div className='text-sm'>
-          <p>Country:</p>
-          <p>State:</p>
-          <p>City:</p>
-          <p>Address:</p>
-          <p>Zipcode:</p>
-          <p>Phone:</p>
-          <p>Email:</p>
-        </div>
-      </div>
-
-      <div className='col-start-9 col-end-13 row-start-2 row-end-4 mr-4 rounded-md border shadow'>
-        <Typography
-          variant='h4'
-          className='text-md'
-        >
-          Listings
-        </Typography>
-        <div className='text-sm'>
-          <div>
-            <p>Listing ID: 372</p>
+        <div className='mt-4 flex flex-col gap-2 text-sm '>
+          <div className='flex items-center gap-2'>
+            <FlagIcon size={18} />
+            <p>
+              State: <span className='font-bold'>{state}</span>
+            </p>
+          </div>
+          <div className='flex items-center gap-2'>
+            <Building2Icon size={18} />
+            <p>
+              City: <span className='font-bold'>{city}</span>
+            </p>
+          </div>
+          <div className='flex items-center gap-2'>
+            <MapPinIcon size={18} />
+            <p>
+              Address: <span className='font-bold'>{street}</span>
+            </p>
+          </div>
+          <div className='flex items-center gap-2'>
+            <SendIcon size={18} />
+            <p>
+              Zipcode: <span className='font-bold'>{zipcode}</span>
+            </p>
+          </div>
+          <div className='flex items-center gap-2'>
+            <PhoneIcon size={18} />
+            <p>
+              Phone:
+              <span className='font-bold'>{contact.data[0].phoneNumber}</span>
+            </p>
+          </div>
+          <div className='flex items-center gap-2'>
+            <AtSignIcon size={18} />
+            <p>
+              Email: <span className='font-bold'>{contact.data[0].email}</span>
+            </p>
           </div>
         </div>
-      </div>
+      </ContactGridItem>
 
-      <div className='col-start-9 col-end-13 row-start-4 row-end-7 mb-4 mr-4 rounded-md border shadow'>
-        <Typography
-          variant='h4'
-          className='text-md'
-        >
-          Related Tasks
-        </Typography>
-      </div> */}
+      <ContactGridItem className='col-start-9 col-end-13 row-start-2 row-end-4 mr-4 pt-0'>
+        <ContactListings listings={listings} />
+      </ContactGridItem>
+
+      <ContactGridItem className='col-start-9 col-end-13 row-start-4 row-end-7 mb-4 mr-4 pt-0'>
+        <ContactTasks
+          tasks={tasks}
+          contactID={+(contactID as string)}
+        />
+      </ContactGridItem>
     </div>
   );
 }

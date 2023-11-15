@@ -46,6 +46,7 @@ export function ListingForm({
           <TextInput
             name='address'
             label='Address'
+            placeholder='123 Example St, City, State, 00000'
             control={form.control}
           />
           <TextAreaInput

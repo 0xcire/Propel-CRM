@@ -10,6 +10,11 @@
 - [BulletProof React](https://github.com/alan2207/bulletproof-react)
 - [Shadcn UI Taxonomy](https://github.com/shadcn/taxonomy)
 
+## Design Inspiration
+
+- [Dribbble contacts page](https://dribbble.com/shots/20734955-CRM-Contacts-Page)
+- [Cal](https://cal.com/) for nav and headers
+
 ## Shadcn UI
 
 - [Sticky table header in ScrollArea](https://github.com/shadcn-ui/ui/issues/1151#issuecomment-1746339659)

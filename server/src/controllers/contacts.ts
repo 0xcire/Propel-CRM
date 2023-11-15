@@ -92,14 +92,6 @@ export const getMyContacts = async (req: Request, res: Response) => {
 
 export const getSpecificContact = async (req: Request, res: Response) => {
   try {
-    const { contactID } = req.params;
-
-    if (!contactID) {
-      return res.status(400).json({
-        message: "bad request",
-      });
-    }
-
     const contactByID = req.contact;
 
     // TODO:
