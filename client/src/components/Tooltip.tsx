@@ -14,7 +14,7 @@ type TooptipProps = PropsWithChildren<{
 export function Tooltip({ children, content }: TooptipProps): JSX.Element {
   return (
     <TooltipProvider>
-      <TooltipRoot>
+      <TooltipRoot delayDuration={0}>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent>
           <p>{content}</p>
