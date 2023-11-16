@@ -39,7 +39,10 @@ export function ListingLeadAvatar({
   const status = searchParams.get('status');
 
   return (
-    <HoverCard openDelay={200}>
+    <HoverCard
+      openDelay={50}
+      closeDelay={50}
+    >
       <HoverCardTrigger
         onClick={onClick}
         className={twMerge('p-0 px-2', className)}
