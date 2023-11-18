@@ -1,16 +1,14 @@
-import type { Request, Response } from "express";
-
+import { redis } from "../redis";
+import { findUsersByEmail, findUsersByUsername, insertNewUser } from "../db/queries/user";
+import { checkPassword, createSecureCookie, createSessionToken, hashPassword } from "../utils";
 import {
-  findUsersByEmail,
-  findUsersBySessionToken,
-  findUsersByUsername,
-  insertNewUser,
-  updateUsersByEmail,
-} from "../db/queries/user";
+  IDLE_SESSION_COOKIE,
+  ABSOLUTE_SESSION_COOKIE,
+  IDLE_SESSION_LENGTH,
+  ABSOLUTE_SESSION_LENGTH,
+} from "../config/index";
 
-import { checkPassword, createSessionToken, hashPassword } from "../utils";
-import { SESSION_COOKIE_LENGTH, SESSION_COOKIE_NAME } from "../config";
-
+import type { Request, Response } from "express";
 import type { NewUser } from "../db/types";
 import type { UserInput } from "./types";
 
@@ -44,23 +42,35 @@ export const signin = async (req: Request, res: Response) => {
       });
     }
 
-    const token = await createSessionToken();
+    const sessionID = createSessionToken();
 
-    const updatedUser = await updateUsersByEmail({
-      email: email,
-      token: token,
-      signingIn: true,
+    // [ ]: set up rate limit to prevent brute force, mentioned above in above todo
+
+    // TODO: CSRF
+    // [ ]: add CSRF-CSRF middleware
+    // [ ]: figure out CORS config
+    // [ ]: compare header technique.. owasp
+
+    createSecureCookie({
+      res: res,
+      name: ABSOLUTE_SESSION_COOKIE as string,
+      value: sessionID,
+      age: +(ABSOLUTE_SESSION_LENGTH as string),
     });
 
-    res.cookie(SESSION_COOKIE_NAME as string, token, {
-      expires: new Date(Date.now() + Number(SESSION_COOKIE_LENGTH)),
-      httpOnly: true,
-      secure: true,
+    createSecureCookie({
+      res: res,
+      name: IDLE_SESSION_COOKIE as string,
+      value: sessionID,
+      age: +(IDLE_SESSION_LENGTH as string),
     });
+
+    await redis.set(sessionID, userByEmail.id as number);
+    await redis.pexpire(sessionID, +(ABSOLUTE_SESSION_LENGTH as string));
 
     return res.status(200).json({
       message: "signing in",
-      user: updatedUser,
+      user: userByEmail,
     });
   } catch (error) {
     console.log(error);
@@ -68,7 +78,6 @@ export const signin = async (req: Request, res: Response) => {
   }
 };
 
-// successful sign up should redirect user to application
 export const signup = async (req: Request, res: Response) => {
   try {
     const { name, username, email, password }: UserInput = req.body;
@@ -94,24 +103,35 @@ export const signup = async (req: Request, res: Response) => {
     }
 
     // create email verification functionality
+    // TODO: this along with a password reset, would be a good usecase for jwt!
 
     const hashedPassword = await hashPassword(password);
-    const token = createSessionToken();
+    const sessionID = createSessionToken();
 
     const newUser: NewUser = {
       name: name,
       username: username,
       email: email,
       hashedPassword: hashedPassword,
-      sessionToken: token,
     };
 
     const insertedUser = await insertNewUser(newUser);
 
-    res.cookie(SESSION_COOKIE_NAME as string, token, {
-      expires: new Date(Date.now() + Number(SESSION_COOKIE_LENGTH)),
-      httpOnly: true,
-      secure: true,
+    await redis.set(sessionID, insertedUser.id as number);
+    await redis.pexpire(sessionID, +(ABSOLUTE_SESSION_LENGTH as string));
+
+    createSecureCookie({
+      res: res,
+      name: ABSOLUTE_SESSION_COOKIE as string,
+      value: sessionID,
+      age: +(ABSOLUTE_SESSION_LENGTH as string),
+    });
+
+    createSecureCookie({
+      res: res,
+      name: IDLE_SESSION_COOKIE as string,
+      value: sessionID,
+      age: +(IDLE_SESSION_LENGTH as string),
     });
 
     return res.status(201).json({
@@ -126,30 +146,13 @@ export const signup = async (req: Request, res: Response) => {
 
 export const signout = async (req: Request, res: Response) => {
   try {
-    const username = req.user.username;
-    const sessionToken = req.cookies[SESSION_COOKIE_NAME as string];
+    const sessionToken = req.signedCookies[ABSOLUTE_SESSION_COOKIE as string];
 
-    if (!req.cookies) {
-      return res.status(204).json({
-        message: "Session does not exist.",
-      });
-    }
+    await redis.del(sessionToken);
 
-    const userByToken = await findUsersBySessionToken(sessionToken);
+    res.clearCookie(ABSOLUTE_SESSION_COOKIE);
+    res.clearCookie(IDLE_SESSION_COOKIE);
 
-    if (!userByToken) {
-      res.clearCookie("session");
-      return res.status(204).json({
-        message: "Can't find user.",
-      });
-    }
-
-    const updatedUser = await updateUsersByEmail({
-      email: userByToken.email as string,
-      token: "",
-    });
-
-    res.clearCookie(SESSION_COOKIE_NAME as string);
     return res.status(204).json({
       message: "Signing out.",
     });

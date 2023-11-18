@@ -12,11 +12,13 @@ const verifyPassword = z.object({
 });
 
 const authCookieSchema = z.object({
-  "propel-session": z.string().min(1).endsWith("=="),
+  "idle-propel-session": z.union([z.string().min(1).endsWith("=="), z.undefined()]),
+  "absolute-propel-session": z.union([z.string().min(1).endsWith("=="), z.undefined()]),
 });
 
 export const authCookieValidator = authCookieSchema.transform((schema) => ({
-  "propel-sesion": schema["propel-session"].trim(),
+  "idle-propel-session": schema["idle-propel-session"]?.trim(),
+  "absolute-propel-session": schema["absolute-propel-session"]?.trim(),
 }));
 
 export const paramSchema = z

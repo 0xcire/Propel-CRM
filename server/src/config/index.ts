@@ -12,12 +12,10 @@ export const REDIS_PW = process.env.REDIS_PW;
 export const REDIS_USERNAME = process.env.REDIS_USERNAME;
 export const REDIS_PORT = process.env.REDIS_PORT;
 
-export const SESSION_COOKIE_NAME = process.env.SESSION_COOKIE_NAME;
-export const SESSION_COOKIE_LENGTH = process.env.SESSION_COOKIE_LENGTH;
-
-export const IDLE_SESSION_COOKIE = process.env.IDLE_SESSION_COOKIE;
-export const ABSOLUTE_SESSION_COOKIE = process.env.IDLE_SESION_COOKIE;
+export const IDLE_SESSION_COOKIE = "idle-propel-session";
 export const IDLE_SESSION_LENGTH = process.env.IDLE_SESSION_LENGTH;
+
+export const ABSOLUTE_SESSION_COOKIE = "absolute-propel-session";
 export const ABSOLUTE_SESSION_LENGTH = process.env.ABSOLUTE_SESSION_LENGTH;
 
 export const COOKIE_SECRET = process.env.COOKIE_SECRET;

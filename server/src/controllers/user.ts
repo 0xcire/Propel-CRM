@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { redis } from "../redis";
 import {
   deleteUserByID,
   findUsersByEmail,
@@ -7,7 +7,9 @@ import {
   updateUserByID,
 } from "../db/queries/user";
 import { checkPassword, hashPassword } from "../utils";
-import { SESSION_COOKIE_NAME } from "../config";
+import { ABSOLUTE_SESSION_COOKIE, IDLE_SESSION_COOKIE } from "../config";
+
+import type { Request, Response } from "express";
 
 // TODO: have some stuff here being repeated with auth controller, consider extracting
 
@@ -39,11 +41,17 @@ export const getMyInfo = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const sessionToken = req.signedCookies[ABSOLUTE_SESSION_COOKIE as string];
+
+    await redis.del(sessionToken);
 
     const deletedUser = await deleteUserByID(+id);
 
     // TODO: in future, need to also delete all related rows in other tables
-    res.clearCookie(SESSION_COOKIE_NAME as string);
+
+    res.clearCookie(ABSOLUTE_SESSION_COOKIE);
+    res.clearCookie(IDLE_SESSION_COOKIE);
+
     return res.status(200).json({
       message: "successfully deleted.",
       user: deletedUser,

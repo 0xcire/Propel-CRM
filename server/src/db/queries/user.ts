@@ -1,6 +1,7 @@
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "../";
 import { users } from "../schema";
+
 import type { UserResponse } from "../../controllers/types";
 import type { NewUser } from "../types";
 
@@ -11,7 +12,6 @@ type FindUsersByEmailParams = {
 
 type updateUsersByEmailParams = {
   email: string;
-  token: string;
   signingIn?: boolean;
 };
 
@@ -34,6 +34,7 @@ export const findUsersByEmail = async ({
 }: FindUsersByEmailParams): Promise<UserResponse | undefined> => {
   const user = await db
     .select({
+      id: users.id,
       email: users.email,
       ...(signingIn
         ? {
@@ -62,46 +63,6 @@ export const findUsersByUsername = async (username: string): Promise<UserRespons
   if (!user) {
     return undefined;
   }
-
-  return user[0];
-};
-
-export const findUsersBySessionToken = async (token: string): Promise<UserResponse | undefined> => {
-  const user = await db
-    .select({
-      id: users.id,
-      username: users.username,
-      email: users.email,
-    })
-    .from(users)
-    .where(eq(users.sessionToken, token));
-
-  if (!user) {
-    return undefined;
-  }
-
-  return user[0];
-};
-
-export const updateUsersByEmail = async ({ email, token, signingIn }: updateUsersByEmailParams) => {
-  const user = await db
-    .update(users)
-    .set({
-      sessionToken: token,
-      ...(signingIn
-        ? {
-            lastLogin: sql`CURRENT_TIMESTAMP`,
-          }
-        : {}),
-    })
-    .where(eq(users.email, email))
-    .returning({
-      id: users.id,
-      username: users.username,
-      name: users.name,
-      email: users.email,
-      lastLogin: users.lastLogin,
-    });
 
   return user[0];
 };

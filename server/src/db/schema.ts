@@ -1,16 +1,9 @@
-// users
-// listings
-// contacts
-// tasks
-// analytics
-
 import { relations } from "drizzle-orm";
 import {
   boolean,
   date,
   integer,
   numeric,
-  pgEnum,
   pgTable,
   primaryKey,
   serial,
