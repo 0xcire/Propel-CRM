@@ -12,8 +12,8 @@ const verifyPassword = z.object({
 });
 
 const authCookieSchema = z.object({
-  "idle-propel-session": z.union([z.string().min(1).endsWith("=="), z.undefined()]),
-  "absolute-propel-session": z.union([z.string().min(1).endsWith("=="), z.undefined()]),
+  "idle-propel-session": z.union([z.string().min(1), z.undefined()]),
+  "absolute-propel-session": z.union([z.string().min(1), z.undefined()]),
 });
 
 export const authCookieValidator = authCookieSchema.transform((schema) => ({

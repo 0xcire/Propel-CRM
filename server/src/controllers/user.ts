@@ -1,4 +1,4 @@
-import { redis } from "../redis";
+import { deleteRedisSession } from "../redis";
 import {
   deleteUserByID,
   findUsersByEmail,
@@ -43,7 +43,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     const { id } = req.params;
     const sessionToken = req.signedCookies[ABSOLUTE_SESSION_COOKIE as string];
 
-    await redis.del(sessionToken);
+    await deleteRedisSession(sessionToken);
 
     const deletedUser = await deleteUserByID(+id);
 

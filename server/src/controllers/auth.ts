@@ -1,4 +1,4 @@
-import { redis } from "../redis";
+import { deleteRedisSession, setRedisSession } from "../redis";
 import { findUsersByEmail, findUsersByUsername, insertNewUser } from "../db/queries/user";
 import { checkPassword, createSecureCookie, createSessionToken, hashPassword } from "../utils";
 import {
@@ -50,6 +50,11 @@ export const signin = async (req: Request, res: Response) => {
     // [ ]: add CSRF-CSRF middleware
     // [ ]: figure out CORS config
     // [ ]: compare header technique.. owasp
+    // [ ]: protect against state change endpoints...
+
+    // [ ]: allow user to terminate extraneous sessions
+    // ex. user logs into acct on multiple devices
+    // currently session is invalidated, but, old sessionID exists in redis for TTL
 
     createSecureCookie({
       res: res,
@@ -65,8 +70,7 @@ export const signin = async (req: Request, res: Response) => {
       age: +(IDLE_SESSION_LENGTH as string),
     });
 
-    await redis.set(sessionID, userByEmail.id as number);
-    await redis.pexpire(sessionID, +(ABSOLUTE_SESSION_LENGTH as string));
+    await setRedisSession(sessionID, userByEmail.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
 
     return res.status(200).json({
       message: "signing in",
@@ -117,8 +121,7 @@ export const signup = async (req: Request, res: Response) => {
 
     const insertedUser = await insertNewUser(newUser);
 
-    await redis.set(sessionID, insertedUser.id as number);
-    await redis.pexpire(sessionID, +(ABSOLUTE_SESSION_LENGTH as string));
+    await setRedisSession(sessionID, insertedUser.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
 
     createSecureCookie({
       res: res,
@@ -148,10 +151,18 @@ export const signout = async (req: Request, res: Response) => {
   try {
     const sessionToken = req.signedCookies[ABSOLUTE_SESSION_COOKIE as string];
 
-    await redis.del(sessionToken);
+    await deleteRedisSession(sessionToken);
 
-    res.clearCookie(ABSOLUTE_SESSION_COOKIE);
-    res.clearCookie(IDLE_SESSION_COOKIE);
+    res.clearCookie(ABSOLUTE_SESSION_COOKIE, {
+      domain: "localhost",
+      path: "/",
+      sameSite: "strict",
+    });
+    res.clearCookie(IDLE_SESSION_COOKIE, {
+      domain: "localhost",
+      path: "/",
+      sameSite: "strict",
+    });
 
     return res.status(204).json({
       message: "Signing out.",

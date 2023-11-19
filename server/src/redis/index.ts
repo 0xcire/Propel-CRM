@@ -13,3 +13,18 @@ export const redis = new Redis({
   autoResubscribe: false,
   maxRetriesPerRequest: 1,
 });
+
+export const setRedisSession = async (sessionID: string, userID: number, expires: number) => {
+  await redis.set(sessionID, userID);
+  await redis.pexpire(sessionID, expires);
+};
+
+export const getUserFromSession = async (sessionID: string) => {
+  const userID = await redis.get(sessionID);
+
+  return userID;
+};
+
+export const deleteRedisSession = async (sessionID: string) => {
+  await redis.del(sessionID);
+};
