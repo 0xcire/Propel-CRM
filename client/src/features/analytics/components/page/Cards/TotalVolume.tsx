@@ -32,10 +32,9 @@ export function TotalVolumeCard({
     );
   }
 
-  const filteredSalesVolumeData = filterAnalyticsData(
-    salesVolume.data as SalesVolumes,
-    currentTimeFrame
-  );
+  const filteredSalesVolumeData = salesVolume.data
+    ? filterAnalyticsData(salesVolume.data as SalesVolumes, currentTimeFrame)
+    : [];
 
   const salesVolumeTotal = filteredSalesVolumeData.reduce(
     (acc, { value: currentVolume }) => acc + +currentVolume,

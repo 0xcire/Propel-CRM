@@ -2,7 +2,13 @@ import { MoonStarIcon, SunIcon } from 'lucide-react';
 import { DropdownMenuItem } from '../ui/dropdown-menu';
 import { useThemeContext } from '@/context/ThemeContext';
 
-export function ThemeToggle(): JSX.Element {
+import type { Dispatch, SetStateAction } from 'react';
+
+export function ThemeToggle({
+  setOpen,
+}: {
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}): JSX.Element {
   const [theme, saveTheme] = useThemeContext();
 
   return (
@@ -11,6 +17,7 @@ export function ThemeToggle(): JSX.Element {
       onClick={(): void => {
         const themeValue = theme === 'light' ? 'dark' : 'light';
         saveTheme(themeValue);
+        setOpen(false);
       }}
     >
       {theme === 'light' ? (
