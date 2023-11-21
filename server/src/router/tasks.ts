@@ -10,7 +10,7 @@ import {
   searchUsersTasks,
 } from "../controllers/tasks";
 
-import { isAuth } from "../middlewares";
+import { validateSession, validateCSRF } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
 import { isTaskOwner } from "../middlewares/tasks";
 import { isListingOwner } from "../middlewares/listings";
@@ -32,23 +32,28 @@ export default (router: Router) => {
   router.get(
     "/dashboard/tasks",
     validateRequest({ query: dashboardTaskQueryValidator, cookies: authCookieValidator }),
-    isAuth,
+    validateSession,
     getDashboardTasks
   );
 
-  router.get("/tasks", validateRequest({ query: taskQueryValidator, cookies: authCookieValidator }), isAuth, getTasks);
+  router.get(
+    "/tasks",
+    validateRequest({ query: taskQueryValidator, cookies: authCookieValidator }),
+    validateSession,
+    getTasks
+  );
 
   router.get(
     "/tasks/search",
     validateRequest({ cookies: authCookieValidator, query: taskQuerySearchValidator }),
-    isAuth,
+    validateSession,
     searchUsersTasks
   );
 
   router.get(
     "/tasks/:taskID",
     validateRequest({ params: taskIDValidator, cookies: authCookieValidator }),
-    isAuth,
+    validateSession,
     isTaskOwner,
     getTask
   );
@@ -56,7 +61,7 @@ export default (router: Router) => {
   router.get(
     "/tasks/listings/:listingID",
     validateRequest({ query: taskQueryValidator, params: listingIDValidator, cookies: authCookieValidator }),
-    isAuth,
+    validateSession,
     isListingOwner,
     getTasks
   );
@@ -64,7 +69,7 @@ export default (router: Router) => {
   router.get(
     "/tasks/contacts/:contactID",
     validateRequest({ query: taskQueryValidator, params: contactIDValidator, cookies: authCookieValidator }),
-    isAuth,
+    validateSession,
     isContactOwner,
     getTasks
   );
@@ -72,14 +77,16 @@ export default (router: Router) => {
   router.post(
     "/tasks",
     validateRequest({ body: createTaskValidator, cookies: authCookieValidator }),
-    isAuth,
+    validateSession,
+    validateCSRF,
     createTask
   );
 
   router.patch(
     "/tasks/:taskID",
     validateRequest({ body: updateTaskValidator, cookies: authCookieValidator, params: taskIDValidator }),
-    isAuth,
+    validateSession,
+    validateCSRF,
     isTaskOwner,
     updateTask
   );
@@ -87,7 +94,8 @@ export default (router: Router) => {
   router.delete(
     "/tasks/:taskID",
     validateRequest({ params: taskIDValidator, cookies: authCookieValidator }),
-    isAuth,
+    validateSession,
+    validateCSRF,
     isTaskOwner,
     deleteTask
   );

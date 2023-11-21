@@ -1,3 +1,4 @@
+import { parseDocumentCookies } from '@/utils';
 import { API_URL } from '@/config';
 
 type FetchMethodParams = {
@@ -25,7 +26,9 @@ export const Post = ({
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      'X-PROPEL-CSRF': getCSRFToken(),
     },
+    credentials: 'include',
     method: 'POST',
     body: body,
   });
@@ -39,6 +42,7 @@ export const Patch = ({
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      'X-PROPEL-CSRF': getCSRFToken(),
     },
     method: 'PATCH',
     body: body,
@@ -57,8 +61,17 @@ export const Delete = ({
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      'X-PROPEL-CSRF': getCSRFToken(),
     },
     method: 'DELETE',
     body: body,
   });
 };
+
+function getCSRFToken(): string {
+  const cookies = parseDocumentCookies();
+
+  const csrfToken = cookies['csrf-token'] ?? '';
+
+  return csrfToken;
+}

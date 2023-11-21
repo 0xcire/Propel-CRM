@@ -3,6 +3,9 @@ declare namespace Express {
     user: {
       id: number;
     };
+    session: {
+      id: string;
+    };
     task: {};
     listing: {
       id: number;

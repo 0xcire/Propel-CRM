@@ -1,37 +1,45 @@
 import express from "express";
-
-import cors from "cors";
 import helmet from "helmet";
-
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import compression from "compression";
-
-import dotenv from "dotenv";
-
-import { sql } from "drizzle-orm";
-
+// import { sql } from "drizzle-orm";
 import router from "./router";
-
-dotenv.config();
+import { COOKIE_SECRET, ENV } from "./config";
 
 const app = express();
+app.set("trust proxy", true);
 
-app.use(helmet());
-app.use(helmet.crossOriginResourcePolicy({ policy: "same-site" }));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      },
+    },
+    crossOriginResourcePolicy: {
+      policy: "same-origin",
+    },
+  })
+);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser(COOKIE_SECRET));
+
+app.use(compression());
+
+// [ ]: will need to change origin when deploying
 app.use(
   cors({
+    origin: "localhost:8080",
     credentials: true,
   })
 );
 
-app.use(compression());
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 const PORT = 1337;
 const server = app.listen(PORT, () => {
-  if (process.env.NODE_ENV === "development") {
+  if (ENV === "development") {
     console.log(`DOCKER: http://localhost:8080 \n NON-DOCKER: http://localhost:5173`);
   } else {
     console.log("running in prod");

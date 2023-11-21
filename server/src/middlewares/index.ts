@@ -1,18 +1,24 @@
+import { timingSafeEqual } from "crypto";
 import { deleteRedisSession, getUserFromSession } from "../redis";
-import { createSecureCookie } from "../utils";
-import { ABSOLUTE_SESSION_COOKIE, IDLE_SESSION_COOKIE, IDLE_SESSION_LENGTH } from "../config";
+import { createSecureCookie, deriveSessionCSRFToken } from "../utils";
+import {
+  ABSOLUTE_SESSION_COOKIE,
+  CSRF_COOKIE,
+  IDLE_SESSION_COOKIE,
+  IDLE_SESSION_LENGTH,
+  sessionRelatedCookies,
+} from "../config";
 
 import type { Request, Response, NextFunction } from "express";
 
-export const isAuth = async (req: Request, res: Response, next: NextFunction) => {
+export const validateSession = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const absoluteSession = req.signedCookies[ABSOLUTE_SESSION_COOKIE];
-    const idleSession = req.signedCookies[IDLE_SESSION_COOKIE];
-    // 'hacky' way of dealing with uncleared cookies in firefox below
-    // supposedly no security issue, but id rather be thorough
+    const absoluteSession: string | undefined = req.signedCookies[ABSOLUTE_SESSION_COOKIE];
+    const idleSession: string | undefined = req.signedCookies[IDLE_SESSION_COOKIE];
+    const csrfCookie = req.cookies["X-PROPEL-CSRF"];
+    // hacky solution to manually delete firefox cookies. no apparent security risk. moreso for thoroughness
     const isFirefox = req.header("user-agent")?.includes("Firefox");
 
-    // signed cookies handle this case?
     if (absoluteSession && idleSession && absoluteSession !== idleSession) {
       return res.status(403).json({
         message: "Session is invalid.",
@@ -22,52 +28,35 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
     if (!absoluteSession) {
       if (idleSession) {
         res.clearCookie(IDLE_SESSION_COOKIE, {
-          domain: "localhost",
           path: "/",
           sameSite: "strict",
         });
+
         await deleteRedisSession(idleSession);
       }
 
-      if (isFirefox) {
-        if (!idleSession) {
-          createSecureCookie({
-            res: res,
-            name: ABSOLUTE_SESSION_COOKIE,
-            value: "expired",
-            age: 1000,
-          });
-          createSecureCookie({
-            res: res,
-            name: IDLE_SESSION_COOKIE,
-            value: "expired",
-            age: 1000,
-          });
-          res.clearCookie(ABSOLUTE_SESSION_COOKIE, {
-            domain: "localhost",
-            path: "/",
-            sameSite: "strict",
-          });
-          res.clearCookie(IDLE_SESSION_COOKIE, {
-            domain: "localhost",
-            path: "/",
-            sameSite: "strict",
-          });
-        } else {
-          createSecureCookie({
-            res: res,
-            name: ABSOLUTE_SESSION_COOKIE,
-            value: "expired",
-            age: 1000,
-          });
+      if (csrfCookie) {
+        res.clearCookie(CSRF_COOKIE, {
+          path: "/",
+          sameSite: "strict",
+        });
+      }
 
-          res.clearCookie(ABSOLUTE_SESSION_COOKIE, {
-            domain: "localhost",
-            path: "/",
+      if (isFirefox) {
+        for (let i = 0; i < sessionRelatedCookies.length; i++) {
+          res.cookie(sessionRelatedCookies[i], "", {
+            maxAge: 1000,
+            sameSite: "strict",
+          });
+          res.clearCookie(sessionRelatedCookies[i], {
             sameSite: "strict",
           });
         }
       }
+
+      req.session = {
+        id: "",
+      };
 
       return res.status(403).json({
         message: "Session does not exist",
@@ -78,25 +67,32 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
       if (absoluteSession) {
         await deleteRedisSession(absoluteSession);
         res.clearCookie(ABSOLUTE_SESSION_COOKIE, {
-          domain: "localhost",
+          path: "/",
+          sameSite: "strict",
+        });
+
+        res.clearCookie(CSRF_COOKIE, {
           path: "/",
           sameSite: "strict",
         });
       }
 
-      if (!isFirefox) {
-        createSecureCookie({
-          res: res,
-          name: IDLE_SESSION_COOKIE,
-          value: "expired",
-          age: 1000,
-        });
-        res.clearCookie(IDLE_SESSION_COOKIE, {
-          domain: "localhost",
-          path: "/",
-          sameSite: "strict",
-        });
+      if (isFirefox) {
+        for (let i = 0; i < sessionRelatedCookies.length; i++) {
+          res.cookie(sessionRelatedCookies[i], "", {
+            maxAge: 1000,
+            sameSite: "strict",
+          });
+          res.clearCookie(sessionRelatedCookies[i], {
+            path: "/",
+            sameSite: "strict",
+          });
+        }
       }
+
+      req.session = {
+        id: "",
+      };
 
       return res.status(403).json({
         message: "Session has timed out.",
@@ -115,10 +111,12 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
       req.user = {
         id: +userIDByToken,
       };
+
+      req.session = { id: absoluteSession };
     }
 
+    // reset idle session
     if (idleSession && absoluteSession) {
-      // reset idle session
       createSecureCookie({
         res: res,
         age: +(IDLE_SESSION_LENGTH as string),
@@ -130,7 +128,49 @@ export const isAuth = async (req: Request, res: Response, next: NextFunction) =>
     return next();
   } catch (error) {
     console.log(error);
-    return res.status(400).json({});
+    return res.status(500).json({});
+  }
+};
+
+// notes:
+// login csrf only necessary when distinction between (no) session is vague, ecomm site
+// anonymous session likely solution
+// [ ]: when in prod. should test against origin/referer
+export const validateCSRF = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const receivedCSRFToken = req.headers["x-propel-csrf"] as string;
+    const sessionID = req.session.id;
+
+    // console.log(req.get("Referer"));
+
+    if (!req.is("json")) {
+      return res.status(400).json({
+        message: "Unsupported content type.",
+      });
+    }
+
+    if (!receivedCSRFToken) {
+      return res.status(403).json({
+        message: "Invalid CSRF Token",
+      });
+    }
+
+    const receivedCSRFTokenBuffer = Buffer.from(receivedCSRFToken);
+    const csrfTokenExpectedBuffer = Buffer.from(deriveSessionCSRFToken(sessionID));
+
+    if (
+      receivedCSRFTokenBuffer.length === csrfTokenExpectedBuffer.length &&
+      !timingSafeEqual(receivedCSRFTokenBuffer, csrfTokenExpectedBuffer)
+    ) {
+      return res.status(403).json({
+        message: "Invalid CSRF Token",
+      });
+    }
+
+    return next();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
   }
 };
 

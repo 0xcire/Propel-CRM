@@ -18,9 +18,19 @@ export const IDLE_SESSION_LENGTH = process.env.IDLE_SESSION_LENGTH;
 export const ABSOLUTE_SESSION_COOKIE = "absolute-propel-session";
 export const ABSOLUTE_SESSION_LENGTH = process.env.ABSOLUTE_SESSION_LENGTH;
 
+// for quick testing
+// export const IDLE_SESSION_LENGTH = "1000";
+// export const ABSOLUTE_SESSION_LENGTH = "5000";
+
+export const CSRF_COOKIE = "csrf-token";
+
+export const CSRF_SECRET = process.env.CSRF_SECRET as string;
+
 export const COOKIE_SECRET = process.env.COOKIE_SECRET;
 
 export const SALT_ROUNDS = process.env.SALT_ROUNDS;
+
+export const sessionRelatedCookies = [ABSOLUTE_SESSION_COOKIE, IDLE_SESSION_COOKIE, CSRF_COOKIE];
 
 export const getRequestBodies = (req: Request) => {
   return [

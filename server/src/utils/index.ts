@@ -1,6 +1,6 @@
-import crypto from "crypto";
-import bcrypt from "bcrypt";
-import { SALT_ROUNDS } from "../config";
+import { randomBytes, createHmac } from "crypto";
+import { hash, compare } from "bcrypt";
+import { CSRF_SECRET, SALT_ROUNDS } from "../config";
 
 import type { Response } from "express";
 
@@ -12,16 +12,20 @@ type CreateSecureCookieParams = {
 };
 
 // param: 16 is constant and should not cause errors
-export const createSessionToken = () => {
-  return crypto.randomBytes(16).toString("base64");
+export const createToken = () => {
+  return randomBytes(16).toString("base64");
+};
+
+export const deriveSessionCSRFToken = (sessionID: string) => {
+  return createHmac("sha256", CSRF_SECRET).update(sessionID).digest("base64url");
 };
 
 export const hashPassword = async (password: string) => {
-  return bcrypt.hash(password.trim(), +(SALT_ROUNDS as string));
+  return hash(password.trim(), +(SALT_ROUNDS as string));
 };
 
 export const checkPassword = async (password: string, storedPassword: string) => {
-  return bcrypt.compare(password.trim(), storedPassword);
+  return compare(password.trim(), storedPassword);
 };
 
 export const objectNotEmpty = (object: Record<string, unknown>) => {

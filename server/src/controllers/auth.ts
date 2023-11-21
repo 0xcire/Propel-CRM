@@ -1,11 +1,13 @@
 import { deleteRedisSession, setRedisSession } from "../redis";
 import { findUsersByEmail, findUsersByUsername, insertNewUser } from "../db/queries/user";
-import { checkPassword, createSecureCookie, createSessionToken, hashPassword } from "../utils";
+import { checkPassword, createSecureCookie, createToken, deriveSessionCSRFToken, hashPassword } from "../utils";
 import {
   IDLE_SESSION_COOKIE,
   ABSOLUTE_SESSION_COOKIE,
   IDLE_SESSION_LENGTH,
   ABSOLUTE_SESSION_LENGTH,
+  CSRF_COOKIE,
+  sessionRelatedCookies,
 } from "../config/index";
 
 import type { Request, Response } from "express";
@@ -26,33 +28,35 @@ export const signin = async (req: Request, res: Response) => {
     }
 
     const userByEmail = await findUsersByEmail({ email: email, signingIn: true });
+    const passwordMatches = await checkPassword(password, userByEmail?.hashedPassword as string);
 
     if (!userByEmail) {
       return res.status(401).json({
-        message: "Account with this email does not exist.",
+        message: "Incorrect email or password.",
       });
     }
-
-    const passwordMatches = await checkPassword(password, userByEmail.hashedPassword as string);
 
     // TODO: after X tries, 'redirect' to account recovery or timeout
     if (!passwordMatches) {
       return res.status(401).json({
-        message: "Incorrect password.",
+        message: "Incorrect email or password.",
       });
     }
 
-    const sessionID = createSessionToken();
+    const sessionID = createToken();
 
     // [ ]: set up rate limit to prevent brute force, mentioned above in above todo
 
+    // [ ]: cors config: nginx
+
     // TODO: CSRF
-    // [ ]: add CSRF-CSRF middleware
-    // [ ]: figure out CORS config
-    // [ ]: compare header technique.. owasp
-    // [ ]: protect against state change endpoints...
+    // [x]: csrf token should mirror absolute token, deleted on timeout, deleted on logout, regenerated on new session, etc
+    // [x]: synchronizer token pattern -> cookie to header pattern based on session
+    // [x]: compare header technique.. owasp
+    // [x]: protect against state change endpoints...
 
     // [ ]: allow user to terminate extraneous sessions
+    // [ ]: would live in settings page under security
     // ex. user logs into acct on multiple devices
     // currently session is invalidated, but, old sessionID exists in redis for TTL
 
@@ -69,6 +73,16 @@ export const signin = async (req: Request, res: Response) => {
       value: sessionID,
       age: +(IDLE_SESSION_LENGTH as string),
     });
+
+    res.cookie(CSRF_COOKIE, deriveSessionCSRFToken(sessionID), {
+      httpOnly: false,
+      secure: true,
+      signed: false,
+      sameSite: "strict",
+      maxAge: +(ABSOLUTE_SESSION_LENGTH as string),
+    });
+
+    // res.clearCookie('no-session-csrf')
 
     await setRedisSession(sessionID, userByEmail.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
 
@@ -110,7 +124,7 @@ export const signup = async (req: Request, res: Response) => {
     // TODO: this along with a password reset, would be a good usecase for jwt!
 
     const hashedPassword = await hashPassword(password);
-    const sessionID = createSessionToken();
+    const sessionID = createToken();
 
     const newUser: NewUser = {
       name: name,
@@ -137,6 +151,14 @@ export const signup = async (req: Request, res: Response) => {
       age: +(IDLE_SESSION_LENGTH as string),
     });
 
+    res.cookie(CSRF_COOKIE, deriveSessionCSRFToken(sessionID), {
+      httpOnly: false,
+      secure: true,
+      signed: false,
+      sameSite: "strict",
+      maxAge: +(ABSOLUTE_SESSION_LENGTH as string),
+    });
+
     return res.status(201).json({
       message: "Signing up.",
       user: insertedUser,
@@ -153,15 +175,11 @@ export const signout = async (req: Request, res: Response) => {
 
     await deleteRedisSession(sessionToken);
 
-    res.clearCookie(ABSOLUTE_SESSION_COOKIE, {
-      domain: "localhost",
-      path: "/",
-      sameSite: "strict",
-    });
-    res.clearCookie(IDLE_SESSION_COOKIE, {
-      domain: "localhost",
-      path: "/",
-      sameSite: "strict",
+    sessionRelatedCookies.forEach((cookie) => {
+      res.clearCookie(cookie, {
+        path: "/",
+        sameSite: "strict",
+      });
     });
 
     return res.status(204).json({
