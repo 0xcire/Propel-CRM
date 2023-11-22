@@ -8,6 +8,8 @@ import {
   ABSOLUTE_SESSION_LENGTH,
   CSRF_COOKIE,
   sessionRelatedCookies,
+  PRE_AUTH_SESSION_COOKIE,
+  CSRF_SECRET,
 } from "../config/index";
 
 import type { Request, Response } from "express";
@@ -47,19 +49,6 @@ export const signin = async (req: Request, res: Response) => {
 
     // [ ]: set up rate limit to prevent brute force, mentioned above in above todo
 
-    // [ ]: cors config: nginx
-
-    // TODO: CSRF
-    // [x]: csrf token should mirror absolute token, deleted on timeout, deleted on logout, regenerated on new session, etc
-    // [x]: synchronizer token pattern -> cookie to header pattern based on session
-    // [x]: compare header technique.. owasp
-    // [x]: protect against state change endpoints...
-
-    // [ ]: allow user to terminate extraneous sessions
-    // [ ]: would live in settings page under security
-    // ex. user logs into acct on multiple devices
-    // currently session is invalidated, but, old sessionID exists in redis for TTL
-
     createSecureCookie({
       res: res,
       name: ABSOLUTE_SESSION_COOKIE as string,
@@ -74,7 +63,7 @@ export const signin = async (req: Request, res: Response) => {
       age: +(IDLE_SESSION_LENGTH as string),
     });
 
-    res.cookie(CSRF_COOKIE, deriveSessionCSRFToken(sessionID), {
+    res.cookie(CSRF_COOKIE, deriveSessionCSRFToken(CSRF_SECRET, sessionID), {
       httpOnly: false,
       secure: true,
       signed: false,
@@ -82,7 +71,14 @@ export const signin = async (req: Request, res: Response) => {
       maxAge: +(ABSOLUTE_SESSION_LENGTH as string),
     });
 
-    // res.clearCookie('no-session-csrf')
+    res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
+      path: "/",
+      sameSite: "strict",
+    });
+
+    req.session = {
+      id: sessionID,
+    };
 
     await setRedisSession(sessionID, userByEmail.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
 
@@ -121,7 +117,7 @@ export const signup = async (req: Request, res: Response) => {
     }
 
     // create email verification functionality
-    // TODO: this along with a password reset, would be a good usecase for jwt!
+    // TODO: this along wth a password reset, would be a good usecase for jwt!
 
     const hashedPassword = await hashPassword(password);
     const sessionID = createToken();
@@ -137,6 +133,15 @@ export const signup = async (req: Request, res: Response) => {
 
     await setRedisSession(sessionID, insertedUser.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
 
+    res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
+      path: "/",
+      sameSite: "strict",
+    });
+
+    req.session = {
+      id: sessionID,
+    };
+
     createSecureCookie({
       res: res,
       name: ABSOLUTE_SESSION_COOKIE as string,
@@ -151,13 +156,22 @@ export const signup = async (req: Request, res: Response) => {
       age: +(IDLE_SESSION_LENGTH as string),
     });
 
-    res.cookie(CSRF_COOKIE, deriveSessionCSRFToken(sessionID), {
+    res.cookie(CSRF_COOKIE, deriveSessionCSRFToken(CSRF_SECRET, sessionID), {
       httpOnly: false,
       secure: true,
       signed: false,
       sameSite: "strict",
       maxAge: +(ABSOLUTE_SESSION_LENGTH as string),
     });
+
+    res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
+      path: "/",
+      sameSite: "strict",
+    });
+
+    req.session = {
+      id: sessionID,
+    };
 
     return res.status(201).json({
       message: "Signing up.",
@@ -181,6 +195,10 @@ export const signout = async (req: Request, res: Response) => {
         sameSite: "strict",
       });
     });
+
+    req.session = {
+      id: "",
+    };
 
     return res.status(204).json({
       message: "Signing out.",

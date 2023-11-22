@@ -1,6 +1,6 @@
-import { randomBytes, createHmac } from "crypto";
+import { randomBytes, createHmac, timingSafeEqual } from "crypto";
 import { hash, compare } from "bcrypt";
-import { CSRF_SECRET, SALT_ROUNDS } from "../config";
+import { CSRF_SECRET, PRE_AUTH_CSRF_SECRET, SALT_ROUNDS } from "../config";
 
 import type { Response } from "express";
 
@@ -11,13 +11,16 @@ type CreateSecureCookieParams = {
   age: number;
 };
 
-// param: 16 is constant and should not cause errors
+// param: is constant and should not cause errors
 export const createToken = () => {
   return randomBytes(16).toString("base64");
 };
+export const createAnonymousToken = () => {
+  return randomBytes(32).toString("base64");
+};
 
-export const deriveSessionCSRFToken = (sessionID: string) => {
-  return createHmac("sha256", CSRF_SECRET).update(sessionID).digest("base64url");
+export const deriveSessionCSRFToken = (secret: string, sessionID: string) => {
+  return createHmac("sha256", secret).update(sessionID).digest("base64url");
 };
 
 export const hashPassword = async (password: string) => {
@@ -40,6 +43,10 @@ export const createSecureCookie = ({ res, name, value, age }: CreateSecureCookie
     sameSite: "strict",
     signed: true,
   });
+};
+
+export const safeComparison = (a: Buffer, b: Buffer) => {
+  return a.length === b.length && timingSafeEqual(a, b);
 };
 
 export const getCurrentYear = () => new Date().getFullYear();

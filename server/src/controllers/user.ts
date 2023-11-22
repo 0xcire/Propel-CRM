@@ -7,7 +7,7 @@ import {
   updateUserByID,
 } from "../db/queries/user";
 import { checkPassword, hashPassword } from "../utils";
-import { ABSOLUTE_SESSION_COOKIE, IDLE_SESSION_COOKIE } from "../config";
+import { ABSOLUTE_SESSION_COOKIE, sessionRelatedCookies } from "../config";
 
 import type { Request, Response } from "express";
 
@@ -48,9 +48,12 @@ export const deleteUser = async (req: Request, res: Response) => {
     // TODO: in future, need to also delete all related rows in other tables
     const deletedUser = await deleteUserByID(+id);
 
-    res.clearCookie(ABSOLUTE_SESSION_COOKIE);
-    res.clearCookie(IDLE_SESSION_COOKIE);
-
+    sessionRelatedCookies.forEach((cookie) => {
+      res.clearCookie(cookie, {
+        path: "/",
+        sameSite: "strict",
+      });
+    });
     return res.status(200).json({
       message: "successfully deleted.",
       user: deletedUser,

@@ -18,13 +18,18 @@ export const IDLE_SESSION_LENGTH = process.env.IDLE_SESSION_LENGTH;
 export const ABSOLUTE_SESSION_COOKIE = "absolute-propel-session";
 export const ABSOLUTE_SESSION_LENGTH = process.env.ABSOLUTE_SESSION_LENGTH;
 
+export const PRE_AUTH_SESSION_COOKIE = "pre-auth-session";
+export const PRE_AUTH_SESSION_LENGTH = process.env.PRE_AUTH_SESSION_LENGTH;
+
 // for quick testing
 // export const IDLE_SESSION_LENGTH = "1000";
 // export const ABSOLUTE_SESSION_LENGTH = "5000";
+// export const PRE_AUTH_SESSION_LENGTH = "5000";
 
 export const CSRF_COOKIE = "csrf-token";
 
 export const CSRF_SECRET = process.env.CSRF_SECRET as string;
+export const PRE_AUTH_CSRF_SECRET = process.env.PRE_AUTH_CSRF_SECRET as string;
 
 export const COOKIE_SECRET = process.env.COOKIE_SECRET;
 
