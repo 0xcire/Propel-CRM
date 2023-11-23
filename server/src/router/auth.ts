@@ -1,7 +1,12 @@
 import { Router } from "express";
-import { validateCSRF, validatePreAuthSession, validateSession } from "../middlewares";
+
+import { validatePreAuthSession, validateSession } from "../middlewares/validate-session";
+import { validateCSRF } from "../middlewares/validate-csrf";
+
 import { validateRequest } from "../middlewares/validate-input";
+
 import { signup, signin, signout } from "../controllers/auth";
+
 import { authCookieValidator, signinValidator, signupValidator } from "../db/validation-schema";
 
 export default (router: Router) => {

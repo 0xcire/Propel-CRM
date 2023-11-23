@@ -10,8 +10,9 @@ import {
   deleteContact,
 } from "../controllers/contacts";
 
-import { validateCSRF, validateSession } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
+import { validateSession } from "../middlewares/validate-session";
+import { validateCSRF } from "../middlewares/validate-csrf";
 import { isContactOwner } from "../middlewares/contacts";
 
 import {

@@ -29,7 +29,6 @@ app.use(cookieParser(COOKIE_SECRET));
 
 app.use(compression());
 
-// [ ]: will need to change origin when deploying
 app.use(
   cors({
     origin: "localhost:8080",

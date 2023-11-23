@@ -15,7 +15,8 @@ import {
 } from "../controllers/listings";
 
 import { validateRequest } from "../middlewares/validate-input";
-import { validateCSRF, validateSession } from "../middlewares";
+import { validateSession } from "../middlewares/validate-session";
+import { validateCSRF } from "../middlewares/validate-csrf";
 import { isListingOwner } from "../middlewares/listings";
 import { isContactOwner } from "../middlewares/contacts";
 

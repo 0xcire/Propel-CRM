@@ -1,9 +1,8 @@
 import { Router } from "express";
 
-import { validateSession, isOwner } from "../middlewares";
+import { isOwner } from "../middlewares";
+import { validateSession } from "../middlewares/validate-session";
 import { validateRequest } from "../middlewares/validate-input";
-
-import { analyticsQuerySchema, authCookieValidator, paramSchema } from "../db/validation-schema";
 
 import {
   getAvgListingDaysOnMarket,
@@ -12,6 +11,8 @@ import {
   getListToSaleRatioForYear,
   getSalesVolumeForYear,
 } from "../controllers/analytics";
+
+import { analyticsQuerySchema, authCookieValidator, paramSchema } from "../db/validation-schema";
 
 export default (router: Router) => {
   router.get(

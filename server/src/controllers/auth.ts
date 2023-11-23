@@ -1,4 +1,7 @@
-import { deleteRedisSession, setRedisSession } from "../redis";
+// rate limit ref: https://github.com/animir/node-rate-limiter-flexible/wiki/Overall-example#minimal-protection-against-password-brute-force
+
+import { RateLimiterRedis, RateLimiterRes } from "rate-limiter-flexible";
+import { deleteRedisSession, redis, setRedisSession } from "../redis";
 import { findUsersByEmail, findUsersByUsername, insertNewUser } from "../db/queries/user";
 import { checkPassword, createSecureCookie, createToken, deriveSessionCSRFToken, hashPassword } from "../utils";
 import {
@@ -21,6 +24,20 @@ import type { UserInput } from "./types";
 
 // TODO: signin = async(req,res): Promise<PropelResponse>
 
+const maxConsecutiveFailsByEmail = 5;
+
+const limiterConsecutiveFailsByEmail = new RateLimiterRedis({
+  storeClient: redis,
+
+  keyPrefix: "login_fail_consecutive_username",
+  points: maxConsecutiveFailsByEmail,
+  duration: 60 * 60 * 2, // Store number for two hours since first fail
+  blockDuration: 60 * 15, // Block for 15 minutes
+});
+
+// [x]: set up rate limit to prevent brute force, mentioned above in above todo, nginx handles most rate limit, but can also bring that logic down to express
+// [ ]: client side timeout noti
+
 export const signin = async (req: Request, res: Response) => {
   try {
     const { email, password }: UserInput = req.body;
@@ -29,25 +46,44 @@ export const signin = async (req: Request, res: Response) => {
       return res.sendStatus(400);
     }
 
-    const userByEmail = await findUsersByEmail({ email: email, signingIn: true });
-    const passwordMatches = await checkPassword(password, userByEmail?.hashedPassword as string);
+    const rlResEmail = await limiterConsecutiveFailsByEmail.get(email);
 
-    if (!userByEmail) {
-      return res.status(401).json({
-        message: "Incorrect email or password.",
-      });
-    }
+    let userByEmail, passwordMatches;
 
-    // TODO: after X tries, 'redirect' to account recovery or timeout
-    if (!passwordMatches) {
-      return res.status(401).json({
-        message: "Incorrect email or password.",
+    if (rlResEmail !== null && rlResEmail.consumedPoints > maxConsecutiveFailsByEmail) {
+      console.log("CLIENT IS BLOCKED BY EXCEEDING MAX TRIES");
+      const retrySecs = Math.round(rlResEmail.msBeforeNext / 1000) || 1;
+      res.set("Retry-After", String(retrySecs));
+      return res.status(429).json({
+        message: `Too many requests. Try again in ${String(Math.round(+retrySecs / 60))} minutes`,
       });
+    } else {
+      userByEmail = await findUsersByEmail({ email: email, signingIn: true });
+      passwordMatches = await checkPassword(password, userByEmail?.hashedPassword as string);
+
+      // suggest signing up, redirect to account recovery, send email if email exists, etc
+      // notify of how many retries they have
+      if (!userByEmail || !passwordMatches) {
+        try {
+          await limiterConsecutiveFailsByEmail.consume(email);
+          const tries = rlResEmail?.remainingPoints;
+          return res.status(401).json({
+            message: `Incorrect email or password. ${rlResEmail?.remainingPoints ?? "5"} tries remaining.`,
+          });
+        } catch (error) {
+          if (error instanceof Error) {
+            return res.status(500).json({});
+          } else if (error instanceof RateLimiterRes) {
+            res.set("Retry-After", String(Math.round(error.msBeforeNext / 1000)) || "1");
+            return res.status(429).json({
+              message: `Too many requests. try again in ${String(Math.round(error.msBeforeNext / 1000 / 60))} minutes.`,
+            });
+          }
+        }
+      }
     }
 
     const sessionID = createToken();
-
-    // [ ]: set up rate limit to prevent brute force, mentioned above in above todo
 
     createSecureCookie({
       res: res,
@@ -76,11 +112,13 @@ export const signin = async (req: Request, res: Response) => {
       sameSite: "strict",
     });
 
+    await limiterConsecutiveFailsByEmail.delete(email);
+
     req.session = {
       id: sessionID,
     };
 
-    await setRedisSession(sessionID, userByEmail.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
+    await setRedisSession(sessionID, userByEmail?.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
 
     return res.status(200).json({
       message: "signing in",
@@ -116,8 +154,8 @@ export const signup = async (req: Request, res: Response) => {
       });
     }
 
-    // create email verification functionality
-    // TODO: this along wth a password reset, would be a good usecase for jwt!
+    // create email verificaation functionality
+    // TODO: this along wth  password reset, would be a good usecase for jwt!
 
     const hashedPassword = await hashPassword(password);
     const sessionID = createToken();

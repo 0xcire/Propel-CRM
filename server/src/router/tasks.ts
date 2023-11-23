@@ -10,8 +10,9 @@ import {
   searchUsersTasks,
 } from "../controllers/tasks";
 
-import { validateSession, validateCSRF } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
+import { validateSession } from "../middlewares/validate-session";
+import { validateCSRF } from "../middlewares/validate-csrf";
 import { isTaskOwner } from "../middlewares/tasks";
 import { isListingOwner } from "../middlewares/listings";
 import { isContactOwner } from "../middlewares/contacts";

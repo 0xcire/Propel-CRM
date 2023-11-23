@@ -1,7 +1,12 @@
 import { Router } from "express";
+
 import { deleteUser, getMyInfo, updateUser } from "../controllers/user";
-import { validateSession, isOwner, validateCSRF } from "../middlewares";
+
+import { isOwner } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
+import { validateCSRF } from "../middlewares/validate-csrf";
+import { validateSession } from "../middlewares/validate-session";
+
 import { authCookieValidator, paramSchema, updateUserValidator } from "../db/validation-schema";
 
 export default (router: Router) => {
