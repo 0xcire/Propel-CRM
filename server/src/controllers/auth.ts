@@ -28,7 +28,6 @@ const maxConsecutiveFailsByEmail = 5;
 
 const limiterConsecutiveFailsByEmail = new RateLimiterRedis({
   storeClient: redis,
-
   keyPrefix: "login_fail_consecutive_username",
   points: maxConsecutiveFailsByEmail,
   duration: 60 * 60 * 2, // Store number for two hours since first fail
@@ -232,6 +231,11 @@ export const signout = async (req: Request, res: Response) => {
         path: "/",
         sameSite: "strict",
       });
+    });
+
+    res.clearCookie("idle", {
+      path: "/",
+      sameSite: "strict",
     });
 
     req.session = {

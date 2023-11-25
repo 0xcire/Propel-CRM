@@ -33,7 +33,11 @@ A CRM for real estate agents.
   - average days on market
   - sale to list ratio
 
-- Broken Object Level Authorization consideration
+- Authentication & Security (following OWASP standards)
+  - XSS validation
+  - CSRF protection using the cookie to header pattern
+  - Idle / Absolute session management
+  - (to implement) authentication in terms of secure password resets, etc
 
 ## Architecture
 
@@ -57,8 +61,13 @@ A CRM for real estate agents.
 
 ### Database
 
+- Redis
 - PostgreSQL on [Neon](https://neon.tech/)
 - Drizzle ORM
+
+### Cloud
+
+- TBD... (AWS or GCP)
 
 ### Containerization
 
@@ -100,10 +109,18 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 
 ## Learning Points
 
+- Understanding the full scope of a feature, from db design to ui!
+
 - Getting a better understanding of TypeScript generics
 
   - useful for data transforming utility functions
   - helped create typesafe, reusable form components based off Shadcn implementation
+
+- Databases
+
+  - Pros/Cons of using SQL vs NoSQL
+  - SQL aggregate functions
+  - Using Redis to store session data
 
 - Docker
 
@@ -115,14 +132,23 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - Reverse proxy
   - Rate Limiting
 
-- Back end development concepts and getting a much better grasp of feature development from db design to ui
+<!-- - Back end development concepts -->
 
-- Authentication
+- Backend Security Concepts
+
+  - [XSS mitigation](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
+    - wrote a custom middleware to parse all inputs against a zod schema
+  - [CSRF protection](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)
+    - using cookie to header pattern, and sameSite cookies
+
+- Authentication (extension of above)
 
   - Differences between JWT and Session/Cookie based auth
-
-- Pros/Cons of using SQL vs NoSQL
-- SQL aggregate functions
+  - [effective session mgmt](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
+    - For my use case, sessions are used for authentication where as JWTs (while not yet implemented) will be used as short lived tokens to do things like reset passwords, and verify emails
+  - [Securely handling authentication](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
+    - securely handling password hashing
+    - note: have yet to address account recovery
 
 ## Issues
 
@@ -151,8 +177,7 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - please see `/server/src/lib/faker.ts` to see how that was done
   - data in analytics and some listing details may not make 100% sense
 
-- While best practices and not reinventing the wheel were considered in most parts of this project, one area where that does not apply is user auth.
-  - The more efficient solution would be to used a managed solution/OAuth, however would like to take this opportunity to learn how auth is roughly done, under the hood
+- Took the time to go through OWASP guides for some security features and while the general recommendation is the use a library where people much more knowledgable than myself can handle all edge cases, I figured this would be a good learning opportunity to understand what is going on
 
 ## Roadmap
 

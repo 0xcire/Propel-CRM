@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Response, Router } from "express";
 
 import { deleteUser, getMyInfo, updateUser } from "../controllers/user";
 
@@ -10,6 +10,10 @@ import { validateSession } from "../middlewares/validate-session";
 import { authCookieValidator, paramSchema, updateUserValidator } from "../db/validation-schema";
 
 export default (router: Router) => {
+  router.get("/user/refresh", validateSession, (_, res: Response) => {
+    return res.status(200).json({});
+  });
+
   router.get("/user/me", validateRequest({ cookies: authCookieValidator }), validateSession, getMyInfo);
 
   router.patch(

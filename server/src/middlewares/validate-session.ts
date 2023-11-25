@@ -33,6 +33,11 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
           sameSite: "strict",
         });
 
+        res.clearCookie("idle", {
+          path: "/",
+          sameSite: "strict",
+        });
+
         await deleteRedisSession(idleSession);
       }
 
@@ -90,12 +95,18 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
       };
 
       // reset idle timeout
-      // [ ]: way to attach timestamp to req.user and send in response? to reliably use in client?
       createSecureCookie({
         res: res,
         age: +(IDLE_SESSION_LENGTH as string),
         name: IDLE_SESSION_COOKIE,
         value: idleSession,
+      });
+
+      res.cookie("idle", String(Date.now()), {
+        maxAge: +(IDLE_SESSION_LENGTH as string),
+        httpOnly: false,
+        sameSite: "strict",
+        secure: true,
       });
     }
 

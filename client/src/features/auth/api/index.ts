@@ -3,6 +3,10 @@ import { Get, Post, handleAPIResponse } from '@/lib/fetch';
 
 import type { UserResponse } from '@/types';
 
+export const refreshSession = (): Promise<Response> => {
+  return Get({ endpoint: 'user/refresh' });
+};
+
 export const getMe = async (): Promise<UserResponse> => {
   return Get({ endpoint: 'user/me' }).then(handleAPIResponse<UserResponse>);
 };

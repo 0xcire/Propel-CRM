@@ -1,7 +1,9 @@
+import { useIdleTimeout } from '@/hooks/useIdleTimeout';
 import { ProfileContent } from '../components';
 import { Authentication, DeleteAccount, UserInfo } from '../components';
 
 export function Profile(): JSX.Element {
+  useIdleTimeout();
   return (
     <>
       <div className='grid h-full w-full place-items-center xl:flex-1'>

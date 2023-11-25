@@ -5,6 +5,7 @@ import { useTaskContext } from '../../context/TaskContext';
 
 import { useTasks } from '../../hooks/useTasks';
 import { useSearchTasks } from '../../hooks/useSearchTasks';
+import { useIdleTimeout } from '@/hooks/useIdleTimeout';
 
 import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
 
@@ -19,6 +20,8 @@ export function TaskPage(): JSX.Element {
   const { setQuery } = useDebouncedQuerySearchParams('title');
 
   useDefaultSearchParams(defaultTaskPageParams);
+
+  useIdleTimeout();
 
   const tasks = useTasks();
   const searchTasks = useSearchTasks();

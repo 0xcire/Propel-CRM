@@ -54,6 +54,12 @@ export const deleteUser = async (req: Request, res: Response) => {
         sameSite: "strict",
       });
     });
+
+    res.clearCookie("idle", {
+      path: "/",
+      sameSite: "strict",
+    });
+
     return res.status(200).json({
       message: "successfully deleted.",
       user: deletedUser,

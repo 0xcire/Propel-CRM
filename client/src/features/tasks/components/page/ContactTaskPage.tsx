@@ -7,6 +7,8 @@ import { useContact } from '@/features/contacts/hooks/useContact';
 import { useContactTasks } from '../../hooks/useContactTasks';
 import { useSearchTasks } from '../../hooks/useSearchTasks';
 
+import { useIdleTimeout } from '@/hooks/useIdleTimeout';
+
 import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
 
 import { TasksTable } from './TasksTable';
@@ -19,6 +21,8 @@ export function ContactTaskPage(): JSX.Element {
   const [, setPageTitle] = useTaskContext()['title'];
   const { contactID } = useParams();
   const { setQuery } = useDebouncedQuerySearchParams('title');
+
+  useIdleTimeout();
 
   useDefaultSearchParams(defaultTaskPageParams);
 

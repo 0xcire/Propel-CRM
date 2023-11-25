@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { useListings } from '../../hooks/useListings';
 import { useSearchListings } from '../../hooks/useSearchListings';
 
+import { useIdleTimeout } from '@/hooks/useIdleTimeout';
+
 import { ListingTable } from './ListingTable';
 import { listingColumns } from '../../config/ListingColumns';
 
@@ -20,6 +22,7 @@ export function ListingPage(): JSX.Element {
   const [searchParams] = useSearchParams();
   const { setQuery } = useDebouncedQuerySearchParams('address');
   useDefaultSearchParams(defaultParams);
+  useIdleTimeout();
 
   const listings = useListings();
   const searchListings = useSearchListings();

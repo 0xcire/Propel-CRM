@@ -4,6 +4,7 @@ import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
 
 import { useContacts } from '../../hooks/useContacts';
 import { useSearchContacts } from '../../hooks/useSearchContacts';
+import { useIdleTimeout } from '@/hooks/useIdleTimeout';
 
 import { ContactTable } from './ContactsTable';
 import { listingColumns } from '../../config/ContactColumns';
@@ -19,6 +20,7 @@ export function ContactPage(): JSX.Element {
   const [searchParams] = useSearchParams();
   const { setQuery } = useDebouncedQuerySearchParams('name');
   useDefaultSearchParams(defaultParams);
+  useIdleTimeout();
 
   const contacts = useContacts();
   const searchContacts = useSearchContacts({ addLead: false });

@@ -1,5 +1,6 @@
 import { useUser } from '@/lib/react-query-auth';
 
+import { useIdleTimeout } from '@/hooks/useIdleTimeout';
 import { useIsDesktop, useDocumentTitle } from '@/hooks';
 
 import { Typography } from '@/components/ui/typography';
@@ -16,7 +17,9 @@ import { dateIntl } from '@/utils/intl';
 export const Dashboard = (): JSX.Element => {
   const user = useUser();
   const isDesktop = useIsDesktop();
+
   useDocumentTitle('Dashboard | Propel CRM');
+  useIdleTimeout();
 
   const date = new Date();
 
