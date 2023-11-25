@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { useIdleTimeout } from '@/hooks/useIdleTimeout';
+
 import { Typography } from '@/components/ui/typography';
 
 import { AnalyticsPageHeader } from './Header';
@@ -21,6 +23,8 @@ import { getCurrentYear } from '@/utils';
 
 export function AnalyticsPage(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
+
+  useIdleTimeout();
 
   useEffect(() => {
     searchParams.set('year', getCurrentYear().toString());

@@ -10,8 +10,9 @@ import {
   deleteContact,
 } from "../controllers/contacts";
 
-import { isAuth } from "../middlewares";
 import { validateRequest } from "../middlewares/validate-input";
+import { validateSession } from "../middlewares/validate-session";
+import { validateCSRF } from "../middlewares/validate-csrf";
 import { isContactOwner } from "../middlewares/contacts";
 
 import {
@@ -24,26 +25,31 @@ import {
 } from "../db/validation-schema";
 
 export default (router: Router) => {
-  router.get("/dashboard/contacts", validateRequest({ cookies: authCookieValidator }), isAuth, getDashboardContacts);
+  router.get(
+    "/dashboard/contacts",
+    validateRequest({ cookies: authCookieValidator }),
+    validateSession,
+    getDashboardContacts
+  );
 
   router.get(
     "/contacts",
     validateRequest({ cookies: authCookieValidator, query: contactQueryValidator }),
-    isAuth,
+    validateSession,
     getMyContacts
   );
 
   router.get(
     "/contacts/search",
     validateRequest({ cookies: authCookieValidator, query: contactSearchQueryValidator }),
-    isAuth,
+    validateSession,
     searchUsersContacts
   );
 
   router.get(
     "/contacts/:contactID",
     validateRequest({ cookies: authCookieValidator, params: contactIDValidator }),
-    isAuth,
+    validateSession,
     isContactOwner,
     getSpecificContact
   );
@@ -51,14 +57,16 @@ export default (router: Router) => {
   router.post(
     "/contacts",
     validateRequest({ body: createContactValidator, cookies: authCookieValidator }),
-    isAuth,
+    validateSession,
+    validateCSRF,
     createContact
   );
 
   router.patch(
     "/contacts/:contactID",
     validateRequest({ body: updateContactValidator, cookies: authCookieValidator, params: contactIDValidator }),
-    isAuth,
+    validateSession,
+    validateCSRF,
     isContactOwner,
     updateContact
   );
@@ -66,7 +74,8 @@ export default (router: Router) => {
   router.delete(
     "/contacts/:contactID",
     validateRequest({ cookies: authCookieValidator, params: contactIDValidator }),
-    isAuth,
+    validateSession,
+    validateCSRF,
     isContactOwner,
     deleteContact
   );

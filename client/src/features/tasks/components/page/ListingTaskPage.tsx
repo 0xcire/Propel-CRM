@@ -6,6 +6,7 @@ import { useTaskContext } from '../../context/TaskContext';
 import { useListingTasks } from '../../hooks/useListingTasks';
 import { useSearchTasks } from '../../hooks/useSearchTasks';
 import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
+import { useIdleTimeout } from '@/hooks/useIdleTimeout';
 
 import { TasksTable } from './TasksTable';
 
@@ -17,6 +18,8 @@ export function ListingTaskPage(): JSX.Element {
   const [, setPageTitle] = useTaskContext()['title'];
   const { listingID } = useParams();
   const { setQuery } = useDebouncedQuerySearchParams('title');
+
+  useIdleTimeout();
 
   useDefaultSearchParams(defaultTaskPageParams);
 

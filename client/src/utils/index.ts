@@ -3,7 +3,6 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import type { BaseResponse, User } from '@/types';
 
 // API Error
-
 export const isAPIError = (error: unknown): error is Required<BaseResponse> => {
   return (
     typeof error === 'object' &&
@@ -14,13 +13,11 @@ export const isAPIError = (error: unknown): error is Required<BaseResponse> => {
 };
 
 // user status
-
 export const isLoggedIn = (
   user: UseQueryResult<User | undefined, unknown>
 ): boolean => user.isSuccess && user.data !== null;
 
 // name
-
 export const extractInitials = (name: string): string => {
   return name
     .split(' ')
@@ -30,7 +27,6 @@ export const extractInitials = (name: string): string => {
 };
 
 // charts
-
 const findLargestMultiple = (value: number): number => {
   let targetMultiple = 1;
   while (targetMultiple * 10 <= value) {
@@ -59,7 +55,6 @@ export const removeTimeZone = (dateString: string): string => {
 export const getCurrentYear = (): number => new Date().getFullYear();
 
 // (alert) dialog onOpenChange
-
 export const handleOnOpenChange = (
   open: boolean,
   setOpen: Dispatch<SetStateAction<boolean>>
@@ -70,4 +65,15 @@ export const handleOnOpenChange = (
     setOpen(false);
     document.body.style.pointerEvents = '';
   }
+};
+
+// parse document cookies
+// return cookies as KV pair
+export const parseDocumentCookies = (): Record<string, string> => {
+  const cookies = document.cookie.split('; ');
+  return Object.fromEntries(
+    cookies.map((cookie) => {
+      return cookie.split('=');
+    })
+  );
 };

@@ -7,7 +7,6 @@ import { isAPIError } from '@/utils/';
 import type { DefaultOptions, QueryKey } from '@tanstack/react-query';
 
 const handleApiError = (error: unknown): void => {
-  // TODO: handle refresh
   if (isAPIError(error)) {
     if (error.status === 403) {
       queryClient.setQueryData(['user'], null);

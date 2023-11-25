@@ -1,4 +1,5 @@
 // Inspired by react-hot-toast library
+// NOTE: exporting ToasterToast type
 import * as React from "react"
  
 import type {
@@ -9,7 +10,7 @@ import type {
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
  
-type ToasterToast = ToastProps & {
+export type ToasterToast = ToastProps & {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode

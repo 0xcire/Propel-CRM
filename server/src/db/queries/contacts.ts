@@ -1,5 +1,5 @@
-import { and, eq, ilike, isNull, sql } from "drizzle-orm";
-import { db } from "../";
+import { and, eq, ilike, sql } from "drizzle-orm";
+import { db } from "..";
 import { contacts, listings, listingsToContacts, soldListings, tasks, users, usersToContacts } from "../schema";
 
 import { withPagination } from "../utils";

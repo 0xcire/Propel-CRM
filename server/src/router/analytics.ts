@@ -1,9 +1,8 @@
 import { Router } from "express";
 
-import { isAuth, isOwner } from "../middlewares";
+import { isOwner } from "../middlewares";
+import { validateSession } from "../middlewares/validate-session";
 import { validateRequest } from "../middlewares/validate-input";
-
-import { analyticsQuerySchema, authCookieValidator, paramSchema } from "../db/validation-schema";
 
 import {
   getAvgListingDaysOnMarket,
@@ -13,11 +12,13 @@ import {
   getSalesVolumeForYear,
 } from "../controllers/analytics";
 
+import { analyticsQuerySchema, authCookieValidator, paramSchema } from "../db/validation-schema";
+
 export default (router: Router) => {
   router.get(
     "/analytics/sales/:id",
     validateRequest({ cookies: authCookieValidator, params: paramSchema, query: analyticsQuerySchema }),
-    isAuth,
+    validateSession,
     isOwner,
     getSalesVolumeForYear
   );
@@ -25,7 +26,7 @@ export default (router: Router) => {
   router.get(
     "/analytics/years/:id",
     validateRequest({ cookies: authCookieValidator, params: paramSchema }),
-    isAuth,
+    validateSession,
     isOwner,
     getExistingSalesYears
   );
@@ -33,7 +34,7 @@ export default (router: Router) => {
   router.get(
     "/analytics/days-on-market/:id",
     validateRequest({ cookies: authCookieValidator, params: paramSchema, query: analyticsQuerySchema }),
-    isAuth,
+    validateSession,
     isOwner,
     getAvgListingDaysOnMarket
   );
@@ -41,7 +42,7 @@ export default (router: Router) => {
   router.get(
     "/analytics/list-sale-ratio/:id",
     validateRequest({ cookies: authCookieValidator, params: paramSchema, query: analyticsQuerySchema }),
-    isAuth,
+    validateSession,
     isOwner,
     getListToSaleRatioForYear
   );
@@ -49,7 +50,7 @@ export default (router: Router) => {
   router.get(
     "/analytics/time-to-close/:id",
     validateRequest({ cookies: authCookieValidator, params: paramSchema, query: analyticsQuerySchema }),
-    isAuth,
+    validateSession,
     isOwner,
     getAvgTimeToCloseLead
   );

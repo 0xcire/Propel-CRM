@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useLogout } from '@/lib/react-query-auth';
@@ -18,17 +19,23 @@ import { Avatar } from '../Avatar';
 import { ThemeToggle } from './ThemeToggle';
 
 import type { NavProps } from './types';
+import { handleOnOpenChange } from '@/utils';
 
 export function NavDropdown({ name, username }: NavProps): JSX.Element {
+  const [open, setOpen] = useState(false);
   const logout = useLogout();
 
   return (
-    <DropdownMenu>
+    <DropdownMenu
+      open={open}
+      onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
+    >
       <DropdownMenuTrigger
         className='flex items-center justify-between gap-2 p-0 px-4'
         asChild
       >
         <Button
+          onClick={(): void => setOpen(!open)}
           variant='ghost'
           className='focus-visible:ring-0 focus-visible:ring-offset-0'
         >
@@ -46,6 +53,7 @@ export function NavDropdown({ name, username }: NavProps): JSX.Element {
         <DropdownMenuLabel>{username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
+          onClick={(): void => setOpen(false)}
           className='cursor-pointer'
           asChild
         >
@@ -58,11 +66,13 @@ export function NavDropdown({ name, username }: NavProps): JSX.Element {
           </Link>
         </DropdownMenuItem>
 
-        <ThemeToggle />
+        <ThemeToggle setOpen={setOpen} />
 
         <DropdownMenuItem
           className='cursor-pointer'
-          onClick={(): void => logout.mutate()}
+          onClick={(): void =>
+            logout.mutate(undefined, { onSuccess: () => setOpen(false) })
+          }
         >
           <LogOutIcon
             className='mr-1 mt-[2px]'
