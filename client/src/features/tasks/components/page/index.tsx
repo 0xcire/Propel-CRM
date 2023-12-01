@@ -7,7 +7,8 @@ import { useTasks } from '../../hooks/useTasks';
 import { useSearchTasks } from '../../hooks/useSearchTasks';
 import { useIdleTimeout } from '@/hooks/useIdleTimeout';
 
-import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
+import { useDebouncedQuerySearchParams } from '@/hooks/useDebouncedQuerySearchParams';
+import { useDefaultSearchParams } from '@/hooks/useDefaultSearchParams';
 
 import { TasksTable } from './TasksTable';
 

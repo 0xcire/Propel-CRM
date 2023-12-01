@@ -1,4 +1,4 @@
-import { useDocumentTitle } from '@/hooks';
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 
 import type { PropsWithChildren } from 'react';
 

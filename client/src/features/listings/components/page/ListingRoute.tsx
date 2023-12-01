@@ -18,7 +18,7 @@ import { NestedNotFound } from '@/components/Layout/page/NestedNotFound';
 
 import { ListingForm } from '../ListingForm';
 
-import { Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
 
 import { filterEqualFields, generateDefaultValues } from '@/utils/form-data';
 import { transformData } from '../../utils';

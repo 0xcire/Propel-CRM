@@ -14,7 +14,7 @@ import {
   YAxis,
 } from 'recharts';
 
-import { Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
 import { CustomTooltip } from './CustomTooltip';
 
 import { yAxisRange } from '@/utils';

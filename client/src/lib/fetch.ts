@@ -1,5 +1,5 @@
 import { parseDocumentCookies } from '@/utils';
-import { API_URL } from '@/config';
+import { API_URL } from '@/config/api';
 
 type FetchMethodParams = {
   endpoint: string;

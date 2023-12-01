@@ -1,5 +1,5 @@
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
 
 import { cn } from '@/lib/utils';
 

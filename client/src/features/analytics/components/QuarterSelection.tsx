@@ -1,6 +1,6 @@
 import { useAnalyticsContext } from '../context/AnalyticsContext';
 
-import { Select } from '@/components';
+import { Select } from '@/components/Select';
 
 import { quarters } from '../config';
 

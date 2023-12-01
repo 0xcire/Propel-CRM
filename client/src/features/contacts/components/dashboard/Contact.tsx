@@ -4,7 +4,8 @@ import { RemoveContact } from '../RemoveContact';
 import { Typography } from '@/components/ui/typography';
 import { PhoneIcon, AtSignIcon, MapPinIcon } from 'lucide-react';
 
-import { Avatar, Tooltip } from '@/components';
+import { Avatar } from '@/components/Avatar';
+import { Tooltip } from '@/components/Tooltip';
 
 import type { ContactAsProp } from '../../types';
 

@@ -5,7 +5,8 @@ import { useTaskContext } from '../../context/TaskContext';
 
 import { useListingTasks } from '../../hooks/useListingTasks';
 import { useSearchTasks } from '../../hooks/useSearchTasks';
-import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
+import { useDebouncedQuerySearchParams } from '@/hooks/useDebouncedQuerySearchParams';
+import { useDefaultSearchParams } from '@/hooks/useDefaultSearchParams';
 import { useIdleTimeout } from '@/hooks/useIdleTimeout';
 
 import { TasksTable } from './TasksTable';

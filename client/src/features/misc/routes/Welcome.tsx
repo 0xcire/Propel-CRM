@@ -1,4 +1,4 @@
-import { LinkButton } from '@/components';
+import { LinkButton } from '@/components/LinkButton';
 import { Typography } from '@/components/ui/typography';
 import { useUser } from '@/lib/react-query-auth';
 
@@ -16,7 +16,7 @@ export function Welcome(): JSX.Element {
       <div className='space-y-2'>
         <Typography variant='h1'>Propel CRM</Typography>
         <Typography variant='p'>
-          "Elevate Your Real Estate Success with Our Cutting-Edge CRM Solution."
+          Elevate Your Real Estate Success with Our Cutting-Edge CRM Solution.
         </Typography>
         <LinkButton path={redirectPath()}>Get Started</LinkButton>
       </div>

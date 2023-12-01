@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/lib/react-query-auth';
 
 import { Typography } from '@/components/ui/typography';
-import { LinkButton } from '@/components';
+import { LinkButton } from '@/components/LinkButton';
 
 export const NotFound = (): JSX.Element => {
   const user = useUser();

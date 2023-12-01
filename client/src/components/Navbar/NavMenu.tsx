@@ -6,7 +6,7 @@ import {
 
 import { CustomLink } from './CustomLink';
 
-import { navLinks } from '@/config';
+import { navLinks } from '@/config/nav';
 
 export function NavMenu(): JSX.Element {
   return (

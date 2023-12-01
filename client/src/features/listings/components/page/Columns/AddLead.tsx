@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useSearchContacts } from '@/features/contacts/hooks/useSearchContacts';
 import { useAddLead } from '../../../hooks/useAddLead';
 
-import { useDebouncedQuerySearchParams } from '@/hooks';
+import { useDebouncedQuerySearchParams } from '@/hooks/useDebouncedQuerySearchParams';
 
 import { Virtuoso } from 'react-virtuoso';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
@@ -19,7 +19,8 @@ import {
 } from '@/components/ui/sheet';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-import { Spinner, SubmitButton } from '@/components';
+import { Spinner } from '@/components/Spinner';
+import { SubmitButton } from '@/components/SubmitButton';
 
 import { twMerge } from 'tailwind-merge';
 

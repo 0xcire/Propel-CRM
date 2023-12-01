@@ -5,7 +5,8 @@ import { useDashboardContacts } from '../../hooks/useDashboardContacts';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-import { ListEmpty, Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
+import { ListEmpty } from '@/components/ListEmpty';
 import { Contact } from './Contact';
 
 const MemoizedContact = memo(Contact);

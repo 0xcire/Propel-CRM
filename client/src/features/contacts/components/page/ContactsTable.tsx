@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
 import { Table, TableFilterOptions, TableFooter } from '@/components/Table/';
 
 import type {

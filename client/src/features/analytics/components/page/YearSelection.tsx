@@ -3,7 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { useUser } from '@/lib/react-query-auth';
 import { useSalesYears } from '../../hooks/useSalesYears';
 
-import { Select, Spinner } from '@/components';
+import { Select } from '@/components/Select';
+import { Spinner } from '@/components/Spinner';
 
 import { getCurrentYear } from '@/utils';
 

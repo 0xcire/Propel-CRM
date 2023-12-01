@@ -1,6 +1,8 @@
 import { Outlet } from 'react-router-dom';
 
-import { PageWrapper, PageHeader, PageContent } from '@/components/Layout/page';
+import { PageHeader } from '@/components/Layout/page/PageHeader';
+import { PageContent } from '@/components/Layout/page/PageContent';
+import { PageWrapper } from '@/components/Layout/page/PageWrapper';
 
 import { AddContact } from '../AddContact';
 

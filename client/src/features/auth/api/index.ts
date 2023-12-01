@@ -1,7 +1,7 @@
-import type { SignInFields, SignUpFields } from '@/features/auth';
 import { Get, Post, handleAPIResponse } from '@/lib/fetch';
 
 import type { UserResponse } from '@/types';
+import type { SignInFields, SignUpFields } from '@/features/auth/types';
 
 export const refreshSession = (): Promise<Response> => {
   return Get({ endpoint: 'user/refresh' });

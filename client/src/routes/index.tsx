@@ -6,9 +6,12 @@ import { useUser } from '@/lib/react-query-auth';
 import { publicRoutes } from './public';
 import { privateRoutes } from './private';
 
-import { Welcome } from '@/features/misc';
-const { NotFound } = lazyImport(() => import('@/features/misc'), 'NotFound');
-import { Spinner } from '@/components';
+import { Welcome } from '@/features/misc/routes/Welcome';
+const { NotFound } = lazyImport(
+  () => import('@/features/misc/routes/NotFound'),
+  'NotFound'
+);
+import { Spinner } from '@/components/Spinner';
 
 import { lazyImport } from '@/utils/lazyImport';
 import { isLoggedIn } from '@/utils';

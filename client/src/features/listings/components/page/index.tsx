@@ -8,7 +8,8 @@ import { useIdleTimeout } from '@/hooks/useIdleTimeout';
 import { ListingTable } from './ListingTable';
 import { listingColumns } from '../../config/ListingColumns';
 
-import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
+import { useDebouncedQuerySearchParams } from '@/hooks/useDebouncedQuerySearchParams';
+import { useDefaultSearchParams } from '@/hooks/useDefaultSearchParams';
 
 import type { DefaultParams } from '@/types';
 

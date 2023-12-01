@@ -1,7 +1,7 @@
 import { Typography } from '@/components/ui/typography';
 
-import { DashboardItemContent } from '@/components/Layout/dashboard';
-import { DashboardItemHeader } from '@/components/Layout/dashboard';
+import { DashboardItemContent } from '@/components/Layout/dashboard/DashboardItemContent';
+import { DashboardItemHeader } from '@/components/Layout/dashboard/DashboardItemHeader';
 
 import { AddContact } from '../AddContact';
 import { DashboardContacts } from './DashboardContacts';

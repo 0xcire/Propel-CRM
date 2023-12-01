@@ -1,6 +1,9 @@
 import { lazyImport } from '@/utils/lazyImport';
 
-const { Dashboard } = lazyImport(() => import('@/features/misc'), 'Dashboard');
+const { Dashboard } = lazyImport(
+  () => import('@/features/misc/routes/Dashboard'),
+  'Dashboard'
+);
 const { Profile } = lazyImport(
   () => import('@/features/users/routes/Profile'),
   'Profile'

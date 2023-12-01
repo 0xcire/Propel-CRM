@@ -1,6 +1,8 @@
 import { useIdleTimeout } from '@/hooks/useIdleTimeout';
-import { ProfileContent } from '../components';
-import { Authentication, DeleteAccount, UserInfo } from '../components';
+import { ProfileContent } from '../components/Layout/ProfileContent';
+import { Authentication } from '../components/Authentication';
+import { DeleteAccount } from '../components/DeleteAccount';
+import { UserInfo } from '../components/UserInfo';
 
 export function Profile(): JSX.Element {
   useIdleTimeout();

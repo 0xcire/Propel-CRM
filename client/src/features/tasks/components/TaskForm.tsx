@@ -9,14 +9,12 @@ import { DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 
-import {
-  CheckboxInput,
-  DateInput,
-  SelectInput,
-  TextAreaInput,
-  TextInput,
-} from '@/components/form';
-import { SubmitButton } from '@/components';
+import { CheckboxInput } from '@/components/form/CheckboxInput';
+import { DateInput } from '@/components/form/DateInput';
+import { SelectInput } from '@/components/form/SelectInput';
+import { TextAreaInput } from '@/components/form/TextAreaInput';
+import { TextInput } from '@/components/form/TextInput';
+import { SubmitButton } from '@/components/SubmitButton';
 
 import { taskSchema, checkboxSchema } from '@/lib/validations/tasks';
 import { prioritySelectOptions } from '@/config/tasks';

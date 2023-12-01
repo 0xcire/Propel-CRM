@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { Tooltip } from '@/components';
+import { Tooltip } from '@/components/Tooltip';
 import { ContactForm } from './ContactForm';
 
 import { handleOnOpenChange } from '@/utils';

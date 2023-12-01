@@ -3,7 +3,7 @@
 
 import { useNavigate } from 'react-router-dom';
 
-import { getMe, signin, signup, signout } from '@/features/auth';
+import { getMe, signin, signup, signout } from '@/features/auth/api';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 

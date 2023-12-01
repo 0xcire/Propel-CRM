@@ -8,8 +8,9 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
 
-import { Avatar, LinkButton } from '@/components';
-import { Tooltip } from '@/components';
+import { LinkButton } from '@/components/LinkButton';
+import { Avatar } from '@/components/Avatar';
+import { Tooltip } from '@/components/Tooltip';
 
 import { RemoveLead } from './RemoveLead';
 

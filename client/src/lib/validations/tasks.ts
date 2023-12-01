@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { priorityOptions } from '@/config';
+import { priorityOptions } from '@/config/tasks';
 
 export const taskSchema = z.object({
   title: z.string().min(1).max(255),
