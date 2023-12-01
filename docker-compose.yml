@@ -1,29 +1,13 @@
 version: "3.9"
 
 services:
-  client:
-    image: client-prod
-    container_name: client-prod
-    build:
-      context: ./client
-      dockerfile: Dockerfile
   api:
-    image: server-prod
-    container_name: server-prod
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    env_file:
-      - ./server/.env
+    image: "c1re/propel-service"
+    env_file: .env
   nginx:
-    image: nginx-prod
-    container_name: nginx-prod
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+    image: "c1re/propel-nginx"
     ports:
-      - 9090:80
+      - 80:80
     restart: always
-    # depends_on:
-    #   - client
-    #   - api
+    depends_on:
+      - api
