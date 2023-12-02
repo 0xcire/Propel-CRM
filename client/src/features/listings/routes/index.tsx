@@ -1,8 +1,10 @@
 import { Suspense } from 'react';
-
 import { lazyImport } from '@/utils/lazyImport';
 
-import { ListingLayout } from '../components/Layout';
+const { ListingLayout } = lazyImport(
+  () => import('../components/Layout'),
+  'ListingLayout'
+);
 
 const { ListingPage } = lazyImport(
   () => import('../components/page'),
@@ -22,7 +24,11 @@ import type { RouteObject } from 'react-router-dom';
 
 export const listingRoutes: RouteObject = {
   path: 'listings',
-  element: <ListingLayout />,
+  element: (
+    <Suspense>
+      <ListingLayout />
+    </Suspense>
+  ),
   children: [
     {
       index: true,

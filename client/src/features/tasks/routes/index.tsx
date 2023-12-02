@@ -1,9 +1,15 @@
 import { Suspense } from 'react';
 import { lazyImport } from '@/utils/lazyImport';
 
-import { TaskProvider } from '../context/TaskContext';
+const { TaskProvider } = lazyImport(
+  () => import('../context/TaskContext'),
+  'TaskProvider'
+);
 
-import { TaskLayout } from '../components/Layout';
+const { TaskLayout } = lazyImport(
+  () => import('../components/Layout'),
+  'TaskLayout'
+);
 
 const { TaskPage } = lazyImport(() => import('../components/page'), 'TaskPage');
 const { TaskRoute } = lazyImport(
@@ -26,9 +32,11 @@ export const taskRoutes: RouteObject = {
   path: 'tasks',
 
   element: (
-    <TaskProvider>
-      <TaskLayout />
-    </TaskProvider>
+    <Suspense>
+      <TaskProvider>
+        <TaskLayout />
+      </TaskProvider>
+    </Suspense>
   ),
   children: [
     {
