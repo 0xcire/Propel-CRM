@@ -31,7 +31,7 @@ app.use(compression());
 
 app.use(
   cors({
-    origin: "localhost:8080",
+    origin: "https://d2cgv9dakutima.cloudfront.net",
     credentials: true,
   })
 );

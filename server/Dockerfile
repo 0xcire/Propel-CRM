@@ -24,6 +24,8 @@ FROM gcr.io/distroless/nodejs20-debian11
 WORKDIR /usr/src/app
 COPY --chown=node:node --from=deps /usr/src/app ./
 
+EXPOSE 1337
+
 ENV NODE_ENV="production"
 CMD ["index.js"]
 

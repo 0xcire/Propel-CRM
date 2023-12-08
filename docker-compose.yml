@@ -6,8 +6,11 @@ services:
     env_file: .env
   nginx:
     image: "c1re/propel-nginx"
+    volumes:
+      - /etc/pki/tls/certs:/etc/nginx/certs
     ports:
       - 80:80
+      - 443:443
     restart: always
     depends_on:
       - api
