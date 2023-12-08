@@ -20,7 +20,7 @@ services:
     container_name: nginx-prod
     build:
       context: ./nginx
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.local
     ports:
       - 9090:80
     restart: always

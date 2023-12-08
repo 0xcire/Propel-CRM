@@ -3,3 +3,13 @@ TODO.md
 .DS_Store
 
 *.zip
+
+.ebextensions
+
+privatekey.pem
+csr.pem
+public.crt
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
