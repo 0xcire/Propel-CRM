@@ -1,3 +1,6 @@
+// eslint-disable-next-line
+// @ts-nocheck -> React Query typing = unknown. QueryKey params could be anything. remove when adding to file and ignore queryKey[1] object unknown errors
+
 import { QueryCache, QueryClient } from '@tanstack/react-query';
 
 import { toast } from '@/components/ui/use-toast';
@@ -38,7 +41,7 @@ const queryConfig: DefaultOptions = {
 export const queryClient = new QueryClient({
   defaultOptions: queryConfig,
   queryCache: new QueryCache({
-    // recommended use of onError for tanstack v5, have yet to upgrade..s
+    // recommended use of onError for tanstack v5, have yet to upgrade...
     onError: (error): void => handleApiError(error),
   }),
 });
@@ -57,28 +60,24 @@ export const findRelevantKeys = (
   }
 
   const searchParams = new URLSearchParams(window.location.search);
-  const name = searchParams.get('name');
-  const title = searchParams.get('title');
-  const address = searchParams.get('address');
+  const relevantSearchParams = [
+    searchParams.get('name'),
+    searchParams.get('title'),
+    searchParams.get('address'),
+  ];
 
   const keys: Array<QueryKey> = [];
 
   for (const { queryKey } of relevantCachedKeys) {
-    // eslint-disable-next-line
-    // @ts-ignore -> React Query typing = unknown. QueryKey params could be anything.
     if (queryKey[1].id && queryKey[1].id === id) {
       keys.push(queryKey);
     }
 
-    // eslint-disable-next-line
-    // @ts-ignore
     if (!searchParams.get(contextKey) && queryKey[1].page) {
       const cachedData = queryClient.getQueryData(queryKey);
 
       if (cachedData) {
         if (
-          // eslint-disable-next-line
-          // @ts-ignore
           cachedData[contextKey].some((data) => data.id === +(id as string))
         ) {
           keys.push(queryKey);
@@ -86,23 +85,15 @@ export const findRelevantKeys = (
       }
     }
 
-    // eslint-disable-next-line
-    // @ts-ignore
-    if (name && queryKey[1].name && queryKey[1].name === name) {
-      keys.push(queryKey);
-    }
-
-    // eslint-disable-next-line
-    // @ts-ignore
-    if (title && queryKey[1].title && queryKey[1].title === title) {
-      keys.push(queryKey);
-    }
-
-    // eslint-disable-next-line
-    // @ts-ignore
-    if (address && queryKey[1].address && queryKey[1].address === address) {
-      keys.push(queryKey);
-    }
+    relevantSearchParams.forEach((searchParam) => {
+      if (
+        searchParam &&
+        queryKey[1][searchParam] &&
+        queryKey[1][searchParam] === searchParam
+      ) {
+        keys.push(queryKey);
+      }
+    });
   }
   return keys;
 };

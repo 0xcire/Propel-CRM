@@ -1,6 +1,6 @@
 import { randomBytes, createHmac, timingSafeEqual } from "crypto";
 import { hash, compare } from "bcrypt";
-import { CSRF_SECRET, PRE_AUTH_CSRF_SECRET, SALT_ROUNDS } from "../config";
+import { CSRF_SECRET, ENV, PRE_AUTH_CSRF_SECRET, SALT_ROUNDS } from "../config";
 
 import type { Response } from "express";
 
@@ -40,7 +40,8 @@ export const createSecureCookie = ({ res, name, value, age }: CreateSecureCookie
     maxAge: age,
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: "lax",
+    domain: ENV === "production" ? "propel-crm.xyz" : undefined,
     signed: true,
   });
 };

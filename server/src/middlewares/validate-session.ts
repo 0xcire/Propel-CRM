@@ -4,6 +4,7 @@ import { createAnonymousToken, createSecureCookie, deriveSessionCSRFToken } from
 import {
   ABSOLUTE_SESSION_COOKIE,
   CSRF_COOKIE,
+  ENV,
   IDLE_SESSION_COOKIE,
   IDLE_SESSION_LENGTH,
   PRE_AUTH_CSRF_SECRET,
@@ -13,8 +14,6 @@ import {
 
 import type { Request, Response, NextFunction } from "express";
 
-// [ ]: had a poor solution to handling firefox cookies
-// try just setting cookie with old age, since clearCookie does not "work"?
 export const validateSession = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const absoluteSession: string | undefined = req.signedCookies[ABSOLUTE_SESSION_COOKIE];
@@ -30,12 +29,14 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
       if (idleSession) {
         res.clearCookie(IDLE_SESSION_COOKIE, {
           path: "/",
-          sameSite: "strict",
+          domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+          sameSite: "lax",
         });
 
         res.clearCookie("idle", {
           path: "/",
-          sameSite: "strict",
+          domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+          sameSite: "lax",
         });
 
         await deleteRedisSession(idleSession);
@@ -57,12 +58,14 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
         await deleteRedisSession(absoluteSession);
         res.clearCookie(ABSOLUTE_SESSION_COOKIE, {
           path: "/",
-          sameSite: "strict",
+          domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+          sameSite: "lax",
         });
 
         res.clearCookie(CSRF_COOKIE, {
           path: "/",
-          sameSite: "strict",
+          domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+          sameSite: "lax",
         });
       }
 
@@ -105,7 +108,8 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
       res.cookie("idle", String(Date.now()), {
         maxAge: +(IDLE_SESSION_LENGTH as string),
         httpOnly: false,
-        sameSite: "strict",
+        sameSite: "lax",
+        domain: ENV === "production" ? "propel-crm.xyz" : undefined,
         secure: true,
       });
     }
@@ -156,7 +160,8 @@ async function initializePreAuthSession(req: Request, res: Response) {
       httpOnly: false,
       secure: true,
       signed: false,
-      sameSite: "strict",
+      sameSite: "lax",
+      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
       maxAge: +(PRE_AUTH_SESSION_LENGTH as string),
     });
   }

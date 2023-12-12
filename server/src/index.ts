@@ -31,8 +31,10 @@ app.use(compression());
 
 app.use(
   cors({
-    origin: "https://d2cgv9dakutima.cloudfront.net",
+    origin: "https://propel-crm.xyz",
     credentials: true,
+    preflightContinue: true,
+    // exposedHeaders: [""],
   })
 );
 
