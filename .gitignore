@@ -6,6 +6,8 @@ TODO.md
 
 .ebextensions
 
+/scripts/scripts.env
+
 privatekey.pem
 csr.pem
 public.crt

@@ -1,4 +1,4 @@
-# use this to build production images for pushing to Docker Hub
+# use this to preview production build locally
 version: "3.9"
 
 services:
@@ -22,7 +22,7 @@ services:
     container_name: nginx-prod
     build:
       context: ./nginx
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.preview
     ports:
       - 9090:80
     depends_on:
