@@ -1,0 +1,61 @@
+# wait till December is over to finish.
+# Need to figure out s3 free tier, tier 1 getting used up so quickly
+# if it is still an issue, move to netlify or etc.
+# or just complete this
+
+# name: "propel deployment"
+
+# on:
+#   pull_request:
+#     branches: [-main]
+
+# jobs:
+#   api:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout source code
+#         uses: actions/checkout@v2
+
+#       - name: Generate deployment package
+#         run: zip -r deploy.zip . -x '*.git*'
+
+#       - name: Deploy to EB
+#         uses: einaregilsson/beanstalk-deploy@v21
+#         with:
+#           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           application_name: MyApplicationName
+#           environment_name: MyApplication-Environment
+#           version_label: ${{ date_tag }}
+#           region: us-east-2
+#           deployment_package: bean.zip
+
+#   client:
+#     runs-on: ubuntu-latest
+#     defaults:
+#       run:
+#         working-directory: ./client
+#     env:
+#       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#     steps:
+#       - uses: actions/checkout@v3
+
+#       - name: Install dependencies
+#         run: npm ci
+
+#       - name: Build
+#         run: npm run build
+
+#       - name: Deploy
+#         uses: reggionick/s3-deploy@v4
+#         with:
+#           folder: dist
+#           bucket: ${{ secrets.S3_BUCKET }}
+#           bucket-region: ${{ secrets.S3_BUCKET_REGION }}
+#           dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+#           invalidation: /
+#           delete-removed: true
+#           no-cache: true
+#           private: true
+#           files-to-include: "{.*/**,**}"

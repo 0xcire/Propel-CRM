@@ -1,19 +1,28 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { lazyImport } from '@/utils/lazyImport';
+
 import { useIdleTimeout } from '@/hooks/useIdleTimeout';
 
 import { Typography } from '@/components/ui/typography';
 
 import { AnalyticsPageHeader } from './Header';
-import { SalesVolumeChart } from '../SalesVolumeChart';
-import { GCILineChart } from '../GCILineChart';
-import {
-  DaysOnMarketCard,
-  ListToSaleRatioCard,
-  TimeToCloseCard,
-  TotalVolumeCard,
-} from './Cards';
+
+const { SalesVolumeChart } = lazyImport(
+  () => import('../SalesVolumeChart'),
+  'SalesVolumeChart'
+);
+
+const { GCILineChart } = lazyImport(
+  () => import('../GCILineChart'),
+  'GCILineChart'
+);
+// import { GCILineChart } from '../GCILineChart';
+import { DaysOnMarketCard } from './Cards/DaysOnMarket';
+import { ListToSaleRatioCard } from './Cards/ListToSaleRatio';
+import { TimeToCloseCard } from './Cards/TimeToClose';
+import { TotalVolumeCard } from './Cards/TotalVolume';
 
 import { getCurrentYear } from '@/utils';
 

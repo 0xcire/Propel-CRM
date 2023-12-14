@@ -6,7 +6,8 @@ import { useTaskContext } from '../../context/TaskContext';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-import { ListEmpty, Spinner } from '@/components';
+import { ListEmpty } from '@/components/ListEmpty';
+import { Spinner } from '@/components/Spinner';
 
 import { Task } from '../Task';
 import { CompletedTasks } from '../CompletedTasks';

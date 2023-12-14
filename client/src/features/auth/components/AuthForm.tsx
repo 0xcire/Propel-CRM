@@ -6,8 +6,8 @@ import { signInSchema, signUpSchema } from '@/lib/validations/auth';
 
 import { Form } from '@/components/ui/form';
 
-import { TextInput } from '@/components/form';
-import { SubmitButton } from '@/components';
+import { TextInput } from '@/components/form/TextInput';
+import { SubmitButton } from '@/components/SubmitButton';
 
 import { fieldsAreDirty } from '@/utils/form-data';
 

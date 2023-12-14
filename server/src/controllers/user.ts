@@ -7,7 +7,7 @@ import {
   updateUserByID,
 } from "../db/queries/user";
 import { checkPassword, hashPassword } from "../utils";
-import { ABSOLUTE_SESSION_COOKIE, sessionRelatedCookies } from "../config";
+import { ABSOLUTE_SESSION_COOKIE, ENV, sessionRelatedCookies } from "../config";
 
 import type { Request, Response } from "express";
 
@@ -51,13 +51,15 @@ export const deleteUser = async (req: Request, res: Response) => {
     sessionRelatedCookies.forEach((cookie) => {
       res.clearCookie(cookie, {
         path: "/",
-        sameSite: "strict",
+        domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+        sameSite: "lax",
       });
     });
 
     res.clearCookie("idle", {
       path: "/",
-      sameSite: "strict",
+      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+      sameSite: "lax",
     });
 
     return res.status(200).json({

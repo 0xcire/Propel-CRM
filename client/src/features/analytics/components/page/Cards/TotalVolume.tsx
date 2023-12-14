@@ -3,7 +3,7 @@ import { useSalesVolume } from '@/features/analytics/hooks/useSalesVolume';
 
 import { useAnalyticsContext } from '@/features/analytics/context/AnalyticsContext';
 
-import { Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
 import { Typography } from '@/components/ui/typography';
 
 import { filterAnalyticsData } from '@/features/analytics/utils';

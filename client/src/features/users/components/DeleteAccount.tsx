@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
-import { SubmitButton } from '@/components';
+import { SubmitButton } from '@/components/SubmitButton';
 
 export function DeleteAccount(): JSX.Element {
   const user = useUser();

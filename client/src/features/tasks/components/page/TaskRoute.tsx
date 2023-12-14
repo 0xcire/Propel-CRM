@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-import { Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
 import { NestedNotFound } from '@/components/Layout/page/NestedNotFound';
 import { TaskForm } from '../TaskForm';
 

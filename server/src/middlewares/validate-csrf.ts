@@ -3,8 +3,6 @@ import { CSRF_SECRET, PRE_AUTH_CSRF_SECRET, PRE_AUTH_SESSION_COOKIE } from "../c
 
 import type { Request, Response, NextFunction } from "express";
 
-// [ ]: test against origin/referer? req.get('Referer')
-// already using cookie to header + sameSite as recommended
 export const validateCSRF = (req: Request, res: Response, next: NextFunction) => {
   try {
     const receivedCSRFToken = req.headers["x-propel-csrf"] as string;
@@ -14,6 +12,18 @@ export const validateCSRF = (req: Request, res: Response, next: NextFunction) =>
     if (req.method !== "DELETE" && !req.is("application/json")) {
       return res.status(400).json({
         message: "Unsupported content type.",
+      });
+    }
+
+    if (req.get("Referer") !== "https://propel-crm.xyz/") {
+      return res.status(400).json({
+        message: "Invalid client.",
+      });
+    }
+
+    if (req.get("origin") !== "https://propel-crm.xyz") {
+      return res.status(400).json({
+        message: "Invalid client.",
       });
     }
 

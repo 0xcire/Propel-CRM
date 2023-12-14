@@ -2,7 +2,10 @@ import { Suspense } from 'react';
 
 import { lazyImport } from '@/utils/lazyImport';
 
-import { ContactLayout } from '../components/Layout';
+const { ContactLayout } = lazyImport(
+  () => import('../components/Layout'),
+  'ContactLayout'
+);
 
 const { ContactPage } = lazyImport(
   () => import('../components/page'),
@@ -18,7 +21,11 @@ import type { RouteObject } from 'react-router-dom';
 
 export const contactRoutes: RouteObject = {
   path: 'contacts',
-  element: <ContactLayout />,
+  element: (
+    <Suspense>
+      <ContactLayout />
+    </Suspense>
+  ),
   children: [
     {
       index: true,

@@ -7,8 +7,8 @@ import { Form } from '@/components/ui/form';
 import { DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
-import { TextInput } from '@/components/form';
-import { SubmitButton } from '@/components';
+import { TextInput } from '@/components/form/TextInput';
+import { SubmitButton } from '@/components/SubmitButton';
 
 import { contactSchema } from '@/lib/validations/contacts';
 

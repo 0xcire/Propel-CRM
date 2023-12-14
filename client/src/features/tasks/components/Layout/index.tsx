@@ -2,7 +2,9 @@ import { Outlet } from 'react-router-dom';
 
 import { useTaskContext } from '../../context/TaskContext';
 
-import { PageContent, PageHeader, PageWrapper } from '@/components/Layout/page';
+import { PageHeader } from '@/components/Layout/page/PageHeader';
+import { PageContent } from '@/components/Layout/page/PageContent';
+import { PageWrapper } from '@/components/Layout/page/PageWrapper';
 
 import { AddTask } from '@/features/common/tasks/components/AddTask';
 

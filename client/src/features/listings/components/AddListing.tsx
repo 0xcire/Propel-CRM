@@ -6,7 +6,8 @@ import { useCreateListing } from '../hooks/useCreateListing';
 import { PlusIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Tooltip } from '@/components';
+import { Tooltip } from '@/components/Tooltip';
+
 import {
   Dialog,
   DialogTrigger,

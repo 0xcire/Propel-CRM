@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
-import { SubmitButton } from '@/components';
+import { SubmitButton } from '@/components/SubmitButton';
 
 export function DeleteListing({
   listingID,

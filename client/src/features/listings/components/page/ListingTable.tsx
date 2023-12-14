@@ -9,7 +9,7 @@ import {
 } from '@tanstack/react-table';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-import { Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
 import { StatusToggle } from './StatusToggle';
 import { Table, TableFilterOptions, TableFooter } from '@/components/Table';
 

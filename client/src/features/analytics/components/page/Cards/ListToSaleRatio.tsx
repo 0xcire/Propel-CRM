@@ -2,7 +2,7 @@ import { useUser } from '@/lib/react-query-auth';
 import { useListToSaleRatio } from '@/features/analytics/hooks/useListToSaleRatio';
 
 import { useAnalyticsContext } from '@/features/analytics/context/AnalyticsContext';
-import { Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
 import { Typography } from '@/components/ui/typography';
 
 import { calculateAverage } from '@/features/analytics/utils';

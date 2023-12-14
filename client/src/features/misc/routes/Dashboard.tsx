@@ -1,16 +1,17 @@
 import { useUser } from '@/lib/react-query-auth';
 
 import { useIdleTimeout } from '@/hooks/useIdleTimeout';
-import { useIsDesktop, useDocumentTitle } from '@/hooks';
+import { useIsDesktop } from '@/hooks/useIsDesktop';
+import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 
 import { Typography } from '@/components/ui/typography';
 
 import { Navbar } from '@/components/Navbar';
-import { DashboardGridItem } from '@/components/Layout/dashboard';
+import { DashboardGridItem } from '@/components/Layout/dashboard/DashboardGridItem';
 import { DashboardListingView } from '@/features/listings/components/dashboard';
-import { DashboardContactsView } from '@/features/contacts/components/dashboard';
-import { DashboardTasksView } from '@/features/tasks/components/dashboard';
-import { DashboardAnalyticsView } from '@/features/analytics/components/dashboard';
+import { DashboardContactsView } from '@/features/contacts/components/dashboard/DashboardContactsView';
+import { DashboardTasksView } from '@/features/tasks/components/dashboard/DashboardTasksView';
+import { DashboardAnalyticsView } from '@/features/analytics/components/dashboard/DashboardAnalyticsView';
 
 import { dateIntl } from '@/utils/intl';
 

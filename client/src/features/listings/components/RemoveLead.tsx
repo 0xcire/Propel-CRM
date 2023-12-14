@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { SubmitButton } from '@/components';
+import { SubmitButton } from '@/components/SubmitButton';
 
 import type { ContactInfo } from '../types';
 import { Button } from '@/components/ui/button';

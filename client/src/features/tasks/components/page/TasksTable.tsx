@@ -10,7 +10,7 @@ import {
 import { DataTableFilter } from '@/components/ui/table/data-table-filter';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
-import { Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
 import { CompletedToggle } from './CompletedToggle';
 import { Table, TableFilterOptions, TableFooter } from '@/components/Table/';
 

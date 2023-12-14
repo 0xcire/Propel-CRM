@@ -31,8 +31,10 @@ app.use(compression());
 
 app.use(
   cors({
-    origin: "localhost:8080",
+    origin: "https://propel-crm.xyz",
     credentials: true,
+    preflightContinue: true,
+    // exposedHeaders: [""],
   })
 );
 

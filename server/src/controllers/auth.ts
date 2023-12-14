@@ -13,6 +13,7 @@ import {
   sessionRelatedCookies,
   PRE_AUTH_SESSION_COOKIE,
   CSRF_SECRET,
+  ENV,
 } from "../config/index";
 
 import type { Request, Response } from "express";
@@ -33,9 +34,6 @@ const limiterConsecutiveFailsByEmail = new RateLimiterRedis({
   duration: 60 * 60 * 2, // Store number for two hours since first fail
   blockDuration: 60 * 15, // Block for 15 minutes
 });
-
-// [x]: set up rate limit to prevent brute force, mentioned above in above todo, nginx handles most rate limit, but can also bring that logic down to express
-// [ ]: client side timeout noti
 
 export const signin = async (req: Request, res: Response) => {
   try {
@@ -102,13 +100,15 @@ export const signin = async (req: Request, res: Response) => {
       httpOnly: false,
       secure: true,
       signed: false,
-      sameSite: "strict",
+      sameSite: "lax",
+      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
       maxAge: +(ABSOLUTE_SESSION_LENGTH as string),
     });
 
     res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
       path: "/",
-      sameSite: "strict",
+      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+      sameSite: "lax",
     });
 
     await limiterConsecutiveFailsByEmail.delete(email);
@@ -172,7 +172,8 @@ export const signup = async (req: Request, res: Response) => {
 
     res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
       path: "/",
-      sameSite: "strict",
+      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+      sameSite: "lax",
     });
 
     req.session = {
@@ -197,13 +198,15 @@ export const signup = async (req: Request, res: Response) => {
       httpOnly: false,
       secure: true,
       signed: false,
-      sameSite: "strict",
+      sameSite: "lax",
+      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
       maxAge: +(ABSOLUTE_SESSION_LENGTH as string),
     });
 
     res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
       path: "/",
-      sameSite: "strict",
+      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+      sameSite: "lax",
     });
 
     req.session = {
@@ -229,13 +232,15 @@ export const signout = async (req: Request, res: Response) => {
     sessionRelatedCookies.forEach((cookie) => {
       res.clearCookie(cookie, {
         path: "/",
-        sameSite: "strict",
+        domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+        sameSite: "lax",
       });
     });
 
     res.clearCookie("idle", {
       path: "/",
-      sameSite: "strict",
+      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+      sameSite: "lax",
     });
 
     req.session = {

@@ -21,8 +21,8 @@ import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 
-import { TextInput } from '@/components/form';
-import { SubmitButton } from '@/components';
+import { TextInput } from '@/components/form/TextInput';
+import { SubmitButton } from '@/components/SubmitButton';
 
 import { fieldsAreDirty, filterEqualFields } from '@/utils/form-data';
 

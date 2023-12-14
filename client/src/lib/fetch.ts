@@ -1,5 +1,5 @@
 import { parseDocumentCookies } from '@/utils';
-import { API_URL } from '@/config';
+import { API_URL } from '@/config/api';
 
 type FetchMethodParams = {
   endpoint: string;
@@ -44,13 +44,16 @@ export const Patch = ({
       'Content-Type': 'application/json',
       'X-PROPEL-CSRF': getCSRFToken(),
     },
+    credentials: 'include',
     method: 'PATCH',
     body: body,
   });
 };
 
 export const Get = ({ endpoint }: FetchMethodParams): Promise<Response> => {
-  return fetch(`${API_URL}/${endpoint}`);
+  return fetch(`${API_URL}/${endpoint}`, {
+    credentials: 'include',
+  });
 };
 
 export const Delete = ({
@@ -63,6 +66,7 @@ export const Delete = ({
       'Content-Type': 'application/json',
       'X-PROPEL-CSRF': getCSRFToken(),
     },
+    credentials: 'include',
     method: 'DELETE',
     body: body,
   });

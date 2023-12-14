@@ -1,6 +1,6 @@
 import { useDashboardTasks } from '../hooks/useDashboardTasks';
 
-import { Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
 import { Task } from './Task';
 
 export function CompletedTasks({ userID }: { userID: number }): JSX.Element {

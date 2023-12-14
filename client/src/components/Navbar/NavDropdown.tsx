@@ -18,8 +18,9 @@ import { Button } from '../ui/button';
 import { Avatar } from '../Avatar';
 import { ThemeToggle } from './ThemeToggle';
 
-import type { NavProps } from './types';
 import { handleOnOpenChange } from '@/utils';
+
+import type { NavProps } from './types';
 
 export function NavDropdown({ name, username }: NavProps): JSX.Element {
   const [open, setOpen] = useState(false);

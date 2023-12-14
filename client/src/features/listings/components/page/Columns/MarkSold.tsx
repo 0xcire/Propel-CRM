@@ -20,8 +20,9 @@ import {
 } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
 
-import { SelectInput, TextInput } from '@/components/form';
-import { SubmitButton } from '@/components';
+import { SelectInput } from '@/components/form/SelectInput';
+import { TextInput } from '@/components/form/TextInput';
+import { SubmitButton } from '@/components/SubmitButton';
 
 import { priceString } from '@/lib/validations/schema';
 import { handleOnOpenChange } from '@/utils';

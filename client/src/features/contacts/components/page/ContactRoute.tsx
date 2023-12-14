@@ -18,7 +18,8 @@ import {
 import { Typography } from '@/components/ui/typography';
 
 import { NestedNotFound } from '@/components/Layout/page/NestedNotFound';
-import { Avatar, Spinner } from '@/components';
+import { Avatar } from '@/components/Avatar';
+import { Spinner } from '@/components/Spinner';
 import { UpdateContact } from '../UpdateContact';
 import { ContactGridItem } from './ContactGridItem';
 import { ContactTasks } from './ContactTasks';

@@ -22,9 +22,8 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { useToast } from '@/components/ui/use-toast';
 
-import { TextInput } from '@/components/form';
-import { SubmitButton } from '@/components';
-
+import { TextInput } from '@/components/form/TextInput';
+import { SubmitButton } from '@/components/SubmitButton';
 import type { Toast } from '@/types';
 
 const PasswordSchema = z.object({

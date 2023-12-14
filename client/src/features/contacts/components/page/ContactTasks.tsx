@@ -4,7 +4,7 @@ import { useUser } from '@/lib/react-query-auth';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-import { Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
 import { Task } from '@/features/tasks/components/Task'; // one off
 
 import type { UseQueryResult } from '@tanstack/react-query';

@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { SubmitButton } from '@/components';
+import { SubmitButton } from '@/components/SubmitButton';
 
 import { handleOnOpenChange } from '@/utils';
 

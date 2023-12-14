@@ -1,6 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 
-import { useDebouncedQuerySearchParams, useDefaultSearchParams } from '@/hooks';
+import { useDebouncedQuerySearchParams } from '@/hooks/useDebouncedQuerySearchParams';
+import { useDefaultSearchParams } from '@/hooks/useDefaultSearchParams';
 
 import { useContacts } from '../../hooks/useContacts';
 import { useSearchContacts } from '../../hooks/useSearchContacts';

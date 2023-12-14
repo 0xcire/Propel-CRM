@@ -5,7 +5,8 @@ import { useUser } from '@/lib/react-query-auth';
 import { useUpdateListing } from '../../hooks/useUpdateListing';
 
 import { PencilIcon } from 'lucide-react';
-import { Tooltip } from '@/components';
+import { Tooltip } from '@/components/Tooltip';
+
 import {
   Dialog,
   DialogContent,

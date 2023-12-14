@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import { DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
 
-import { SelectInput, TextAreaInput, TextInput } from '@/components/form';
-import { SubmitButton } from '@/components';
+import { SelectInput } from '@/components/form/SelectInput';
+import { TextAreaInput } from '@/components/form/TextAreaInput';
+import { TextInput } from '@/components/form/TextInput';
+import { SubmitButton } from '@/components/SubmitButton';
 
 import { listingSchema } from '@/lib/validations/listings';
 import {

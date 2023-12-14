@@ -39,3 +39,11 @@
 ## SQL
 
 - [joins reference](https://stackoverflow.com/questions/25685545/how-to-return-rows-from-left-table-not-found-in-right-table)
+
+## Google Cloud Run
+
+After research, honestly seem to prefer this platform. Ran into signup issues though, so opted for AWS. Some good resources for the future.
+
+- [Cloud Run guides](https://cloud.google.com/run/docs/overview/what-is-cloud-run)
+- [Sidecar blog](https://cloud.google.com/blog/products/serverless/cloud-run-now-supports-multi-container-deployments)
+- [Deno's example](https://docs.deno.com/runtime/manual/advanced/deploying_deno/google_cloud_run#create-dockerfile-and-docker-composeyml)

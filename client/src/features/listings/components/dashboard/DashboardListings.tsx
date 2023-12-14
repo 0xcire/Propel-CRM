@@ -1,6 +1,7 @@
 import { useDashboardListings } from '../../hooks/useDashboardListings';
 
-import { ListEmpty, Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
+import { ListEmpty } from '@/components/ListEmpty';
 import { ListingCard } from './ListingCard';
 
 export function DashboardListings(): JSX.Element {

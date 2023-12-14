@@ -2,7 +2,10 @@ import { Suspense } from 'react';
 
 import { lazyImport } from '@/utils/lazyImport';
 
-import { AnalyticsLayout } from '@/features/analytics/components/Layout';
+const { AnalyticsLayout } = lazyImport(
+  () => import('@/features/analytics/components/Layout'),
+  'AnalyticsLayout'
+);
 
 const { AnalyticsPage } = lazyImport(
   () => import('../components/page'),
@@ -18,7 +21,11 @@ import type { RouteObject } from 'react-router-dom';
 
 export const analyticsRoutes: RouteObject = {
   path: 'analytics',
-  element: <AnalyticsLayout />,
+  element: (
+    <Suspense>
+      <AnalyticsLayout />
+    </Suspense>
+  ),
   children: [
     {
       index: true,

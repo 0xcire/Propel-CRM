@@ -12,7 +12,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-import { ListEmpty, Spinner } from '@/components';
+import { ListEmpty } from '@/components/ListEmpty';
+import { Spinner } from '@/components/Spinner';
 import { CustomTooltip } from './CustomTooltip';
 
 import { yAxisRange } from '@/utils/';

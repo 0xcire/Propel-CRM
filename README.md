@@ -7,9 +7,10 @@ A CRM for real estate agents.
 ## Features
 
 - Production ready Docker configuration
-  - Nginx rate limiting
+  - Nginx rate limiting, SSL, proxy
 - Session based cookie authentication
   - password salt & hashing w/ bcrypt
+  - Login in rate limiting via email
 - Dashboard overview of recent listings, contacts, tasks, and analytics
 
 - Protected routes on client only shown when valid user data is returned from server
@@ -34,10 +35,16 @@ A CRM for real estate agents.
   - sale to list ratio
 
 - Authentication & Security (following OWASP standards)
+
   - XSS validation
   - CSRF protection using the cookie to header pattern
   - Idle / Absolute session management
   - (to implement) authentication in terms of secure password resets, etc
+
+- Shell scripts to automate build processes
+  - build/deploy docker images
+  - sync client build with s3 and invalidate
+  - package docker compose and .ebextensions in zip file for server deployment
 
 ## Architecture
 
@@ -65,17 +72,18 @@ A CRM for real estate agents.
 - PostgreSQL on [Neon](https://neon.tech/)
 - Drizzle ORM
 
-### Cloud
+### AWS
 
-- TBD... (AWS or GCP)
+- Client on S3 & CloudFront
+- Nginx and Express containers on EC2 via Elastic Beanstalk
 
 ### Containerization
 
 - Docker
 
-### Web Server
+### Proxy Server
 
-- Nginx
+- Nginx ( needed to supply own Nginx proxy in docker compose env on beanstalk )
 
 ## Getting Started
 
@@ -172,12 +180,20 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - S3 file upload
   - AWS hosting
 
-- Demo account listings are mostly seeded with data from faker js.
+- Demo account listings are mostly seeded with data from faker.
 
   - please see `/server/src/lib/faker.ts` to see how that was done
   - data in analytics and some listing details may not make 100% sense
 
 - Took the time to go through OWASP guides for some security features and while the general recommendation is the use a library where people much more knowledgable than myself can handle all edge cases, I figured this would be a good learning opportunity to understand what is going on
+
+- AWS
+
+  - docs are misleading. if you only intend to use a docker-compose.yml to deploy on elastic beanstalk, you still need to zip that file
+  - when using docker compose, provide your own nginx proxy container. default options are ignored.
+
+- Serverless
+  - Using some serverless providers in Upstash & Neon, could rearchitect express app/infra to run serverless.
 
 ## Roadmap
 

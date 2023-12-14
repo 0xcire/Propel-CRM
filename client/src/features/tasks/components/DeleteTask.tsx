@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { SubmitButton } from '@/components';
+import { SubmitButton } from '@/components/SubmitButton';
 
 import { handleOnOpenChange } from '@/utils';
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Typography } from '@/components/ui/typography';
 
-import { Spinner } from '@/components';
+import { Spinner } from '@/components/Spinner';
 
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { Listings } from '@/features/listings/types'; //?

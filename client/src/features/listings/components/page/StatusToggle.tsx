@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { DollarSignIcon, HomeIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Tooltip } from '@/components';
+import { Tooltip } from '@/components/Tooltip';
 
 export function StatusToggle(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();

@@ -6,7 +6,7 @@ import { queryClient } from '@/lib/react-query';
 
 import { ThemeProvider } from '@/context/ThemeContext';
 
-import { ErrorBoundary } from '@/features/misc';
+import { ErrorBoundary } from '@/features/misc/routes/Error';
 
 import type { PropsWithChildren } from 'react';
 
