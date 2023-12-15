@@ -40,6 +40,10 @@
 
 - [joins reference](https://stackoverflow.com/questions/25685545/how-to-return-rows-from-left-table-not-found-in-right-table)
 
+## AWS
+
+- [cookies with cloudfront](https://stackoverflow.com/questions/63887518/how-do-i-ensure-cloudfront-returns-cookies-from-my-elastic-beanstalk-rest-api-ap)
+
 ## Google Cloud Run
 
 After research, honestly seem to prefer this platform. Ran into signup issues though, so opted for AWS. Some good resources for the future.

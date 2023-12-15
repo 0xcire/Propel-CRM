@@ -18,7 +18,9 @@ export function Welcome(): JSX.Element {
         <Typography variant='p'>
           Elevate Your Real Estate Success with Our Cutting-Edge CRM Solution.
         </Typography>
-        <LinkButton path={redirectPath()}>Get Started</LinkButton>
+        <LinkButton path={redirectPath()}>
+          {user.data ? 'Go to app' : 'Get started'}
+        </LinkButton>
       </div>
     </div>
   );
