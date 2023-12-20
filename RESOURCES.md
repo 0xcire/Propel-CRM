@@ -36,6 +36,12 @@
 - [authentication](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
 - [xss](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
 
+## Testing
+
+- [Cal](https://github.com/calcom/cal.com)
+  - good example for playwright configuration, among many other things
+- [an architecture that my app emulates closer](https://github.com/lachiejames/docker-express-react-playwright)
+
 ## SQL
 
 - [joins reference](https://stackoverflow.com/questions/25685545/how-to-return-rows-from-left-table-not-found-in-right-table)
