@@ -247,7 +247,7 @@ export const signout = async (req: Request, res: Response) => {
       id: "",
     };
 
-    return res.status(204).json({
+    return res.status(200).json({
       message: "Signing out.",
     });
   } catch (error) {

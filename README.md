@@ -58,7 +58,7 @@ A CRM for real estate agents.
 - React
 - React Router
 - React Query / React Context
-- Bullet Proof React inspired
+- [BulletProof React](https://github.com/alan2207/bulletproof-react) inspired
 
 ### Server
 
@@ -185,7 +185,7 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - please see `/server/src/lib/faker.ts` to see how that was done
   - data in analytics and some listing details may not make 100% sense
 
-- Took the time to go through OWASP guides for some security features and while the general recommendation is the use a library where people much more knowledgable than myself can handle all edge cases, I figured this would be a good learning opportunity to understand what is going on
+- Took the time to go through OWASP guides for some security features and while the general recommendation is to use a library where people much more knowledgable than myself can handle all edge cases, I figured this would be a good learning opportunity to understand what is going on
 
 - AWS
 
@@ -242,7 +242,6 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 
 - auth / user-slice
 
-  - [ ] refresh token
   - [ ] email confirmation
   - [ ] account recovery
   - [ ] 2fa opt-in
