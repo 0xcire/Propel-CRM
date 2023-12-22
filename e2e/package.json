@@ -6,7 +6,8 @@
   "scripts": {
     "test-ui": "npx playwright test --ui",
     "test": "npx playwright test",
-    "e2etest:ci": "CI=true npm run test"
+    "e2etest:ci": "CI=true npm run test",
+    "report": "npx playwright show-report"
   },
   "keywords": [],
   "author": "",
@@ -15,5 +16,8 @@
     "@playwright/test": "^1.40.1",
     "@types/node": "^20.10.5",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
   }
 }

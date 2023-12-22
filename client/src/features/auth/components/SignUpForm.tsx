@@ -1,13 +1,14 @@
 import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
-import { type SubmitHandler, DeepPartial } from 'react-hook-form';
-
 import { useRegister } from '@/lib/react-query-auth';
 
 import { Typography } from '@/components/ui/typography';
+import { AuthForm } from './AuthForm';
 
-import { AuthForm, type SignUpFields } from './AuthForm';
+import type { DeepPartial } from 'react-hook-form';
+import type { SubmitHandler } from 'react-hook-form';
+import type { SignUpFields } from './AuthForm';
 
 export function SignUpForm(): JSX.Element {
   const register = useRegister();
@@ -22,6 +23,8 @@ export function SignUpForm(): JSX.Element {
     (values: SignUpFields) => {
       register.mutate(values);
     },
+
+    // eslint-disable-next-line
     []
   );
 

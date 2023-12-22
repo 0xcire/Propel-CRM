@@ -21,8 +21,8 @@ export default defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: isCI,
-  /* Retry on CI only */
-  retries: isCI ? 1 : 0,
+  /* Retry on CI only. Currently modified to retry once, locally, just testing for now.. */
+  retries: isCI ? 2 : 1,
   /* Opt out of parallel tests on CI. */
   workers: isCI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
@@ -76,7 +76,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "cd .. && docker compose -f docker-compose.dev.yml up",
+    command: "cd .. && cd .docker && docker compose -f docker-compose.dev.yml up",
     url: "http://localhost:8080",
     reuseExistingServer: !isCI,
   },

@@ -26,7 +26,10 @@ export const Dashboard = (): JSX.Element => {
 
   return (
     <>
-      <div className='flex h-full w-full flex-1 flex-col px-6 py-4 pb-0'>
+      <div
+        data-testid='dashboard'
+        className='flex h-full w-full flex-1 flex-col px-6 py-4 pb-0'
+      >
         <div className='flex w-full items-center justify-between'>
           <div className='flex items-center gap-2'>
             {!isDesktop && <Navbar />}
