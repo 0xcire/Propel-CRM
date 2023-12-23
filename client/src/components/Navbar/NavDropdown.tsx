@@ -36,6 +36,7 @@ export function NavDropdown({ name, username }: NavProps): JSX.Element {
         asChild
       >
         <Button
+          data-testid='nav-dropdown'
           onClick={(): void => setOpen(!open)}
           variant='ghost'
           className='focus-visible:ring-0 focus-visible:ring-offset-0'
