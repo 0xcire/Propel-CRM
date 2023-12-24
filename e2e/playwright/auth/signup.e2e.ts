@@ -1,30 +1,53 @@
-import { test } from "@playwright/test";
+import { expect } from "@playwright/test";
+import { test } from "../lib/fixtures";
+import { TEST_EMAIL, TEST_USER } from "../config";
 
-test.describe("Unique identifiers", () => {
-  test("Email taken", async () => {});
-  test("Username taken", async () => {});
+// deleting account here
+// [ ]: would be nice to import { db } so i can just clean up after test and create separate delete test under users/
+// would be able to do test.beforeEach -> users.create({ user?, email? })
+// ^ test.afterEach -> users.deleteAll() and remove all my default testing accts
+
+test.describe("user sign up flow", () => {
+  test("user can sign up", async ({ page, users }) => {
+    await test.step("sign up", async () => {
+      await page.goto("/auth/signup");
+      await users.signup();
+
+      await expect(page.locator("[data-testid=dashboard]")).toBeVisible();
+    });
+
+    await test.step("delete account", async () => {
+      await page.goto("/profile");
+      await page.getByRole("button", { name: "Delete Account" }).click();
+      await page.getByRole("button", { name: "Continue" }).click();
+
+      await expect(page.getByRole("heading", { name: "Sign Up" })).toBeVisible();
+    });
+  });
 });
-// test.describe("user sign up flow", () => {
-//   test("sign up happy path", async ({ page, users }) => {
-//     await page.goto("/auth/signup");
 
-//     await expect(page.getByRole("heading", { name: "Sign Up" })).toBeVisible();
+test.describe("no duplicate identifiers", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/auth/signup");
+  });
+  test("unique emails", async ({ page }) => {
+    await page.fill("input[name='name']", "Playwright Test");
+    await page.fill("input[name='username']", `a-${Date.now()}`);
+    await page.fill("input[name='email']", TEST_EMAIL);
+    await page.fill("input[name='password']", "VerySecretPassword1!");
 
-//     const context = page.context();
-//     const cookies = await context.cookies();
+    await page.getByRole("button", { name: "Sign Up" }).click();
 
-//     // Common
-//     preAuthCookies.forEach((preAuthCookie) => {
-//       expect(cookies.find((cookie) => cookie.name === preAuthCookie)?.value).toBeTruthy();
-//     });
+    await expect(page.getByText("Email already exists.", { exact: true })).toBeVisible();
+  });
+  test("unique usernames", async ({ page }) => {
+    await page.fill("input[name='name']", "Playwright Test");
+    await page.fill("input[name='username']", TEST_USER);
+    await page.fill("input[name='email']", "generic@gmail.com");
+    await page.fill("input[name='password']", "VerySecretPassword1!");
 
-//     authCookies.forEach((authCookie) => {
-//       expect(cookies.find((cookie) => cookie.name === authCookie)?.value).toBeFalsy();
-//     });
+    await page.getByRole("button", { name: "Sign Up" }).click();
 
-//     await page.fill("input[name='name']", "testuser@gmail.com");
-//     await page.fill("input[name='username']", "test-user");
-//     await page.fill("input[name='email']", "test-user@gmail.com");
-//     await page.fill("input[name='password']", "testtest");
-//   });
-// });
+    await expect(page.getByText("Username not available. Please pick another.", { exact: true })).toBeVisible();
+  });
+});

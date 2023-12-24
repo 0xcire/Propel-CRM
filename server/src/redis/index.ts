@@ -1,8 +1,10 @@
 import Redis from "ioredis";
-import { REDIS_HOST, REDIS_PW, REDIS_USERNAME, REDIS_PORT, ENV } from "../config";
 import { RateLimiterRedis } from "rate-limiter-flexible";
+import { REDIS_HOST, REDIS_PW, REDIS_USERNAME, REDIS_PORT, ENV } from "../config";
 
 export const maxConsecutiveFailsByEmail = 5;
+const TWO_HOURS = 60 * 60 * 2;
+const _15_MINUTES = 60 * 15;
 
 export const redis = new Redis({
   host: REDIS_HOST,
@@ -21,8 +23,8 @@ export const limiterConsecutiveFailsByEmail = new RateLimiterRedis({
   storeClient: redis,
   keyPrefix: "login_fail_consecutive_email",
   points: maxConsecutiveFailsByEmail,
-  duration: 60 * 60 * 2, // two hours
-  blockDuration: 60 * 15, // 15 minutes
+  duration: TWO_HOURS,
+  blockDuration: _15_MINUTES,
 });
 
 export const setRedisSession = async (sessionID: string, userID: number, expires: number) => {

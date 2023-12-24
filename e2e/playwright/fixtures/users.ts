@@ -33,6 +33,11 @@ export const createUsersFixture = (page: Page, workerInfo: WorkerInfo) => {
       "X-Propel-CSRF": (await csrfToken()) ?? "",
     };
   };
+  const PLAYWRIGHT_NAME = "Playwright Test";
+  const PLAYWRIGHT_USER = `playwright${workerInfo.workerIndex}`;
+  const PLAYWRIGHT_EMAIL = `playwright${workerInfo.workerIndex}@gmail.com`;
+  const PLAYWRIGHT_PW = "verysecretPassword1!";
+
   return {
     getMe: async () => {
       const response = await page.request.get("/api/user/me");
@@ -59,16 +64,23 @@ export const createUsersFixture = (page: Page, workerInfo: WorkerInfo) => {
 
       const response = await page.request.post("/api/auth/signup", {
         data: {
-          name: "Playwright Test",
-          username: `playwright${workerInfo.workerIndex}`,
-          email: `playwright${workerInfo.workerIndex}@gmail.com`,
-          password: "VerySecretPassword",
+          name: PLAYWRIGHT_NAME,
+          username: PLAYWRIGHT_USER,
+          email: PLAYWRIGHT_EMAIL,
+          password: PLAYWRIGHT_PW,
         },
         headers: headers,
       });
       const json: { message: string; user: UserInfo } = await response.json();
       const user = json.user;
       users.push({ workerIdx: workerInfo.workerIndex, ...user });
+    },
+    signup: async () => {
+      await page.fill("input[name='name']", PLAYWRIGHT_NAME);
+      await page.fill("input[name='username']", PLAYWRIGHT_USER);
+      await page.fill("input[name='email']", PLAYWRIGHT_EMAIL);
+      await page.fill("input[name='password']", PLAYWRIGHT_PW);
+      await page.getByRole("button", { name: "Sign Up" }).click();
     },
     logout: async () => {
       const headers = await createHeaders();

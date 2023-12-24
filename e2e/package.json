@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test-ui": "npx playwright test --ui",
+    "test:ui": "npx playwright test --ui",
     "test": "npx playwright test",
     "e2etest:ci": "CI=true npm run test",
     "report": "npx playwright show-report"

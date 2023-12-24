@@ -9,7 +9,6 @@ test.afterEach(async ({ users }) => {
   await users.logout();
 });
 
-// csrf-token not unique
 const authCookies = ["absolute-propel-session", "idle-propel-session", "idle"];
 const preAuthCookies = ["pre-auth-session"];
 
