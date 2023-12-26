@@ -2,11 +2,6 @@ import { expect } from "@playwright/test";
 import { test } from "../lib/fixtures";
 import { TEST_EMAIL, TEST_USER } from "../config";
 
-// deleting account here
-// [ ]: would be nice to import { db } so i can just clean up after test and create separate delete test under users/
-// would be able to do test.beforeEach -> users.create({ user?, email? })
-// ^ test.afterEach -> users.deleteAll() and remove all my default testing accts
-
 test.describe("user sign up flow", () => {
   test("user can sign up", async ({ page, users }) => {
     await test.step("sign up", async () => {

@@ -2,22 +2,7 @@ import { expect } from "@playwright/test";
 import { test } from "../lib/fixtures";
 import { TEST_EMAIL } from "../config";
 
-// [ ]: actual monorepo arch?
-// [ ]: can just make requests, but certain things like clearing redis cache are necessary
-// import type { User } from '@propel/server/types' or etc
-// import { redis } from '@propel/packages/lib/redis' or etc -> clean up redis after tests
-// import { db } from '@propel/packages/lib/drizzle' or etc
-
 // [ ]: need to test email functionality?
-
-// SIGNIN:
-// [x]: user flow happy path -> login, logout
-// [x]: api, cookies are handled properly
-
-// SIGNUP:
-// [ ]: signup happy path, user can sign up, be redirected to dashboard
-// [ ]: test proper response for existing email
-// [ ]: proper response for existing username
 
 test.beforeEach(async ({ page, users }) => {
   await page.goto("/");
