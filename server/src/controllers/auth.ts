@@ -1,7 +1,12 @@
 // rate limit ref: https://github.com/animir/node-rate-limiter-flexible/wiki/Overall-example#minimal-protection-against-password-brute-force
 
-import { RateLimiterRedis, RateLimiterRes } from "rate-limiter-flexible";
-import { deleteRedisSession, redis, setRedisSession } from "../redis";
+import { RateLimiterRes } from "rate-limiter-flexible";
+import {
+  deleteRedisSession,
+  limiterConsecutiveFailsByEmail,
+  maxConsecutiveFailsByEmail,
+  setRedisSession,
+} from "../redis";
 import { findUsersByEmail, findUsersByUsername, insertNewUser } from "../db/queries/user";
 import { checkPassword, createSecureCookie, createToken, deriveSessionCSRFToken, hashPassword } from "../utils";
 import {
@@ -25,16 +30,6 @@ import type { UserInput } from "./types";
 
 // TODO: signin = async(req,res): Promise<PropelResponse>
 
-const maxConsecutiveFailsByEmail = 5;
-
-const limiterConsecutiveFailsByEmail = new RateLimiterRedis({
-  storeClient: redis,
-  keyPrefix: "login_fail_consecutive_username",
-  points: maxConsecutiveFailsByEmail,
-  duration: 60 * 60 * 2, // Store number for two hours since first fail
-  blockDuration: 60 * 15, // Block for 15 minutes
-});
-
 export const signin = async (req: Request, res: Response) => {
   try {
     const { email, password }: UserInput = req.body;
@@ -55,27 +50,33 @@ export const signin = async (req: Request, res: Response) => {
         message: `Too many requests. Try again in ${String(Math.round(+retrySecs / 60))} minutes`,
       });
     } else {
-      userByEmail = await findUsersByEmail({ email: email, signingIn: true });
-      passwordMatches = await checkPassword(password, userByEmail?.hashedPassword as string);
+      try {
+        userByEmail = await findUsersByEmail({ email: email, signingIn: true });
+        const tries = rlResEmail?.remainingPoints;
 
-      // suggest signing up, redirect to account recovery, send email if email exists, etc
-      // notify of how many retries they have
-      if (!userByEmail || !passwordMatches) {
-        try {
+        if (!userByEmail) {
           await limiterConsecutiveFailsByEmail.consume(email);
-          const tries = rlResEmail?.remainingPoints;
           return res.status(401).json({
-            message: `Incorrect email or password. ${rlResEmail?.remainingPoints ?? "5"} tries remaining.`,
+            message: `Incorrect email or password. ${tries ?? "5"} tries remaining.`,
           });
-        } catch (error) {
-          if (error instanceof Error) {
-            return res.status(500).json({});
-          } else if (error instanceof RateLimiterRes) {
-            res.set("Retry-After", String(Math.round(error.msBeforeNext / 1000)) || "1");
-            return res.status(429).json({
-              message: `Too many requests. try again in ${String(Math.round(error.msBeforeNext / 1000 / 60))} minutes.`,
+        }
+
+        if (userByEmail) {
+          passwordMatches = await checkPassword(password, userByEmail?.hashedPassword as string);
+          if (!passwordMatches) {
+            return res.status(401).json({
+              message: `Incorrect email or password. ${tries ?? "5"} tries remaining.`,
             });
           }
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          return res.status(500).json({});
+        } else if (error instanceof RateLimiterRes) {
+          res.set("Retry-After", String(Math.round(error.msBeforeNext / 1000)) || "1");
+          return res.status(429).json({
+            message: `Too many requests. try again in ${String(Math.round(error.msBeforeNext / 1000 / 60))} minutes.`,
+          });
         }
       }
     }
@@ -247,7 +248,7 @@ export const signout = async (req: Request, res: Response) => {
       id: "",
     };
 
-    return res.status(204).json({
+    return res.status(200).json({
       message: "Signing out.",
     });
   } catch (error) {

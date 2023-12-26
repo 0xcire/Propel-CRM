@@ -1,4 +1,4 @@
-# use this to preview production build locally
+# use this to build production images for pushing to Docker Hub
 version: "3.9"
 
 services:
@@ -6,25 +6,24 @@ services:
     image: client-prod
     container_name: client-prod
     build:
-      context: ./client
+      context: ../client
       dockerfile: Dockerfile
     restart: always
   api:
     image: server-prod
     container_name: server-prod
     build:
-      context: ./server
+      context: ../server
       dockerfile: Dockerfile
-    env_file:
-      - ./server/.env
   nginx:
     image: nginx-prod
     container_name: nginx-prod
     build:
-      context: ./nginx
-      dockerfile: Dockerfile.preview
+      context: ../nginx
+      dockerfile: Dockerfile
     ports:
-      - 9090:80
+      - 80:80
+      - 443:443
     depends_on:
       - client
       - api

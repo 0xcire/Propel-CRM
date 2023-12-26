@@ -1,0 +1,13 @@
+{
+  "name": "propel-crm-repo",
+  "version": "0.0.0",
+  "description": "A CRM for real estate agents.",
+  "scripts": {
+    "dev": "cd .docker && docker compose -f docker-compose.dev.yml up",
+    "preview": "cd .docker && docker compose -f docker-compose.preview.yml up",
+    "build-images": "cd .docker && docker compose -f docker-compose.local.yml up"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

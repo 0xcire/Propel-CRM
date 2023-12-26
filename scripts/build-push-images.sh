@@ -30,7 +30,7 @@ remove_images () {
 remove_images 
 
 build_push_images () {
-    docker compose -f ../docker-compose.local.yml build
+    docker compose -f ../.docker/docker-compose.local.yml build
     for ((i = 0 ; i < 2 ; ++i));
     do
     {

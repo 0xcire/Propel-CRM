@@ -18,7 +18,6 @@ const { GCILineChart } = lazyImport(
   () => import('../GCILineChart'),
   'GCILineChart'
 );
-// import { GCILineChart } from '../GCILineChart';
 import { DaysOnMarketCard } from './Cards/DaysOnMarket';
 import { ListToSaleRatioCard } from './Cards/ListToSaleRatio';
 import { TimeToCloseCard } from './Cards/TimeToClose';
