@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createInsertSchema } from "drizzle-zod";
 import { users, contacts, tasks, listings } from "./schema";
 
-import isEmail from "validator/lib/isEmail.js";
+import isEmail from "validator/lib/isEmail";
 
 const password = z.object({ password: z.string().max(255) });
 

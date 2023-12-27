@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { db } from "../";
+import { db } from "..";
 import { users } from "../schema";
 
 import type { UserResponse } from "../../controllers/types";
