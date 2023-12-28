@@ -1,4 +1,4 @@
-import { deleteRedisSession } from "../redis";
+import { deleteRedisSession } from "@propel/redis";
 import {
   deleteUserByID,
   findUsersByEmail,

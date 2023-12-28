@@ -1,0 +1,11 @@
+{
+  "name": "@propel/redis",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.ts",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "ioredis": "^5.3.2",
+    "rate-limiter-flexible": "^4.0.0"
+  }
+}

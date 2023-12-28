@@ -51,7 +51,7 @@ export const createUsersFixture = (page: Page, workerInfo: WorkerInfo) => {
     apiLogin: async () => {
       const headers = await createHeaders();
 
-      const response = await page.request.post("/api/auth/signin", {
+      await page.request.post("/api/auth/signin", {
         data: {
           email: TEST_EMAIL,
           password: TEST_PW,
@@ -85,7 +85,7 @@ export const createUsersFixture = (page: Page, workerInfo: WorkerInfo) => {
     logout: async () => {
       const headers = await createHeaders();
 
-      const response = await page.request.post("/api/auth/signout", {
+      await page.request.post("/api/auth/signout", {
         data: {},
         headers: headers,
       });
@@ -104,7 +104,7 @@ export const createUsersFixture = (page: Page, workerInfo: WorkerInfo) => {
       const headers = await createHeaders();
       const userID = users.find((user) => user.workerIdx === workerIdx);
 
-      const response = await page.request.delete(`/api/user/${userID}`, {
+      await page.request.delete(`/api/user/${userID}`, {
         data: {},
         headers: headers,
       });

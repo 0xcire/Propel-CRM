@@ -1,4 +1,4 @@
-import { deleteRedisSession, getUserFromSession } from "../redis";
+import { deleteRedisSession, getUserFromSession } from "@propel/redis";
 import { createAnonymousToken, createSecureCookie, deriveSessionCSRFToken } from "../utils";
 
 import {

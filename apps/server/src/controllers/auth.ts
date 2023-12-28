@@ -1,12 +1,12 @@
 // rate limit ref: https://github.com/animir/node-rate-limiter-flexible/wiki/Overall-example#minimal-protection-against-password-brute-force
 
-import { RateLimiterRes } from "rate-limiter-flexible";
 import {
-  deleteRedisSession,
-  limiterConsecutiveFailsByEmail,
-  maxConsecutiveFailsByEmail,
+  RateLimiterRes,
   setRedisSession,
-} from "../redis";
+  deleteRedisSession,
+  maxConsecutiveFailsByEmail,
+  limiterConsecutiveFailsByEmail,
+} from "@propel/redis";
 import { findUsersByEmail, findUsersByUsername, insertNewUser } from "@propel/drizzle/queries/user";
 import { checkPassword, createSecureCookie, createToken, deriveSessionCSRFToken, hashPassword } from "../utils";
 import {

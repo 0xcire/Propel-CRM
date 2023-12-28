@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { test } from "../lib/fixtures";
 import { TEST_EMAIL } from "../config";
 
+// import { db } from "@propel/drizzle";
 // [ ]: need to test email functionality?
 
 test.beforeEach(async ({ page, users }) => {
@@ -42,9 +43,7 @@ test.describe("ambiguous error messages", () => {
 
       await page.getByRole("button", { name: "Sign In" }).click();
 
-      const emailMessage = await expect(
-        page.getByText("Incorrect email or password.", { exact: false }).first()
-      ).toBeVisible();
+      await expect(page.getByText("Incorrect email or password.", { exact: false }).first()).toBeVisible();
     });
     await test.step("incorrect password", async () => {
       await page.fill("input[name='email']", TEST_EMAIL);
@@ -52,9 +51,7 @@ test.describe("ambiguous error messages", () => {
 
       await page.getByRole("button", { name: "Sign In" }).click();
 
-      const passwordMessage = await expect(
-        page.getByText("Incorrect email or password.", { exact: false }).first()
-      ).toBeVisible();
+      await expect(page.getByText("Incorrect email or password.", { exact: false }).first()).toBeVisible();
     });
   });
 });

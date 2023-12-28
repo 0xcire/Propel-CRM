@@ -5,13 +5,6 @@ dotenv.config();
 
 export const ENV = process.env.NODE_ENV;
 
-export const PG_URL = process.env.PG_URL;
-
-export const REDIS_HOST = process.env.REDIS_HOST;
-export const REDIS_PW = process.env.REDIS_PW;
-export const REDIS_USERNAME = process.env.REDIS_USERNAME;
-export const REDIS_PORT = process.env.REDIS_PORT;
-
 export const IDLE_SESSION_COOKIE = "idle-propel-session";
 export const IDLE_SESSION_LENGTH = process.env.IDLE_SESSION_LENGTH;
 
