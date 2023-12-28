@@ -1,3 +1,4 @@
 # shadcn component code
-client/src/components/ui
-client/dist
+
+apps/client/src/components/ui
+# packages/ui/components/ui

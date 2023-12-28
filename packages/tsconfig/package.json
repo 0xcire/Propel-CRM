@@ -1,0 +1,13 @@
+{
+  "name": "@propel/tsconfig",
+  "sideEffects": false,
+  "version": "0.0.0",
+  "private": "true",
+  "main": "index.js",
+  "files": [
+    "tsconfig-base.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
