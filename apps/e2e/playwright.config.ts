@@ -76,7 +76,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "cd .. && cd .docker && docker compose -f docker-compose.dev.yml up",
+    command: "cd ../../../../ && cd .docker && docker compose -f docker-compose.dev.yml up",
     url: "http://localhost:8080",
     reuseExistingServer: !isCI,
   },
