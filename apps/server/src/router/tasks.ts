@@ -27,7 +27,7 @@ import {
   taskIDValidator,
   taskQueryValidator,
   taskQuerySearchValidator,
-} from "../db/validation-schema";
+} from "@propel/drizzle/schema/validation-schema";
 
 export default (router: Router) => {
   router.get(

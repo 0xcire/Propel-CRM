@@ -4,7 +4,7 @@ import {
   getExistingYears,
   getListToSaleRatioByYear,
   getSalesDataByYear,
-} from "../db/queries/analytics";
+} from "@propel/drizzle/queries/analytics";
 import { formatAnalyticsData, getCurrentYear } from "../utils";
 
 import type { Request, Response } from "express";

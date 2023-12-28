@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { findContactByID } from "../db/queries/contacts";
+import { findContactByID } from "@propel/drizzle/queries/contacts";
 import {
   deleteListingByID,
   findContactsRelatedListings,
@@ -13,10 +13,10 @@ import {
   removeLead,
   searchForListings,
   updateListingByID,
-} from "../db/queries/listings";
+} from "@propel/drizzle/queries/listings";
 
-import type { NewListing, NewSoldListing } from "../db/types";
-import type { Limit, ListingStatus } from "../types";
+import type { NewListing, NewSoldListing } from "@propel/drizzle/types";
+import type { Limit, ListingStatus } from "@propel/types";
 
 export const getDashboardListings = async (req: Request, res: Response) => {
   try {
@@ -96,7 +96,7 @@ export const getContactsRelatedListings = async (req: Request, res: Response) =>
     const userID = req.user.id;
     const { contactID } = req.params;
 
-    const contactsListings = await findContactsRelatedListings({ userID: userID, contactID: +contactID });
+    const contactsListings = await findContactsRelatedListings({ userID: userID, contactID: +contactID! });
 
     return res.status(200).json({
       message: "",
@@ -158,13 +158,11 @@ export const updateListing = async (req: Request, res: Response) => {
     const userID = req.user.id;
     const { listingID } = req.params;
 
-    const { address, baths, bedrooms, description, price, propertyType, squareFeet }: Partial<NewListing> = req.body;
-
     if (Object.keys(req.body).length === 0) {
       return res.status(400).json({});
     }
 
-    const updatedListingByID = await updateListingByID({ listing: req.body, listingID: +listingID, userID: userID });
+    const updatedListingByID = await updateListingByID({ listing: req.body, listingID: +listingID!, userID: userID });
 
     return res.status(200).json({
       message: "Updated listing.",
@@ -181,10 +179,10 @@ export const deleteListing = async (req: Request, res: Response) => {
     const userID = req.user.id;
     const { listingID } = req.params;
 
-    const deletedListingByID = await deleteListingByID(+listingID, userID);
+    const deletedListingByID = await deleteListingByID(+listingID!, userID);
 
     return res.status(200).json({
-      message: `Deleted listing: ${deletedListingByID.id}`,
+      message: `Deleted listing: ${deletedListingByID?.id}`,
     });
   } catch (error) {
     console.log(error);
@@ -204,7 +202,7 @@ export const markListingAsSold = async (req: Request, res: Response) => {
       });
     }
 
-    if (values.listingID !== +listingID) {
+    if (values.listingID !== +listingID!) {
       return res.status(400).json({
         message: "",
       });
@@ -219,7 +217,7 @@ export const markListingAsSold = async (req: Request, res: Response) => {
       });
     }
 
-    const listingMarkedAsSold = await insertSoldListingData(values);
+    await insertSoldListingData(values);
 
     return res.status(200).json({
       message: `${values.listingID} marked sold.`,
@@ -235,7 +233,7 @@ export const addListingLead = async (req: Request, res: Response) => {
     const { listingID, contactID } = req.params;
     const { name } = req.contact;
 
-    const existingLead = await findExistingLead(+listingID, +contactID);
+    const existingLead = await findExistingLead(+listingID!, +contactID!);
 
     if (existingLead) {
       return res.status(400).json({
@@ -243,7 +241,7 @@ export const addListingLead = async (req: Request, res: Response) => {
       });
     }
 
-    const newListingLead = await insertNewLead(+listingID, +contactID);
+    await insertNewLead(+listingID!, +contactID!);
 
     return res.status(201).json({
       message: `Added ${name} to listing: ${listingID}`,
@@ -259,7 +257,7 @@ export const removeListingLead = async (req: Request, res: Response) => {
     const { listingID, contactID } = req.params;
     const { name } = req.contact;
 
-    const removedLead = await removeLead(+listingID, +contactID);
+    await removeLead(+listingID!, +contactID!);
 
     return res.status(200).json({
       message: `Successfully removed lead: ${name} from listing: ${listingID}`,

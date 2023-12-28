@@ -1,5 +1,5 @@
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
-import { users, contacts, usersToContacts, tasks, listings, listingsToContacts, soldListings } from "./schema";
+import { users, contacts, usersToContacts, tasks, listings, listingsToContacts, soldListings } from "../schema";
 
 export type User = InferSelectModel<typeof users>;
 export type NewUser = InferInsertModel<typeof users>;

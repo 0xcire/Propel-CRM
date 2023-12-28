@@ -1,11 +1,11 @@
 import { and, eq, ilike, sql } from "drizzle-orm";
 import { db } from "..";
-import { contacts, listings, listingsToContacts, soldListings, tasks, users, usersToContacts } from "../schema";
+import { contacts, users, usersToContacts } from "../schema";
 
 import { withPagination } from "../utils";
 
 import type { Contact, NewContact, NewUserContactRelation, UserContactRelation } from "../types";
-import type { Limit, PaginationParams } from "../../types";
+import { Limit, PaginationParams } from "@propel/types";
 
 interface SearchForContactsParams extends PaginationParams {
   name: string;

@@ -1,5 +1,6 @@
+import { findTaskByID } from "@propel/drizzle/queries/tasks";
+
 import type { Request, Response, NextFunction } from "express";
-import { findTaskByID } from "../db/queries/tasks";
 
 export const isTaskOwner = async (req: Request, res: Response, next: NextFunction) => {
   const userID = req.user.id;
@@ -7,7 +8,7 @@ export const isTaskOwner = async (req: Request, res: Response, next: NextFunctio
 
   const method = req.method;
 
-  const taskByID = await findTaskByID(+taskID);
+  const taskByID = await findTaskByID(+taskID!);
 
   if (!taskByID) {
     return res.status(404).json({

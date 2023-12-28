@@ -7,7 +7,7 @@ import {
   maxConsecutiveFailsByEmail,
   setRedisSession,
 } from "../redis";
-import { findUsersByEmail, findUsersByUsername, insertNewUser } from "../db/queries/user";
+import { findUsersByEmail, findUsersByUsername, insertNewUser } from "@propel/drizzle/queries/user";
 import { checkPassword, createSecureCookie, createToken, deriveSessionCSRFToken, hashPassword } from "../utils";
 import {
   IDLE_SESSION_COOKIE,
@@ -22,7 +22,7 @@ import {
 } from "../config/index";
 
 import type { Request, Response } from "express";
-import type { NewUser } from "../db/types";
+import type { NewUser } from "@propel/drizzle/types";
 import type { UserInput } from "./types";
 
 // TODO: add email verification later
@@ -169,7 +169,7 @@ export const signup = async (req: Request, res: Response) => {
 
     const insertedUser = await insertNewUser(newUser);
 
-    await setRedisSession(sessionID, insertedUser.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
+    await setRedisSession(sessionID, insertedUser?.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
 
     res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
       path: "/",

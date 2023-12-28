@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 
-import { findUsersByID } from "../db/queries/user";
 import {
   deleteContactByID,
   deleteUserContactRelation,
@@ -13,12 +12,12 @@ import {
   insertNewRelation,
   searchForContacts,
   updateContactByID,
-} from "../db/queries/contacts";
+} from "@propel/drizzle/queries/contacts";
 
 import { objectNotEmpty } from "../utils";
 
-import type { NewContact } from "../db/types";
-import type { Limit } from "../types";
+import type { NewContact } from "@propel/drizzle/types";
+import type { Limit } from "@propel/types";
 
 export const getDashboardContacts = async (req: Request, res: Response) => {
   try {
@@ -131,7 +130,7 @@ export const createContact = async (req: Request, res: Response) => {
 
     if (!existingContact) {
       insertedContact = await insertNewContact(contact);
-      contactID = insertedContact.id;
+      contactID = insertedContact?.id;
     }
 
     if (existingContact) {
@@ -144,7 +143,7 @@ export const createContact = async (req: Request, res: Response) => {
       }
     }
 
-    const newRelation = await insertNewRelation({ currentUserID: id, newContactID: contactID as number });
+    await insertNewRelation({ currentUserID: id, newContactID: contactID as number });
 
     return res.status(201).json({
       message: `Added ${insertedContact ? insertedContact.name : existingContact?.name} to your network.`,
@@ -158,7 +157,6 @@ export const createContact = async (req: Request, res: Response) => {
 
 export const updateContact = async (req: Request, res: Response) => {
   try {
-    const userID = req.user.id;
     const { contactID } = req.params;
 
     if (!objectNotEmpty(req.body)) {
@@ -169,9 +167,7 @@ export const updateContact = async (req: Request, res: Response) => {
 
     const fields = { ...req.body };
 
-    const userByID = await findUsersByID({ id: +userID, updating: true });
-
-    const updatedContact = await updateContactByID({ contactID: +contactID, inputs: fields });
+    const updatedContact = await updateContactByID({ contactID: +contactID!, inputs: fields });
 
     return res.status(200).json({
       message: `Updated ${req.contact.name} successfully.`,
@@ -188,16 +184,14 @@ export const deleteContact = async (req: Request, res: Response) => {
     const userID = req.user.id;
     const { contactID } = req.params;
 
-    let deletedContact;
-
-    const relations = await getContactRelations(+contactID);
+    const relations = await getContactRelations(+contactID!);
 
     if (relations.length === 1) {
-      const deletedRelation = await deleteUserContactRelation({ userID: userID, contactID: +contactID });
+      await deleteUserContactRelation({ userID: userID, contactID: +contactID! });
 
-      deletedContact = await deleteContactByID(+contactID);
+      await deleteContactByID(+contactID!);
     } else {
-      const deletedRelation = await deleteUserContactRelation({ userID: userID, contactID: +contactID });
+      await deleteUserContactRelation({ userID: userID, contactID: +contactID! });
     }
 
     return res.status(200).json({

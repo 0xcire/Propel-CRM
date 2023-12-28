@@ -1,4 +1,4 @@
-import type { User } from "../db/types";
+import type { User } from "@propel/drizzle/types";
 
 export type UserResponse = Partial<User>;
 export type UserInput = {

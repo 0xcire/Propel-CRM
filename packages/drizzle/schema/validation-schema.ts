@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { createInsertSchema } from "drizzle-zod";
-import { users, contacts, tasks, listings } from "./schema";
+import { users, contacts, tasks, listings } from "../schema";
 
 import isEmail from "validator/lib/isEmail";
 

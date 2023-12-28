@@ -1,9 +1,11 @@
-import { and, desc, eq, ilike, isNotNull, isNull, not, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, isNotNull, isNull, sql } from "drizzle-orm";
 import { db } from "..";
 import { contacts, listings, listingsToContacts, soldListings } from "../schema";
 
 import type { NewListing, NewSoldListing } from "../types";
-import type { ListingStatus, PaginationParams } from "../../types";
+import type { ListingStatus, PaginationParams } from "@propel/types";
+
+// listingID, userID common type
 
 type updateListingByIDParams = {
   listing: Partial<NewListing>;
@@ -124,6 +126,19 @@ export const getAllUserListings = async ({ userID, page, status, limit = "10" }:
   }
 
   return userListings;
+};
+
+type GetListingByIDParams = {
+  listingID: number;
+  userID: number;
+};
+export const getListingByID = async ({ listingID, userID }: GetListingByIDParams) => {
+  const listing = await db
+    .select()
+    .from(listings)
+    .where(and(eq(listings.id, +listingID), eq(listings.userID, userID)));
+
+  return listing[0];
 };
 
 // TODO: commmon type
@@ -271,9 +286,12 @@ export const updateListingByID = async ({ listing, listingID, userID }: updateLi
 };
 
 export const deleteListingByID = async (listingID: number, userID: number) => {
-  const deletedListing = await db.delete(listings).where(eq(listings.id, listingID)).returning({
-    id: listings.id,
-  });
+  const deletedListing = await db
+    .delete(listings)
+    .where(and(eq(listings.id, listingID), eq(listings.userID, userID)))
+    .returning({
+      id: listings.id,
+    });
 
   return deletedListing[0];
 };
@@ -300,7 +318,15 @@ export const insertSoldListingData = async (values: NewSoldListing) => {
       salePrice: values.salePrice,
       contactID: values.contactID,
     })
-    .onConflictDoNothing();
+    .onConflictDoNothing()
+    .returning({
+      listingID: soldListings.listingID,
+      userID: soldListings.userID,
+      salePrice: soldListings.salePrice,
+      contactID: soldListings.contactID,
+    });
+
+  return soldListing[0];
 };
 
 export const insertNewLead = async (listingID: number, contactID: number) => {

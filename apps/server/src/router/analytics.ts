@@ -12,7 +12,7 @@ import {
   getSalesVolumeForYear,
 } from "../controllers/analytics";
 
-import { analyticsQuerySchema, authCookieValidator, paramSchema } from "../db/validation-schema";
+import { analyticsQuerySchema, authCookieValidator, paramSchema } from "@propel/drizzle/schema/validation-schema";
 
 export default (router: Router) => {
   router.get(

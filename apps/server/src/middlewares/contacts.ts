@@ -1,16 +1,16 @@
-import { findContactByID, findRelation } from "../db/queries/contacts";
+import { findContactByID, findRelation } from "@propel/drizzle/queries/contacts";
 
 import type { Request, Response, NextFunction } from "express";
-import { Contact } from "../db/types";
+import type { Contact } from "@propel/drizzle/types";
 
 export const isContactOwner = async (req: Request, res: Response, next: NextFunction) => {
   const userID = req.user.id;
   const { contactID } = req.params;
   const method = req.method;
 
-  const contactByID = await findContactByID(+contactID, userID);
+  const contactByID = await findContactByID(+contactID!, userID);
 
-  const contactToUserRelation = await findRelation({ currentUserID: userID, existingContactID: +contactID });
+  const contactToUserRelation = await findRelation({ currentUserID: userID, existingContactID: +contactID! });
 
   if (!contactID) {
     return res.status(400).json({

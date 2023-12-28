@@ -1,8 +1,8 @@
 import { db } from "..";
-import { and, asc, desc, eq, ilike, inArray, isNull } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, isNull } from "drizzle-orm";
 import { tasks } from "../schema";
 
-import type { Completed, Priority, PaginationParams } from "../../types";
+import type { Completed, Priority, PaginationParams } from "@propel/types";
 import type { NewTask } from "../types";
 
 interface GetUserTasksParams extends PaginationParams {

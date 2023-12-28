@@ -9,10 +9,10 @@ import {
   getUsersListingTasks,
   getUsersContactTasks,
   searchForTasks,
-} from "../db/queries/tasks";
+} from "@propel/drizzle/queries/tasks";
 
-import type { NewTask } from "../db/types";
-import type { Completed, Limit, Priority } from "../types";
+import type { NewTask } from "@propel/drizzle/types";
+import type { Completed, Limit, Priority } from "@propel/types";
 
 export const getDashboardTasks = async (req: Request, res: Response) => {
   try {
@@ -168,7 +168,7 @@ export const createTask = async (req: Request, res: Response) => {
       description: description,
       notes: notes,
       dueDate: dueDate,
-      // completed: completed,
+      completed: completed ?? false,
       priority: priority,
       listingID: listingID ?? null,
       contactID: contactID ?? null,
@@ -191,15 +191,13 @@ export const updateTask = async (req: Request, res: Response) => {
     const userID = req.user.id;
     const { taskID } = req.params;
 
-    const { title, description, notes, dueDate, completed, priority } = req.body;
-
     if (Object.keys(req.body).length === 0) {
       return res.status(400).json({
         message: "Update fields.",
       });
     }
 
-    const updatedTask = await updateTaskByID({ userID: userID, taskID: taskID, newData: req.body });
+    const updatedTask = await updateTaskByID({ userID: userID, taskID: taskID as string, newData: req.body });
 
     return res.status(200).json({
       message: "Updated task.",
@@ -216,7 +214,7 @@ export const deleteTask = async (req: Request, res: Response) => {
     const userID = req.user.id;
     const { taskID } = req.params;
 
-    const deletedTask = await deleteTaskByID({ userID: userID, taskID: taskID });
+    const deletedTask = await deleteTaskByID({ userID: userID, taskID: taskID as string });
 
     return res.status(200).json({
       message: "Deleted task",

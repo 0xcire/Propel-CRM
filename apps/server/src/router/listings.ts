@@ -29,7 +29,7 @@ import {
   listingQueryValidator,
   listingSearchQueryValidator,
   contactIDValidator,
-} from "../db/validation-schema";
+} from "@propel/drizzle/schema/validation-schema";
 
 export default (router: Router) => {
   router.get(

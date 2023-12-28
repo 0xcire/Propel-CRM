@@ -5,7 +5,7 @@ import {
   findUsersByID,
   findUsersByUsername,
   updateUserByID,
-} from "../db/queries/user";
+} from "@propel/drizzle/queries/user";
 import { checkPassword, hashPassword } from "../utils";
 import { ABSOLUTE_SESSION_COOKIE, ENV, sessionRelatedCookies } from "../config";
 
@@ -46,7 +46,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     await deleteRedisSession(sessionToken);
 
     // TODO: in future, need to also delete all related rows in other tables
-    const deletedUser = await deleteUserByID(+id);
+    const deletedUser = await deleteUserByID(+id!);
 
     sessionRelatedCookies.forEach((cookie) => {
       res.clearCookie(cookie, {
@@ -85,7 +85,7 @@ export const updateUser = async (req: Request, res: Response) => {
       });
     }
 
-    const currentUser = await findUsersByID({ id: +id, updating: true });
+    const currentUser = await findUsersByID({ id: +id!, updating: true });
 
     if (password) {
       hashedPassword = await hashPassword(password);
@@ -128,7 +128,7 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 
     const updatedUser = await updateUserByID({
-      id: +id,
+      id: +id!,
       newUsername: username,
       newEmail: email,
       newPassword: hashedPassword,

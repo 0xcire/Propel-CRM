@@ -2,15 +2,10 @@ import { eq } from "drizzle-orm";
 import { db } from "..";
 import { users } from "../schema";
 
-import type { UserResponse } from "../../controllers/types";
+import type { UserResponse } from "@propel/types";
 import type { NewUser } from "../types";
 
 type FindUsersByEmailParams = {
-  email: string;
-  signingIn?: boolean;
-};
-
-type updateUsersByEmailParams = {
   email: string;
   signingIn?: boolean;
 };
