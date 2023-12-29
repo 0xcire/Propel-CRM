@@ -7,6 +7,12 @@
 - [x] redis
 - [x] tailwind-config
 - [ ] lib
+
   - [ ] validator
+    - not wrapped in own implementation so not necessary?
   - [ ] faker
+    - only used in server so not necessary?
+
+- these will be more useful when I create marketing site
+- [x] tailwind-config
 - [ ] ui ( shadCN )
