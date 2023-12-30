@@ -15,4 +15,5 @@
 
 - these will be more useful when I create marketing site
 - [x] tailwind-config
+  - [ ] not useful right now. will be when i create shadcn package.
 - [ ] ui ( shadCN )

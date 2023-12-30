@@ -3,14 +3,13 @@
 
 import { faker, fakerEN_US } from "@faker-js/faker";
 
-import { db } from "../db";
-import { contacts, listings, listingsToContacts, soldListings, users, usersToContacts } from "../db/schema";
-import { getUsersContacts, insertNewContact, insertNewRelation } from "../db/queries/contacts";
-import { getAllUserListings } from "../db/queries/listings";
-import { insertNewTask } from "../db/queries/tasks";
-import { eq, sql } from "drizzle-orm";
+import { db } from "@propel/drizzle";
+import { contacts, listings, listingsToContacts, soldListings, users, usersToContacts } from "@propel/drizzle/schema";
+import { getUsersContacts, insertNewContact, insertNewRelation } from "@propel/drizzle/queries/contacts";
+import { getAllUserListings } from "@propel/drizzle/queries/listings";
+import { insertNewTask } from "@propel/drizzle/queries/tasks";
 
-import type { Contact, NewContact, NewListing, NewTask } from "../db/types";
+import type { Contact, NewContact, NewListing, NewTask } from "@propel/drizzle/types";
 
 const DEMO_ACCOUNT_ID = 10;
 

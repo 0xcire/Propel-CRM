@@ -5,21 +5,28 @@ services:
     image: client-dev
     container_name: client-dev
     build:
-      context: ../client
-      dockerfile: Dockerfile.dev
+      # context: ../client
+      context: ../
+      # dockerfile: Dockerfile.dev
+      dockerfile: ./apps/client/Dockerfile.dev
     volumes:
-      - ../client:/usr/src/app
+      # - ../client:/usr/src/app
+      - ../apps/client:/usr/src/app
       - /usr/src/app/node_modules
   server:
     image: server-dev
     container_name: server-dev
     build:
-      context: ../server
-      dockerfile: Dockerfile.dev
+      # context: ../server
+      context: ../
+      # dockerfile: Dockerfile.dev
+      dockerfile: ./apps/server/Dockerfile.dev
     env_file:
-      - ../server/.env
+      # - ../server/.env
+      - ../apps/server/.env
     volumes:
-      - ../server:/usr/src/app
+      # - ../server:/usr/src/app
+      - ../apps/server:/usr/src/app
       - /usr/src/app/node_modules
   nginx:
     image: nginx:stable-alpine3.17-slim

@@ -1,6 +1,6 @@
 import { randomBytes, createHmac, timingSafeEqual } from "crypto";
 import { hash, compare } from "bcrypt";
-import { CSRF_SECRET, ENV, PRE_AUTH_CSRF_SECRET, SALT_ROUNDS } from "../config";
+import { ENV, SALT_ROUNDS } from "../config";
 
 import type { Response } from "express";
 
@@ -78,7 +78,7 @@ export const formatAnalyticsData = <T extends { month: unknown }>(
         const referenceIdx = existingMonths.indexOf(month);
 
         return {
-          month: data[referenceIdx].month,
+          month: data && data[referenceIdx]?.month,
           value: getValue(data[referenceIdx]),
         };
       })

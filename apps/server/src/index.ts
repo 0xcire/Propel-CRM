@@ -39,7 +39,7 @@ app.use(
 );
 
 const PORT = 1337;
-const server = app.listen(PORT, () => {
+app.listen(PORT, () => {
   if (ENV === "development") {
     console.log(`DOCKER: http://localhost:8080 \n NON-DOCKER: http://localhost:5173`);
   } else {

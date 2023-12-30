@@ -1,8 +1,43 @@
-FROM node:20-bullseye-slim
+FROM node:20-alpine as base
+
+# -- builder --
+
+FROM base as builder
+
+RUN apk add --no-cache libc6-compat
+RUN apk update
 
 WORKDIR /usr/src/app
-COPY package*.json package-lock*.json ./
-RUN npm install
-COPY --chown=node:node . .
+RUN npm install -g turbo
+COPY . .
+RUN turbo prune --scope=server --docker
 
-CMD ["npm", "run", "dev"]
+# -- installer -
+
+FROM base as installers
+
+RUN apk add --no-cache libc6-compat
+RUN apk update
+
+WORKDIR /usr/src/app
+COPY .gitignore .gitignore
+COPY --from=builder /usr/src/app/out/json/ .
+COPY --from=builder /usr/src/app/out/package-lock.json ./package-lock.json
+RUN npm install
+
+CMD npx turbo run dev --scope=server --include-dependencies --no-deps
+
+# COPY --from=builder /usr/src/app/out/full .
+# COPY turbo.json turbo.json
+
+
+# ------------- previous dockerfile below
+
+# FROM node:20-bullseye-slim
+
+# WORKDIR /usr/src/app
+# COPY package*.json package-lock*.json ./
+# RUN npm install
+# COPY --chown=node:node . .
+
+# CMD ["npm", "run", "dev"]
