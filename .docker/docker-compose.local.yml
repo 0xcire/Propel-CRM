@@ -6,21 +6,21 @@ services:
     image: client-prod
     container_name: client-prod
     build:
-      context: ../client
-      dockerfile: Dockerfile
+      context: ../
+      dockerfile: ./apps/client/Dockerfile
     restart: always
   api:
     image: server-prod
     container_name: server-prod
     build:
-      context: ../server
-      dockerfile: Dockerfile
+      context: ../
+      dockerfile: ./apps/server/Dockerfile
   nginx:
     image: nginx-prod
     container_name: nginx-prod
     build:
-      context: ../nginx
-      dockerfile: Dockerfile
+      context: ../
+      dockerfile: ./nginx/Dockerfile
     ports:
       - 80:80
       - 443:443

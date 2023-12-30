@@ -4,9 +4,15 @@
   "private": true,
   "main": "index.ts",
   "types": "index.ts",
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "dotenv": "^16.3.1",
     "ioredis": "^5.3.2",
     "rate-limiter-flexible": "^4.0.0"
+  },
+  "devDependencies": {
+    "@propel/tsconfig": "*"
   }
 }

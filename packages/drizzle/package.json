@@ -4,17 +4,20 @@
   "private": true,
   "main": "index.ts",
   "types": "index.ts",
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "dotenv": "^16.3.1",
-    "drizzle-orm": "^0.29.2",
+    "drizzle-orm": "0.29.0",
     "drizzle-zod": "^0.5.1",
     "postgres": "^3.4.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@propel/types": "*",
-    "@propel/tsconfig": "*",
     "@faker-js/faker": "^8.3.1",
+    "@propel/tsconfig": "*",
+    "@propel/types": "*",
     "@types/node": "^20.10.5",
     "@types/pg": "^8.10.9",
     "drizzle-kit": "^0.20.9",
