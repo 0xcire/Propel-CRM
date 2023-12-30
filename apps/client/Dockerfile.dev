@@ -1,45 +1,25 @@
-FROM node:18-alpine as base
+FROM node:18-bullseye-slim as base
 
-# -- builder --
+# -- prune --
 
-FROM base as builder
+FROM base as prune
 
-RUN apk add --no-cache libc6-compat
-RUN apk update
-
-WORKDIR /usr/src/app
+WORKDIR /app
 RUN npm install -g turbo
 COPY . .
 RUN turbo prune client --docker
 
-# -- installer --
+# ----- installer and runner -----
 
 FROM base as installer
 
-RUN apk add --no-cache libc6-compat
-RUN apk update
+WORKDIR /app
 
-WORKDIR /usr/src/app
-COPY .gitignore .gitignore
-COPY --from=builder /usr/src/app/out/json/ .
-COPY --from=builder /usr/src/app/out/package-lock.json ./package-lock.json
+COPY --from=prune /app/out/json/ .
+COPY --from=prune /app/out/package-lock.json ./package-lock.json
 RUN npm install
 
-CMD npx turbo run dev --scope=client --include-dependencies --no-deps
+COPY --from=prune /app/out/full/ .
+COPY turbo.json turbo.json
 
-# COPY --from=builder /usr/src/app/out/full/ .
-# COPY turbo.json turbo.json
-
-# ------------- previous dockerfile below
-
-# TODO: revert to node:20 when possible
-# look out for TypeError: Cannot redefine property: File
-
-# FROM node:18-bullseye-slim
-
-# WORKDIR /usr/src/app
-# COPY package*.json package-lock*.json ./
-# RUN npm install
-# COPY --chown=node:node . .
-
-# CMD ["npm", "run", "dev"]
+CMD npx turbo dev --scope=client
