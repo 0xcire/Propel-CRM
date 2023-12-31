@@ -1,0 +1,13 @@
+{
+  "name": "@propel/faker",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "devDependencies": {
+    "@faker-js/faker": "^8.3.1"
+  },
+  "dependencies": {
+    "@propel/drizzle": "*"
+  }
+}

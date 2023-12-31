@@ -225,6 +225,7 @@ export const insertNewListing = async (listing: NewListing) => {
     bedrooms: listings.bedrooms,
     baths: listings.baths,
     squareFeet: listings.squareFeet,
+    createdAt: listings.createdAt,
   });
 
   return newListing[0];
@@ -310,31 +311,24 @@ export const findExistingLead = async (listingID: number, contactID: number) => 
 };
 
 export const insertSoldListingData = async (values: NewSoldListing) => {
-  const soldListing = await db
-    .insert(soldListings)
-    .values({
-      listingID: values.listingID,
-      userID: values.userID,
-      salePrice: values.salePrice,
-      contactID: values.contactID,
-    })
-    .onConflictDoNothing()
-    .returning({
-      listingID: soldListings.listingID,
-      userID: soldListings.userID,
-      salePrice: soldListings.salePrice,
-      contactID: soldListings.contactID,
-    });
+  const soldListing = await db.insert(soldListings).values(values).onConflictDoNothing().returning({
+    listingID: soldListings.listingID,
+    userID: soldListings.userID,
+    salePrice: soldListings.salePrice,
+    contactID: soldListings.contactID,
+    soldAt: soldListings.soldAt,
+  });
 
   return soldListing[0];
 };
 
-export const insertNewLead = async (listingID: number, contactID: number) => {
+export const insertNewLead = async (listingID: number, contactID: number, createdAt?: Date) => {
   const newLead = await db
     .insert(listingsToContacts)
     .values({
       listingID: listingID,
       contactID: contactID,
+      ...(createdAt && { createdAt: createdAt }),
     })
     .returning({
       listingID: listingsToContacts.listingID,

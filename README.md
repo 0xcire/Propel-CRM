@@ -183,7 +183,7 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 
 - Demo account listings are mostly seeded with data from faker.
 
-  - please see `/server/src/lib/faker.ts` to see how that was done
+  - please see `/packages/faker` to see how that was done
   - data in analytics and some listing details may not make 100% sense
 
 - Took the time to go through OWASP guides for some security features and while the general recommendation is to use a library where people much more knowledgable than myself can handle all edge cases, I figured this would be a good learning opportunity to understand what is going on
