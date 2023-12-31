@@ -21,8 +21,8 @@ services:
     image: nginx-prod
     container_name: nginx-prod
     build:
-      context: ../nginx
-      dockerfile: Dockerfile.preview
+      context: ../
+      dockerfile: ./packages/nginx/docker/Dockerfile.preview
     ports:
       - 9090:80
     depends_on:

@@ -6,9 +6,10 @@
 - [x] drizzle
 - [x] redis
 - [x] tailwind-config
-- [ ] lib
+- [x] faker
+- [x] nginx
 
-  - [ ] faker
+  - not shared as in imported from other apps/packages. no real benefit other than "cleanliness"
 
 - ### things to revisit when creating marketing site
 

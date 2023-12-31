@@ -25,7 +25,7 @@ services:
     image: nginx:stable-alpine3.17-slim
     container_name: reverse-proxy
     volumes:
-      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - ../packages/nginx/dev/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - 8080:80
     depends_on:
