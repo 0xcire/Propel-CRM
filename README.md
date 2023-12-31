@@ -194,4 +194,9 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - when using docker compose, provide your own nginx proxy container. default options are ignored.
 
 - Serverless
+
   - Using some serverless providers in Upstash & Neon, could rearchitect express app/infra to run serverless.
+
+- Monorepo architecture
+  - ran into instances where I realized some code sharing (especially locally for e2e testing)
+  - Had I planned for this from the start, I think I would have gone with Nx, however, a migration using turborepo seemed more straightforward

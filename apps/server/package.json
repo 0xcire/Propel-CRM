@@ -2,10 +2,12 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "main": "./dist/index.js",
   "scripts": {
+    "clean": "rm -r dist",
     "dev": "NODE_ENV=development nodemon",
-    "build": "rm -rf dist && tsc --project './tsconfig.build.json'",
+    "build": "tsc",
     "start": "npm run build && NODE_ENV=production node ./dist/index.js"
   },
   "keywords": [],

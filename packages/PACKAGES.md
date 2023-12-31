@@ -8,12 +8,9 @@
 - [x] tailwind-config
 - [ ] lib
 
-  - [ ] validator
-    - not wrapped in own implementation so not necessary?
   - [ ] faker
-    - only used in server so not necessary?
 
-- these will be more useful when I create marketing site
-- [x] tailwind-config
-  - [ ] not useful right now. will be when i create shadcn package.
-- [ ] ui ( shadCN )
+- ### things to revisit when creating marketing site
+
+  - [ ] tailwind config
+  - [ ] shadcn pacakge

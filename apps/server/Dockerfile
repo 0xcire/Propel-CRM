@@ -20,7 +20,7 @@ WORKDIR /app
 COPY .gitignore .gitignore
 COPY --from=prune /app/out/json/ .
 COPY --from=prune /app/out/package-lock.json ./package-lock.json
-RUN npm ci
+RUN npm install
 
 COPY --from=prune /app/out/full/ .
 COPY turbo.json turbo.json
@@ -45,7 +45,6 @@ RUN npm install --omit=dev --workspace=server
 
 FROM gcr.io/distroless/nodejs20-debian11
 
-# COPY --chown=node:node --from=build-stage /app ./app
 COPY --chown=node:node --from=prod-deps /app ./app
 EXPOSE 1337
 WORKDIR /app/apps/server

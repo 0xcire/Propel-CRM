@@ -5,6 +5,7 @@
   "type": "module",
   "homepage": ".",
   "scripts": {
+    "clean": "rm -r dist",
     "dev": "vite --host",
     "typecheck": "tsc",
     "build": "vite build",

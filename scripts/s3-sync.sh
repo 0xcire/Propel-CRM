@@ -2,18 +2,16 @@
 
 cd ..
 
-cd client
-
-if [ -d dist ]; then
+if [ -d ./apps/client/dist ]; then
 {
     echo "removing previous build"
-    rm -rf dist
+    rm -rf ./apps/client/dist
 }
 fi
 
-npm run build
+turbo run build --filter=client...
 
-aws s3 sync --delete dist $CLIENT_S3_BUCKET
+aws s3 sync --delete ./apps/client/dist $CLIENT_S3_BUCKET
 aws cloudfront create-invalidation \
     --distribution-id $CLOUDFRONT_DISTRIBUTION \
     --paths "/*"
