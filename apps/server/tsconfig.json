@@ -1,0 +1,26 @@
+{
+  "extends": "@propel/tsconfig/tsconfig-base.json",
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["es2022"],
+    // "moduleDetection": "auto",
+
+    /* Modules */
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    // "baseUrl": "./",
+    // "paths": {},
+    "typeRoots": ["./src/types"],
+    "resolveJsonModule": true,
+
+    /* JavaScript Support */
+    "checkJs": true,
+
+    /* Emit */
+    "noEmit": false,
+    // "sourceMap": true, /* Create source map files for emitted JavaScript files. */
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "__test__", "dist"]
+}

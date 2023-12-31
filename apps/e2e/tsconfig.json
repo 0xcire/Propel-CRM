@@ -1,0 +1,16 @@
+{
+  "extends": "@propel/tsconfig/tsconfig-base.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowSyntheticDefaultImports": true,
+
+    "module": "esnext",
+    "moduleResolution": "node",
+
+    "jsx": "react-jsx",
+    "types": ["node"]
+  },
+  "include": ["playwright", "./playwright.config.ts"], // ...?
+  "exclude": ["node_modules"]
+}

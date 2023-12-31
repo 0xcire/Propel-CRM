@@ -1,0 +1,10 @@
+.docker/
+
+.ebextensions/
+.ebextensions-example/
+.elasticbeanstalk/
+
+.github/
+
+node_modules/
+**node_modules/

@@ -1,0 +1,19 @@
+{
+  "name": "@propel/redis",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.ts",
+  "types": "index.ts",
+  "scripts": {
+    "clean": "rm -r dist",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "ioredis": "^5.3.2",
+    "rate-limiter-flexible": "^4.0.0"
+  },
+  "devDependencies": {
+    "@propel/tsconfig": "*"
+  }
+}

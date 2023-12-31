@@ -1,0 +1,25 @@
+FROM node:18-bullseye-slim as base
+
+# -- prune --
+
+FROM base as prune
+
+WORKDIR /app
+RUN npm install -g turbo
+COPY . .
+RUN turbo prune client --docker
+
+# ----- installer and runner -----
+
+FROM base as installer
+
+WORKDIR /app
+
+COPY --from=prune /app/out/json/ .
+COPY --from=prune /app/out/package-lock.json ./package-lock.json
+RUN npm install
+
+COPY --from=prune /app/out/full/ .
+COPY turbo.json turbo.json
+
+CMD npx turbo dev --scope=client

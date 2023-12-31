@@ -2,6 +2,8 @@ TODO.md
 
 node_modules/
 
+.turbo
+
 .DS_Store
 
 *.zip
@@ -17,3 +19,7 @@ public.crt
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+out/
+
+.turbo
