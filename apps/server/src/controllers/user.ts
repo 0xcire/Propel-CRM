@@ -6,8 +6,8 @@ import {
   findUsersByUsername,
   updateUserByID,
 } from "@propel/drizzle/queries/user";
-import { checkPassword, hashPassword } from "../utils";
-import { ABSOLUTE_SESSION_COOKIE, ENV, sessionRelatedCookies } from "../config";
+import { checkPassword, hashPassword, isDeployed } from "../utils";
+import { ABSOLUTE_SESSION_COOKIE, sessionRelatedCookies } from "../config";
 
 import type { Request, Response } from "express";
 
@@ -51,14 +51,14 @@ export const deleteUser = async (req: Request, res: Response) => {
     sessionRelatedCookies.forEach((cookie) => {
       res.clearCookie(cookie, {
         path: "/",
-        domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+        domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
         sameSite: "lax",
       });
     });
 
     res.clearCookie("idle", {
       path: "/",
-      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+      domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
       sameSite: "lax",
     });
 

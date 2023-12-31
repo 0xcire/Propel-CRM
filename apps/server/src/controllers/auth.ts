@@ -8,7 +8,14 @@ import {
   limiterConsecutiveFailsByEmail,
 } from "@propel/redis";
 import { findUsersByEmail, findUsersByUsername, insertNewUser } from "@propel/drizzle/queries/user";
-import { checkPassword, createSecureCookie, createToken, deriveSessionCSRFToken, hashPassword } from "../utils";
+import {
+  checkPassword,
+  createSecureCookie,
+  createToken,
+  deriveSessionCSRFToken,
+  hashPassword,
+  isDeployed,
+} from "../utils";
 import {
   IDLE_SESSION_COOKIE,
   ABSOLUTE_SESSION_COOKIE,
@@ -18,7 +25,6 @@ import {
   sessionRelatedCookies,
   PRE_AUTH_SESSION_COOKIE,
   CSRF_SECRET,
-  ENV,
 } from "../config/index";
 
 import type { Request, Response } from "express";
@@ -83,14 +89,14 @@ export const signin = async (req: Request, res: Response) => {
 
     const sessionID = createToken();
 
-    createSecureCookie({
+    createSecureCookie(req, {
       res: res,
       name: ABSOLUTE_SESSION_COOKIE as string,
       value: sessionID,
       age: +(ABSOLUTE_SESSION_LENGTH as string),
     });
 
-    createSecureCookie({
+    createSecureCookie(req, {
       res: res,
       name: IDLE_SESSION_COOKIE as string,
       value: sessionID,
@@ -102,13 +108,13 @@ export const signin = async (req: Request, res: Response) => {
       secure: true,
       signed: false,
       sameSite: "lax",
-      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+      domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
       maxAge: +(ABSOLUTE_SESSION_LENGTH as string),
     });
 
     res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
       path: "/",
-      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+      domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
       sameSite: "lax",
     });
 
@@ -173,7 +179,7 @@ export const signup = async (req: Request, res: Response) => {
 
     res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
       path: "/",
-      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+      domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
       sameSite: "lax",
     });
 
@@ -181,14 +187,14 @@ export const signup = async (req: Request, res: Response) => {
       id: sessionID,
     };
 
-    createSecureCookie({
+    createSecureCookie(req, {
       res: res,
       name: ABSOLUTE_SESSION_COOKIE as string,
       value: sessionID,
       age: +(ABSOLUTE_SESSION_LENGTH as string),
     });
 
-    createSecureCookie({
+    createSecureCookie(req, {
       res: res,
       name: IDLE_SESSION_COOKIE as string,
       value: sessionID,
@@ -200,13 +206,13 @@ export const signup = async (req: Request, res: Response) => {
       secure: true,
       signed: false,
       sameSite: "lax",
-      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+      domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
       maxAge: +(ABSOLUTE_SESSION_LENGTH as string),
     });
 
     res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
       path: "/",
-      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+      domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
       sameSite: "lax",
     });
 
@@ -233,14 +239,14 @@ export const signout = async (req: Request, res: Response) => {
     sessionRelatedCookies.forEach((cookie) => {
       res.clearCookie(cookie, {
         path: "/",
-        domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+        domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
         sameSite: "lax",
       });
     });
 
     res.clearCookie("idle", {
       path: "/",
-      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+      domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
       sameSite: "lax",
     });
 

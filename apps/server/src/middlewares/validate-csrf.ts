@@ -1,5 +1,5 @@
-import { deriveSessionCSRFToken, safeComparison } from "../utils";
-import { CSRF_SECRET, ENV, PRE_AUTH_CSRF_SECRET, PRE_AUTH_SESSION_COOKIE } from "../config";
+import { deriveSessionCSRFToken, isDeployed, safeComparison } from "../utils";
+import { CSRF_SECRET, PRE_AUTH_CSRF_SECRET, PRE_AUTH_SESSION_COOKIE } from "../config";
 
 import type { Request, Response, NextFunction } from "express";
 
@@ -15,16 +15,12 @@ export const validateCSRF = (req: Request, res: Response, next: NextFunction) =>
       });
     }
 
-    if (ENV === "production" && req.get("Referer") !== "https://propel-crm.xyz/") {
-      return res.status(400).json({
-        message: "Invalid client.",
-      });
-    }
-
-    if (ENV === "production" && req.get("origin") !== "https://propel-crm.xyz") {
-      return res.status(400).json({
-        message: "Invalid client.",
-      });
+    if (isDeployed(req)) {
+      if (req.get("Referer") !== "https://propel-crm.xyz/" && req.get("origin") !== "https://propel-crm.xyz") {
+        return res.status(400).json({
+          message: "Invalid client.",
+        });
+      }
     }
 
     if (!receivedCSRFToken) {

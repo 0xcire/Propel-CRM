@@ -1,10 +1,9 @@
 import { deleteRedisSession, getUserFromSession } from "@propel/redis";
-import { createAnonymousToken, createSecureCookie, deriveSessionCSRFToken } from "../utils";
+import { createAnonymousToken, createSecureCookie, deriveSessionCSRFToken, isDeployed } from "../utils";
 
 import {
   ABSOLUTE_SESSION_COOKIE,
   CSRF_COOKIE,
-  ENV,
   IDLE_SESSION_COOKIE,
   IDLE_SESSION_LENGTH,
   PRE_AUTH_CSRF_SECRET,
@@ -29,13 +28,13 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
       if (idleSession) {
         res.clearCookie(IDLE_SESSION_COOKIE, {
           path: "/",
-          domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+          domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
           sameSite: "lax",
         });
 
         res.clearCookie("idle", {
           path: "/",
-          domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+          domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
           sameSite: "lax",
         });
 
@@ -58,13 +57,13 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
         await deleteRedisSession(absoluteSession);
         res.clearCookie(ABSOLUTE_SESSION_COOKIE, {
           path: "/",
-          domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+          domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
           sameSite: "lax",
         });
 
         res.clearCookie(CSRF_COOKIE, {
           path: "/",
-          domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+          domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
           sameSite: "lax",
         });
       }
@@ -98,7 +97,7 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
       };
 
       // reset idle timeout
-      createSecureCookie({
+      createSecureCookie(req, {
         res: res,
         age: +(IDLE_SESSION_LENGTH as string),
         name: IDLE_SESSION_COOKIE,
@@ -109,7 +108,7 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
         maxAge: +(IDLE_SESSION_LENGTH as string),
         httpOnly: false,
         sameSite: "lax",
-        domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+        domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
         secure: true,
       });
     }
@@ -149,7 +148,7 @@ async function initializePreAuthSession(req: Request, res: Response) {
 
   if (!preAuthSession) {
     anonymousSessionTokenID = createAnonymousToken();
-    createSecureCookie({
+    createSecureCookie(req, {
       res: res,
       name: PRE_AUTH_SESSION_COOKIE,
       age: +(PRE_AUTH_SESSION_LENGTH as string),
@@ -161,7 +160,7 @@ async function initializePreAuthSession(req: Request, res: Response) {
       secure: true,
       signed: false,
       sameSite: "lax",
-      domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+      domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
       maxAge: +(PRE_AUTH_SESSION_LENGTH as string),
     });
   }

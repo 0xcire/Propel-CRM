@@ -2,7 +2,7 @@ import { randomBytes, createHmac, timingSafeEqual } from "crypto";
 import { hash, compare } from "bcrypt";
 import { ENV, SALT_ROUNDS } from "../config";
 
-import type { Response } from "express";
+import type { Request, Response } from "express";
 
 type CreateSecureCookieParams = {
   res: Response;
@@ -35,13 +35,13 @@ export const objectNotEmpty = (object: Record<string, unknown>) => {
   return Object.keys(object).length > 0;
 };
 
-export const createSecureCookie = ({ res, name, value, age }: CreateSecureCookieParams) => {
+export const createSecureCookie = (req: Request, { res, name, value, age }: CreateSecureCookieParams) => {
   return res.cookie(name, value, {
     maxAge: age,
     httpOnly: true,
     secure: true,
     sameSite: "lax",
-    domain: ENV === "production" ? "propel-crm.xyz" : undefined,
+    domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
     signed: true,
   });
 };
@@ -51,6 +51,10 @@ export const safeComparison = (a: Buffer, b: Buffer) => {
 };
 
 export const getCurrentYear = () => new Date().getFullYear();
+
+export const isDeployed = (req: Request) => {
+  return ENV === "production" && !req.headers.referer?.includes("localhost");
+};
 
 export const formatAnalyticsData = <T extends { month: unknown }>(
   data: Array<T>,

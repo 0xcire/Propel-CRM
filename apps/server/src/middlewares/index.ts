@@ -27,9 +27,11 @@ export const isOwner = (req: Request, res: Response, next: NextFunction) => {
 // []
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log(req);
     if ("this is a string") {
       res.sendStatus(403);
     }
+    next();
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);
