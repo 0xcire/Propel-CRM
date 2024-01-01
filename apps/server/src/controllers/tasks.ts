@@ -9,9 +9,9 @@ import {
   getUsersListingTasks,
   getUsersContactTasks,
   searchForTasks,
-} from "@propel/drizzle/queries/tasks";
+} from "@propel/drizzle";
 
-import type { NewTask } from "@propel/drizzle/types";
+import type { NewTask } from "@propel/drizzle";
 import type { Completed, Limit, Priority } from "@propel/types";
 
 export const getDashboardTasks = async (req: Request, res: Response) => {

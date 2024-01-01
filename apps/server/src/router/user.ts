@@ -7,7 +7,7 @@ import { validateRequest } from "../middlewares/validate-input";
 import { validateCSRF } from "../middlewares/validate-csrf";
 import { validateSession } from "../middlewares/validate-session";
 
-import { authCookieValidator, paramSchema, updateUserValidator } from "@propel/drizzle/schema/validation-schema";
+import { authCookieValidator, paramSchema, updateUserValidator } from "@propel/drizzle";
 
 export default (router: Router) => {
   router.get("/user/refresh", validateSession, (_, res: Response) => {

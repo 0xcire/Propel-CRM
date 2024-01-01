@@ -7,7 +7,7 @@ import {
   maxConsecutiveFailsByEmail,
   limiterConsecutiveFailsByEmail,
 } from "@propel/redis";
-import { findUsersByEmail, findUsersByUsername, insertNewUser } from "@propel/drizzle/queries/user";
+import { findUsersByEmail, findUsersByUsername, insertNewUser } from "@propel/drizzle";
 import {
   checkPassword,
   createSecureCookie,
@@ -28,7 +28,7 @@ import {
 } from "../config/index";
 
 import type { Request, Response } from "express";
-import type { NewUser } from "@propel/drizzle/types";
+import type { NewUser } from "@propel/drizzle";
 import type { UserInput } from "./types";
 
 // TODO: add email verification later

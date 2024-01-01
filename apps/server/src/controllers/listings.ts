@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
-import { findContactByID } from "@propel/drizzle/queries/contacts";
 import {
+  findContactByID,
   deleteListingByID,
   findContactsRelatedListings,
   findExistingLead,
@@ -13,9 +13,9 @@ import {
   removeLead,
   searchForListings,
   updateListingByID,
-} from "@propel/drizzle/queries/listings";
+} from "@propel/drizzle";
 
-import type { NewListing, NewSoldListing } from "@propel/drizzle/types";
+import type { NewListing, NewSoldListing } from "@propel/drizzle";
 import type { Limit, ListingStatus } from "@propel/types";
 
 export const getDashboardListings = async (req: Request, res: Response) => {

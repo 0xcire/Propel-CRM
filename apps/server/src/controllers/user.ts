@@ -5,7 +5,8 @@ import {
   findUsersByID,
   findUsersByUsername,
   updateUserByID,
-} from "@propel/drizzle/queries/user";
+  //
+} from "@propel/drizzle";
 import { checkPassword, hashPassword, isDeployed } from "../utils";
 import { ABSOLUTE_SESSION_COOKIE, sessionRelatedCookies } from "../config";
 

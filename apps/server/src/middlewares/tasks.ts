@@ -1,4 +1,4 @@
-import { findTaskByID } from "@propel/drizzle/queries/tasks";
+import { findTaskByID } from "@propel/drizzle";
 
 import type { Request, Response, NextFunction } from "express";
 

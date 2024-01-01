@@ -1,4 +1,4 @@
-import { getListingByID } from "@propel/drizzle/queries/listings";
+import { getListingByID } from "@propel/drizzle";
 
 import type { Request, Response, NextFunction } from "express";
 
