@@ -11,6 +11,8 @@
       "persistent": true,
       "cache": false
     },
-    "clean": {}
+    "clean": {
+      "cache": false
+    }
   }
 }

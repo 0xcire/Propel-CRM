@@ -8,14 +8,8 @@ import {
   limiterConsecutiveFailsByEmail,
 } from "@propel/redis";
 import { findUsersByEmail, findUsersByUsername, insertNewUser } from "@propel/drizzle";
-import {
-  checkPassword,
-  createSecureCookie,
-  createToken,
-  deriveSessionCSRFToken,
-  hashPassword,
-  isDeployed,
-} from "../utils";
+import { checkPassword, createSecureCookie, createToken, deriveSessionCSRFToken, isDeployed } from "../utils";
+import { hashPassword } from "@propel/lib";
 import {
   IDLE_SESSION_COOKIE,
   ABSOLUTE_SESSION_COOKIE,
@@ -25,6 +19,7 @@ import {
   sessionRelatedCookies,
   PRE_AUTH_SESSION_COOKIE,
   CSRF_SECRET,
+  SALT_ROUNDS,
 } from "../config/index";
 
 import type { Request, Response } from "express";
@@ -163,7 +158,7 @@ export const signup = async (req: Request, res: Response) => {
     // create email verificaation functionality
     // TODO: this along wth  password reset, would be a good usecase for jwt!
 
-    const hashedPassword = await hashPassword(password);
+    const hashedPassword = await hashPassword(password, +(SALT_ROUNDS as string));
     const sessionID = createToken();
 
     const newUser: NewUser = {

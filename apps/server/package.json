@@ -32,6 +32,7 @@
   "dependencies": {
     "@propel/drizzle": "*",
     "@propel/redis": "*",
+    "@propel/lib": "*",
     "bcrypt": "^5.1.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
