@@ -51,6 +51,7 @@ export const findUsersByEmail = async ({
 export const findUsersByUsername = async (username: string): Promise<UserResponse | undefined> => {
   const user = await db
     .select({
+      id: users.id,
       username: users.username,
     })
     .from(users)

@@ -65,6 +65,7 @@ export const signin = async (req: Request, res: Response) => {
         if (userByEmail) {
           passwordMatches = await checkPassword(password, userByEmail?.hashedPassword as string);
           if (!passwordMatches) {
+            await limiterConsecutiveFailsByEmail.consume(email);
             return res.status(401).json({
               message: `Incorrect email or password. ${tries ?? "5"} tries remaining.`,
             });

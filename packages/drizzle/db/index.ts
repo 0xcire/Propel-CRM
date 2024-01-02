@@ -5,7 +5,6 @@ import postgres from "postgres";
 // import { propelFaker } from "@propel/faker";
 
 import * as schema from "../schema";
-
 import { PG_URL } from "../config";
 
 const queryClient = postgres(`${PG_URL}`);

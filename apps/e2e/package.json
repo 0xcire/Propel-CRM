@@ -21,6 +21,7 @@
   "dependencies": {
     "dotenv": "^16.3.1",
     "@propel/drizzle": "*",
-    "@propel/redis": "*"
+    "@propel/redis": "*",
+    "@propel/lib": "*"
   }
 }
