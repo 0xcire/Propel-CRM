@@ -12,11 +12,11 @@ import {
   insertNewRelation,
   searchForContacts,
   updateContactByID,
-} from "@propel/drizzle/queries/contacts";
+} from "@propel/drizzle";
 
 import { objectNotEmpty } from "../utils";
 
-import type { NewContact } from "@propel/drizzle/types";
+import type { NewContact } from "@propel/drizzle";
 import type { Limit } from "@propel/types";
 
 export const getDashboardContacts = async (req: Request, res: Response) => {

@@ -1,17 +1,16 @@
+.docker/
 .ebextensions-example/
 .elasticbeanstalk
 
 .github/
-client/
-diagrams/
-nginx/
-scripts/
-server/
+.turbo/
 
-docker-compose.dev.yml
-docker-compose.local.yml
-docker-compose.preview.yml
-nginx.dev.conf
+apps/client/
+
+diagrams/
+scripts/
+
+packages/nginx/
 
 csr.pem
 privatekey.pem

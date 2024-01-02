@@ -1,5 +1,5 @@
 {
-  "name": "@propel/redis",
+  "name": "@propel/lib",
   "version": "0.0.0",
   "private": true,
   "main": "index.js",
@@ -9,11 +9,12 @@
     "build": "tsc"
   },
   "dependencies": {
-    "dotenv": "^16.3.1",
-    "ioredis": "^5.3.2",
-    "rate-limiter-flexible": "^4.0.0"
+    "@propel/drizzle": "*",
+    "bcrypt": "^5.1.1"
   },
   "devDependencies": {
-    "@propel/tsconfig": "*"
+    "@propel/tsconfig": "*",
+    "@faker-js/faker": "^8.3.1",
+    "@types/bcrypt": "^5.0.2"
   }
 }

@@ -5,9 +5,11 @@ import {
   findUsersByID,
   findUsersByUsername,
   updateUserByID,
-} from "@propel/drizzle/queries/user";
-import { checkPassword, hashPassword, isDeployed } from "../utils";
-import { ABSOLUTE_SESSION_COOKIE, sessionRelatedCookies } from "../config";
+  //
+} from "@propel/drizzle";
+import { checkPassword, isDeployed } from "../utils";
+import { hashPassword } from "@propel/lib";
+import { ABSOLUTE_SESSION_COOKIE, SALT_ROUNDS, sessionRelatedCookies } from "../config";
 
 import type { Request, Response } from "express";
 
@@ -88,7 +90,7 @@ export const updateUser = async (req: Request, res: Response) => {
     const currentUser = await findUsersByID({ id: +id!, updating: true });
 
     if (password) {
-      hashedPassword = await hashPassword(password);
+      hashedPassword = await hashPassword(password, +(SALT_ROUNDS as string));
 
       const passwordMatches = await checkPassword(password, currentUser?.hashedPassword as string);
 

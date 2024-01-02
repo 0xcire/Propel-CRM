@@ -2,9 +2,14 @@ import { db } from "@propel/drizzle";
 
 import { faker } from "@faker-js/faker";
 
-import { insertNewContact, insertNewRelation } from "@propel/drizzle/queries/contacts";
-import { insertNewLead, insertNewListing, insertSoldListingData } from "@propel/drizzle/queries/listings";
-import { insertNewTask } from "@propel/drizzle/queries/tasks";
+import {
+  insertNewContact,
+  insertNewRelation,
+  insertNewLead,
+  insertNewListing,
+  insertSoldListingData,
+  insertNewTask,
+} from "@propel/drizzle";
 
 import { createFakeContact } from "./contacts";
 import { createFakeActiveListing, createFakeSoldListing } from "./listings";

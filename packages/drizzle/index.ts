@@ -1,15 +1,10 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-// import { migrate } from "drizzle-orm/postgres-js/migrator";
-import postgres from "postgres";
+export * from "./db";
 
-// import { propelFaker } from "@propel/faker";
+export * from "./queries/analytics";
+export * from "./queries/contacts";
+export * from "./queries/listings";
+export * from "./queries/tasks";
+export * from "./queries/user";
 
-import * as schema from "./schema";
-
-import { PG_URL } from "./config";
-
-const queryClient = postgres(`${PG_URL}`);
-export const db = drizzle(queryClient, { schema: schema });
-
-// migrate(db, { migrationsFolder: "logs" });
-// propelFaker.seedDatabase()
+export * from "./schema/validation-schema";
+export * from "./types";

@@ -88,7 +88,7 @@ A CRM for real estate agents.
 
 ## Getting Started
 
-Populate `./server/.env.example` with your own postgreSQL credentials and:
+Populate `./apps/server/.env.example` with your own postgreSQL credentials and:
 
 ### Without Docker
 
@@ -108,7 +108,8 @@ open up `http://localhost:5173/` in your browser
 
 ### Interacting with DB via Drizzle
 
-Ensure `server/drizzle.config.ts` is properly configured and:
+First, create an .env file in `./packages/drizzle` with your DB_URL.
+Ensure `./packages/drizzle/drizzle.config.ts` is properly configured and:
 
 `npm exec drizzle-kit generate:pg` to run migrations \
 `npm exec drizzle-kit introspect:pg` to generate schemas based on existing db \
@@ -198,5 +199,5 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
   - Using some serverless providers in Upstash & Neon, could rearchitect express app/infra to run serverless.
 
 - Monorepo architecture
-  - ran into instances where I realized some code sharing (especially locally for e2e testing)
+  - ran into instances where I realized some code sharing (especially for e2e testing)
   - Had I planned for this from the start, I think I would have gone with Nx, however, a migration using turborepo seemed more straightforward

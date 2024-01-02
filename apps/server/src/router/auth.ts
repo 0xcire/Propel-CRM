@@ -7,7 +7,7 @@ import { validateRequest } from "../middlewares/validate-input";
 
 import { signup, signin, signout } from "../controllers/auth";
 
-import { authCookieValidator, signinValidator, signupValidator } from "@propel/drizzle/schema/validation-schema";
+import { authCookieValidator, signinValidator, signupValidator } from "@propel/drizzle";
 
 export default (router: Router) => {
   router.post(

@@ -1,6 +1,6 @@
 import { randomBytes, createHmac, timingSafeEqual } from "crypto";
-import { hash, compare } from "bcrypt";
-import { ENV, SALT_ROUNDS } from "../config";
+import { compare } from "bcrypt";
+import { ENV } from "../config";
 
 import type { Request, Response } from "express";
 
@@ -21,10 +21,6 @@ export const createAnonymousToken = () => {
 
 export const deriveSessionCSRFToken = (secret: string, sessionID: string) => {
   return createHmac("sha256", secret).update(sessionID).digest("base64url");
-};
-
-export const hashPassword = async (password: string) => {
-  return hash(password.trim(), +(SALT_ROUNDS as string));
 };
 
 export const checkPassword = async (password: string, storedPassword: string) => {

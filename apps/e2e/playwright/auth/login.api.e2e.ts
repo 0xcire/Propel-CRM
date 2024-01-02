@@ -5,14 +5,15 @@ test.beforeEach(async ({ users }) => {
   await users.getMe();
 });
 
-test.afterEach(async ({ users }) => {
-  await users.logout();
-});
-
 const authCookies = ["absolute-propel-session", "idle-propel-session", "idle"];
 const preAuthCookies = ["pre-auth-session"];
 
 test.describe("cookies are properly set", () => {
+  test.afterEach(async ({ users }) => {
+    await users.logout();
+    await users.deleteAll();
+  });
+
   test("pre auth cookies are handled properly", async ({ page }) => {
     await page.goto("/");
     const context = page.context();
@@ -27,7 +28,12 @@ test.describe("cookies are properly set", () => {
   });
 
   test("auth cookies are handled properly", async ({ page, users }) => {
-    await users.apiLogin();
+    const currentUser = await users.create();
+
+    await users.apiLogin({
+      email: currentUser?.email as string,
+      password: currentUser?.password as string,
+    });
     await page.goto("/dashboard");
     await users.getMe();
 

@@ -1,7 +1,7 @@
-import { findContactByID, findRelation } from "@propel/drizzle/queries/contacts";
+import { findContactByID, findRelation } from "@propel/drizzle";
 
 import type { Request, Response, NextFunction } from "express";
-import type { Contact } from "@propel/drizzle/types";
+import type { Contact } from "@propel/drizzle";
 
 export const isContactOwner = async (req: Request, res: Response, next: NextFunction) => {
   const userID = req.user.id;

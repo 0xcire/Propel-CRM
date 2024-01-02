@@ -27,6 +27,7 @@ COPY --from=prune /app/out/full/ .
 COPY turbo.json turbo.json
 
 # [ ]: any way of getting cache hits in docker container? works locally.
+# [ ]: would need <root>/node_modules/.cache
 RUN npx turbo build --filter=client...
 
 # ----- nginx -----
