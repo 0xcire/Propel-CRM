@@ -9,10 +9,17 @@
   "scripts": {
     "dev": "cd .docker && docker compose -f docker-compose.dev.yml up",
     "preview": "cd .docker && docker compose -f docker-compose.preview.yml up",
-    "build-images": "cd .docker && docker compose -f docker-compose.local.yml up"
+    "build-images": "cd .docker && docker compose -f docker-compose.local.yml up",
+    "build-push-images": "cd ./scripts && ./build-push-images.sh",
+    "zip-bean-deploy": "cd ./scripts && ./zip-bean-deploy.sh",
+    "s3-sync": "cd ./scripts && ./s3-sync.sh",
+    "prepare": "husky install"
   },
   "packageManager": "npm@9.5.1",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^8.0.3"
+  }
 }

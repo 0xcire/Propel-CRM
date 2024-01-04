@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# turbo run typecheck
+# turbo run lint
+# turbo run format
+# turbo run e2e

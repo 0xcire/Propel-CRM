@@ -6,7 +6,8 @@
   "types": "index.ts",
   "scripts": {
     "clean": "rm -r dist",
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint --ignore-path .gitignore"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
