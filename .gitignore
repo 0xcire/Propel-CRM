@@ -10,7 +10,7 @@ node_modules/
 
 .ebextensions
 
-/scripts/scripts.env
+/scripts/.env
 
 privatekey.pem
 csr.pem

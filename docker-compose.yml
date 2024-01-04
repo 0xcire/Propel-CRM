@@ -8,7 +8,8 @@ services:
   nginx:
     image: "c1re/propel-nginx"
     volumes:
-      - /etc/pki/tls/certs:/etc/nginx/certs
+      - /etc/letsencrypt/:/etc/letsencrypt
+      - /etc/ssl/:/etc/ssl
     ports:
       - 80:80
       - 443:443

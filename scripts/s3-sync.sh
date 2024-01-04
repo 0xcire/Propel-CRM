@@ -1,4 +1,6 @@
-#! /bin/sh
+#! /bin/bash
+
+source .env
 
 cd ..
 
@@ -12,6 +14,7 @@ fi
 turbo run build --filter=client...
 
 aws s3 sync --delete ./apps/client/dist $CLIENT_S3_BUCKET
+
 aws cloudfront create-invalidation \
     --distribution-id $CLOUDFRONT_DISTRIBUTION \
     --paths "/*"

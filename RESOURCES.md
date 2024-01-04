@@ -49,6 +49,7 @@
 ## AWS
 
 - [cookies with cloudfront](https://stackoverflow.com/questions/63887518/how-do-i-ensure-cloudfront-returns-cookies-from-my-elastic-beanstalk-rest-api-ap)
+- [LetsEcrypt/Certbot on EB](https://kaviisuri.com/how-to-setup-a-https-server-in-elastic-beanstalk-the-cheap-way)
 
 ## Google Cloud Run
 

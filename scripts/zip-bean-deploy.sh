@@ -1,4 +1,6 @@
-#! /bin/sh
+#! /bin/bash
+
+source .env
 
 cd ..
 
@@ -18,12 +20,16 @@ timestamp=$(date +%s)
 
 aws s3 cp bean.zip $SERVICE_ZIP_URL
 
+echo "creating application version..."
+
 aws elasticbeanstalk create-application-version \
     --application-name propel \
     --version-label $timestamp \
     --source-bundle S3Bucket="$SERVICE_S3_BUCKET",S3Key="bean.zip"
 
+echo "updating environment..."
+
 aws elasticbeanstalk update-environment \
     --application-name propel \
-    --environment-name Propel-env \
+    --environment-name Propel-env-1 \
     --version-label $timestamp

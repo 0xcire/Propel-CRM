@@ -52,8 +52,8 @@ A CRM for real estate agents.
 ### Client
 
 - Tailwind / [Shadcn UI](https://ui.shadcn.com/) (Radix)
-  - `./client/src/components/ui` contain shadcn components
-  - `./client/src/components` contain my extension of shadcn as well as my own
+  - `.apps/client/src/components/ui` contain shadcn components
+  - `.apps/client/src/components` contain my extension of shadcn as well as my own
 - Vite
 - TypeScript
 - React
