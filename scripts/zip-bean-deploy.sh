@@ -1,6 +1,10 @@
 #! /bin/bash
 
-source .env
+if [ -f .env ]; then 
+{
+    source .env
+}
+fi
 
 cd ..
 
@@ -9,8 +13,8 @@ if [ -f bean.zip ]; then
     echo "found an existing bean.zip file"
     echo "removing..."
     rm bean.zip
-    echo "removed..."
     sleep 1
+    echo "removed..."
 }
 fi
 

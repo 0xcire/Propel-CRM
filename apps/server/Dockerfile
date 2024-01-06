@@ -40,6 +40,7 @@ COPY --from=build-stage /app/packages/redis/dist ./packages/redis
 COPY --from=build-stage /app/packages/drizzle/dist ./packages/drizzle
 COPY --from=build-stage /app/packages/lib/dist ./packages/lib
 
+RUN npm pkg delete scripts.prepare
 RUN npm install --omit=dev --workspace=server
 
 # ----- runner -----
