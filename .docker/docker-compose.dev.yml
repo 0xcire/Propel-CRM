@@ -1,6 +1,25 @@
 version: "3.9"
 
 services:
+  db:
+    image: postgres:15 # Neon postgres version
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: root-user
+      POSTGRES_PASSWORD: password123!
+      PGPASSWORD: password123!
+    ports:
+      - 5432:5432
+  redis:
+    image: redis:6.2
+    # command: ["redis-server", "--bind", "redis", "--port", "6379"]
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    ports:
+      - 6379:6379
   client:
     image: client-dev
     container_name: client-dev
@@ -8,8 +27,8 @@ services:
       context: ../
       dockerfile: ./apps/client/Dockerfile.dev
     volumes:
-      - ../apps/client:/usr/src/app
-      - /usr/src/app/node_modules
+      - ../:/app
+      - /app/node_modules
   server:
     image: server-dev
     container_name: server-dev
@@ -19,8 +38,13 @@ services:
     env_file:
       - ../apps/server/.env
     volumes:
-      - ../apps/server:/usr/src/app
-      - /usr/src/app/node_modules
+      - ../:/app
+      - /app/node_modules
+    depends_on:
+      redis:
+        condition: "service_healthy"
+      db:
+        condition: "service_started"
   nginx:
     image: nginx:stable-alpine3.17-slim
     container_name: reverse-proxy
