@@ -14,7 +14,7 @@ export const createFakeContact = () => {
   return {
     name: name,
     email: email,
-    phoneNumber: fakerEN_US.phone.number().split("x")[0].trim(),
+    phoneNumber: fakerEN_US.phone.number().split("x")[0]?.trim(),
     address: address,
     createdAt: faker.date.between({ from: "2022-01-01T00:00:00.000Z", to: "2023-08-15T00:00:00.000Z" }),
   };

@@ -16,6 +16,6 @@ export const createFakeTask = ({ complete }: { complete: boolean }) => {
     notes: "- Bullet points \n- To provide additional details \n- About the task at hand",
     dueDate: date.toISOString(),
     priority: setPriority(),
-    completed: true,
+    completed: complete,
   };
 };

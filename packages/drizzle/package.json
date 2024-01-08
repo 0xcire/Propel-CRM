@@ -10,7 +10,8 @@
     "studio": "npx drizzle-kit studio",
     "drop": "npx drizzle-kit drop",
     "generate": "npx drizzle-kit generate:pg",
-    "migrate": "npx tsx ./db/migrate.ts"
+    "migrate": "npx tsx ./db/migrate.ts",
+    "seed": "npx tsx seed.ts"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
@@ -20,6 +21,8 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@propel/lib": "*",
+    "@propel/faker": "*",
     "@faker-js/faker": "^8.3.1",
     "@propel/tsconfig": "*",
     "@propel/types": "*",
