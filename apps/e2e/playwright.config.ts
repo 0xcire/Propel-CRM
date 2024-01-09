@@ -15,7 +15,7 @@ export default defineConfig({
   reporter: "html" /* See https://playwright.dev/docs/test-reporters */,
   /*  See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    baseURL: "http://localhost:8080",
+    baseURL: "http://localhost:9090",
     trace: "on-first-retry",
   },
 
@@ -24,6 +24,7 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      // teardown: "./teardown.ts",
     },
 
     // {
@@ -38,12 +39,13 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
+  // current issue where webserver is sent SIGKILL and doesn't allow clean up
+  // ref: https://github.com/microsoft/playwright/issues/18209
   webServer: {
-    command: "cd ../../.docker && docker compose -f docker-compose.dev.yml up",
-    url: "http://localhost:8080/api/user/me", // return 403 -> start tests
+    command: "cd ../../.docker && docker compose -f docker-compose.playwright.yml up",
+    url: "http://localhost:9090/api/user/me", // return 403 -> start tests
     reuseExistingServer: !isCI,
     timeout: 500000, // arbitrarily large, incase docker env needs to be built
+    stderr: "pipe",
   },
-  // globalSetup: "./playwright/globals/setup.ts",
-  globalTeardown: "./playwright/globals/teardown.ts",
 });

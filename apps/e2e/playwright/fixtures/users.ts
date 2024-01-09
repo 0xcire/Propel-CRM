@@ -31,11 +31,12 @@ export const createUsersFixture = (page: Page, workerInfo: WorkerInfo) => {
       Accept: "application/json",
       "Content-Type": "application/json",
       "X-Propel-CSRF": (await csrfToken()) ?? "",
+      Referer: "http://localhost:9090",
     };
   };
   const PLAYWRIGHT_NAME = "Playwright Test";
   const PLAYWRIGHT_USER = `pw${workerInfo.workerIndex}${Date.now()}`;
-  const PLAYWRIGHT_EMAIL = `playwright${workerInfo.workerIndex}@gmail.com`;
+  const PLAYWRIGHT_EMAIL = `playwright${workerInfo.workerIndex}-${Date.now()}@gmail.com`;
   const PLAYWRIGHT_PW = "verysecretPassword1!";
 
   return {
