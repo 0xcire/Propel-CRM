@@ -2,6 +2,19 @@
 version: "3.9"
 
 services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: root-user
+      POSTGRES_PASSWORD: password123!
+      PGPASSWORD: password123!
+    ports:
+      - 5432:5432
+  redis:
+    image: redis:6.2
+    ports:
+      - 6379:6379
   client:
     image: client-prod
     container_name: client-prod
@@ -15,6 +28,11 @@ services:
     build:
       context: ../
       dockerfile: ./apps/server/Dockerfile
+    depends_on:
+      redis:
+        condition: "service_healthy"
+      db:
+        condition: "service_healthy"
     env_file:
       - ../apps/server/.env
   nginx:

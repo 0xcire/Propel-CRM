@@ -54,7 +54,7 @@ export const usersToContacts = pgTable(
   {
     userID: integer("user_id")
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: "cascade" }),
     contactID: integer("contact_id")
       .notNull()
       .references(() => contacts.id),
@@ -81,7 +81,7 @@ export const usersToContactsRelations = relations(usersToContacts, ({ one }) => 
 export const tasks = pgTable("tasks", {
   id: serial("id").primaryKey(),
   userID: integer("user_id")
-    .references(() => users.id)
+    .references(() => users.id, { onDelete: "cascade" })
     .notNull(),
   listingID: integer("listing_id").references(() => listings.id),
   contactID: integer("contact_id").references(() => contacts.id),
@@ -113,7 +113,7 @@ export const tasksRelations = relations(tasks, ({ one }) => ({
 // single family, apartment, townhome, condo, duplex, etc..
 export const listings = pgTable("listings", {
   id: serial("id").primaryKey(),
-  userID: integer("user_id").references(() => users.id),
+  userID: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
   address: varchar("address", { length: 255 }).notNull(),
   propertyType: varchar("property_type", { length: 255 }).notNull(),
   price: numeric("price", { precision: 11, scale: 2 }).notNull(),
@@ -173,7 +173,7 @@ export const listingsToContactsRelations = relations(listingsToContacts, ({ one 
 // sale_price
 export const soldListings = pgTable("sold_listings", {
   id: serial("id").primaryKey(),
-  userID: integer("user_id").references(() => users.id),
+  userID: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
   listingID: integer("listing_id").references(() => listings.id, { onDelete: "cascade" }),
   contactID: integer("contact_id").references(() => contacts.id, { onDelete: "cascade" }),
   salePrice: numeric("sale_price", { precision: 11, scale: 2 }).notNull(),

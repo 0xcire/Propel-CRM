@@ -1,14 +1,14 @@
 import { expect } from "@playwright/test";
 import { test } from "../lib/fixtures";
 
-test.beforeEach(async ({ users }) => {
-  await users.getMe();
-});
-
 const authCookies = ["absolute-propel-session", "idle-propel-session", "idle"];
 const preAuthCookies = ["pre-auth-session"];
 
 test.describe("cookies are properly set", () => {
+  test.beforeEach(async ({ users }) => {
+    await users.getMe();
+  });
+
   test.afterEach(async ({ users }) => {
     await users.logout();
     await users.deleteAll();
@@ -16,6 +16,7 @@ test.describe("cookies are properly set", () => {
 
   test("pre auth cookies are handled properly", async ({ page }) => {
     await page.goto("/");
+    await page.waitForSelector("h1");
     const context = page.context();
     const cookies = await context.cookies();
 
@@ -29,13 +30,13 @@ test.describe("cookies are properly set", () => {
 
   test("auth cookies are handled properly", async ({ page, users }) => {
     const currentUser = await users.create();
+    await page.goto("/auth/signin");
 
-    await users.apiLogin({
+    await users.login({
       email: currentUser?.email as string,
       password: currentUser?.password as string,
     });
-    await page.goto("/dashboard");
-    await users.getMe();
+    await page.waitForSelector("[data-testid=dashboard]");
 
     const context = page.context();
     const cookies = await context.cookies();

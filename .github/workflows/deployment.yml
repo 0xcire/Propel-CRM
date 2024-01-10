@@ -1,62 +1,69 @@
-# wait till December is over to finish.
-# Need to figure out s3 free tier, tier 1 getting used up so quickly
-# if it is still an issue, move to netlify or etc.
-# or just complete this
+name: "Propel Deployment"
 
-# name: "propel deployment"
+on:
+  pull_request:
+    branches:
+      - main
 
-# on:
-#   pull_request:
-#     branches: [-main]
-#   workflow_dispatch:
+  workflow_dispatch:
 
-# jobs:
-#   api:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout source code
-#         uses: actions/checkout@v2
+jobs:
+  build-push-images:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-#       - name: Generate deployment package
-#         run: zip -r deploy.zip . -x '*.git*'
+      - name: Run build-push-images.sh
+        run: |
+          chmod +x ./scripts/build-push-images.sh
+          ./scripts/build-push-images.sh
+        # shell: bash
 
-#       - name: Deploy to EB
-#         uses: einaregilsson/beanstalk-deploy@v21
-#         with:
-#           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           application_name: MyApplicationName
-#           environment_name: MyApplication-Environment
-#           version_label: ${{ date_tag }}
-#           region: us-east-2
-#           deployment_package: bean.zip
+  deploy-api:
+    needs: build-push-images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
 
-#   client:
-#     runs-on: ubuntu-latest
-#     defaults:
-#       run:
-#         working-directory: ./client
-#     env:
-#       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#     steps:
-#       - uses: actions/checkout@v3
+      - name: Configure credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-#       - name: Install dependencies
-#         run: npm ci
+      - name: Run zip-bean-deploy.sh
+        env:
+          SERVICE_S3_BUCKET: ${{ secrets.SERVICE_S3_BUCKET }}
+          SERVICE_ZIP_URL: ${{ secrets.SERVICE_ZIP_URL }}
+        run: |
+          chmod +x ./scripts/zip-bean-deploy.sh
+          ./scripts/zip-bean-deploy.sh
 
-#       - name: Build
-#         run: npm run build
+  deploy-client:
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-#       - name: Deploy
-#         uses: reggionick/s3-deploy@v4
-#         with:
-#           folder: dist
-#           bucket: ${{ secrets.S3_BUCKET }}
-#           bucket-region: ${{ secrets.S3_BUCKET_REGION }}
-#           dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
-#           invalidation: /
-#           delete-removed: true
-#           no-cache: true
-#           private: true
-#           files-to-include: "{.*/**,**}"
+      - name: Configure credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Run s3-sync.sh
+        env:
+          CLIENT_S3_BUCKET: ${{ secrets.CLIENT_S3_BUCKET }}
+          CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
+        run: |
+          chmod +x ./scripts/s3-sync.sh
+          ./scripts/s3-sync.sh

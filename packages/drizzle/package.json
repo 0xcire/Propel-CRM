@@ -2,14 +2,16 @@
   "name": "@propel/drizzle",
   "version": "0.0.0",
   "private": true,
-  "main": "index.js",
+  "main": "index.ts",
   "types": "index.ts",
   "scripts": {
     "clean": "rm -r dist",
     "build": "tsc",
     "studio": "npx drizzle-kit studio",
     "drop": "npx drizzle-kit drop",
-    "generate": "npx drizzle-kit generate:pg"
+    "generate": "npx drizzle-kit generate:pg",
+    "migrate": "npx tsx ./db/migrate.ts",
+    "seed": "npx tsx seed.ts"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
@@ -19,6 +21,8 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@propel/lib": "*",
+    "@propel/faker": "*",
     "@faker-js/faker": "^8.3.1",
     "@propel/tsconfig": "*",
     "@propel/types": "*",

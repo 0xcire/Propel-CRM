@@ -1,8 +1,8 @@
 {
+  "id": "00ad885f-1932-4e35-9861-0e2cb4db3fd9",
+  "prevId": "b11657c0-d6d5-46eb-a642-4f98a5126987",
   "version": "5",
   "dialect": "pg",
-  "id": "c0aca62a-11f3-48b1-9857-b19aaae29ab0",
-  "prevId": "93efeafe-815e-42eb-88ee-01ccf0001c13",
   "tables": {
     "contacts": {
       "name": "contacts",
@@ -129,7 +129,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -172,7 +172,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "listings_to_contacts_contact_id_contacts_id_fk": {
@@ -185,13 +185,13 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
-        "listings_to_contacts_listing_id_contact_id": {
-          "name": "listings_to_contacts_listing_id_contact_id",
+        "listings_to_contacts_listing_id_contact_id_pk": {
+          "name": "listings_to_contacts_listing_id_contact_id_pk",
           "columns": [
             "listing_id",
             "contact_id"
@@ -210,17 +210,29 @@
           "primaryKey": true,
           "notNull": true
         },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "listing_id": {
           "name": "listing_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "user_id": {
-          "name": "user_id",
+        "contact_id": {
+          "name": "contact_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "sale_price": {
+          "name": "sale_price",
+          "type": "numeric(11, 2)",
+          "primaryKey": false,
+          "notNull": true
         },
         "sold_at": {
           "name": "sold_at",
@@ -232,19 +244,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "sold_listings_listing_id_listings_id_fk": {
-          "name": "sold_listings_listing_id_listings_id_fk",
-          "tableFrom": "sold_listings",
-          "tableTo": "listings",
-          "columnsFrom": [
-            "listing_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "sold_listings_user_id_users_id_fk": {
           "name": "sold_listings_user_id_users_id_fk",
           "tableFrom": "sold_listings",
@@ -255,7 +254,33 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "sold_listings_listing_id_listings_id_fk": {
+          "name": "sold_listings_listing_id_listings_id_fk",
+          "tableFrom": "sold_listings",
+          "tableTo": "listings",
+          "columnsFrom": [
+            "listing_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "sold_listings_contact_id_contacts_id_fk": {
+          "name": "sold_listings_contact_id_contacts_id_fk",
+          "tableFrom": "sold_listings",
+          "tableTo": "contacts",
+          "columnsFrom": [
+            "contact_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -320,18 +345,12 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "status",
+        "completed": {
+          "name": "completed",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": false,
-          "default": "'todo'"
-        },
-        "previous_status": {
-          "name": "previous_status",
-          "type": "previous_status",
-          "primaryKey": false,
-          "notNull": false
+          "default": false
         },
         "created_at": {
           "name": "created_at",
@@ -353,7 +372,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "tasks_listing_id_listings_id_fk": {
@@ -420,12 +439,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "session_token": {
-          "name": "session_token",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "is_admin": {
           "name": "is_admin",
           "type": "boolean",
@@ -489,7 +502,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "user_to_contacts_contact_id_contacts_id_fk": {
@@ -507,8 +520,8 @@
         }
       },
       "compositePrimaryKeys": {
-        "user_to_contacts_user_id_contact_id": {
-          "name": "user_to_contacts_user_id_contact_id",
+        "user_to_contacts_user_id_contact_id_pk": {
+          "name": "user_to_contacts_user_id_contact_id_pk",
           "columns": [
             "user_id",
             "contact_id"
@@ -518,29 +531,11 @@
       "uniqueConstraints": {}
     }
   },
-  "enums": {
-    "previous_status": {
-      "name": "previous_status",
-      "values": {
-        "todo": "todo",
-        "in progress": "in progress",
-        "canceled": "canceled"
-      }
-    },
-    "status": {
-      "name": "status",
-      "values": {
-        "todo": "todo",
-        "in progress": "in progress",
-        "completed": "completed",
-        "canceled": "canceled"
-      }
-    }
-  },
+  "enums": {},
   "schemas": {},
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
+    "tables": {}
   }
 }

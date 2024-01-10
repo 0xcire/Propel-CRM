@@ -52,8 +52,8 @@ A CRM for real estate agents.
 ### Client
 
 - Tailwind / [Shadcn UI](https://ui.shadcn.com/) (Radix)
-  - `./client/src/components/ui` contain shadcn components
-  - `./client/src/components` contain my extension of shadcn as well as my own
+  - `.apps/client/src/components/ui` contain shadcn components
+  - `.apps/client/src/components` contain my extension of shadcn as well as my own
 - Vite
 - TypeScript
 - React
@@ -92,21 +92,24 @@ Populate `./apps/server/.env.example` with your own postgreSQL credentials and:
 
 ### Without Docker
 
-`git clone https://github.com/0xcire/Propel-CRM.git propel-crm` \
-`cd propel-crm` \
-from `propel-crm` ... \
-`cd server && npm install && npm run dev` \
-`cd client && npm install && npm run dev` \
+`git clone https://github.com/0xcire/Propel-CRM.git propel-crm \&& cd propel-crm && npm install` \
+`turbo run dev` \
 open up `http://localhost:5173/` in your browser
 
 ### With Docker
 
-`git clone https://github.com/0xcire/Propel-CRM.git propel-crm` \
-`cd propel-crm` \
-`docker compose -f docker-compose.dev.yml up` to run in dev mode & \
+`git clone https://github.com/0xcire/Propel-CRM.git propel-crm && cd propel-crm && npm install` \
+`docker compose -f .docker/docker-compose.dev.yml up` to run in dev mode & \
 `docker compose up` to run in prod
 
-### Interacting with DB via Drizzle
+## Running Tests
+
+- note: current implementation not ideal
+- create an .env file in `/apps/e2e` with DB / Redis credentials from `.apps/server/.env`
+- - make sure to change `PG_URL` to the url of the test db
+- run `npm run test --workspace=e2e`
+
+## Interacting with DB via Drizzle
 
 First, create an .env file in `./packages/drizzle` with your DB_URL.
 Ensure `./packages/drizzle/drizzle.config.ts` is properly configured and:
@@ -170,6 +173,11 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 - Struggled initally with configuring Nginx
 
 - Also had trouble initially wrapping my head around SQL aggregate functions when creating the analytics view
+
+- e2e testing strategy
+  - hesitancy on exactly how to run tests in CI
+  - initially recreated postgres / redis locally on docker compose which ran fine but could not pin down postgres 'fast shutdown request' issue
+  - **Solution:** Neon has a cool branching feature with specific guides on how to create/delete branches in CI which seems perfect for this usecase anyways and I can still run a local postgres instance during dev
 
 ## Notes
 
