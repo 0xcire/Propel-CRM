@@ -5,6 +5,21 @@ on:
   pull_request:
     branches: [main, master]
   workflow_dispatch:
+
+# env:
+#   PG_URL: ${{ secrets.PG_URL }}
+#   REDIS_PORT: ${{ secrets.REDIS_PORT }}
+#   REDIS_PW: ${{ secrets.REDIS_PW }}
+#   REDIS_USERNAME: ${{ secrets.REDIS_USERNAME }}
+#   REDIS_HOST: ${{ secrets.REDIS_HOST }}
+#   IDLE_SESSION_LENGTH: ${{ secrets.IDLE_SESSION_LENGTH }}
+#   ABSOLUTE_SESSION_LENGTH: ${{ secrets.ABSOLUTE_SESSION_LENGTH }}
+#   PRE_AUTH_SESSION_LENGTH: ${{ secrets.PRE_AUTH_SESSION_LENGTH }}
+#   CSRF_SECRET: ${{ secrets.CSRF_SECRET }}
+#   PRE_AUTH_CSRF_SECRET: ${{ secrets.PRE_AUTH_CSRF_SECRET }}
+#   COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+#   SALT_ROUNDS: ${{ secrets.SALT_ROUNDS }}
+
 jobs:
   test:
     timeout-minutes: 60
@@ -18,6 +33,8 @@ jobs:
         run: npm install
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+      # - name: Start server
+      #   run: docker compose -f .docker/docker-compose.playwright.yml up
       - name: Run Playwright tests
         run: npm run test --workspace=e2e
         env:
@@ -26,13 +43,13 @@ jobs:
           REDIS_PW: ${{ secrets.REDIS_PW }}
           REDIS_USERNAME: ${{ secrets.REDIS_USERNAME }}
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          IDLE_SESSION_LENGTH: $ {{ secrets.IDLE_SESSION_LENGTH }}
-          ABSOLUTE_SESSION_LENGTH: $ {{ secrets.ABSOLUTE_SESSION_LENGTH }}
-          PRE_AUTH_SESSION_LENGTH: $ {{ secrets.PRE_AUTH_SESSION_LENGTH }}
-          CSRF_SECRET: $ {{ secrets.CSRF_SECRET }}
-          PRE_AUTH_CSRF_SECRET: $ {{ secrets.PRE_AUTH_CSRF_SECRET }}
-          COOKIE_SECRET: $ {{ secrets.COOKIE_SECRET }}
-          SALT_ROUNDS: $ {{ secrets.SALT_ROUNDS }}
+          IDLE_SESSION_LENGTH: ${{ secrets.IDLE_SESSION_LENGTH }}
+          ABSOLUTE_SESSION_LENGTH: ${{ secrets.ABSOLUTE_SESSION_LENGTH }}
+          PRE_AUTH_SESSION_LENGTH: ${{ secrets.PRE_AUTH_SESSION_LENGTH }}
+          CSRF_SECRET: ${{ secrets.CSRF_SECRET }}
+          PRE_AUTH_CSRF_SECRET: ${{ secrets.PRE_AUTH_CSRF_SECRET }}
+          COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+          SALT_ROUNDS: ${{ secrets.SALT_ROUNDS }}
       - uses: actions/upload-artifact@v3
         if: always()
         with:

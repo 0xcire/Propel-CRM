@@ -4,6 +4,8 @@ services:
   client:
     image: client-prod
     container_name: client-prod
+    logging:
+      driver: none
     build:
       context: ../
       dockerfile: ./apps/client/Dockerfile
@@ -34,8 +36,21 @@ services:
     build:
       context: ../
       dockerfile: ./packages/nginx/docker/Dockerfile.preview
+    # logging:
+    #   driver: none
     ports:
       - 9090:80
     depends_on:
       - client
       - api
+  # playwright:
+  #   image: playwright
+  #   container_name: e2e
+  #   ipc: host
+  #   build:
+  #     context: ../
+  #     dockerfile: ./apps/e2e/Dockerfile
+  #   ports:
+  #     - 9323:9323
+  #   env_file:
+  #     - ../apps/server/.env.production

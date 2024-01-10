@@ -7,6 +7,7 @@
     "packages/*"
   ],
   "scripts": {
+    "e2e": "docker compose -f .docker/docker-compose.playwright.yml up --abort-on-container-exit",
     "dev": "cd .docker && docker compose -f docker-compose.dev.yml up",
     "dev:down": "docker compose -f .docker/docker-compose.dev.yml down",
     "preview": "cd .docker && docker compose -f docker-compose.preview.yml up",
@@ -14,7 +15,7 @@
     "build-push-images": "cd ./scripts && ./build-push-images.sh",
     "zip-bean-deploy": "cd ./scripts && ./zip-bean-deploy.sh",
     "s3-sync": "cd ./scripts && ./s3-sync.sh",
-    "prepare": "husky install"
+    "prepare": "is-ci || husky install"
   },
   "packageManager": "npm@9.5.1",
   "keywords": [],
@@ -22,6 +23,7 @@
   "license": "ISC",
   "devDependencies": {
     "husky": "^8.0.3",
+    "is-ci": "^3.0.1",
     "lint-staged": "^15.2.0"
   },
   "lint-staged": {
