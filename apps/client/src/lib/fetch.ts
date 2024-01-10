@@ -22,7 +22,6 @@ export const Post = ({
   endpoint,
   body,
 }: FetchMethodParams): Promise<Response> => {
-  console.log(API_URL);
   return fetch(`${API_URL}/${endpoint}`, {
     headers: {
       Accept: 'application/json',
@@ -39,7 +38,6 @@ export const Patch = ({
   endpoint,
   body,
 }: FetchMethodParams): Promise<Response> => {
-  console.log(API_URL);
   return fetch(`${API_URL}/${endpoint}`, {
     headers: {
       Accept: 'application/json',
@@ -53,7 +51,6 @@ export const Patch = ({
 };
 
 export const Get = ({ endpoint }: FetchMethodParams): Promise<Response> => {
-  console.log(API_URL);
   return fetch(`${API_URL}/${endpoint}`, {
     credentials: 'include',
   });
@@ -63,7 +60,6 @@ export const Delete = ({
   endpoint,
   body,
 }: FetchMethodParams): Promise<Response> => {
-  console.log(API_URL);
   return fetch(`${API_URL}/${endpoint}`, {
     headers: {
       Accept: 'application/json',
