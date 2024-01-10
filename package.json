@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "dev": "cd .docker && docker compose -f docker-compose.dev.yml up",
+    "dev:down": "docker compose -f .docker/docker-compose.dev.yml down",
     "preview": "cd .docker && docker compose -f docker-compose.preview.yml up",
     "build-images": "cd .docker && docker compose -f docker-compose.local.yml up",
     "build-push-images": "cd ./scripts && ./build-push-images.sh",
@@ -20,6 +21,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "husky": "^8.0.3"
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0"
+  },
+  "lint-staged": {
+    "(apps|packages)/**/*.{js,ts,jsx,tsx}": "eslint --fix"
   }
 }
