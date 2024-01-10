@@ -7,12 +7,13 @@ export const redisClient = new Redis({
   username: REDIS_USERNAME,
   password: REDIS_PW,
   port: +(REDIS_PORT as string),
-  tls: {},
+  ...(REDIS_USERNAME && { tls: {} }), // causes timeout locally, only need host/port
 
   enableOfflineQueue: false,
   showFriendlyErrorStack: ENV === "development",
   autoResubscribe: false,
   maxRetriesPerRequest: 1,
+  connectTimeout: 10000,
 });
 
 export const setRedisSession = async (sessionID: string, userID: number, expires: number) => {

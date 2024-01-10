@@ -3,8 +3,13 @@ node_modules/
 
 npm-debug.log
 .npmrc
+
 .env
+.env.development
+.env.production
 .env.example
+
+
 .git
 .gitignore
 Dockerfile.dev
