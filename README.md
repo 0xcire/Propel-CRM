@@ -177,7 +177,7 @@ see more commands [here](https://orm.drizzle.team/kit-docs/commands)
 - e2e testing strategy
   - hesitancy on exactly how to run tests in CI
   - initially recreated postgres / redis locally on docker compose which ran fine but could not pin down postgres 'fast shutdown request' issue
-  - **Solution:** Neon has a cool branching feature with specific guides on how to create/delete branches in CI which seems perfect for this usecase anyways and I can still run a local postgres instance during dev
+  - **Solution:** Took advantage of Neon's branching feature and built docker images mirror prod environments as close as possible
 
 ## Notes
 
