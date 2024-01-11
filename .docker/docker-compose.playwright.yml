@@ -43,14 +43,3 @@ services:
     depends_on:
       - client
       - api
-  # playwright:
-  #   image: playwright
-  #   container_name: e2e
-  #   ipc: host
-  #   build:
-  #     context: ../
-  #     dockerfile: ./apps/e2e/Dockerfile
-  #   ports:
-  #     - 9323:9323
-  #   env_file:
-  #     - ../apps/server/.env.production

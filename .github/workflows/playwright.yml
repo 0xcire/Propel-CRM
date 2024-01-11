@@ -29,6 +29,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+
+      - name: Add .env.local for API_URL
+        run: |
+          echo "VITE_PREVIEW_PROXY_URL=http://localhost:9090/api" > apps/client/.env.local
+
       - name: Install dependencies
         run: npm install
       - name: Install Playwright Browsers
