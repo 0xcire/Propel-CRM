@@ -22,8 +22,7 @@ jobs:
       - name: Run build-push-images.sh
         run: |
           chmod +x ./scripts/build-push-images.sh
-          ./scripts/build-push-images.sh
-        # shell: bash
+          cd scripts && ./build-push-images.sh
 
   deploy-api:
     needs: build-push-images
@@ -33,10 +32,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Configure credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: $ {{ secrets.ROLE_TO_ASSUME }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Run zip-bean-deploy.sh
@@ -45,15 +43,12 @@ jobs:
           SERVICE_ZIP_URL: ${{ secrets.SERVICE_ZIP_URL }}
         run: |
           chmod +x ./scripts/zip-bean-deploy.sh
-          ./scripts/zip-bean-deploy.sh
+          cd scripts && ./zip-bean-deploy.sh
 
   # ideally would run after beanstalk deploy is successful
   deploy-client:
     needs: tests
     runs-on: ubuntu-latest
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -63,10 +58,9 @@ jobs:
           echo VITE_PROD_PROXY_URL=${{ secrets.PROD_API_URL }} > apps/client/.env.local
 
       - name: Configure credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: $ {{ secrets.ROLE_TO_ASSUME }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Run s3-sync.sh
@@ -75,4 +69,4 @@ jobs:
           CLOUDFRONT_DISTRIBUTION: ${{ secrets.CLOUDFRONT_DISTRIBUTION }}
         run: |
           chmod +x ./scripts/s3-sync.sh
-          ./scripts/s3-sync.sh
+          cd scripts && ./s3-sync.sh

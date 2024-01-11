@@ -40,5 +40,6 @@ jobs:
           name: playwright-report
           path: /apps/e2e/playwright-report/
           retention-days: 30
+      # playwright passes sigkill to webserver, docker compose does not 'close' as a result
       - name: docker compose down
         run: docker compose -f .docker/docker-compose.playwright.yml down
