@@ -11,6 +11,7 @@ on:
 jobs:
   tests:
     uses: ./.github/workflows/playwright.yml
+    secrets: inherit
   build-push-images:
     needs: tests
     runs-on: ubuntu-latest
@@ -46,6 +47,7 @@ jobs:
           chmod +x ./scripts/zip-bean-deploy.sh
           ./scripts/zip-bean-deploy.sh
 
+  # ideally would run after beanstalk deploy is successful
   deploy-client:
     needs: tests
     runs-on: ubuntu-latest
