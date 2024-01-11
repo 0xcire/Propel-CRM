@@ -14,6 +14,8 @@
 - [ ] github action to run e2e tests
 
 - [ ] need a dev & prod db migrate script
+- [ ] also make sure tests running in ci vs locally is seamless
+- [ ] clean up docker compose, use extend from base
 
 - local/testing/prod env
   - env.dev -> local postgres / local redis

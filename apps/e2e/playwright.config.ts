@@ -52,7 +52,6 @@ export default defineConfig({
     reuseExistingServer: !isCI,
     timeout: 500000, // arbitrarily large, incase docker env needs to be built
     stderr: "pipe",
-    stdout: "pipe",
   },
   // webServer: {
   //   command: "",
