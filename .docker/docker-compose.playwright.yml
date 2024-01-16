@@ -10,11 +10,9 @@ services:
       context: ../
       dockerfile: ./apps/client/Dockerfile
   api:
-    image: server-prod
-    container_name: server-prod
-    build:
-      context: ../
-      dockerfile: ./apps/server/Dockerfile
+    extends:
+      file: docker-compose.common.yml
+      service: server-prod
     environment:
       PG_URL: ${PG_URL}
       REDIS_PORT: ${REDIS_PORT}
@@ -28,16 +26,10 @@ services:
       PRE_AUTH_CSRF_SECRET: ${PRE_AUTH_CSRF_SECRET}
       COOKIE_SECRET: ${COOKIE_SECRET}
       SALT_ROUNDS: ${SALT_ROUNDS}
-    # env_file:
-    #   - ../apps/server/.env.production
   nginx:
-    image: nginx-prod
-    container_name: nginx-prod
-    build:
-      context: ../
-      dockerfile: ./packages/nginx/docker/Dockerfile.preview
-    # logging:
-    #   driver: none
+    extends:
+      file: docker-compose.common.yml
+      service: preview-nginx
     ports:
       - 9090:80
     depends_on:
