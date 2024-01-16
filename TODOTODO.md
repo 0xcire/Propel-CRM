@@ -11,11 +11,11 @@
 - [x] husky linst-staged
 
 - [x] deployment github action that runs above scripts to deploy to s3 / EB
-- [ ] github action to run e2e tests
+- [x] github action to run e2e tests
 
-- [ ] need a dev & prod db migrate script
-- [ ] also make sure tests running in ci vs locally is seamless
-- [ ] clean up docker compose, use extend from base
+- [x] need a dev & prod db migrate script
+- [x] also make sure tests running in ci vs locally is seamless
+- [x] clean up docker compose, use extend from base
 
 - local/testing/prod env
   - env.dev -> local postgres / local redis
@@ -28,6 +28,6 @@
 
   - [ ] just add simple feature so that once PR is created to complete branch, can ensure things are working
 
-- [ ] remove .docker/apps and whatever is causing that to happen in Dockerfile
+- [x] remove .docker/apps and volumes causing it
 
 - [ ] redirect aws default urls to mine

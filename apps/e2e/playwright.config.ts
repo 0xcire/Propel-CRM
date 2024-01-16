@@ -18,9 +18,6 @@ export default defineConfig({
   /*  See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL: "http://localhost:9090",
-    // baseURL: "http://nginx-prod:80",
-    // baseURL: "local",
-    // baseURL: "ws://nginx-prod",
     trace: "on-first-retry",
   },
 
@@ -53,9 +50,4 @@ export default defineConfig({
     timeout: 500000, // arbitrarily large, incase docker env needs to be built
     stderr: "pipe",
   },
-  // webServer: {
-  //   command: "",
-  //   url: "http://nginx-prod/api/user/me",
-  //   reuseExistingServer: true,
-  // },
 });

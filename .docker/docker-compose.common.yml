@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15 # Neon postgres version
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: root-user
+      POSTGRES_PASSWORD: password123!
+      PGPASSWORD: password123!
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  redis:
+    image: redis:6.2
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+  server-prod:
+    image: server-prod
+    container_name: server-prod
+    build:
+      context: ../
+      dockerfile: ./apps/server/Dockerfile
+  preview-nginx:
+    image: nginx-prod
+    container_name: nginx-prod
+    build:
+      context: ../
+      dockerfile: ./packages/nginx/docker/Dockerfile.preview

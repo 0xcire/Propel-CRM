@@ -3,11 +3,9 @@ version: "3.9"
 
 services:
   api:
-    image: server-prod
-    container_name: server-prod
-    build:
-      context: ../
-      dockerfile: ./apps/server/Dockerfile
+    extends:
+      file: docker-compose.common.yml
+      service: server-prod
   nginx:
     image: nginx-prod
     container_name: nginx-prod

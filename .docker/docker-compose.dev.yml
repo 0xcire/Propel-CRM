@@ -2,29 +2,18 @@ version: "3.9"
 
 services:
   db:
-    image: postgres:15 # Neon postgres version
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: root-user
-      POSTGRES_PASSWORD: password123!
-      PGPASSWORD: password123!
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    extends:
+      file: docker-compose.common.yml
+      service: db
     tty: true
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - ./volumes/postgres-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
   redis:
-    image: redis:6.2
-    healthcheck:
-      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
-      interval: 1s
-      timeout: 3s
-      retries: 5
+    extends:
+      file: docker-compose.common.yml
+      service: redis
     ports:
       - 6379:6379
   client:
