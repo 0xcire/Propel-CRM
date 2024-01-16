@@ -12,9 +12,8 @@ export default defineConfig({
   forbidOnly: isCI /* test.only */,
   retries: isCI ? 1 : 0,
   workers: isCI ? 1 : undefined,
-  // reporter: "html" /* See https://playwright.dev/docs/test-reporters */,
+  reporter: "html" /* See https://playwright.dev/docs/test-reporters */,
   // reporter: [["html", { open: "never" }]],
-  reporter: "html",
   /*  See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL: "http://localhost:9090",

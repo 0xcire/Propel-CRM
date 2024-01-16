@@ -88,37 +88,37 @@ A CRM for real estate agents.
 
 ## Getting Started
 
+Run `npm install -g dotenv-cli`, many scripts rely on it
+
 Populate `./apps/server/.env.example` with your own postgreSQL credentials and:
 
 ### Without Docker
 
 `git clone https://github.com/0xcire/Propel-CRM.git propel-crm \&& cd propel-crm && npm install` \
 `turbo run dev` \
+configure cors for localhost in `apps/server/src/index.ts` and \
 open up `http://localhost:5173/` in your browser
 
 ### With Docker
 
 `git clone https://github.com/0xcire/Propel-CRM.git propel-crm && cd propel-crm && npm install` \
 `docker compose -f .docker/docker-compose.dev.yml up` to run in dev mode & \
-`docker compose up` to run in prod
+`docker compose -f .docker/docker-compose.preview.yml up` to run in 'local' prod
 
 ## Running Tests
 
-- note: current implementation not ideal
-- create an .env file in `/apps/e2e` with DB / Redis credentials from `.apps/server/.env`
-- - make sure to change `PG_URL` to the url of the test db
-- run `npm run test --workspace=e2e`
+- run `npm run test:local --workspace=e2e`
 
 ## Interacting with DB via Drizzle
 
-First, create an .env file in `./packages/drizzle` with your DB_URL.
 Ensure `./packages/drizzle/drizzle.config.ts` is properly configured and:
 
 `npm exec drizzle-kit generate:pg` to run migrations \
-`npm exec drizzle-kit introspect:pg` to generate schemas based on existing db \
 `npm exec drizzle-kit drop` to delete previously generated migrations \
-`npm exec drizzle-kit studio` to use Drizzle ORM's new feature to explore your db \
-see more commands [here](https://orm.drizzle.team/kit-docs/commands)
+`npm run studio:{ test | local | prod } --workspace=@propel/drizzle` to use Drizzle ORM's new feature to explore your db \
+`npm run migrate:{ test | local | prod } --workspace=@propel/drizzle` to run migrations against various db environments \
+`npm run seed:{ local | prod }` to seed database according to env \
+see more drizzle specific commands [here](https://orm.drizzle.team/kit-docs/commands)
 
 ## Learning Points
 
