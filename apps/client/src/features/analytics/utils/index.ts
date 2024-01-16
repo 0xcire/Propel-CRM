@@ -18,7 +18,7 @@ export const getMinMax = (
   callback: GetMinMaxCallback
 ): readonly [number, number] | undefined => {
   const data = callback();
-  if (!data) return;
+  if (!data || data.length === 0) return;
 
   return [Math.min(...data), Math.max(...data)] as const;
 };

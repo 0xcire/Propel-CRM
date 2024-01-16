@@ -37,13 +37,16 @@ const findLargestMultiple = (value: number): number => {
 };
 
 // normalizes range values
+// y axis will print something like: 0, 10000, 100000, 1000000
+// instead of: 425, 34783, 593424, 2934856
 export const yAxisRange = (minmax: Array<number>): Array<number> => {
   return minmax?.map((num, index) => {
     return index === 0
       ? Math.floor((num * 0.55) / findLargestMultiple(num)) *
           findLargestMultiple(num)
-      : Math.floor((num * 1.55) / findLargestMultiple(num)) *
-          findLargestMultiple(num);
+      : Math.round((num * 1.55) / findLargestMultiple(num)) *
+          findLargestMultiple(num) *
+          0.8;
   });
 };
 
