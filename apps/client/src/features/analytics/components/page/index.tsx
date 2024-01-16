@@ -35,10 +35,12 @@ export function AnalyticsPage(): JSX.Element {
   useIdleTimeout();
 
   useEffect(() => {
-    searchParams.set('year', getCurrentYear().toString());
-    setSearchParams(searchParams, {
-      replace: true,
-    });
+    if (!searchParams.get('year')) {
+      searchParams.set('year', getCurrentYear().toString());
+      setSearchParams(searchParams, {
+        replace: true,
+      });
+    }
 
     //eslint-disable-next-line
   }, []);
