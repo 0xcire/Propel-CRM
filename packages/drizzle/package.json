@@ -7,11 +7,16 @@
   "scripts": {
     "clean": "rm -r dist",
     "build": "tsc",
-    "studio": "npx drizzle-kit studio",
     "drop": "npx drizzle-kit drop",
     "generate": "npx drizzle-kit generate:pg",
-    "migrate": "npx tsx ./db/migrate.ts",
-    "seed": "npx tsx seed.ts"
+    "migrate:test": "dotenv -e ../../apps/server/.env.test npx tsx ./db/migrate.ts",
+    "migrate:local": "dotenv -e ../../apps/server/.env.development npx tsx ./db/migrate.ts",
+    "migrate:prod": "dotenv -e ../../apps/server/.env.production npx tsx ./db/migrate.ts",
+    "seed:local": "dotenv -e ../../apps/server/.env.development npx tsx seed.ts",
+    "seed:prod": "dotenv -e ../../apps/server/.env.production npx tsx seed.ts",
+    "studio:test": "dotenv -e ../../apps/server/.env.test npx drizzle-kit studio",
+    "studio:local": "dotenv -e ../../apps/server/.env.development npx drizzle-kit studio",
+    "studio:prod": "dotenv -e ../../apps/server/.env.production npx drizzle-kit studio"
   },
   "dependencies": {
     "dotenv": "^16.3.1",

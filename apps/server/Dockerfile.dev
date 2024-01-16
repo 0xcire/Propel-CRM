@@ -13,6 +13,8 @@ RUN turbo prune --scope=server --docker
 
 FROM base as installer
 
+RUN npm install -g dotenv-cli
+
 WORKDIR /app
 
 COPY --from=prune /app/out/json .
@@ -22,5 +24,5 @@ RUN npm install
 COPY --from=prune /app/out/full/ .
 COPY turbo.json turbo.json
 
-CMD npm run migrate --workspace=@propel/drizzle && npx turbo dev --scope=server
+CMD npm run migrate:local --workspace=@propel/drizzle && npx turbo dev --scope=server
 # ^ migrate after docker network init

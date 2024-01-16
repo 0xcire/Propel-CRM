@@ -7,7 +7,8 @@
     "packages/*"
   ],
   "scripts": {
-    "e2e": "docker compose -f .docker/docker-compose.playwright.yml up --abort-on-container-exit",
+    "e2e": "npm run test --workspace=e2e",
+    "e2e:local": "npm run test:local --workspace=e2e",
     "dev": "cd .docker && docker compose -f docker-compose.dev.yml up",
     "dev:down": "docker compose -f .docker/docker-compose.dev.yml down",
     "preview": "cd .docker && docker compose -f docker-compose.preview.yml up",
