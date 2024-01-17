@@ -8,7 +8,7 @@ export function Profile(): JSX.Element {
   useIdleTimeout();
   return (
     <>
-      <div className='grid h-full w-full place-items-center xl:flex-1'>
+      <div className='grid h-screen w-full place-items-center xl:flex-1'>
         <ProfileContent>
           <UserInfo />
         </ProfileContent>
