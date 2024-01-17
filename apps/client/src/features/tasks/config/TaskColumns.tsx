@@ -46,6 +46,9 @@ export const taskColumns: Array<ColumnDef<Task>> = [
   {
     accessorKey: 'description',
     header: 'Description',
+    cell: ({ row }): JSX.Element => {
+      return <p className='line-clamp-3'>{row.getValue('description')}</p>;
+    },
   },
   {
     accessorKey: 'priority',

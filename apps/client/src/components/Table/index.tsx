@@ -45,7 +45,7 @@ export function TableFilterOptions<TData>({
   const [searchParams, setSearchParams] = useSearchParams();
   const inputRef = useRef<HTMLInputElement | null>(null);
   return (
-    <div className='flex items-center py-4'>
+    <div className='flex flex-col items-start justify-start gap-y-2 py-4 md:flex-row md:gap-x-2'>
       <Input
         ref={inputRef}
         defaultValue={searchParams.get(context) ?? ''}
@@ -57,11 +57,11 @@ export function TableFilterOptions<TData>({
             setSearchParams(searchParams);
           }
         }}
-        className='max-w-sm'
+        className='h-9 max-w-3xl'
       />
       {(searchParams.get(context) || isSorted) && (
         <Button
-          className='ml-4 h-full'
+          className='h-full'
           variant='outline'
           onClick={(): void => {
             searchParams.delete(context);
@@ -79,7 +79,7 @@ export function TableFilterOptions<TData>({
           Reset
         </Button>
       )}
-      <div className='ml-auto flex items-center gap-2'>
+      <div className='flex flex-wrap items-center gap-2 md:ml-auto md:flex-nowrap'>
         {children}
         <DataTableViewOptions table={table} />
       </div>
@@ -239,9 +239,8 @@ export function VirtualTable<TData>({
 
 export function TableFooter({ isLastPage }: TableFooterProps): JSX.Element {
   return (
-    <div className='flex items-center justify-between gap-2 py-4 pb-0'>
+    <div className='flex flex-col items-start justify-between gap-2 py-4 pb-0 sm:flex-row'>
       <LimitSelection className='flex items-center gap-2' />
-
       <PaginationControls isLastPage={isLastPage} />
     </div>
   );

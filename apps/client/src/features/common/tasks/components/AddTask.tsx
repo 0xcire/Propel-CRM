@@ -96,7 +96,7 @@ export function AddTask({
             Add Task
           </DropdownMenuItem>
         ) : (
-          <Button>
+          <Button size='sm'>
             <span className='flex items-center'>
               <PlusIcon
                 className='pt-[2px]'
