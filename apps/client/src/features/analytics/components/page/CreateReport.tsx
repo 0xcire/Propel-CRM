@@ -12,7 +12,7 @@ export function CreateReport(): JSX.Element {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Create Report</Button>
+        <Button size='sm'>Create Report</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

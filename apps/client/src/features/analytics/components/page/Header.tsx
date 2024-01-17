@@ -1,6 +1,4 @@
-import { useSearchParams } from 'react-router-dom';
-
-import { useAnalyticsContext } from '../../context/AnalyticsContext';
+import { twMerge } from 'tailwind-merge';
 
 import { Typography } from '@/components/ui/typography';
 
@@ -12,20 +10,20 @@ export function AnalyticsPageHeader({
 }: {
   className: string;
 }): JSX.Element {
-  const [searchParams] = useSearchParams();
-
-  const { state: currentTimeFrame } = useAnalyticsContext();
-
   return (
-    <div className={className}>
+    <div
+      className={twMerge(
+        'flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-start',
+        className
+      )}
+    >
       <Typography
         variant='h4'
-        className='text-xl font-normal'
+        className='max-w-fit text-base font-normal lg:text-lg'
       >
-        {`Showing Results for ${searchParams.get('year')}`}
-        {currentTimeFrame !== 'year' ? `, ${currentTimeFrame}` : ''}
+        Showing Results for:
       </Typography>
-      <div className='flex items-center gap-2'>
+      <div className='flex max-w-fit items-center gap-2'>
         <YearSelection />
         <QuarterSelection />
       </div>

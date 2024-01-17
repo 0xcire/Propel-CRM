@@ -36,6 +36,7 @@ export function YearSelection(): JSX.Element | null {
 
   return (
     <Select
+      className='w-24'
       handleSelectChange={
         yearsAvailable ? (val): void => onSelectChange(val) : undefined
       }
