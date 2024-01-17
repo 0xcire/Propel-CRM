@@ -50,7 +50,7 @@ export function ListingCard({ listing }: { listing: Listing }): JSX.Element {
         </Typography>
       </div>
       <div className='flex flex-1 items-center justify-between p-2'>
-        <div className='line-clamp-2 flex h-8 w-full items-center gap-2 lg:h-auto'>
+        <div className='line-clamp-2 flex h-8 w-full items-center gap-2 lg:h-auto xl:h-10'>
           {listing.contacts?.map(
             (contact) =>
               contact.name !== null && (
