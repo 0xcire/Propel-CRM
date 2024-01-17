@@ -55,7 +55,10 @@ export function NavDropdown({ name, username }: NavProps): JSX.Element {
         <DropdownMenuLabel>{username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={(): void => setOpen(false)}
+          onClick={(): void => {
+            setOpen(false);
+            document.body.style.pointerEvents = ''; // update radix to actually fix issue?
+          }}
           className='cursor-pointer'
           asChild
         >
