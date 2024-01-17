@@ -62,7 +62,7 @@ function MobileSideNav({ name, username }: NavProps): JSX.Element {
 
 function SideNav({ name, username }: NavProps): JSX.Element {
   return (
-    <div className='flex h-full w-1/6 max-w-[200px] flex-col border-r-2 border-accent px-4 py-4'>
+    <div className='flex h-screen w-1/6 max-w-[200px] flex-col border-r-2 border-accent px-4 py-4'>
       <NavDropdown
         name={name}
         username={username}

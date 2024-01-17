@@ -22,7 +22,7 @@ export function DashboardListings(): JSX.Element {
   }
 
   return (
-    <div className='relative flex h-full flex-wrap items-start gap-4 overflow-hidden p-4 pt-0'>
+    <div className='relative flex h-full flex-wrap items-start gap-4 overflow-hidden p-4 pt-0 sm:flex'>
       {listings.data?.map((listing) => (
         <ListingCard
           key={`${listing.id}-listing`}
