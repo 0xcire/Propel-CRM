@@ -23,6 +23,7 @@ import { Form } from '@/components/ui/form';
 
 import { TextInput } from '@/components/form/TextInput';
 import { SubmitButton } from '@/components/SubmitButton';
+import { BackButton } from '@/components/BackButton';
 
 import { fieldsAreDirty, filterEqualFields } from '@/utils/form-data';
 
@@ -85,6 +86,7 @@ export function UserInfo(): JSX.Element {
   }
   return (
     <>
+      <BackButton className='mb-4' />
       <Typography variant='h3'>My Account</Typography>
       <Form {...form}>
         <form

@@ -14,7 +14,7 @@ export const getSalesVolumeForYear = async (req: Request, res: Response) => {
   const { year } = req.query;
 
   const currentYear = getCurrentYear();
-  const yearParam = !!year ? +year : currentYear;
+  const yearParam = year ? +year : currentYear;
 
   const usersSalesVolume = await getSalesDataByYear(userID, yearParam);
 
@@ -57,7 +57,7 @@ export const getAvgListingDaysOnMarket = async (req: Request, res: Response) => 
   const { year } = req.query;
 
   const currentYear = getCurrentYear();
-  const yearParam = !!year ? +year : currentYear;
+  const yearParam = year ? +year : currentYear;
 
   const avgDaysOnMarket = await getAvgDays(userID, yearParam);
   const fullDaysOnMarket = formatAnalyticsData(
@@ -84,7 +84,7 @@ export const getListToSaleRatioForYear = async (req: Request, res: Response) => 
 
   try {
     const currentYear = getCurrentYear();
-    const yearParam = !!year ? +year : currentYear;
+    const yearParam = year ? +year : currentYear;
 
     const listToSaleRatio = await getListToSaleRatioByYear(userID, yearParam);
 
@@ -115,7 +115,7 @@ export const getAvgTimeToCloseLead = async (req: Request, res: Response) => {
   const { year } = req.query;
   try {
     const currentYear = getCurrentYear();
-    const yearParam = !!year ? +year : currentYear;
+    const yearParam = year ? +year : currentYear;
 
     const avgTimeToClose = await getAvgTimeToClose(userID, yearParam);
 

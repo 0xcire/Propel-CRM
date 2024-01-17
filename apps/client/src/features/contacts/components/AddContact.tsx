@@ -43,7 +43,7 @@ export function AddContact({ text }: { text?: string }): JSX.Element {
     >
       {text ? (
         <DialogTrigger asChild>
-          <Button>
+          <Button size='sm'>
             <span className='flex items-center gap-2'>
               <UserPlus
                 className='mt-[2px] cursor-pointer'

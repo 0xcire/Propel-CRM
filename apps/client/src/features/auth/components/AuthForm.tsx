@@ -78,7 +78,7 @@ export function AuthForm({
           disabled={!passwordFilledIn}
           isLoading={isLoading}
         >
-          {isCreate ? 'Sign Up': 'Sign In'}
+          {isCreate ? 'Sign Up' : 'Sign In'}
         </SubmitButton>
       </form>
     </Form>

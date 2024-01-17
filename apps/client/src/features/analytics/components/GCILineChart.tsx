@@ -73,7 +73,8 @@ export function GCILineChart(): JSX.Element {
 
   return (
     <ResponsiveContainer
-      width='100%'
+      width='99%'
+      height='99%'
       className='flex-1'
     >
       <LineChart

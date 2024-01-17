@@ -15,6 +15,7 @@ export function QuarterSelection(): JSX.Element {
 
   return (
     <Select
+      className='w-24'
       defaultValue='year'
       options={quarters}
       handleSelectChange={(val): void => handleSelectChange(val)}

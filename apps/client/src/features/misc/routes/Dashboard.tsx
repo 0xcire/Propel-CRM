@@ -28,7 +28,7 @@ export const Dashboard = (): JSX.Element => {
     <>
       <div
         data-testid='dashboard'
-        className='flex h-full w-full flex-1 flex-col px-6 py-4 pb-0'
+        className='flex h-full w-full flex-1 flex-col px-6 py-4 pb-0 md:h-screen'
       >
         <div className='flex w-full items-center justify-between'>
           <div className='flex items-center gap-2'>
@@ -47,20 +47,20 @@ export const Dashboard = (): JSX.Element => {
           </div>
         </div>
 
-        <div className='grid h-full max-h-screen flex-1 grid-cols-12 grid-rows-6 gap-4 py-4 xl:flex-1'>
-          <DashboardGridItem className='col-start-1 col-end-10 row-start-1 row-end-4 2xl:col-end-11'>
+        <div className='flex h-full flex-col gap-4 py-4 md:grid md:grid-cols-2 md:grid-rows-12 lg:grid-cols-12 lg:grid-rows-6 xl:flex-1'>
+          <DashboardGridItem className='h-[400px] md:col-start-1 md:col-end-3 md:row-start-1 md:row-end-5 md:h-auto lg:col-start-1 lg:col-end-10 lg:row-start-1 lg:row-end-4 2xl:col-end-11'>
             <DashboardListingView />
           </DashboardGridItem>
 
-          <DashboardGridItem className='col-start-10 col-end-13 row-start-1 row-end-7 2xl:col-start-11'>
+          <DashboardGridItem className='h-[350px] md:row-start-5 md:row-end-9 md:h-auto lg:col-start-10 lg:col-end-13 lg:row-start-1 lg:row-end-7 2xl:col-start-11'>
             <DashboardContactsView />
           </DashboardGridItem>
 
-          <DashboardGridItem className='col-start-1 col-end-4 row-start-4 row-end-7'>
+          <DashboardGridItem className='h-[350px] md:col-start-2 md:col-end-3 md:row-start-5 md:row-end-9 md:h-auto lg:col-start-1 lg:col-end-4 lg:row-start-4 lg:row-end-7'>
             <DashboardTasksView />
           </DashboardGridItem>
 
-          <DashboardGridItem className='col-start-4 col-end-10 row-start-4 row-end-7 2xl:col-end-11'>
+          <DashboardGridItem className='h-[400px] md:col-start-1 md:col-end-3 md:row-start-9 md:row-end-13 md:h-auto lg:col-start-4 lg:col-end-10 lg:row-start-4 lg:row-end-7 2xl:col-end-11'>
             <DashboardAnalyticsView />
           </DashboardGridItem>
         </div>

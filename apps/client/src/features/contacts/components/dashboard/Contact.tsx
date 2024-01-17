@@ -1,9 +1,9 @@
-import { UpdateContact } from '../UpdateContact';
-import { RemoveContact } from '../RemoveContact';
+import { Link } from 'react-router-dom';
 
-import { Typography } from '@/components/ui/typography';
 import { PhoneIcon, AtSignIcon, MapPinIcon } from 'lucide-react';
 
+import { UpdateContact } from '../UpdateContact';
+import { RemoveContact } from '../RemoveContact';
 import { Avatar } from '@/components/Avatar';
 import { Tooltip } from '@/components/Tooltip';
 
@@ -18,12 +18,12 @@ export function Contact({ contact }: ContactAsProp): JSX.Element {
           name={contact.name}
         />
         <div className='ml-2 py-1'>
-          <Typography
+          <Link
             className='line-clamp-1 leading-none'
-            variant='p'
+            to={`/contacts/${contact.id}`}
           >
             {contact.name}
-          </Typography>
+          </Link>
           <div className='mt-1 flex w-max items-center justify-between'>
             <Tooltip content={contact.email}>
               <AtSignIcon

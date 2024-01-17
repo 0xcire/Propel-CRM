@@ -54,7 +54,7 @@ export function AddListing({ text }: AddListingProps): JSX.Element {
     >
       {text ? (
         <DialogTrigger asChild>
-          <Button>{text}</Button>
+          <Button size='sm'>{text}</Button>
         </DialogTrigger>
       ) : (
         <Tooltip content='Add Listing'>

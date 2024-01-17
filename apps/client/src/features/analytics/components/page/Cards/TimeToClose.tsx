@@ -48,7 +48,7 @@ export function TimeToCloseCard({
         </Typography>
         <Typography
           variant='p'
-          className='text-2xl font-black'
+          className='text-xl font-black lg:text-2xl'
         >
           {average}
         </Typography>

@@ -8,6 +8,7 @@ export function CompletedToggle(): JSX.Element {
   return (
     <Button
       variant='outline'
+      size='sm'
       onClick={(): void => {
         searchParams.set('page', '1');
         searchParams.set('completed', completed === 'true' ? 'false' : 'true');

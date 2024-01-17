@@ -11,6 +11,7 @@ export function StatusToggle(): JSX.Element {
   return (
     <Tooltip content='listing status'>
       <Button
+        size='sm'
         variant='outline'
         onClick={(): void => {
           const status = searchParams.get('status');

@@ -7,7 +7,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Spinner } from '@/components/Spinner';
 import { Table, TableFilterOptions, TableFooter } from '@/components/Table/';
 
@@ -65,7 +65,9 @@ export function ContactTable({
     <>
       <TableFilterOptions
         context='name'
-        isSorted={sorting.length >= 1}
+        isSorted={
+          sorting.length >= 1 || Object.keys(columnVisibility).length > 0
+        }
         setQuery={setQuery}
         table={table}
       />
@@ -81,7 +83,6 @@ export function ContactTable({
             table={table}
             columns={columns}
           />
-          <ScrollBar orientation='horizontal' />
         </ScrollArea>
       )}
 
