@@ -239,7 +239,7 @@ export function VirtualTable<TData>({
 
 export function TableFooter({ isLastPage }: TableFooterProps): JSX.Element {
   return (
-    <div className='flex flex-col items-start justify-between gap-2 py-4 pb-0 sm:flex-row'>
+    <div className='flex flex-col items-end justify-between gap-2 py-4 pb-0 sm:flex-row'>
       <LimitSelection className='flex items-center gap-2' />
       <PaginationControls isLastPage={isLastPage} />
     </div>
