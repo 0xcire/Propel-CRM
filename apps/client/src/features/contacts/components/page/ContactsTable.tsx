@@ -7,7 +7,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Spinner } from '@/components/Spinner';
 import { Table, TableFilterOptions, TableFooter } from '@/components/Table/';
 
@@ -81,7 +81,6 @@ export function ContactTable({
             table={table}
             columns={columns}
           />
-          <ScrollBar orientation='horizontal' />
         </ScrollArea>
       )}
 

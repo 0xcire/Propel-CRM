@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { DataTableFilter } from '@/components/ui/table/data-table-filter';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 import { Spinner } from '@/components/Spinner';
 import { CompletedToggle } from './CompletedToggle';
@@ -101,7 +101,6 @@ export function TasksTable({
             table={table}
             columns={columns}
           />
-          <ScrollBar orientation='horizontal' />
         </ScrollArea>
       )}
 
