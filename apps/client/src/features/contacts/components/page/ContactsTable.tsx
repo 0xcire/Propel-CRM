@@ -65,7 +65,9 @@ export function ContactTable({
     <>
       <TableFilterOptions
         context='name'
-        isSorted={sorting.length >= 1}
+        isSorted={
+          sorting.length >= 1 || Object.keys(columnVisibility).length > 0
+        }
         setQuery={setQuery}
         table={table}
       />

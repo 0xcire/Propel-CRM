@@ -68,7 +68,12 @@ export function TableFilterOptions<TData>({
             setSearchParams(searchParams);
 
             if (isSorted) {
-              table.resetSorting();
+              if (table.getState().sorting.length > 0) {
+                table.resetSorting();
+              }
+              if (Object.keys(table.getState().columnVisibility).length > 0) {
+                table.resetColumnVisibility();
+              }
             }
 
             if (inputRef.current && inputRef.current.value !== '') {
