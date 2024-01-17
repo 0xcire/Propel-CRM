@@ -12,7 +12,7 @@ export function Welcome(): JSX.Element {
     return '/auth/signin';
   };
   return (
-    <div className='grid h-screen w-full place-items-center'>
+    <div className='grid h-screen w-full place-items-center px-4'>
       <div className='space-y-2'>
         <Typography variant='h1'>Propel CRM</Typography>
         <Typography variant='p'>
