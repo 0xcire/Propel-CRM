@@ -27,7 +27,7 @@ export function ContactTasks({
 
   return (
     <>
-      <div className='flex h-[60px] items-center'>
+      <div className='flex h-[50px] items-center px-4'>
         <Link
           className='text-lg font-bold'
           to={`/tasks/contacts/${contactID}?page=1&limit=10&completed=false`}
@@ -35,19 +35,24 @@ export function ContactTasks({
           Upcoming Tasks
         </Link>
       </div>
-      <ScrollArea className='h-[calc(100%-60px)] w-full'>
-        {tasks.data?.length === 0 ? (
-          <p className='text-sm text-muted-foreground'>You're all caught up!</p>
-        ) : (
-          tasks.data?.map((task) => (
-            <Task
-              key={`task-${task.id}`}
-              task={task}
-              userID={user.data?.id as number}
-            />
-          ))
-        )}
-      </ScrollArea>
+      <div className='absolute h-[calc(100%-50px)] w-full'>
+        <ScrollArea className='h-full w-full'>
+          {tasks.data?.length === 0 ? (
+            <p className='text-sm text-muted-foreground'>
+              You're all caught up!
+            </p>
+          ) : (
+            tasks.data?.map((task) => (
+              <Task
+                key={`task-${task.id}`}
+                task={task}
+                userID={user.data?.id as number}
+                className='px-4'
+              />
+            ))
+          )}
+        </ScrollArea>
+      </div>
     </>
   );
 }

@@ -8,6 +8,11 @@ import { UpdateTask } from './UpdateTask';
 import { formatDateString } from '@/utils/intl';
 
 import type { TaskProps } from '../types';
+import { twMerge } from 'tailwind-merge';
+
+type LocalTaskProps = TaskProps & {
+  className?: string;
+};
 
 const taskPriorityLookup = {
   low: '!',
@@ -15,14 +20,14 @@ const taskPriorityLookup = {
   high: '!!!',
 };
 
-export function Task({ task, userID }: TaskProps): JSX.Element {
+export function Task({ task, userID, className }: LocalTaskProps): JSX.Element {
   let localFormat;
   if (task.dueDate) {
     localFormat = formatDateString(task.dueDate);
   }
 
   return (
-    <div className='my-2 flex w-full py-1'>
+    <div className={twMerge('my-2 flex w-full py-1', className)}>
       <TaskCheckbox
         taskID={task.id}
         completed={task.completed as boolean}
