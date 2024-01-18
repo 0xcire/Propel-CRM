@@ -21,6 +21,8 @@ export function SignInForm(): JSX.Element {
     (values: SignInFields) => {
       login.mutate(values);
     },
+
+    // eslint-disable-next-line
     []
   );
 
@@ -33,12 +35,20 @@ export function SignInForm(): JSX.Element {
         onSubmit={onSubmit}
         defaultValues={defaultValues}
       />
-      <Link
-        to='/auth/signup'
-        className='text-sm text-muted-foreground'
-      >
-        No account yet? Sign up here.
-      </Link>
+      <div className='mt-2 flex flex-col items-start justify-between gap-1 sm:flex-row sm:items-center'>
+        <Link
+          to='/auth/signup'
+          className='text-sm text-muted-foreground'
+        >
+          No account yet? Sign up here.
+        </Link>
+        <Link
+          to='/auth/recovery'
+          className='text-sm text-muted-foreground'
+        >
+          Forgot your password?
+        </Link>
+      </div>
     </div>
   );
 }
