@@ -47,7 +47,7 @@ export function SelectInput<
       control={control}
       name={name}
       render={({ field }): JSX.Element => (
-        <FormItem>
+        <FormItem className='space-y-0 sm:space-y-1'>
           <FormLabel>{label ? label : field.name}</FormLabel>
           <Select
             onValueChange={(val): void => {

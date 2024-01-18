@@ -127,7 +127,7 @@ export function TaskForm({
             className='flex-1'
           />
 
-          <div className='flex items-end justify-between pt-4'>
+          <div className='flex flex-col items-end justify-between pt-4 sm:flex-row'>
             <DateInput
               name='dueDate'
               label='Due Date'

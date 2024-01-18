@@ -67,8 +67,8 @@ export function ContactRoute(): JSX.Element {
   const zipcode = stateAndZipcodeSplit && stateAndZipcodeSplit[2];
 
   return (
-    <div className='mt-4 grid h-full grid-cols-2 grid-rows-12 gap-2 rounded-md lg:grid-cols-12 lg:grid-rows-6 lg:gap-4 lg:border lg:border-border'>
-      <ContactGridItem className='col-start-1 col-end-3 row-start-1 row-end-4 flex flex-col items-center justify-around rounded-md shadow-none sm:flex-row lg:col-start-1 lg:col-end-13 lg:row-start-1 lg:row-end-2 lg:justify-between lg:rounded-none lg:border-l-0 lg:border-r-0 lg:border-t-0'>
+    <div className='mt-4 h-auto rounded-md md:grid md:h-full md:grid-cols-2 md:gap-2 lg:grid-cols-12 lg:grid-rows-6 lg:gap-4'>
+      <ContactGridItem className='mb-2 flex h-[200px] flex-col items-center justify-around rounded-md shadow sm:h-[150px] sm:flex-row md:col-start-1 md:col-end-3 md:row-start-1 md:row-end-2 md:mb-0 md:h-auto lg:col-start-1 lg:col-end-13 lg:row-start-1 lg:row-end-2 lg:justify-between'>
         <div className='flex items-start gap-2'>
           <Avatar
             className='h-16 w-16 text-lg'
@@ -113,14 +113,14 @@ export function ContactRoute(): JSX.Element {
         </div>
       </ContactGridItem>
 
-      <ContactGridItem className='col-start-1 col-end-3 row-start-4 row-end-6 md:col-start-1 md:col-end-2 md:row-start-4 md:row-end-7 lg:col-start-1 lg:col-end-5 lg:row-start-2 lg:row-end-7 lg:mb-4 lg:ml-4'>
+      <ContactGridItem className='mb-2 md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-6 md:mb-0 md:h-auto lg:col-start-1 lg:col-end-5 lg:row-start-2 lg:row-end-7'>
         <Typography
           variant='h4'
           className='text-lg'
         >
           Account Info
         </Typography>
-        <div className='flex flex-col gap-2 text-sm lg:mt-4'>
+        <div className='mt-2 flex flex-col gap-2 text-sm lg:mt-4'>
           <div className='flex items-center gap-2'>
             <UserIcon size={18} />
             <p>
@@ -153,14 +153,14 @@ export function ContactRoute(): JSX.Element {
         </div>
       </ContactGridItem>
 
-      <ContactGridItem className='col-start-1 col-end-3 row-start-6 row-end-10 md:col-start-2 md:col-end-3 md:row-start-4 md:row-end-9 lg:col-start-5 lg:col-end-9 lg:row-start-2 lg:row-end-7 lg:mb-4'>
+      <ContactGridItem className='mb-2 md:col-start-2 md:col-end-3 md:row-start-2 md:row-end-7 md:mb-0 md:h-auto lg:col-start-5 lg:col-end-9 lg:row-start-2 lg:row-end-7'>
         <Typography
           variant='h4'
           className='text-lg'
         >
           Contact Info
         </Typography>
-        <div className='mt-1 flex flex-col gap-2 text-sm lg:mt-4 '>
+        <div className='mt-2 flex flex-col gap-2 text-sm lg:mt-4 '>
           <div className='flex items-center gap-2'>
             <FlagIcon size={18} />
             <p>
@@ -201,11 +201,11 @@ export function ContactRoute(): JSX.Element {
         </div>
       </ContactGridItem>
 
-      <ContactGridItem className='relative row-start-10 row-end-13 p-0 md:col-start-2 md:col-end-3 md:row-start-9 md:row-end-13 lg:col-start-9 lg:col-end-13 lg:row-start-2 lg:row-end-4 lg:mr-4 lg:p-0'>
+      <ContactGridItem className='relative mb-2 h-[300px] p-0 md:col-start-2 md:col-end-3 md:row-start-7 md:row-end-13 md:mb-0 md:h-auto lg:col-start-9 lg:col-end-13 lg:row-start-2 lg:row-end-4'>
         <ContactListings listings={listings} />
       </ContactGridItem>
 
-      <ContactGridItem className='relative row-start-10 row-end-13 p-0 md:col-start-1 md:col-end-2 md:row-start-7 md:row-end-13 lg:col-start-9 lg:col-end-13 lg:row-start-4 lg:row-end-7 lg:mb-4 lg:mr-4 lg:p-0'>
+      <ContactGridItem className='relative mb-2 h-[300px] p-0 md:col-start-1 md:col-end-2 md:row-start-6 md:row-end-13 md:mb-0 md:h-auto lg:col-start-9 lg:col-end-13 lg:row-start-4 lg:row-end-7'>
         <ContactTasks
           tasks={tasks}
           contactID={+(contactID as string)}

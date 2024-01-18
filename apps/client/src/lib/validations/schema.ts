@@ -25,9 +25,9 @@ export const year = z.string().refine((value) => /[0-9]{4}/.test(value));
 
 export const priceString = z
   .string()
-  .min(6)
-  .max(12)
-  .refine((value) => /[0-9]+/.test(value));
+  .min(6, { message: 'ex.) 100000' })
+  .max(12, { message: 'price is too large' }) // no trillion dollar deals i'm aware of, yet
+  .refine((value) => /[0-9]+/.test(value), { message: 'ex.) 100000' });
 
 export const verifyPassword = z.string().min(8).max(255);
 

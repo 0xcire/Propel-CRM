@@ -12,7 +12,7 @@ export function ContactGridItem({
   return (
     <div
       className={twMerge(
-        'rounded-md border border-border p-2 shadow lg:p-4',
+        'rounded-md border border-border p-4 shadow',
         className
       )}
     >

@@ -38,7 +38,7 @@ export function ContactTasks({
       <div className='absolute h-[calc(100%-50px)] w-full'>
         <ScrollArea className='h-full w-full'>
           {tasks.data?.length === 0 ? (
-            <p className='text-sm text-muted-foreground'>
+            <p className='px-4 text-sm text-muted-foreground'>
               You're all caught up!
             </p>
           ) : (

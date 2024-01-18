@@ -73,7 +73,7 @@ export function ListingForm({
             />
           </div>
 
-          <div className='flex items-center justify-between pt-2'>
+          <div className='flex items-center justify-between gap-2 pt-2'>
             <SelectInput
               name='propertyType'
               options={propertyTypeSelectOptions}
@@ -81,22 +81,22 @@ export function ListingForm({
               label='Property Type'
               control={form.control}
             />
-            <div className='flex items-center gap-4'>
-              <SelectInput
-                name='bedrooms'
-                options={roomsSelectOptions}
-                label='Bedrooms'
-                placeholder='Bedrooms'
-                control={form.control}
-              />
-              <SelectInput
-                name='baths'
-                options={roomsSelectOptions}
-                label='Baths'
-                placeholder='Baths'
-                control={form.control}
-              />
-            </div>
+            {/* <div className='flex items-center gap-2'> */}
+            <SelectInput
+              name='bedrooms'
+              options={roomsSelectOptions}
+              label='Bedrooms'
+              placeholder='Bedrooms'
+              control={form.control}
+            />
+            <SelectInput
+              name='baths'
+              options={roomsSelectOptions}
+              label='Baths'
+              placeholder='Baths'
+              control={form.control}
+            />
+            {/* </div> */}
           </div>
         </form>
       </Form>

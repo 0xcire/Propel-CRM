@@ -34,7 +34,7 @@ export function ContactListings({
       <div className='absolute h-[calc(100%-50px)] w-full'>
         <ScrollArea className='h-full w-full'>
           {listings.data?.length === 0 ? (
-            <p className='text-sm text-muted-foreground'>
+            <p className='px-4 text-sm text-muted-foreground'>
               Not interested in any listings right now.
             </p>
           ) : (

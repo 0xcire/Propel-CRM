@@ -17,7 +17,7 @@ export function PageHeader({ children, text }: PageHeaderProps): JSX.Element {
         {!isDesktop && <Navbar />}
         <Typography
           variant='h3'
-          className='text-[22px] font-black antialiased'
+          className='line-clamp-1 text-[22px] font-black antialiased'
         >
           {text}
         </Typography>
