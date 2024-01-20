@@ -63,6 +63,14 @@ export const listingAndContactIDValidator = listingIDSchema.merge(contactIDSchem
   contactID: schema.contactID.trim(),
 }));
 
+export const accountRecoveryValidator = z
+  .object({
+    email: z.string().email(),
+  })
+  .transform((schema) => ({
+    email: schema.email.trim(),
+  }));
+
 export const signupValidator = createInsertSchema(users)
   .pick({
     name: true,

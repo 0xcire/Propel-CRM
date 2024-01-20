@@ -5,9 +5,9 @@ import { validateCSRF } from "../middlewares/validate-csrf";
 
 import { validateRequest } from "../middlewares/validate-input";
 
-import { signup, signin, signout } from "../controllers/auth";
+import { signup, signin, signout, recoverPassword } from "../controllers/auth";
 
-import { authCookieValidator, signinValidator, signupValidator } from "@propel/drizzle";
+import { accountRecoveryValidator, authCookieValidator, signinValidator, signupValidator } from "@propel/drizzle";
 
 export default (router: Router) => {
   router.post(
@@ -25,11 +25,22 @@ export default (router: Router) => {
     validateCSRF, //
     signin
   );
+
   router.post(
     "/auth/signout",
     validateRequest({ cookies: authCookieValidator }),
     validateSession,
     validateCSRF,
     signout
+  );
+
+  router.post(
+    "/auth/recovery",
+    validateRequest({
+      body: accountRecoveryValidator,
+    }),
+    validatePreAuthSession,
+    validateCSRF,
+    recoverPassword
   );
 };

@@ -14,9 +14,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@propel/faker": "*",
     "@propel/tsconfig": "*",
     "@propel/types": "*",
-    "@propel/faker": "*",
     "@types/bcrypt": "^5.0.0",
     "@types/body-parser": "^1.19.2",
     "@types/compression": "^1.7.2",
@@ -31,8 +31,8 @@
   },
   "dependencies": {
     "@propel/drizzle": "*",
-    "@propel/redis": "*",
     "@propel/lib": "*",
+    "@propel/redis": "*",
     "bcrypt": "^5.1.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
@@ -40,6 +40,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "helmet": "^7.0.0",
+    "resend": "^3.0.0",
     "validator": "^13.11.0",
     "zod": "^3.22.0"
   }

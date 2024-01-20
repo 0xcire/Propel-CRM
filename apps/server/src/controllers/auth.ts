@@ -1,5 +1,6 @@
 // rate limit ref: https://github.com/animir/node-rate-limiter-flexible/wiki/Overall-example#minimal-protection-against-password-brute-force
 
+import { emails } from "../lib/resend";
 import {
   RateLimiterRes,
   setRedisSession,
@@ -252,6 +253,38 @@ export const signout = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Signing out.",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
+
+export const recoverPassword = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    const userByEmail = findUsersByEmail({ email: email });
+
+    if (!userByEmail) {
+      return res.status(200).json({
+        message: "Incoming! Password reset email heading your way.",
+      });
+    }
+
+    // generate token store in redis with userID
+    // use ID on frontend? /auth/recovery/${id}
+    // as a way to authenticate this route
+
+    const data = await emails.send({
+      from: "",
+      to: email,
+      subject: "Password Reset Link",
+      html: "<p>hey :D</p>",
+    });
+    console.log(data);
+
+    return res.status(200).json({
+      message: "Incoming! Password reset email heading your way.",
     });
   } catch (error) {
     console.log(error);
