@@ -43,4 +43,15 @@ export default (router: Router) => {
     validateCSRF,
     recoverPassword
   );
+
+  router.delete(
+    "/auth/recovery/:id",
+    validateRequest({}),
+    validatePreAuthSession,
+    //
+    validateCSRF,
+    () => {
+      return 0;
+    }
+  );
 };

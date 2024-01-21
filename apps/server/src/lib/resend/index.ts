@@ -1,6 +1,24 @@
-import { Resend } from "resend";
-import { RESEND_KEY } from "../../config";
+import { resend } from "./client";
 
-const resend = new Resend(RESEND_KEY);
+import { recoverPasswordEmailTemplate } from "./templates/recover-password";
+import { verifyAccountEmailTemplate } from "./templates/verify-account";
 
-export const emails = resend.emails;
+import { RECOVERY_EMAIL, VERIFY_EMAIL } from "../../config";
+
+export const sendRecoverPasswordEmail = async (recipient: string) => {
+  return resend.emails.send({
+    from: RECOVERY_EMAIL as string,
+    to: recipient,
+    subject: "Password Reset Link",
+    html: recoverPasswordEmailTemplate(),
+  });
+};
+
+export const sendVerifyAccountEmail = async (recipient: string) => {
+  return resend.emails.send({
+    from: VERIFY_EMAIL as string,
+    to: recipient,
+    subject: "Password Reset Link",
+    html: verifyAccountEmailTemplate,
+  });
+};

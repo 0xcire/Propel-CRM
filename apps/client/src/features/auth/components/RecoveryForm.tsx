@@ -2,22 +2,20 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { useToast } from '@/components/ui/use-toast';
+import { useRecoverPassword } from '../hooks/useRecoverPassword';
+
+import { recoverySchema } from '@/lib/validations/auth';
 
 import { Form } from '@/components/ui/form';
+import { Typography } from '@/components/ui/typography';
 
 import { TextInput } from '@/components/form/TextInput';
 import { SubmitButton } from '@/components/SubmitButton';
-import { Typography } from '@/components/ui/typography';
 
-const recoverySchema = z.object({
-  email: z.string().email(),
-});
-
-type RecoveryFields = z.infer<typeof recoverySchema>;
+export type RecoveryFields = z.infer<typeof recoverySchema>;
 
 export function RecoveryForm(): JSX.Element {
-  const { toast } = useToast();
+  const recoverPassword = useRecoverPassword();
 
   const form = useForm<RecoveryFields>({
     resolver: zodResolver(recoverySchema),
@@ -27,13 +25,7 @@ export function RecoveryForm(): JSX.Element {
   });
 
   const onSubmit = (values: RecoveryFields): void => {
-    console.log(values);
-    // this should extracted to hook - useRecoverPassword or whatever
-    // and the toast.description should be returned in res for all non error responses
-    toast({
-      title: 'Account Recovery',
-      description: 'Incoming! Password reset email heading your way.',
-    });
+    recoverPassword.mutate(values);
   };
 
   return (

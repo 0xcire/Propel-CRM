@@ -6,6 +6,8 @@ dotenv.config();
 export const ENV = process.env.NODE_ENV;
 
 export const RESEND_KEY = process.env.RESEND_KEY;
+export const RECOVERY_EMAIL = process.env.RECOVERY_EMAIL;
+export const VERIFY_EMAIL = process.env.VERIFY_EMAIL;
 
 export const IDLE_SESSION_COOKIE = "idle-propel-session";
 export const IDLE_SESSION_LENGTH = process.env.IDLE_SESSION_LENGTH;

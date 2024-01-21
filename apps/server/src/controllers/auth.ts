@@ -1,6 +1,6 @@
 // rate limit ref: https://github.com/animir/node-rate-limiter-flexible/wiki/Overall-example#minimal-protection-against-password-brute-force
 
-import { emails } from "../lib/resend";
+import { sendRecoverPasswordEmail } from "../lib/resend";
 import {
   RateLimiterRes,
   setRedisSession,
@@ -9,7 +9,14 @@ import {
   limiterConsecutiveFailsByEmail,
 } from "@propel/redis";
 import { findUsersByEmail, findUsersByUsername, insertNewUser } from "@propel/drizzle";
-import { checkPassword, createSecureCookie, createToken, deriveSessionCSRFToken, isDeployed } from "../utils";
+import {
+  checkPassword,
+  createAToken,
+  createSecureCookie,
+  createToken,
+  deriveSessionCSRFToken,
+  isDeployed,
+} from "../utils";
 import { hashPassword } from "@propel/lib";
 import {
   IDLE_SESSION_COOKIE,
@@ -262,8 +269,10 @@ export const signout = async (req: Request, res: Response) => {
 
 export const recoverPassword = async (req: Request, res: Response) => {
   try {
+    const ONE_HOUR = 3600000;
     const { email } = req.body;
-    const userByEmail = findUsersByEmail({ email: email });
+
+    const userByEmail = await findUsersByEmail({ email: email });
 
     if (!userByEmail) {
       return res.status(200).json({
@@ -271,16 +280,18 @@ export const recoverPassword = async (req: Request, res: Response) => {
       });
     }
 
-    // generate token store in redis with userID
+    // generate token store in redis ( w/ TTL ) with userID
+    // 'this link will expire after 1 hour' or etc...
     // use ID on frontend? /auth/recovery/${id}
     // as a way to authenticate this route
+    // if !id -> display this request has expired ?
 
-    const data = await emails.send({
-      from: "",
-      to: email,
-      subject: "Password Reset Link",
-      html: "<p>hey :D</p>",
-    });
+    // when user visits url, send delete request to delete token from redis ?
+    // token should default to last only 30 or 60 min
+
+    const sessionID = createAToken(64);
+    setRedisSession(sessionID, userByEmail?.id as number, ONE_HOUR);
+    const data = await sendRecoverPasswordEmail(email);
     console.log(data);
 
     return res.status(200).json({
@@ -288,6 +299,8 @@ export const recoverPassword = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({});
+    return res.status(500).json({
+      message: "There was an error processing your request. Please try again.",
+    });
   }
 };
