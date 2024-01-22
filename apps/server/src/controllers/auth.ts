@@ -5,18 +5,21 @@ import {
   RateLimiterRes,
   setRedisSession,
   deleteRedisSession,
-  maxConsecutiveFailsByEmail,
-  limiterConsecutiveFailsByEmail,
+  consumeRateLimitPoint,
+  getRateLimiter,
+  deleteRateLimit,
 } from "@propel/redis";
 import { findUsersByEmail, findUsersByUsername, insertNewUser } from "@propel/drizzle";
 import {
   checkPassword,
   createAToken,
+  // createAToken,
   createSecureCookie,
   createToken,
   deriveSessionCSRFToken,
   isDeployed,
 } from "../utils";
+import { handleRateLimitErrorResponse, validateRateLimitAndSetResponse } from "../lib/rate-limit";
 import { hashPassword } from "@propel/lib";
 import {
   IDLE_SESSION_COOKIE,
@@ -34,9 +37,6 @@ import type { Request, Response } from "express";
 import type { NewUser } from "@propel/drizzle";
 import type { UserInput } from "./types";
 
-// TODO: add email verification later
-// TODO: add account recovery later
-
 // TODO: signin = async(req,res): Promise<PropelResponse>
 
 export const signin = async (req: Request, res: Response) => {
@@ -47,49 +47,39 @@ export const signin = async (req: Request, res: Response) => {
       return res.sendStatus(400);
     }
 
-    const rlResEmail = await limiterConsecutiveFailsByEmail.get(email);
-
+    const rateLimiter = await getRateLimiter(email);
     let userByEmail, passwordMatches;
 
-    if (rlResEmail !== null && rlResEmail.consumedPoints > maxConsecutiveFailsByEmail) {
-      console.log("CLIENT IS BLOCKED BY EXCEEDING MAX TRIES");
-      const retrySecs = Math.round(rlResEmail.msBeforeNext / 1000) || 1;
-      res.set("Retry-After", String(retrySecs));
-      return res.status(429).json({
-        message: `Too many requests. Try again in ${String(Math.round(+retrySecs / 60))} minutes`,
-      });
-    } else {
-      try {
-        userByEmail = await findUsersByEmail({ email: email, signingIn: true });
-        const tries = rlResEmail?.remainingPoints;
+    validateRateLimitAndSetResponse(rateLimiter, res);
 
-        if (!userByEmail) {
-          await limiterConsecutiveFailsByEmail.consume(email);
+    try {
+      userByEmail = await findUsersByEmail({ email: email, signingIn: true });
+      const tries = rateLimiter?.remainingPoints;
+
+      if (!userByEmail) {
+        await consumeRateLimitPoint(email);
+        return res.status(401).json({
+          message: `Incorrect email or password. ${tries ?? "5"} tries remaining.`,
+        });
+      }
+
+      if (userByEmail) {
+        passwordMatches = await checkPassword(password, userByEmail?.hashedPassword as string);
+        if (!passwordMatches) {
+          await consumeRateLimitPoint(email);
           return res.status(401).json({
             message: `Incorrect email or password. ${tries ?? "5"} tries remaining.`,
           });
         }
-
-        if (userByEmail) {
-          passwordMatches = await checkPassword(password, userByEmail?.hashedPassword as string);
-          if (!passwordMatches) {
-            await limiterConsecutiveFailsByEmail.consume(email);
-            return res.status(401).json({
-              message: `Incorrect email or password. ${tries ?? "5"} tries remaining.`,
-            });
-          }
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          return res.status(500).json({});
-        } else if (error instanceof RateLimiterRes) {
-          res.set("Retry-After", String(Math.round(error.msBeforeNext / 1000)) || "1");
-          return res.status(429).json({
-            message: `Too many requests. try again in ${String(Math.round(error.msBeforeNext / 1000 / 60))} minutes.`,
-          });
-        }
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(500).json({});
+      } else if (error instanceof RateLimiterRes) {
+        handleRateLimitErrorResponse(error, res);
       }
     }
+    // }
 
     const sessionID = createToken();
 
@@ -122,7 +112,7 @@ export const signin = async (req: Request, res: Response) => {
       sameSite: "lax",
     });
 
-    await limiterConsecutiveFailsByEmail.delete(email);
+    await deleteRateLimit(email);
 
     req.session = {
       id: sessionID,
@@ -267,17 +257,29 @@ export const signout = async (req: Request, res: Response) => {
   }
 };
 
+// one request per 30 minutes
 export const recoverPassword = async (req: Request, res: Response) => {
   try {
-    const ONE_HOUR = 3600000;
+    // const ONE_HOUR = 3600000;
     const { email } = req.body;
+
+    const recoveryIdentifier = `${email}-recovery`;
+
+    const rateLimiter = await getRateLimiter(recoveryIdentifier);
+    validateRateLimitAndSetResponse(rateLimiter, res);
 
     const userByEmail = await findUsersByEmail({ email: email });
 
     if (!userByEmail) {
+      consumeRateLimitPoint(recoveryIdentifier);
       return res.status(200).json({
         message: "Incoming! Password reset email heading your way.",
       });
+    }
+
+    if (userByEmail) {
+      // const token = createAToken();
+      consumeRateLimitPoint(recoveryIdentifier);
     }
 
     // generate token store in redis ( w/ TTL ) with userID
@@ -289,8 +291,8 @@ export const recoverPassword = async (req: Request, res: Response) => {
     // when user visits url, send delete request to delete token from redis ?
     // token should default to last only 30 or 60 min
 
-    const sessionID = createAToken(64);
-    setRedisSession(sessionID, userByEmail?.id as number, ONE_HOUR);
+    // const sessionID = createAToken(64);
+    // setRedisSession(sessionID, userByEmail?.id as number, ONE_HOUR);
     const data = await sendRecoverPasswordEmail(email);
     console.log(data);
 

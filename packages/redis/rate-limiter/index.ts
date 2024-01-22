@@ -12,3 +12,15 @@ export const limiterConsecutiveFailsByEmail = new RateLimiterRedis({
   duration: TWO_HOURS,
   blockDuration: _15_MINUTES,
 });
+
+export const getRateLimiter = async (email: string) => {
+  return await limiterConsecutiveFailsByEmail.get(email);
+};
+
+export const consumeRateLimitPoint = async (email: string) => {
+  await limiterConsecutiveFailsByEmail.consume(email);
+};
+
+export const deleteRateLimit = async (email: string) => {
+  await limiterConsecutiveFailsByEmail.delete(email);
+};
