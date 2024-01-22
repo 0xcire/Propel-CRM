@@ -1,5 +1,5 @@
 import { deleteRedisSession, getUserFromSession } from "@propel/redis";
-import { createAnonymousToken, createSecureCookie, deriveSessionCSRFToken, isDeployed } from "../utils";
+import { createToken, createSecureCookie, deriveSessionCSRFToken, isDeployed } from "../utils";
 
 import {
   ABSOLUTE_SESSION_COOKIE,
@@ -147,7 +147,7 @@ async function initializePreAuthSession(req: Request, res: Response) {
   let anonymousSessionTokenID;
 
   if (!preAuthSession) {
-    anonymousSessionTokenID = createAnonymousToken();
+    anonymousSessionTokenID = createToken(32);
     createSecureCookie(req, {
       res: res,
       name: PRE_AUTH_SESSION_COOKIE,

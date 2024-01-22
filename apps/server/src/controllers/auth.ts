@@ -81,7 +81,7 @@ export const signin = async (req: Request, res: Response) => {
     }
     // }
 
-    const sessionID = createToken();
+    const sessionID = createToken(16);
 
     createSecureCookie(req, {
       res: res,
@@ -158,7 +158,7 @@ export const signup = async (req: Request, res: Response) => {
     // TODO: this along wth  password reset, would be a good usecase for jwt!
 
     const hashedPassword = await hashPassword(password, +(SALT_ROUNDS as string));
-    const sessionID = createToken();
+    const sessionID = createToken(16);
 
     const newUser: NewUser = {
       name: name,
@@ -278,7 +278,7 @@ export const recoverPassword = async (req: Request, res: Response) => {
     }
 
     if (userByEmail) {
-      // const token = createAToken();
+      const token = createToken(64);
       consumeRateLimitPoint(recoveryIdentifier);
     }
 

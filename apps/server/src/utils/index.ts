@@ -11,12 +11,8 @@ type CreateSecureCookieParams = {
   age: number;
 };
 
-// param: is constant and should not cause errors
-export const createToken = () => {
-  return randomBytes(16).toString("base64");
-};
-export const createAnonymousToken = () => {
-  return randomBytes(32).toString("base64");
+export const createToken = (size: number) => {
+  return randomBytes(size).toString("base64");
 };
 
 export const deriveSessionCSRFToken = (secret: string, sessionID: string) => {
