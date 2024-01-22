@@ -24,8 +24,10 @@ import { useToast } from '@/components/ui/use-toast';
 import { TextInput } from '@/components/form/TextInput';
 import { SubmitButton } from '@/components/SubmitButton';
 
+import { fieldsAreEqual } from '@/utils/form-data';
+
 import type { Toast } from '@/types';
-import { PasswordFields } from '@/lib/validations/types';
+import type { PasswordFields } from '@/lib/validations/types';
 
 export function Authentication(): JSX.Element {
   const [open, setOpen] = useState(false);
@@ -43,12 +45,13 @@ export function Authentication(): JSX.Element {
     },
   });
 
-  const passwordIsConfirmed = (): boolean => {
-    return form.getValues().password === form.getValues().confirmPassword;
-  };
-
   function onSubmit(values: PasswordFields): Toast | void {
-    if (!passwordIsConfirmed()) {
+    if (
+      !fieldsAreEqual(
+        form.getValues().password,
+        form.getValues().confirmPassword
+      )
+    ) {
       return toast({
         description: 'Please confirm your new password correctly.',
       });

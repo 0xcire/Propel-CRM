@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -47,12 +48,20 @@ export function RecoveryForm(): JSX.Element {
             name='email'
             placeholder='example@email.com'
           />
-          <SubmitButton
-            disabled={!form.formState.isDirty}
-            isLoading={false}
-          >
-            Next
-          </SubmitButton>
+          <div className='flex items-center gap-2'>
+            <SubmitButton
+              disabled={!form.formState.isDirty}
+              isLoading={recoverPassword.isLoading}
+            >
+              Next
+            </SubmitButton>
+            <Link
+              className='text-sm hover:underline'
+              to='/auth/signin'
+            >
+              Back to Sign In
+            </Link>
+          </div>
         </form>
       </Form>
     </div>

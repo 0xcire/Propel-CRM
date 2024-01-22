@@ -5,9 +5,23 @@ import { validateCSRF } from "../middlewares/validate-csrf";
 
 import { validateRequest } from "../middlewares/validate-input";
 
-import { signup, signin, signout, recoverPassword } from "../controllers/auth";
+import {
+  signup,
+  signin,
+  signout,
+  recoverPassword,
+  getValidRecoveryRequest,
+  updateUserFromAccountRecovery,
+} from "../controllers/auth";
 
-import { accountRecoveryValidator, authCookieValidator, signinValidator, signupValidator } from "@propel/drizzle";
+import {
+  accountRecoveryValidator,
+  authCookieValidator,
+  paramSchema,
+  signinValidator,
+  signupValidator,
+  updateUserFromRecoveryValidator,
+} from "@propel/drizzle";
 
 export default (router: Router) => {
   router.post(
@@ -34,6 +48,13 @@ export default (router: Router) => {
     signout
   );
 
+  router.get(
+    "/auth/recovery/:id",
+    validateRequest({ params: paramSchema }),
+    validatePreAuthSession,
+    getValidRecoveryRequest
+  );
+
   router.post(
     "/auth/recovery",
     validateRequest({
@@ -42,6 +63,17 @@ export default (router: Router) => {
     validatePreAuthSession,
     validateCSRF,
     recoverPassword
+  );
+
+  router.patch(
+    "/auth/recovery/:id",
+    validateRequest({
+      body: updateUserFromRecoveryValidator,
+      params: paramSchema,
+    }),
+    validatePreAuthSession,
+    validateCSRF,
+    updateUserFromAccountRecovery
   );
 
   router.delete(

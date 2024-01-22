@@ -87,7 +87,7 @@ export const updateUser = async (req: Request, res: Response) => {
       });
     }
 
-    const currentUser = await findUsersByID({ id: +id!, updating: true });
+    const currentUser = await findUsersByID({ id: +(id as string), updating: true });
 
     if (password) {
       hashedPassword = await hashPassword(password, +(SALT_ROUNDS as string));
@@ -130,7 +130,7 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 
     const updatedUser = await updateUserByID({
-      id: +id!,
+      id: +(id as string),
       newUsername: username,
       newEmail: email,
       newPassword: hashedPassword,

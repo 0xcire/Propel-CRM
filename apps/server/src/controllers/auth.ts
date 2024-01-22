@@ -8,8 +8,9 @@ import {
   consumeRateLimitPoint,
   getRateLimiter,
   deleteRateLimit,
+  getValueFromRedisKey,
 } from "@propel/redis";
-import { findUsersByEmail, findUsersByUsername, insertNewUser } from "@propel/drizzle";
+import { findUsersByEmail, findUsersByUsername, insertNewUser, updateUserByID } from "@propel/drizzle";
 import { checkPassword, createSecureCookie, createToken, deriveSessionCSRFToken, isDeployed } from "../utils";
 import { handleRateLimitErrorResponse, validateRateLimitAndSetResponse } from "../lib/rate-limit";
 import { hashPassword } from "@propel/lib";
@@ -110,7 +111,7 @@ export const signin = async (req: Request, res: Response) => {
       id: sessionID,
     };
 
-    await setRedisKV(sessionID, userByEmail?.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
+    await setRedisKV(sessionID, String(userByEmail?.id as number), +(ABSOLUTE_SESSION_LENGTH as string));
 
     return res.status(200).json({
       message: "signing in",
@@ -161,7 +162,7 @@ export const signup = async (req: Request, res: Response) => {
 
     const insertedUser = await insertNewUser(newUser);
 
-    await setRedisKV(sessionID, insertedUser?.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
+    await setRedisKV(sessionID, String(insertedUser?.id as number), +(ABSOLUTE_SESSION_LENGTH as string));
 
     res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
       path: "/",
@@ -249,6 +250,10 @@ export const signout = async (req: Request, res: Response) => {
   }
 };
 
+// when user completes change password form, delete ratelimiter by recoveryID
+// unrelated: need to add is_verified column for account verification
+// but also add last_recovery_request column,
+// if difference between that and "today" is, X days, return error
 export const recoverPassword = async (req: Request, res: Response) => {
   try {
     const ONE_HOUR = 3600000;
@@ -261,32 +266,35 @@ export const recoverPassword = async (req: Request, res: Response) => {
 
     const userByEmail = await findUsersByEmail({ email: email });
 
-    if (!userByEmail) {
-      consumeRateLimitPoint(recoveryIdentifier);
-      return res.status(200).json({
-        message: "Incoming! Password reset email heading your way.",
-      });
+    try {
+      if (!userByEmail) {
+        await consumeRateLimitPoint(recoveryIdentifier);
+        return res.status(200).json({
+          message: "Incoming! Password reset email heading your way.",
+        });
+      }
+
+      if (userByEmail) {
+        await consumeRateLimitPoint(recoveryIdentifier);
+
+        const token = createToken(64);
+        await setRedisKV(token, String(userByEmail.id as number), ONE_HOUR);
+
+        const data = await sendRecoverPasswordEmail(email, token);
+        console.log(data);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      if (error instanceof RateLimiterRes) {
+        handleRateLimitErrorResponse(error, res);
+      }
     }
 
-    // if()
-
-    if (userByEmail) {
-      const token = createToken(64);
-      consumeRateLimitPoint(recoveryIdentifier);
-      setRedisKV(token, userByEmail.id as number, ONE_HOUR);
-
-      const data = await sendRecoverPasswordEmail(email);
-      console.log(data);
-    }
-
-    // generate token store in redis ( w/ TTL ) with userID
-    // 'this link will expire after 1 hour' or etc...
-    // use ID on frontend? /auth/recovery/${id}
-    // as a way to authenticate this route
-    // if !id -> display this request has expired ?
-
-    // when user visits url, send delete request to delete token from redis ?
-    // token should default to last only 30 or 60 min
+    // if(last_password_reset_request_exceeds_threshold()) {
+    // return res.status(400).json({message: 'nonono' })
+    // }
 
     return res.status(200).json({
       message: "Incoming! Password reset email heading your way.",
@@ -296,5 +304,68 @@ export const recoverPassword = async (req: Request, res: Response) => {
     return res.status(500).json({
       message: "There was an error processing your request. Please try again.",
     });
+  }
+};
+
+export const getValidRecoveryRequest = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Recovery request ID needed." });
+    }
+
+    const value = await getValueFromRedisKey(id);
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", value);
+
+    if (!value) {
+      return res.status(404).json({
+        message: "Request expired.",
+      });
+    }
+
+    return res.status(200).json({
+      message: "",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "" });
+  }
+};
+
+export const updateUserFromAccountRecovery = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: "Request ID needed." });
+    }
+
+    const userID = await getValueFromRedisKey(id);
+
+    if (!userID) {
+      return res.status(404).json({
+        message: "Request expired.",
+      });
+    }
+
+    const hashedPassword = await hashPassword(password, +(SALT_ROUNDS as string));
+
+    // const updatedUser =
+    await updateUserByID({
+      id: +userID,
+      newPassword: hashedPassword,
+    });
+
+    // await deleteRedisKV(`${updatedUser?.email}-recovery`);
+    await deleteRedisKV(id);
+
+    return res.status(200).json({
+      message: "Password updated successfully.",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "" });
   }
 };

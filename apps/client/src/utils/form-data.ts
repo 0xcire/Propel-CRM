@@ -64,3 +64,10 @@ export const generateDefaultValues = (
 
   return Object.fromEntries(initialEntries);
 };
+
+export const fieldsAreEqual = (
+  field: unknown,
+  confirmField: unknown
+): boolean => {
+  return field === confirmField;
+};

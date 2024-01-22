@@ -1,10 +1,11 @@
-import { Get, Post, handleAPIResponse } from '@/lib/fetch';
+import { Get, Patch, Post, handleAPIResponse } from '@/lib/fetch';
 
 import type { BaseResponse, UserResponse } from '@/types';
 import type {
   RecoveryFields,
   SignInFields,
   SignUpFields,
+  UpdateAccountFromRecoveryParams,
 } from '@/features/auth/types';
 
 export const refreshSession = (): Promise<Response> => {
@@ -47,5 +48,21 @@ export const recoverPassword = async (
   return Post({
     endpoint: 'auth/recovery',
     body: JSON.stringify(email),
+  }).then(handleAPIResponse<BaseResponse>);
+};
+
+export const validateRequestID = async (id: string): Promise<BaseResponse> => {
+  return Get({ endpoint: `auth/recovery/${id}` }).then(
+    handleAPIResponse<BaseResponse>
+  );
+};
+
+export const updateAccountFromRecovery = ({
+  id,
+  data,
+}: UpdateAccountFromRecoveryParams): Promise<BaseResponse> => {
+  return Patch({
+    endpoint: `auth/recovery/${id}`,
+    body: JSON.stringify(data),
   }).then(handleAPIResponse<BaseResponse>);
 };

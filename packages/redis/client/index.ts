@@ -16,7 +16,7 @@ export const redisClient = new Redis({
   connectTimeout: 10000,
 });
 
-export const setRedisKV = async (key: string, value: string | number, expires: number) => {
+export const setRedisKV = async (key: string, value: string, expires: number) => {
   await redisClient.set(key, value);
   await redisClient.pexpire(key, expires);
 };

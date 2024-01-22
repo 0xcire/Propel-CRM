@@ -86,6 +86,10 @@ export const signupValidator = createInsertSchema(users)
     passwrd: user.password.trim(),
   }));
 
+export const updateUserFromRecoveryValidator = password.transform((schema) => ({
+  password: schema.password.trim(),
+}));
+
 export const updateUserValidator = createInsertSchema(users)
   .pick({
     username: true,

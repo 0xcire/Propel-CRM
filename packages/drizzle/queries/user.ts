@@ -19,9 +19,9 @@ type FindUsersByIDParams = {
 
 type updateUsersByIDParams = {
   id: number;
-  newUsername: string | undefined;
-  newEmail: string | undefined;
-  newPassword: string | undefined;
+  newUsername?: string | undefined;
+  newEmail?: string | undefined;
+  newPassword?: string | undefined;
 };
 
 export const findUsersByEmail = async ({
