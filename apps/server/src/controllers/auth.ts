@@ -3,22 +3,14 @@
 import { sendRecoverPasswordEmail } from "../lib/resend";
 import {
   RateLimiterRes,
-  setRedisSession,
-  deleteRedisSession,
+  setRedisKV,
+  deleteRedisKV,
   consumeRateLimitPoint,
   getRateLimiter,
   deleteRateLimit,
 } from "@propel/redis";
 import { findUsersByEmail, findUsersByUsername, insertNewUser } from "@propel/drizzle";
-import {
-  checkPassword,
-  createAToken,
-  // createAToken,
-  createSecureCookie,
-  createToken,
-  deriveSessionCSRFToken,
-  isDeployed,
-} from "../utils";
+import { checkPassword, createSecureCookie, createToken, deriveSessionCSRFToken, isDeployed } from "../utils";
 import { handleRateLimitErrorResponse, validateRateLimitAndSetResponse } from "../lib/rate-limit";
 import { hashPassword } from "@propel/lib";
 import {
@@ -118,7 +110,7 @@ export const signin = async (req: Request, res: Response) => {
       id: sessionID,
     };
 
-    await setRedisSession(sessionID, userByEmail?.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
+    await setRedisKV(sessionID, userByEmail?.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
 
     return res.status(200).json({
       message: "signing in",
@@ -169,7 +161,7 @@ export const signup = async (req: Request, res: Response) => {
 
     const insertedUser = await insertNewUser(newUser);
 
-    await setRedisSession(sessionID, insertedUser?.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
+    await setRedisKV(sessionID, insertedUser?.id as number, +(ABSOLUTE_SESSION_LENGTH as string));
 
     res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
       path: "/",
@@ -228,7 +220,7 @@ export const signout = async (req: Request, res: Response) => {
   try {
     const sessionToken = req.signedCookies[ABSOLUTE_SESSION_COOKIE as string];
 
-    await deleteRedisSession(sessionToken);
+    await deleteRedisKV(sessionToken);
 
     sessionRelatedCookies.forEach((cookie) => {
       res.clearCookie(cookie, {
@@ -257,10 +249,9 @@ export const signout = async (req: Request, res: Response) => {
   }
 };
 
-// one request per 30 minutes
 export const recoverPassword = async (req: Request, res: Response) => {
   try {
-    // const ONE_HOUR = 3600000;
+    const ONE_HOUR = 3600000;
     const { email } = req.body;
 
     const recoveryIdentifier = `${email}-recovery`;
@@ -277,9 +268,15 @@ export const recoverPassword = async (req: Request, res: Response) => {
       });
     }
 
+    // if()
+
     if (userByEmail) {
       const token = createToken(64);
       consumeRateLimitPoint(recoveryIdentifier);
+      setRedisKV(token, userByEmail.id as number, ONE_HOUR);
+
+      const data = await sendRecoverPasswordEmail(email);
+      console.log(data);
     }
 
     // generate token store in redis ( w/ TTL ) with userID
@@ -290,11 +287,6 @@ export const recoverPassword = async (req: Request, res: Response) => {
 
     // when user visits url, send delete request to delete token from redis ?
     // token should default to last only 30 or 60 min
-
-    // const sessionID = createAToken(64);
-    // setRedisSession(sessionID, userByEmail?.id as number, ONE_HOUR);
-    const data = await sendRecoverPasswordEmail(email);
-    console.log(data);
 
     return res.status(200).json({
       message: "Incoming! Password reset email heading your way.",

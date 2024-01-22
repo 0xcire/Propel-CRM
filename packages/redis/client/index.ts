@@ -16,17 +16,14 @@ export const redisClient = new Redis({
   connectTimeout: 10000,
 });
 
-export const setRedisSession = async (sessionID: string, userID: number, expires: number) => {
-  await redisClient.set(sessionID, userID);
-  await redisClient.pexpire(sessionID, expires);
+export const setRedisKV = async (key: string, value: string | number, expires: number) => {
+  await redisClient.set(key, value);
+  await redisClient.pexpire(key, expires);
 };
-
-export const getUserFromSession = async (sessionID: string) => {
-  const userID = await redisClient.get(sessionID);
-
-  return userID;
+export const getValueFromRedisKey = async (key: string) => {
+  const value = await redisClient.get(key);
+  return value;
 };
-
-export const deleteRedisSession = async (sessionID: string) => {
-  await redisClient.del(sessionID);
+export const deleteRedisKV = async (key: string) => {
+  await redisClient.del(key);
 };

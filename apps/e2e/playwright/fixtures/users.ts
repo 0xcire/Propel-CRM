@@ -1,5 +1,5 @@
 import { insertNewUser, deleteUserByID, findUsersByUsername } from "@propel/drizzle";
-import { deleteRedisSession, limiterConsecutiveFailsByEmail } from "@propel/redis";
+import { deleteRedisKV, limiterConsecutiveFailsByEmail } from "@propel/redis";
 import { hashPassword } from "@propel/lib";
 
 import type { Page, WorkerInfo } from "@playwright/test";
@@ -112,7 +112,7 @@ export const createUsersFixture = (page: Page, workerInfo: WorkerInfo) => {
 
     deleteSession: async (sessionID: string | undefined) => {
       if (sessionID) {
-        deleteRedisSession(sessionID);
+        deleteRedisKV(sessionID);
       }
     },
 

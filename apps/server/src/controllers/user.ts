@@ -1,4 +1,4 @@
-import { deleteRedisSession } from "@propel/redis";
+import { deleteRedisKV } from "@propel/redis";
 import {
   deleteUserByID,
   findUsersByEmail,
@@ -45,10 +45,10 @@ export const deleteUser = async (req: Request, res: Response) => {
     const { id } = req.params;
     const sessionToken = req.signedCookies[ABSOLUTE_SESSION_COOKIE as string];
 
-    await deleteRedisSession(sessionToken);
+    await deleteRedisKV(sessionToken);
 
     // TODO: in future, need to also delete all related rows in other tables
-    const deletedUser = await deleteUserByID(+id!);
+    const deletedUser = await deleteUserByID(+(id as string));
 
     sessionRelatedCookies.forEach((cookie) => {
       res.clearCookie(cookie, {
