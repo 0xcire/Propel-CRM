@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { updateAccountFromRecovery } from '../api';
 
 import { useToast } from '@/components/ui/use-toast';
@@ -14,16 +14,12 @@ export const useUpdateAccountFromRecovery = (): UseMutationResult<
   unknown
 > => {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateAccountFromRecovery,
     onSuccess: (data) => {
       toast({
         description: data.message,
       });
-      // return queryClient.invalidateQueries({
-      //   queryKey: ['user'],
-      // });
     },
   });
 };

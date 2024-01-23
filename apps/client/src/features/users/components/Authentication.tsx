@@ -73,63 +73,74 @@ export function Authentication(): JSX.Element {
   return (
     <>
       <Typography variant='h3'>Password and Authentication</Typography>
-
-      <Dialog
-        open={open}
-        onOpenChange={setOpen}
-      >
-        <DialogTrigger asChild>
+      <div className='mt-4 flex items-center gap-2'>
+        {!user.data?.isVerified && (
           <Button
-            className='mt-4'
-            variant='outline'
+            onClick={(): void => {
+              // this should be extracted to hook onSuccess
+              toast({
+                title: 'Account Verification',
+                description:
+                  'Look out! A verification email was just sent your way.',
+              });
+            }}
           >
-            Change Password
+            Verify Email
           </Button>
-        </DialogTrigger>
-        <DialogContent className='sm:max-w-[425px]'>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <DialogHeader>
-                <DialogTitle>Change Password</DialogTitle>
-                <DialogDescription>
-                  Enter your current password and your new password.
-                </DialogDescription>
-              </DialogHeader>
-              <div className='grid gap-4 py-4'>
-                <TextInput
-                  name='verifyPassword'
-                  type='password'
-                  label='Old Password'
-                  placeholder='oldpassword123'
-                  control={form.control}
-                />
-                <TextInput
-                  name='password'
-                  type='password'
-                  label='New Password'
-                  placeholder='password123'
-                  control={form.control}
-                />
-                <TextInput
-                  name='confirmPassword'
-                  type='password'
-                  label='Confirm Password'
-                  placeholder='password123'
-                  control={form.control}
-                />
-              </div>
-              <DialogFooter>
-                <SubmitButton
-                  isLoading={isLoading}
-                  disabled={false}
-                >
-                  Save Changes
-                </SubmitButton>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
+        )}
+
+        <Dialog
+          open={open}
+          onOpenChange={setOpen}
+        >
+          <DialogTrigger asChild>
+            <Button variant='outline'>Change Password</Button>
+          </DialogTrigger>
+          <DialogContent className='sm:max-w-[425px]'>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <DialogHeader>
+                  <DialogTitle>Change Password</DialogTitle>
+                  <DialogDescription>
+                    Enter your current password and your new password.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className='grid gap-4 py-4'>
+                  <TextInput
+                    name='verifyPassword'
+                    type='password'
+                    label='Old Password'
+                    placeholder='oldpassword123'
+                    control={form.control}
+                  />
+                  <TextInput
+                    name='password'
+                    type='password'
+                    label='New Password'
+                    placeholder='password123'
+                    control={form.control}
+                  />
+                  <TextInput
+                    name='confirmPassword'
+                    type='password'
+                    label='Confirm Password'
+                    placeholder='password123'
+                    control={form.control}
+                  />
+                </div>
+                <DialogFooter>
+                  <SubmitButton
+                    isLoading={isLoading}
+                    disabled={false}
+                  >
+                    Save Changes
+                  </SubmitButton>
+                </DialogFooter>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+      </div>
     </>
   );
 }

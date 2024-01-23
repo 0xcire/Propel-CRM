@@ -22,6 +22,7 @@ type updateUsersByIDParams = {
   newUsername?: string | undefined;
   newEmail?: string | undefined;
   newPassword?: string | undefined;
+  verified?: boolean;
 };
 
 export const findUsersByEmail = async ({
@@ -87,6 +88,7 @@ export const findUsersByID = async ({ id, requestingInfo, updating }: FindUsersB
             lastLogin: users.lastLogin,
             createdAt: users.createdAt,
             isAdmin: users.isAdmin,
+            isVerified: users.isVerified,
           }
         : {}),
       ...(updating
@@ -105,7 +107,7 @@ export const findUsersByID = async ({ id, requestingInfo, updating }: FindUsersB
   return user[0];
 };
 
-export const updateUserByID = async ({ id, newUsername, newEmail, newPassword }: updateUsersByIDParams) => {
+export const updateUserByID = async ({ id, newUsername, newEmail, newPassword, verified }: updateUsersByIDParams) => {
   const updatedUser = await db
     .update(users)
     .set({
@@ -122,6 +124,11 @@ export const updateUserByID = async ({ id, newUsername, newEmail, newPassword }:
       ...(newPassword
         ? {
             hashedPassword: newPassword,
+          }
+        : {}),
+      ...(verified !== undefined
+        ? {
+            isVerified: verified,
           }
         : {}),
     })

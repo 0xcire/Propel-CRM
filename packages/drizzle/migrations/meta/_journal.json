@@ -15,6 +15,13 @@
       "when": 1704752434837,
       "tag": "0001_happy_flatman",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1705980020147,
+      "tag": "0002_warm_titania",
+      "breakpoints": true
     }
   ]
 }
