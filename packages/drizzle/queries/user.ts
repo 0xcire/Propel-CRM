@@ -29,7 +29,15 @@ type updateUsersByIDParams = {
 export const findUsersByEmail = async ({
   email,
   signingIn,
-}: FindUsersByEmailParams): Promise<UserResponse | undefined> => {
+}: FindUsersByEmailParams): Promise<
+  | {
+      username?: string | undefined;
+      hashedPassword?: string | undefined;
+      id: number;
+      email: string;
+    }
+  | undefined
+> => {
   const user = await db
     .select({
       id: users.id,

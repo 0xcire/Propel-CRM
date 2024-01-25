@@ -7,8 +7,8 @@ import {
   updateUserByID,
   //
 } from "@propel/drizzle";
-import { checkPassword, isDeployed } from "../utils";
-import { hashPassword } from "@propel/lib";
+import { checkPassword, hashPassword } from "@propel/lib";
+import { isDeployed } from "../utils";
 import { ABSOLUTE_SESSION_COOKIE, SALT_ROUNDS, sessionRelatedCookies } from "../config";
 
 import type { Request, Response } from "express";

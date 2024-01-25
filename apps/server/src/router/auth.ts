@@ -4,18 +4,6 @@ import { validatePreAuthSession, validateSession, validateSessionFromUserEmail }
 import { validateCSRF } from "../middlewares/validate-csrf";
 
 import { validateRequest } from "../middlewares/validate-input";
-
-import {
-  signup,
-  signin,
-  signout,
-  recoverPassword,
-  getValidRecoveryRequest,
-  updateUserFromAccountRecovery,
-  verifyEmail,
-  requestNewEmailVerification,
-} from "../controllers/auth";
-
 import {
   accountRecoveryValidator,
   authCookieValidator,
@@ -26,6 +14,17 @@ import {
   verifyEmailQueryValidator,
 } from "@propel/drizzle";
 import { isOwner } from "../middlewares";
+
+import {
+  signin,
+  signup,
+  signout,
+  requestPasswordRecovery,
+  getValidRecoveryRequest,
+  updateUserFromAccountRecovery,
+  verifyEmail,
+  requestNewEmailVerification,
+} from "../controllers/auth";
 
 export default (router: Router) => {
   router.post(
@@ -66,7 +65,7 @@ export default (router: Router) => {
     }),
     validatePreAuthSession,
     validateCSRF,
-    recoverPassword
+    requestPasswordRecovery
   );
 
   router.patch(
@@ -81,7 +80,6 @@ export default (router: Router) => {
   );
 
   router.patch(
-    //
     "/auth/verify-email",
     validateRequest({
       params: paramSchema,
@@ -93,7 +91,6 @@ export default (router: Router) => {
   );
 
   router.post(
-    //
     "/auth/verify-email/:id",
     validateRequest({
       params: paramSchema,
