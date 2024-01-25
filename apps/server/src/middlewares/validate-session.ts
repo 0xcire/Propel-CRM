@@ -143,6 +143,9 @@ export const validatePreAuthSession = async (req: Request, res: Response, next: 
 
 // mainly due to validate-csrf
 // if no distinction between secret key for auth / pre-auth, can remove this
+
+// extract common logic into helper functions
+// refactor this along with auth controller
 export const validateSessionFromUserEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const preAuthSession = req.signedCookies[PRE_AUTH_SESSION_COOKIE];

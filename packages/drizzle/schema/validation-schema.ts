@@ -71,6 +71,14 @@ export const accountRecoveryValidator = z
     email: schema.email.trim(),
   }));
 
+export const verifyEmailQueryValidator = z
+  .object({
+    token: z.string(),
+  })
+  .transform((schema) => ({
+    token: schema.token.trim(),
+  }));
+
 export const signupValidator = createInsertSchema(users)
   .pick({
     name: true,

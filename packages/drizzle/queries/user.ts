@@ -15,6 +15,7 @@ type FindUsersByIDParams = {
   id: number;
   requestingInfo?: boolean;
   updating?: boolean;
+  verification?: boolean;
 };
 
 type updateUsersByIDParams = {
@@ -76,12 +77,17 @@ export const insertNewUser = async (user: NewUser) => {
   return insertedUser[0];
 };
 
-export const findUsersByID = async ({ id, requestingInfo, updating }: FindUsersByIDParams) => {
+export const findUsersByID = async ({ id, requestingInfo, updating, verification }: FindUsersByIDParams) => {
   const user = await db
     .select({
       id: users.id,
       username: users.username,
       email: users.email,
+      ...(verification
+        ? {
+            isVerified: users.isVerified,
+          }
+        : {}),
       ...(requestingInfo
         ? {
             name: users.name,

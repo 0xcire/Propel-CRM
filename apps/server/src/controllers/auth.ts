@@ -1,6 +1,6 @@
 // rate limit ref: https://github.com/animir/node-rate-limiter-flexible/wiki/Overall-example#minimal-protection-against-password-brute-force
 
-import { sendRecoverPasswordEmail } from "../lib/resend";
+import { sendRecoverPasswordEmail, sendVerifyAccountEmail } from "../lib/resend";
 import {
   RateLimiterRes,
   setRedisKV,
@@ -10,7 +10,7 @@ import {
   deleteRateLimit,
   getValueFromRedisKey,
 } from "@propel/redis";
-import { findUsersByEmail, findUsersByUsername, insertNewUser, updateUserByID } from "@propel/drizzle";
+import { findUsersByEmail, findUsersByID, findUsersByUsername, insertNewUser, updateUserByID } from "@propel/drizzle";
 import { checkPassword, createSecureCookie, createToken, deriveSessionCSRFToken, isDeployed } from "../utils";
 import { handleRateLimitErrorResponse, validateRateLimitAndSetResponse } from "../lib/rate-limit";
 import { hashPassword } from "@propel/lib";
@@ -24,6 +24,7 @@ import {
   PRE_AUTH_SESSION_COOKIE,
   CSRF_SECRET,
   SALT_ROUNDS,
+  ONE_HOUR,
 } from "../config/index";
 
 import type { Request, Response } from "express";
@@ -132,7 +133,6 @@ export const signup = async (req: Request, res: Response) => {
     }
 
     const userByEmail = await findUsersByEmail({ email: email });
-
     const userByUsername = await findUsersByUsername(username);
 
     if (userByUsername) {
@@ -147,11 +147,7 @@ export const signup = async (req: Request, res: Response) => {
       });
     }
 
-    // create email verificaation functionality
-    // TODO: this along wth  password reset, would be a good usecase for jwt!
-
     const hashedPassword = await hashPassword(password, +(SALT_ROUNDS as string));
-    const sessionID = createToken(16);
 
     const newUser: NewUser = {
       name: name,
@@ -162,7 +158,18 @@ export const signup = async (req: Request, res: Response) => {
 
     const insertedUser = await insertNewUser(newUser);
 
+    if (!insertedUser) {
+      return res.status(400).json({
+        message: "There was an error creating your account. Please try again.",
+      });
+    }
+
+    const sessionID = createToken(16);
+
     await setRedisKV(sessionID, String(insertedUser?.id as number), +(ABSOLUTE_SESSION_LENGTH as string));
+
+    // removePreAuthSession()
+    // createAuthSession()
 
     res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
       path: "/",
@@ -197,15 +204,9 @@ export const signup = async (req: Request, res: Response) => {
       maxAge: +(ABSOLUTE_SESSION_LENGTH as string),
     });
 
-    res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
-      path: "/",
-      domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
-      sameSite: "lax",
-    });
-
-    req.session = {
-      id: sessionID,
-    };
+    const token = createToken(64, true);
+    await setRedisKV(token, String(insertedUser.id), ONE_HOUR);
+    await sendVerifyAccountEmail(insertedUser.email, token);
 
     return res.status(201).json({
       message: "Signing up.",
@@ -256,7 +257,6 @@ export const signout = async (req: Request, res: Response) => {
 // if difference between that and "today" is, X days, return error
 export const recoverPassword = async (req: Request, res: Response) => {
   try {
-    const ONE_HOUR = 3600000;
     const { email } = req.body;
 
     const recoveryIdentifier = `${email}-recovery`;
@@ -277,11 +277,10 @@ export const recoverPassword = async (req: Request, res: Response) => {
       if (userByEmail) {
         await consumeRateLimitPoint(recoveryIdentifier);
 
-        const token = createToken(64);
+        const token = createToken(64, true);
         await setRedisKV(token, String(userByEmail.id as number), ONE_HOUR);
 
-        const data = await sendRecoverPasswordEmail(email, token);
-        console.log(data);
+        await sendRecoverPasswordEmail(email, token);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -316,7 +315,6 @@ export const getValidRecoveryRequest = async (req: Request, res: Response) => {
     }
 
     const value = await getValueFromRedisKey(id);
-    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", value);
 
     if (!value) {
       return res.status(404).json({
@@ -324,6 +322,7 @@ export const getValidRecoveryRequest = async (req: Request, res: Response) => {
       });
     }
 
+    res.setHeader("Referrer-Policy", "no-referrer");
     return res.status(200).json({
       message: "",
     });
@@ -352,11 +351,16 @@ export const updateUserFromAccountRecovery = async (req: Request, res: Response)
 
     const hashedPassword = await hashPassword(password, +(SALT_ROUNDS as string));
 
-    // const updatedUser =
-    await updateUserByID({
+    const updatedUser = await updateUserByID({
       id: +userID,
       newPassword: hashedPassword,
     });
+
+    if (!updatedUser) {
+      return res.status(400).json({
+        message: "There was an error updating your account. Please try again.",
+      });
+    }
 
     // await deleteRedisKV(`${updatedUser?.email}-recovery`);
     await deleteRedisKV(id);
@@ -367,5 +371,68 @@ export const updateUserFromAccountRecovery = async (req: Request, res: Response)
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "" });
+  }
+};
+
+export const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const { token } = req.query;
+
+    if (!token) {
+      return res.status(400).json({
+        message: "Request token required.",
+      });
+    }
+    const userID = await getValueFromRedisKey(token as string);
+
+    if (!userID) {
+      return res.status(400).json({
+        message: "Verify email request expired.",
+      });
+    }
+
+    await updateUserByID({
+      id: +userID,
+      verified: true,
+    });
+
+    await deleteRedisKV(token as string);
+
+    return res.status(200).json({
+      message: "Email verified.",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
+
+export const requestNewEmailVerification = async (req: Request, res: Response) => {
+  try {
+    const userID = req.user.id;
+
+    const userByID = await findUsersByID({ id: userID, verification: true });
+
+    if (!userByID) {
+      return res.status(404).json({
+        message: "Can't find user.",
+      });
+    }
+    if (userByID.isVerified) {
+      return res.status(400).json({
+        message: "User is already verified.",
+      });
+    }
+    // can be extracted to fn()
+    const token = createToken(64, true);
+    await setRedisKV(token, String(userID), ONE_HOUR);
+    await sendVerifyAccountEmail(userByID.email, token);
+
+    return res.status(200).json({
+      message: "New verification email is on it's way",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
   }
 };
