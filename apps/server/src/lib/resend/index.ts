@@ -14,11 +14,11 @@ export const sendRecoverPasswordEmail = async (recipient: string, token: string)
   });
 };
 
-export const sendVerifyAccountEmail = async (recipient: string) => {
+export const sendVerifyAccountEmail = async (recipient: string, token: string) => {
   return resend.emails.send({
     from: `Propel Verify <${VERIFY_EMAIL as string}>`,
     to: recipient,
     subject: "Password Reset Link",
-    html: verifyAccountEmailTemplate,
+    html: verifyAccountEmailTemplate(token),
   });
 };

@@ -32,6 +32,8 @@ export const COOKIE_SECRET = process.env.COOKIE_SECRET;
 
 export const SALT_ROUNDS = process.env.SALT_ROUNDS;
 
+export const ONE_HOUR = 3600000;
+
 export const sessionRelatedCookies = [ABSOLUTE_SESSION_COOKIE, IDLE_SESSION_COOKIE, CSRF_COOKIE];
 
 export const getRequestBodies = (req: Request) => {
