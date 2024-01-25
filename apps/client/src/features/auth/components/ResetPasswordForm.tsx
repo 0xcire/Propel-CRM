@@ -26,7 +26,7 @@ type ResetPasswordFields = z.infer<typeof resetPasswordSchema>;
 export function ResetPasswordForm(): JSX.Element {
   const { id } = useParams();
   const { mutate, isLoading } = useUpdateAccountFromRecovery();
-  const { requestIDIsValid } = useValidateRequestID(id as string);
+  const { requestIDIsValid, error } = useValidateRequestID(id as string);
 
   const { toast } = useToast();
 
@@ -64,7 +64,7 @@ export function ResetPasswordForm(): JSX.Element {
       <Typography variant='h1'>Password Reset</Typography>
       {/* thank you cal.com/auth/forgot-password/random-id */}
       <>
-        {requestIDIsValid ? (
+        {requestIDIsValid && !error ? (
           <Form {...form}>
             <form
               className='space-y-3'

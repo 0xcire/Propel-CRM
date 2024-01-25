@@ -24,6 +24,8 @@ import { useToast } from '@/components/ui/use-toast';
 import { TextInput } from '@/components/form/TextInput';
 import { SubmitButton } from '@/components/SubmitButton';
 
+import { RequestEmailButton } from '@/features/common/user/RequestEmailButton';
+
 import { fieldsAreEqual } from '@/utils/form-data';
 
 import type { Toast } from '@/types';
@@ -74,20 +76,7 @@ export function Authentication(): JSX.Element {
     <>
       <Typography variant='h3'>Password and Authentication</Typography>
       <div className='mt-4 flex items-center gap-2'>
-        {!user.data?.isVerified && (
-          <Button
-            onClick={(): void => {
-              // this should be extracted to hook onSuccess
-              toast({
-                title: 'Account Verification',
-                description:
-                  'Look out! A verification email was just sent your way.',
-              });
-            }}
-          >
-            Verify Email
-          </Button>
-        )}
+        {!user.data?.isVerified && <RequestEmailButton />}
 
         <Dialog
           open={open}

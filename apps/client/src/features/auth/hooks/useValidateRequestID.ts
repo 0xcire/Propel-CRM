@@ -5,7 +5,9 @@ export const useValidateRequestID = (
   id: string
 ): {
   requestIDIsValid: boolean;
+  error: boolean;
 } => {
+  const [error, setError] = useState<boolean>(false);
   const [requests, setRequests] = useState<number>(0);
   const [requestIDIsValid, setRequestIDIsValid] = useState<boolean>(false);
 
@@ -20,6 +22,7 @@ export const useValidateRequestID = (
             setRequestIDIsValid(false);
           }
         })
+        .catch(() => setError(true))
         .finally(() => {
           setRequests((previous) => previous + 1);
         });
@@ -28,5 +31,5 @@ export const useValidateRequestID = (
     []
   );
 
-  return { requestIDIsValid };
+  return { requestIDIsValid, error };
 };

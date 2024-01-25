@@ -7,6 +7,8 @@ import { getMe, signin, signup, signout } from '@/features/auth/api';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { useToast } from '@/components/ui/use-toast';
+
 import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
 import type { User } from '@/types';
 import type {
@@ -74,11 +76,18 @@ export const useRegister = (): UseMutationResult<
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
+  const { toast } = useToast();
+
   return useMutation({
     mutationFn: registerFn,
     onSuccess: () => {
       queryClient.invalidateQueries(['user']);
       navigate('/dashboard');
+      toast({
+        title: 'Account Verification',
+        description:
+          'One more step! Verify your account in the email we just sent.',
+      });
     },
   });
 };
