@@ -11,7 +11,10 @@ type CreateSecureCookieParams = {
   age: number;
 };
 
-export const createToken = (size: number) => {
+export const createToken = (size: number, url?: boolean) => {
+  if (url) {
+    return randomBytes(size).toString("base64url");
+  }
   return randomBytes(size).toString("base64");
 };
 
