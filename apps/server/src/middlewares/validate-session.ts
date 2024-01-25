@@ -141,6 +141,38 @@ export const validatePreAuthSession = async (req: Request, res: Response, next: 
   }
 };
 
+// mainly due to validate-csrf
+// if no distinction between secret key for auth / pre-auth, can remove this
+export const validateSessionFromUserEmail = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const preAuthSession = req.signedCookies[PRE_AUTH_SESSION_COOKIE];
+    const absoluteSession: string | undefined = req.signedCookies[ABSOLUTE_SESSION_COOKIE];
+
+    if (!preAuthSession && !absoluteSession) {
+      return res.status(400).json({
+        message: "Please refresh the page or sign back in.",
+      });
+    }
+
+    if (!preAuthSession && absoluteSession) {
+      req.session = {
+        id: absoluteSession,
+      };
+    }
+
+    if (!absoluteSession && preAuthSession) {
+      req.session = {
+        id: preAuthSession,
+      };
+    }
+
+    return next();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({});
+  }
+};
+
 async function initializePreAuthSession(req: Request, res: Response) {
   const preAuthSession = req.signedCookies[PRE_AUTH_SESSION_COOKIE];
 
