@@ -66,3 +66,10 @@ export const updateAccountFromRecovery = ({
     body: JSON.stringify(data),
   }).then(handleAPIResponse<BaseResponse>);
 };
+
+export const verifyEmail = (token: string): Promise<BaseResponse> => {
+  return Patch({
+    endpoint: `auth/verify-email?token=${token}`,
+    body: JSON.stringify({}),
+  }).then(handleAPIResponse<BaseResponse>);
+};

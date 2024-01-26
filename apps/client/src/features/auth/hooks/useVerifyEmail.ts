@@ -1,40 +1,39 @@
-import { Patch } from '@/lib/fetch';
-import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useUser } from '@/lib/react-query-auth';
+import { verifyEmail } from '../api';
 
-export const useVerifyEmail = (
-  token: string | null
-): {
-  isVerified: boolean;
-  error: boolean;
-} => {
-  const [isVerified, setIsVerified] = useState(false);
-  const [requests, setRequests] = useState<number>(0);
-  const [error, setError] = useState(false);
+import { useToast } from '@/components/ui/use-toast';
 
-  useEffect(
-    () => {
-      if (!token) return;
-      if (requests > 0) return;
-      Patch({
-        endpoint: `auth/verify-email?token=${token}`,
-        body: JSON.stringify({}),
-      })
-        .then((res) => {
-          if (res.ok) {
-            setIsVerified(true);
-          } else {
-            setIsVerified(false);
-          }
-        })
-        .catch(() => setError(true))
-        .finally(() => setRequests((previous) => previous + 1));
+import type { UseMutationResult } from '@tanstack/react-query';
+
+import type { BaseResponse } from '@/types';
+
+export const useVerifyEmail = (): UseMutationResult<
+  BaseResponse,
+  unknown,
+  string,
+  unknown
+> => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const user = useUser();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: verifyEmail,
+    onSuccess: (data) => {
+      if (user.data !== null) {
+        navigate('/dashboard');
+        queryClient.invalidateQueries(['user']);
+      } else {
+        navigate('/auth/signin');
+      }
+
+      toast({
+        title: 'Thank you!',
+        description: data.message,
+      });
     },
-    //eslint-disable-next-line
-    []
-  );
-
-  return {
-    isVerified,
-    error,
-  };
+    onError: () => null,
+  });
 };
