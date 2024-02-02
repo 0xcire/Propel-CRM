@@ -38,6 +38,7 @@ COPY --from=prune /app/out/package-lock.json ./package-lock.json
 COPY --from=build-stage /app/apps/server/dist ./apps/server
 COPY --from=build-stage /app/packages/redis/dist ./packages/redis
 COPY --from=build-stage /app/packages/drizzle/dist ./packages/drizzle
+COPY --from=build-stage /app/packages/emails/dist ./packages/emails
 COPY --from=build-stage /app/packages/lib/dist ./packages/lib
 
 RUN npm pkg delete scripts.prepare

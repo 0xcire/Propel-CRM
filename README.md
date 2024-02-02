@@ -35,6 +35,8 @@ A CRM for real estate agents.
   - average days on market
   - sale to list ratio
 
+- Debouncing on all table search queries to minimize amount of requests made
+
 - Authentication & Security (following OWASP standards)
 
   - XSS validation
@@ -72,6 +74,11 @@ A CRM for real estate agents.
 - Redis
 - PostgreSQL on [Neon](https://neon.tech/)
 - Drizzle ORM
+
+### Emails
+
+- [Resend](https://resend.com)
+- [TestMail](https://testmail.app)
 
 ### AWS
 

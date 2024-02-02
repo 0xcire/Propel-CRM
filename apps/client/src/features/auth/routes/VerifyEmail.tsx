@@ -12,6 +12,7 @@ import { LinkButton } from '@/components/LinkButton';
 export function VerifyEmail(): JSX.Element {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
+
   const { mutate } = useVerifyEmail();
 
   // StrictMode actually introduces unexpected behavior

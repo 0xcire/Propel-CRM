@@ -1,9 +1,10 @@
-import { resend } from "./client";
+// export * from "";
+import { resend } from "./resend-client";
 
 import { recoverPasswordEmailTemplate } from "./templates/recover-password";
 import { verifyAccountEmailTemplate } from "./templates/verify-account";
 
-import { RECOVERY_EMAIL, VERIFY_EMAIL } from "../../config";
+import { RECOVERY_EMAIL, VERIFY_EMAIL } from "./config";
 
 export const sendRecoverPasswordEmail = async (recipient: string, token: string) => {
   return resend.emails.send({

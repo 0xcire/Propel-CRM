@@ -1,5 +1,5 @@
 import { setRedisKV } from "@propel/redis";
-import { sendRecoverPasswordEmail, sendVerifyAccountEmail } from "../lib/resend";
+import { sendRecoverPasswordEmail, sendVerifyAccountEmail } from "@propel/emails";
 import { createToken } from ".";
 
 import { ONE_HOUR } from "../config";
