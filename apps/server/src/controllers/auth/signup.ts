@@ -6,7 +6,7 @@ import {
   persistAuthSession,
   removePreAuthCookies,
   setAuthSessionCookies,
-  createVerifyEmailSessionAndSendEmail,
+  createVerifyEmailRequestAndSendEmail,
 } from "../../utils";
 
 import { SALT_ROUNDS } from "../../config";
@@ -54,7 +54,7 @@ export const signup = async (req: Request, res: Response) => {
     const sessionID = createToken(64);
 
     await persistAuthSession(req, sessionID, insertedUser.id);
-    await createVerifyEmailSessionAndSendEmail(insertedUser.id, insertedUser.email);
+    await createVerifyEmailRequestAndSendEmail(insertedUser.id, insertedUser.email);
 
     removePreAuthCookies(req, res);
     setAuthSessionCookies(req, res, sessionID);

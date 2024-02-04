@@ -1,7 +1,7 @@
-import { findUsersByID, updateUserByID } from "@propel/drizzle";
-import { deleteRedisKV, getValueFromRedisKey } from "@propel/redis";
+import { deleteTemporaryRequest, findUsersByID, getTempRequestFromToken, updateUserByID } from "@propel/drizzle";
+import dayjs from "@propel/dayjs";
 
-import { createVerifyEmailSessionAndSendEmail } from "../../utils";
+import { createVerifyEmailRequestAndSendEmail } from "../../utils";
 
 import type { Request, Response } from "express";
 
@@ -9,22 +9,39 @@ export const verifyEmail = async (req: Request, res: Response) => {
   try {
     const { token } = req.query;
 
+    if (typeof token !== "string") {
+      return res.status(400).json({
+        message: "Invalid token",
+      });
+    }
+
     if (!token) {
       return res.status(400).json({
         message: "Request token required.",
       });
     }
 
-    const userID = await getValueFromRedisKey(token as string);
+    const tempRequest = await getTempRequestFromToken(token);
 
-    if (!userID) {
+    await deleteTemporaryRequest({ id: token });
+
+    if (!tempRequest || !tempRequest.userID) {
       return res.status(400).json({
-        message: "Verify email request expired.",
+        message: "Request expired.",
+      });
+    }
+
+    if (!dayjs().isBefore(dayjs(tempRequest.expiry))) {
+      // [ ]: throw new PropelHTTPError({})
+      // [ ]: throw new PropelDBError({status: 500, message: })
+
+      return res.status(400).json({
+        message: "Request expired.",
       });
     }
 
     const updatedUser = await updateUserByID({
-      id: +userID,
+      id: +tempRequest.userID,
       verified: true,
     });
 
@@ -33,8 +50,6 @@ export const verifyEmail = async (req: Request, res: Response) => {
         message: "There was an issue verifying your email. Please try again.",
       });
     }
-
-    await deleteRedisKV(token as string);
 
     return res.status(200).json({
       message: "Email verified.",
@@ -45,6 +60,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
   }
 };
 
+// rate limit this?
 export const requestNewEmailVerification = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
@@ -62,7 +78,7 @@ export const requestNewEmailVerification = async (req: Request, res: Response) =
       });
     }
 
-    await createVerifyEmailSessionAndSendEmail(userID, userByID.email);
+    await createVerifyEmailRequestAndSendEmail(userID, userByID.email);
 
     return res.status(200).json({
       message: "New verification email is on it's way",

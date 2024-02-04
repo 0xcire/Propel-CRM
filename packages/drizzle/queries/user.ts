@@ -75,12 +75,16 @@ export const findUsersByUsername = async (username: string): Promise<UserRespons
 };
 
 export const insertNewUser = async (user: NewUser) => {
-  const insertedUser = await db.insert(users).values(user).returning({
-    id: users.id,
-    name: users.name,
-    username: users.username,
-    email: users.email,
-  });
+  const insertedUser = await db
+    .insert(users)
+    .values(user)
+    .returning({
+      id: users.id,
+      name: users.name,
+      username: users.username,
+      email: users.email,
+    })
+    .onConflictDoNothing();
 
   return insertedUser[0];
 };

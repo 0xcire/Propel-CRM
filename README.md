@@ -77,6 +77,8 @@ A CRM for real estate agents.
 
 ### Emails
 
+<!-- - [React Emails](https://react.email) -->
+
 - [Resend](https://resend.com)
 - [TestMail](https://testmail.app)
 
@@ -182,9 +184,15 @@ see more drizzle specific commands [here](https://orm.drizzle.team/kit-docs/comm
 - Also had trouble initially wrapping my head around SQL aggregate functions when creating the analytics view
 
 - e2e testing strategy
+
   - hesitancy on exactly how to run tests in CI
   - initially recreated postgres / redis locally on docker compose which ran fine but could not pin down postgres 'fast shutdown request' issue
   - **Solution:** Took advantage of Neon's branching feature and built docker images mirror prod environments as close as possible
+
+- DB vs Redis for temp requests ( verify-email / account recovery )
+  - Without running tests, redis works perfectly
+  - However, when trying to e2e test these flows, it immediately became difficult to either parse emails or SCAN redis for tokens and run a `page.goto('/auth/recovery/${token}')` in playwright
+  - **Solution:** create a temp_requests table so I can query for tokens based off other data
 
 ## Notes
 

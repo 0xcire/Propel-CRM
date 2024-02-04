@@ -1,15 +1,10 @@
-import { findUsersByEmail, updateUserByID } from "@propel/drizzle";
-import {
-  RateLimiterRes,
-  consumeRateLimitPoint,
-  deleteRedisKV,
-  getRateLimiter,
-  getValueFromRedisKey,
-} from "@propel/redis";
+import { deleteTemporaryRequest, findUsersByEmail, getTempRequestFromToken, updateUserByID } from "@propel/drizzle";
+import { RateLimiterRes, consumeRateLimitPoint, getRateLimiter } from "@propel/redis";
+import dayjs from "@propel/dayjs";
 import { hashPassword } from "@propel/lib";
 
 import { handleRateLimitErrorResponse, validateRateLimitAndSetResponse } from "../../lib";
-import { createRecoverPasswordSessionAndSendEmail } from "../../utils";
+import { createRecoverPasswordRequestAndSendEmail } from "../../utils";
 
 import { SALT_ROUNDS } from "../../config";
 
@@ -33,7 +28,7 @@ export const requestPasswordRecovery = async (req: Request, res: Response) => {
       });
     }
 
-    await createRecoverPasswordSessionAndSendEmail(userByEmail.id, userByEmail.email);
+    await createRecoverPasswordRequestAndSendEmail(userByEmail.id, userByEmail.email);
 
     return res.status(200).json({
       message: "Incoming! Password reset email heading your way.",
@@ -58,11 +53,19 @@ export const getValidRecoveryRequest = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Recovery request ID needed." });
     }
 
-    const value = await getValueFromRedisKey(id);
+    const tempRequest = await getTempRequestFromToken(id);
 
-    if (!value) {
+    if (!tempRequest) {
       return res.status(404).json({
         message: "Request expired.",
+      });
+    }
+
+    if (!dayjs().isBefore(dayjs(tempRequest.expiry))) {
+      await deleteTemporaryRequest({ id: id });
+
+      return res.status(400).json({
+        message: "Request expired",
       });
     }
 
@@ -83,18 +86,24 @@ export const updateUserFromAccountRecovery = async (req: Request, res: Response)
       return res.status(400).json({ message: "Request ID needed." });
     }
 
-    const userID = await getValueFromRedisKey(id);
+    const tempRequest = await getTempRequestFromToken(id);
 
-    if (!userID) {
+    if (!tempRequest || !tempRequest.userID) {
       return res.status(404).json({
         message: "Request expired.",
+      });
+    }
+
+    if (!dayjs().isBefore(dayjs(tempRequest.expiry))) {
+      return res.status(400).json({
+        message: "Request expired",
       });
     }
 
     const hashedPassword = await hashPassword(password, +(SALT_ROUNDS as string));
 
     const updatedUser = await updateUserByID({
-      id: +userID,
+      id: +tempRequest.userID,
       newPassword: hashedPassword,
     });
 
@@ -104,7 +113,7 @@ export const updateUserFromAccountRecovery = async (req: Request, res: Response)
       });
     }
 
-    await deleteRedisKV(id);
+    await deleteTemporaryRequest({ id: id });
 
     return res.status(200).json({
       message: "Password updated successfully.",

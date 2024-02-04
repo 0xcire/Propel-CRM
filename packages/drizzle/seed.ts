@@ -1,4 +1,8 @@
-// import { db } from "../db";
+import { drizzle } from "drizzle-orm/postgres-js";
+
+import { and, eq } from "drizzle-orm";
+
+import postgres from "postgres";
 
 import { faker } from "@faker-js/faker";
 
@@ -12,6 +16,8 @@ import {
   insertNewUser,
 } from "@propel/drizzle";
 
+import { listingsToContacts } from "./schema";
+
 import {
   createFakeContact,
   createFakeActiveListing,
@@ -23,10 +29,6 @@ import { hashPassword } from "@propel/lib";
 import { PG_URL } from "./config";
 
 import type { Contact } from "./types";
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-import { listingsToContacts } from "./schema";
-import { and, eq } from "drizzle-orm";
 
 const queryClient = postgres(`${PG_URL}`);
 const db = drizzle(queryClient, { logger: true });
@@ -151,6 +153,7 @@ export const propelFaker: {
 
   seedDatabase: async function () {
     console.log("seeding");
+
     await insertNewUser({
       id: 10,
       name: "Test Test",

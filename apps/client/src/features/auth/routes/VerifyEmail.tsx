@@ -18,7 +18,7 @@ export function VerifyEmail(): JSX.Element {
   // StrictMode actually introduces unexpected behavior
   // 1st run, token is invalidated and returns 200 / success msg
   // 2nd run, now the token is invalid, resulting in an error which overrides previous success toast
-  // []: could potentially use navigate(path, { state: ??? }) and show toast based off that state instead?
+  // [ ]: could potentially use navigate(path, { state: ??? }) and show toast based off that state instead?
 
   const isApiCalled = useRef(false);
   useEffect(() => {

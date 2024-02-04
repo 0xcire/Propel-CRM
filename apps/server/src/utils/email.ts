@@ -1,17 +1,29 @@
-import { setRedisKV } from "@propel/redis";
+import { createRequestAndDeleteRedundancy } from "@propel/drizzle";
+import dayjs from "@propel/dayjs";
 import { sendRecoverPasswordEmail, sendVerifyAccountEmail } from "@propel/emails";
-import { createToken } from ".";
+import { createUUID } from ".";
 
-import { ONE_HOUR } from "../config";
+export const createVerifyEmailRequestAndSendEmail = async (recipientID: number, recipientEmail: string) => {
+  const id = createUUID();
 
-export const createVerifyEmailSessionAndSendEmail = async (recipientID: number, recipientEmail: string) => {
-  const token = createToken(64, true);
-  await setRedisKV(token, String(recipientID), ONE_HOUR);
-  await sendVerifyAccountEmail(recipientEmail, token);
+  await createRequestAndDeleteRedundancy({
+    id: id,
+    expiry: dayjs().add(1, "hour").toDate(),
+    userEmail: recipientEmail,
+    userID: recipientID,
+  });
+
+  await sendVerifyAccountEmail(recipientEmail, id);
 };
 
-export const createRecoverPasswordSessionAndSendEmail = async (recipientID: number, recipientEmail: string) => {
-  const token = createToken(64, true);
-  await setRedisKV(token, String(recipientID), ONE_HOUR);
-  await sendRecoverPasswordEmail(recipientEmail, token);
+export const createRecoverPasswordRequestAndSendEmail = async (recipientID: number, recipientEmail: string) => {
+  const id = createUUID();
+
+  await createRequestAndDeleteRedundancy({
+    id: id,
+    expiry: dayjs().add(1, "hour").toDate(),
+    userEmail: recipientEmail,
+    userID: recipientID,
+  });
+  await sendRecoverPasswordEmail(recipientEmail, id);
 };

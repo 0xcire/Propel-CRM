@@ -96,6 +96,7 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
         id: absoluteSession,
       };
 
+      // setIdleTimeout()
       // reset idle timeout
       createSecureCookie(req, {
         res: res,
@@ -122,6 +123,7 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
 
 export const validatePreAuthSession = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log("VALIDATING PRE AUTH SESSION");
     const preAuthSession = req.signedCookies[PRE_AUTH_SESSION_COOKIE];
 
     if (!preAuthSession) {
@@ -133,41 +135,6 @@ export const validatePreAuthSession = async (req: Request, res: Response, next: 
     req.session = {
       id: preAuthSession,
     };
-
-    return next();
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
-  }
-};
-
-// mainly due to validate-csrf
-// if no distinction between secret key for auth / pre-auth, can remove this
-
-// extract common logic into helper functions
-// refactor this along with auth controller
-export const validateSessionFromUserEmail = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const preAuthSession = req.signedCookies[PRE_AUTH_SESSION_COOKIE];
-    const absoluteSession: string | undefined = req.signedCookies[ABSOLUTE_SESSION_COOKIE];
-
-    if (!preAuthSession && !absoluteSession) {
-      return res.status(400).json({
-        message: "Please refresh the page or sign back in.",
-      });
-    }
-
-    if (!preAuthSession && absoluteSession) {
-      req.session = {
-        id: absoluteSession,
-      };
-    }
-
-    if (!absoluteSession && preAuthSession) {
-      req.session = {
-        id: preAuthSession,
-      };
-    }
 
     return next();
   } catch (error) {

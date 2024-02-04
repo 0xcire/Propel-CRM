@@ -1,0 +1,9 @@
+{
+  "name": "@propel/dayjs",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.ts",
+  "dependencies": {
+    "dayjs": "^1.11.10"
+  }
+}

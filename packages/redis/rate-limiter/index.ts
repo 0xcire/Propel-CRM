@@ -7,7 +7,7 @@ const _15_MINUTES = 60 * 15;
 
 export const limiterConsecutiveFailsByEmail = new RateLimiterRedis({
   storeClient: redisClient,
-  keyPrefix: "login_fail_consecutive_email",
+  keyPrefix: "limit_by_email",
   points: maxConsecutiveFailsByEmail,
   duration: TWO_HOURS,
   blockDuration: _15_MINUTES,

@@ -1,10 +1,14 @@
-import { randomBytes, createHmac, timingSafeEqual } from "crypto";
+import { randomBytes, createHmac, timingSafeEqual, randomUUID } from "crypto";
 
 export const createToken = (size: number, url?: boolean) => {
   if (url) {
     return randomBytes(size).toString("base64url");
   }
   return randomBytes(size).toString("base64");
+};
+
+export const createUUID = () => {
+  return randomUUID();
 };
 
 export const deriveSessionCSRFToken = (secret: string, sessionID: string) => {

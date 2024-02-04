@@ -50,6 +50,13 @@ CREATE TABLE IF NOT EXISTS "tasks" (
 	"created_at" timestamp with time zone DEFAULT now()
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "temp_requests" (
+	"id" uuid PRIMARY KEY NOT NULL,
+	"user_id" integer,
+	"user_email" varchar(256),
+	"expiry" timestamp (6)
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(256) NOT NULL,
@@ -57,6 +64,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"email" varchar(256) NOT NULL,
 	"hashed_password" varchar(256) NOT NULL,
 	"is_admin" boolean DEFAULT false,
+	"is_verified" boolean DEFAULT false,
 	"last_login" timestamp with time zone DEFAULT now(),
 	"created_at" timestamp with time zone DEFAULT now()
 );
@@ -69,7 +77,7 @@ CREATE TABLE IF NOT EXISTS "user_to_contacts" (
 );
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "listings" ADD CONSTRAINT "listings_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "listings" ADD CONSTRAINT "listings_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -87,7 +95,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "sold_listings" ADD CONSTRAINT "sold_listings_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "sold_listings" ADD CONSTRAINT "sold_listings_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -105,7 +113,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "tasks" ADD CONSTRAINT "tasks_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "tasks" ADD CONSTRAINT "tasks_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -123,7 +131,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "user_to_contacts" ADD CONSTRAINT "user_to_contacts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "user_to_contacts" ADD CONSTRAINT "user_to_contacts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

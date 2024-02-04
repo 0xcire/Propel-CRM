@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { validatePreAuthSession, validateSession, validateSessionFromUserEmail } from "../middlewares/validate-session";
+import { validatePreAuthSession, validateSession } from "../middlewares/validate-session";
 import { validateCSRF } from "../middlewares/validate-csrf";
 
 import { validateRequest } from "../middlewares/validate-input";
@@ -14,7 +14,6 @@ import {
   verifyEmailQueryValidator,
 } from "@propel/drizzle";
 import { isOwner } from "../middlewares";
-
 import {
   signin,
   signup,
@@ -25,6 +24,7 @@ import {
   verifyEmail,
   requestNewEmailVerification,
 } from "../controllers/auth";
+import { PRE_AUTH_SESSION_COOKIE } from "../config";
 
 export default (router: Router) => {
   router.post(
@@ -82,10 +82,15 @@ export default (router: Router) => {
   router.patch(
     "/auth/verify-email",
     validateRequest({
-      params: paramSchema,
       query: verifyEmailQueryValidator,
     }),
-    validateSessionFromUserEmail,
+    (req, res, next) => {
+      if (req.signedCookies[PRE_AUTH_SESSION_COOKIE]) {
+        validatePreAuthSession(req, res, next);
+      } else {
+        validateSession(req, res, next);
+      }
+    },
     validateCSRF,
     verifyEmail
   );
