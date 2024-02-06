@@ -333,7 +333,8 @@ export const insertNewLead = async (listingID: number, contactID: number, create
     .returning({
       listingID: listingsToContacts.listingID,
       contactID: listingsToContacts.contactID,
-    });
+    })
+    .onConflictDoNothing();
 
   return newLead[0];
 };

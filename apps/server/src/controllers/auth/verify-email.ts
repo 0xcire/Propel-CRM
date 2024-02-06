@@ -1,5 +1,11 @@
-import { deleteTemporaryRequest, findUsersByID, getTempRequestFromToken, updateUserByID } from "@propel/drizzle";
-import dayjs from "@propel/dayjs";
+import {
+  deleteTemporaryRequest,
+  findUsersByID,
+  getAllTempRequestsForUserID,
+  getTempRequestFromToken,
+  updateUserByID,
+} from "@propel/drizzle";
+import dayjs from "dayjs";
 
 import { createVerifyEmailRequestAndSendEmail } from "../../utils";
 
@@ -64,6 +70,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
 export const requestNewEmailVerification = async (req: Request, res: Response) => {
   try {
     const userID = req.user.id;
+    const MAX_REQUESTS_AT_A_TIME = 5;
 
     const userByID = await findUsersByID({ id: userID, verification: true });
 
@@ -72,9 +79,18 @@ export const requestNewEmailVerification = async (req: Request, res: Response) =
         message: "Can't find user.",
       });
     }
+
     if (userByID.isVerified) {
       return res.status(400).json({
         message: "User is already verified.",
+      });
+    }
+
+    const requests = await getAllTempRequestsForUserID(userID);
+
+    if (requests.length > MAX_REQUESTS_AT_A_TIME) {
+      return res.status(429).json({
+        message: "Too many requests. Please try again later.",
       });
     }
 

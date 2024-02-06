@@ -11,16 +11,40 @@ test.describe("user sign up flow", () => {
     await users.deleteAll();
   });
 
-  test("user can sign up", async ({ page, users }) => {
-    currentUser = users.createForSignUp();
-    await page.goto("/auth/signup");
-    await users.signup({
-      name: currentUser.name,
-      username: currentUser.username,
-      email: currentUser.email,
-      password: currentUser.password,
+  test("Signing Up", async ({ page, users, emails }) => {
+    let requestToken: string | undefined;
+    currentUser = users.createForSignUp({ testingEmail: true });
+
+    await test.step("User can fill out form to create account", async () => {
+      await page.goto("/auth/signup");
+      await users.signup({
+        name: currentUser.name,
+        username: currentUser.username,
+        email: currentUser.email,
+        password: currentUser.password,
+      });
+      await expect(page.locator("[data-testid=dashboard]")).toBeVisible();
     });
-    await expect(page.locator("[data-testid=dashboard]")).toBeVisible();
+
+    await test.step("User receives verify account email", async () => {
+      const data = await emails.getByTag(currentUser.username as string);
+
+      expect(data.count).toBe(1);
+    });
+
+    await test.step("User can verify account by visiting link", async () => {
+      requestToken = await users.getTempRequestToken(currentUser.email);
+
+      await page.goto(`/auth/verify-email?token=${requestToken}`);
+
+      await expect(page.getByText("Email verified.", { exact: true }).first()).toBeVisible();
+    });
+
+    await test.step("requset is now invalid", async () => {
+      await page.goto(`/auth/verify-email?token=${requestToken}`);
+
+      await expect(page.getByRole("heading", { name: "Request Expired" })).toBeVisible();
+    });
   });
 });
 
@@ -28,7 +52,7 @@ test.describe("no duplicate identifiers", () => {
   let currentUser: User;
 
   test.beforeEach(async ({ page, users }) => {
-    currentUser = (await users.create()) as User;
+    currentUser = (await users.create({})) as User;
     await page.goto("/auth/signup");
   });
 

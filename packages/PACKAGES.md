@@ -11,6 +11,8 @@
 
   - not shared as in imported from other apps/packages. no real benefit other than "cleanliness"
 
+- [ ] removed dayjs, revisit if i need plugins, or use in multiple apps
+
 - ### things to revisit when creating marketing site
 
   - [ ] tailwind config

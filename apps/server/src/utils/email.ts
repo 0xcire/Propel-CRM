@@ -1,5 +1,5 @@
 import { createRequestAndDeleteRedundancy } from "@propel/drizzle";
-import dayjs from "@propel/dayjs";
+import dayjs from "dayjs";
 import { sendRecoverPasswordEmail, sendVerifyAccountEmail } from "@propel/emails";
 import { createUUID } from ".";
 

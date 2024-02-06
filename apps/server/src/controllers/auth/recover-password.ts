@@ -1,6 +1,6 @@
 import { deleteTemporaryRequest, findUsersByEmail, getTempRequestFromToken, updateUserByID } from "@propel/drizzle";
 import { RateLimiterRes, consumeRateLimitPoint, getRateLimiter } from "@propel/redis";
-import dayjs from "@propel/dayjs";
+import dayjs from "dayjs";
 import { hashPassword } from "@propel/lib";
 
 import { handleRateLimitErrorResponse, validateRateLimitAndSetResponse } from "../../lib";

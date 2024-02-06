@@ -7,7 +7,7 @@ test.describe("user can update account information", () => {
   let currentUser: User;
 
   test.beforeEach(async ({ page, users }) => {
-    currentUser = (await users.create()) as User;
+    currentUser = (await users.create({})) as User;
 
     await page.goto("/auth/signin");
 

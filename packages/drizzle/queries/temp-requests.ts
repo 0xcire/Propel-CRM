@@ -4,6 +4,27 @@ import { and, eq } from "drizzle-orm";
 
 import type { TempRequest, NewTempRequest } from "../types";
 
+export const getTempRequest = async (email: string) => {
+  const tempRequest = await db
+    .select({
+      id: tempRequests.id,
+    })
+    .from(tempRequests)
+    .where(eq(tempRequests.userEmail, email));
+
+  if (!tempRequest || tempRequest.length === 0) {
+    return undefined;
+  }
+
+  return tempRequest[0];
+};
+
+export const getAllTempRequestsForUserID = async (userID: number) => {
+  const requests = await db.select().from(tempRequests).where(eq(tempRequests.userID, userID));
+
+  return requests;
+};
+
 export const getTempRequestFromToken = async (token: string) => {
   const tempRequest = await db
     .select({

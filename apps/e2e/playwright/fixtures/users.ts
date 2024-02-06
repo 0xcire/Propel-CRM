@@ -1,6 +1,8 @@
-import { insertNewUser, deleteUserByID, findUsersByUsername } from "@propel/drizzle";
+import { insertNewUser, deleteUserByID, findUsersByUsername, getTempRequest } from "@propel/drizzle";
 import { deleteRedisKV, limiterConsecutiveFailsByEmail } from "@propel/redis";
 import { hashPassword } from "@propel/lib";
+
+import { TESTMAIL_NAMESPACE } from "../config";
 
 import type { Page, WorkerInfo } from "@playwright/test";
 import type { NewUser } from "@propel/drizzle";
@@ -60,12 +62,12 @@ export const createUsersFixture = (page: Page, workerInfo: WorkerInfo) => {
         headers: headers,
       });
     },
-    create: async () => {
+    create: async ({ testingEmail }: { testingEmail?: boolean }) => {
       const hashed = await hashPassword(PLAYWRIGHT_PW, 5);
       const testUser = await insertNewUser({
         name: PLAYWRIGHT_NAME,
         username: PLAYWRIGHT_USER,
-        email: PLAYWRIGHT_EMAIL,
+        email: testingEmail ? `${TESTMAIL_NAMESPACE}.${PLAYWRIGHT_USER}@inbox.testmail.app` : PLAYWRIGHT_EMAIL,
         hashedPassword: hashed,
       });
 
@@ -75,14 +77,14 @@ export const createUsersFixture = (page: Page, workerInfo: WorkerInfo) => {
 
       return { ...testUser, password: PLAYWRIGHT_PW };
     },
-    createForSignUp: () => {
+    createForSignUp: ({ testingEmail }: { testingEmail?: boolean }) => {
       users.push({
         username: PLAYWRIGHT_USER,
       });
       return {
         name: PLAYWRIGHT_NAME,
         username: PLAYWRIGHT_USER,
-        email: PLAYWRIGHT_EMAIL,
+        email: testingEmail ? `${TESTMAIL_NAMESPACE}.${PLAYWRIGHT_USER}@inbox.testmail.app` : PLAYWRIGHT_EMAIL,
         password: PLAYWRIGHT_PW,
       };
     },
@@ -123,6 +125,12 @@ export const createUsersFixture = (page: Page, workerInfo: WorkerInfo) => {
         });
       }
       return await limiterConsecutiveFailsByEmail.delete(email);
+    },
+
+    getTempRequestToken: async (email: string) => {
+      const tempRequest = await getTempRequest(email);
+
+      return tempRequest?.id;
     },
   };
 };

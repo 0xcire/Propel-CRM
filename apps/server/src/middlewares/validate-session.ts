@@ -123,7 +123,6 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
 
 export const validatePreAuthSession = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log("VALIDATING PRE AUTH SESSION");
     const preAuthSession = req.signedCookies[PRE_AUTH_SESSION_COOKIE];
 
     if (!preAuthSession) {
