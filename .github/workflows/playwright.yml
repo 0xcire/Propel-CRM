@@ -34,7 +34,7 @@ jobs:
           PRE_AUTH_CSRF_SECRET: ${{ secrets.PRE_AUTH_CSRF_SECRET }}
           COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
           SALT_ROUNDS: ${{ secrets.SALT_ROUNDS }}
-          RESEND_KEY: ${{ RESEND_KEY }}
+          RESEND_KEY: ${{ secrets.RESEND_KEY }}
           RECOVERY_EMAIL: ${{ secrets.RECOVERY_EMAIL }}
           VERIFY_EMAIL: ${{ secrets.VERIFY_EMAIL }}
           TESTMAIL_KEY: ${{ secrets.TESTMAIL_KEY }}
