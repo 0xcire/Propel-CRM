@@ -8,12 +8,13 @@ import { Typography } from '@/components/ui/typography';
 
 import { Layout } from '../components/Layout';
 import { LinkButton } from '@/components/LinkButton';
+import { Spinner } from '@/components/Spinner';
 
 export function VerifyEmail(): JSX.Element {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
 
-  const { mutate } = useVerifyEmail();
+  const { mutate, isLoading } = useVerifyEmail();
 
   // StrictMode actually introduces unexpected behavior
   // 1st run, token is invalidated and returns 200 / success msg
@@ -32,14 +33,18 @@ export function VerifyEmail(): JSX.Element {
   return (
     <Layout title='Verify Email | Propel CRM'>
       <div>
-        <>
-          <Typography variant='h3'>Request Expired</Typography>
-          <p className='text-sm'>
-            Check your email for the full link or sign in and make a new
-            request.
-          </p>
-          <ReturnToSession />
-        </>
+        {isLoading && !isApiCalled.current ? (
+          <Spinner variant='md' />
+        ) : (
+          <>
+            <Typography variant='h3'>Request Expired</Typography>
+            <p className='text-sm'>
+              Check your email for the full link or sign in and make a new
+              request.
+            </p>
+            <ReturnToSession />
+          </>
+        )}
       </div>
     </Layout>
   );
