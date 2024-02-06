@@ -32,6 +32,7 @@ export const validateCSRF = (req: Request, res: Response, next: NextFunction) =>
     let receivedCSRFTokenBuffer;
     let csrfTokenExpectedBuffer;
 
+    // [ ]: research necessity to differentiate secrets here
     if (preAuthSession) {
       receivedCSRFTokenBuffer = Buffer.from(receivedCSRFToken);
       csrfTokenExpectedBuffer = Buffer.from(deriveSessionCSRFToken(PRE_AUTH_CSRF_SECRET, sessionID));

@@ -9,7 +9,7 @@ test.describe("user login flow", () => {
   let currentUser: User;
 
   test.beforeEach(async ({ page, users }) => {
-    currentUser = (await users.create()) as User;
+    currentUser = (await users.create({})) as User;
     await page.goto("/");
 
     const initialUserResponse = await users.getMe();
@@ -48,7 +48,7 @@ test.describe("ambiguous error messages", () => {
   const WRONG_EMAIL = "wowthisisfake@gmail.com";
 
   test.beforeEach(async ({ users }) => {
-    currentUser = (await users.create()) as User;
+    currentUser = (await users.create({})) as User;
   });
 
   test.afterEach(async ({ users }) => {

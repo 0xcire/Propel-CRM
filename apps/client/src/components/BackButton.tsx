@@ -12,7 +12,10 @@ export function BackButton({ className }: { className?: string }): JSX.Element {
       variant='secondary'
       size='icon'
       className={twMerge('h-9 w-16', className)}
-      onClick={(): void => navigate(-1)}
+      onClick={(e): void => {
+        e.preventDefault();
+        navigate(-1);
+      }}
     >
       <LucideChevronLeft
         size={20}

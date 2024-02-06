@@ -15,19 +15,29 @@ type FindUsersByIDParams = {
   id: number;
   requestingInfo?: boolean;
   updating?: boolean;
+  verification?: boolean;
 };
 
 type updateUsersByIDParams = {
   id: number;
-  newUsername: string | undefined;
-  newEmail: string | undefined;
-  newPassword: string | undefined;
+  newUsername?: string | undefined;
+  newEmail?: string | undefined;
+  newPassword?: string | undefined;
+  verified?: boolean;
 };
 
 export const findUsersByEmail = async ({
   email,
   signingIn,
-}: FindUsersByEmailParams): Promise<UserResponse | undefined> => {
+}: FindUsersByEmailParams): Promise<
+  | {
+      username?: string | undefined;
+      hashedPassword?: string | undefined;
+      id: number;
+      email: string;
+    }
+  | undefined
+> => {
   const user = await db
     .select({
       id: users.id,
@@ -65,28 +75,38 @@ export const findUsersByUsername = async (username: string): Promise<UserRespons
 };
 
 export const insertNewUser = async (user: NewUser) => {
-  const insertedUser = await db.insert(users).values(user).returning({
-    id: users.id,
-    name: users.name,
-    username: users.username,
-    email: users.email,
-  });
+  const insertedUser = await db
+    .insert(users)
+    .values(user)
+    .returning({
+      id: users.id,
+      name: users.name,
+      username: users.username,
+      email: users.email,
+    })
+    .onConflictDoNothing();
 
   return insertedUser[0];
 };
 
-export const findUsersByID = async ({ id, requestingInfo, updating }: FindUsersByIDParams) => {
+export const findUsersByID = async ({ id, requestingInfo, updating, verification }: FindUsersByIDParams) => {
   const user = await db
     .select({
       id: users.id,
       username: users.username,
       email: users.email,
+      ...(verification
+        ? {
+            isVerified: users.isVerified,
+          }
+        : {}),
       ...(requestingInfo
         ? {
             name: users.name,
             lastLogin: users.lastLogin,
             createdAt: users.createdAt,
             isAdmin: users.isAdmin,
+            isVerified: users.isVerified,
           }
         : {}),
       ...(updating
@@ -105,7 +125,7 @@ export const findUsersByID = async ({ id, requestingInfo, updating }: FindUsersB
   return user[0];
 };
 
-export const updateUserByID = async ({ id, newUsername, newEmail, newPassword }: updateUsersByIDParams) => {
+export const updateUserByID = async ({ id, newUsername, newEmail, newPassword, verified }: updateUsersByIDParams) => {
   const updatedUser = await db
     .update(users)
     .set({
@@ -122,6 +142,11 @@ export const updateUserByID = async ({ id, newUsername, newEmail, newPassword }:
       ...(newPassword
         ? {
             hashedPassword: newPassword,
+          }
+        : {}),
+      ...(verified !== undefined
+        ? {
+            isVerified: verified,
           }
         : {}),
     })

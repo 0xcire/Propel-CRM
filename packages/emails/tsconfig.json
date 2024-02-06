@@ -1,0 +1,9 @@
+{
+  "extends": "@propel/tsconfig/tsconfig-base.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./dist"
+  },
+  "include": ["."],
+  "exclude": ["node_modules"]
+}

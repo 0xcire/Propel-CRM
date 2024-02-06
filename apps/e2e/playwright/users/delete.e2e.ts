@@ -3,7 +3,7 @@ import { test } from "../lib/fixtures";
 
 test.describe("user can delete account", () => {
   test.beforeEach(async ({ page, users }) => {
-    const currentUser = await users.create();
+    const currentUser = await users.create({});
 
     await page.goto("/auth/signin");
 

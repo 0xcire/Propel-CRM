@@ -12,3 +12,13 @@ export const signInSchema = z.object({
   email: z.string().email(),
   password: verifyPassword,
 });
+
+export const recoverySchema = z.object({
+  email: z.string().email(),
+});
+
+export const passwordSchema = z.object({
+  verifyPassword: verifyPassword,
+  password: signUpPassword,
+  confirmPassword: signUpPassword,
+});

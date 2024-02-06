@@ -14,12 +14,14 @@ import { DashboardTasksView } from '@/features/tasks/components/dashboard/Dashbo
 import { DashboardAnalyticsView } from '@/features/analytics/components/dashboard/DashboardAnalyticsView';
 
 import { dateIntl } from '@/utils/intl';
+import { useVerifyAccountReminder } from '@/hooks/useVerifyAccountReminder';
 
 export const Dashboard = (): JSX.Element => {
   const user = useUser();
   const isDesktop = useIsDesktop();
 
   useDocumentTitle('Dashboard | Propel CRM');
+  useVerifyAccountReminder();
   useIdleTimeout();
 
   const date = new Date();

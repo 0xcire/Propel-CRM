@@ -6,6 +6,10 @@ import { useUser } from '@/lib/react-query-auth';
 import { publicRoutes } from './public';
 import { privateRoutes } from './private';
 
+const { VerifyEmail } = lazyImport(
+  () => import('../features/auth/routes/VerifyEmail'),
+  'VerifyEmail'
+);
 import { Welcome } from '@/features/misc/routes/Welcome';
 const { NotFound } = lazyImport(
   () => import('@/features/misc/routes/NotFound'),
@@ -24,6 +28,7 @@ export const Routes = (): JSX.Element => {
   const welcome: Array<RouteObject> = [
     { path: '/', element: <Welcome /> },
     { path: '*', element: <NotFound /> },
+    { path: '/auth/verify-email', element: <VerifyEmail /> },
   ];
 
   const loggedIn = isLoggedIn(user);

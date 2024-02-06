@@ -81,7 +81,7 @@ export function ListingForm({
               label='Property Type'
               control={form.control}
             />
-            {/* <div className='flex items-center gap-2'> */}
+
             <SelectInput
               name='bedrooms'
               options={roomsSelectOptions}
@@ -96,7 +96,6 @@ export function ListingForm({
               placeholder='Baths'
               control={form.control}
             />
-            {/* </div> */}
           </div>
         </form>
       </Form>

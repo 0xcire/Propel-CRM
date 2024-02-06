@@ -1,5 +1,5 @@
-import { deleteRedisSession, getUserFromSession } from "@propel/redis";
-import { createAnonymousToken, createSecureCookie, deriveSessionCSRFToken, isDeployed } from "../utils";
+import { deleteRedisKV, getValueFromRedisKey } from "@propel/redis";
+import { createToken, createSecureCookie, deriveSessionCSRFToken, isDeployed } from "../utils";
 
 import {
   ABSOLUTE_SESSION_COOKIE,
@@ -38,7 +38,7 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
           sameSite: "lax",
         });
 
-        await deleteRedisSession(idleSession);
+        await deleteRedisKV(idleSession);
       }
 
       req.session = {
@@ -54,7 +54,7 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
 
     if (!idleSession) {
       if (absoluteSession) {
-        await deleteRedisSession(absoluteSession);
+        await deleteRedisKV(absoluteSession);
         res.clearCookie(ABSOLUTE_SESSION_COOKIE, {
           path: "/",
           domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
@@ -79,7 +79,7 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
       });
     }
 
-    const userIDByToken = await getUserFromSession(absoluteSession);
+    const userIDByToken = await getValueFromRedisKey(absoluteSession);
 
     if (!userIDByToken) {
       return res.status(403).json({
@@ -96,6 +96,7 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
         id: absoluteSession,
       };
 
+      // setIdleTimeout()
       // reset idle timeout
       createSecureCookie(req, {
         res: res,
@@ -147,7 +148,7 @@ async function initializePreAuthSession(req: Request, res: Response) {
   let anonymousSessionTokenID;
 
   if (!preAuthSession) {
-    anonymousSessionTokenID = createAnonymousToken();
+    anonymousSessionTokenID = createToken(32);
     createSecureCookie(req, {
       res: res,
       name: PRE_AUTH_SESSION_COOKIE,

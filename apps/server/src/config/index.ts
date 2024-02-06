@@ -5,6 +5,10 @@ dotenv.config();
 
 export const ENV = process.env.NODE_ENV;
 
+export const RESEND_KEY = process.env.RESEND_KEY;
+export const RECOVERY_EMAIL = process.env.RECOVERY_EMAIL;
+export const VERIFY_EMAIL = process.env.VERIFY_EMAIL;
+
 export const IDLE_SESSION_COOKIE = "idle-propel-session";
 export const IDLE_SESSION_LENGTH = process.env.IDLE_SESSION_LENGTH;
 
@@ -28,7 +32,9 @@ export const COOKIE_SECRET = process.env.COOKIE_SECRET;
 
 export const SALT_ROUNDS = process.env.SALT_ROUNDS;
 
-export const sessionRelatedCookies = [ABSOLUTE_SESSION_COOKIE, IDLE_SESSION_COOKIE, CSRF_COOKIE];
+export const ONE_HOUR = 3600000;
+
+export const sessionRelatedCookies = [ABSOLUTE_SESSION_COOKIE, IDLE_SESSION_COOKIE, CSRF_COOKIE, "idle"];
 
 export const getRequestBodies = (req: Request) => {
   return [

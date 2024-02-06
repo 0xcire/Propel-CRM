@@ -9,6 +9,7 @@ import {
   serial,
   text,
   timestamp,
+  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -19,6 +20,7 @@ export const users = pgTable("users", {
   email: varchar("email", { length: 256 }).notNull(),
   hashedPassword: varchar("hashed_password", { length: 256 }).notNull(),
   isAdmin: boolean("is_admin").default(false),
+  isVerified: boolean("is_verified").default(false),
   lastLogin: timestamp("last_login", { withTimezone: true }).defaultNow(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
@@ -166,11 +168,6 @@ export const listingsToContactsRelations = relations(listingsToContacts, ({ one 
   }),
 }));
 
-// pgTable: leadsOnListing??
-// for interested contacts on listing
-
-// sold_to
-// sale_price
 export const soldListings = pgTable("sold_listings", {
   id: serial("id").primaryKey(),
   userID: integer("user_id").references(() => users.id, { onDelete: "cascade" }),
@@ -186,3 +183,13 @@ export const soldListingsRelations = relations(soldListings, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+// for pw recovery & verify email
+// [ ]: to me, makes sense to continue using redis: 'free' ttl, already using for auth
+// ^ however, issue when trying to e2e test above features, would need to SCAN redis instance, OR parse email body text for id/token? couldn't think of better pattern for this
+export const tempRequests = pgTable("temp_requests", {
+  id: uuid("id").primaryKey(),
+  userID: integer("user_id"),
+  userEmail: varchar("user_email", { length: 256 }),
+  expiry: timestamp("expiry", { precision: 6, mode: "date" }),
+});

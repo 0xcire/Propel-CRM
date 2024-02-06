@@ -2,6 +2,7 @@
 
 - [Full Stack Open Sec. 12](https://fullstackopen.com/en/part12)
 - [best pracs](https://snyk.io/blog/10-best-practices-to-containerize-nodejs-web-applications-with-docker/)
+- sudo chown -R $USER <dir>
 
 ## React (Architecture)
 
@@ -35,6 +36,9 @@
 - [sessions](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
 - [authentication](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
 - [xss](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
+- [url tokens](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html#url-tokens)
+- [secure password recovery](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#implement-secure-password-recovery-mechanism)
+- [forgot password cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html)
 
 ## Testing
 

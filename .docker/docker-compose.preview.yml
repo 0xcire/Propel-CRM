@@ -34,7 +34,7 @@ services:
       db:
         condition: "service_healthy"
     env_file:
-      - ../apps/server/.env
+      - ../apps/server/.env.development
   nginx:
     extends:
       file: docker-compose.common.yml

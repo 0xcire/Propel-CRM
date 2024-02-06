@@ -10,12 +10,12 @@
     "drop": "npx drizzle-kit drop",
     "generate": "npx drizzle-kit generate:pg",
     "migrate:test": "dotenv -e ../../apps/server/.env.test npx tsx ./db/migrate.ts",
-    "migrate:local": "dotenv -e ../../apps/server/.env.development npx tsx ./db/migrate.ts",
+    "migrate:local": "dotenv -e ../../apps/server/.env.local npx tsx ./db/migrate.ts",
     "migrate:prod": "dotenv -e ../../apps/server/.env.production npx tsx ./db/migrate.ts",
-    "seed:local": "dotenv -e ../../apps/server/.env.development npx tsx seed.ts",
+    "seed:local": "dotenv -e ../../apps/server/.env.local npx tsx seed.ts",
     "seed:prod": "dotenv -e ../../apps/server/.env.production npx tsx seed.ts",
     "studio:test": "dotenv -e ../../apps/server/.env.test npx drizzle-kit studio",
-    "studio:local": "dotenv -e ../../apps/server/.env.development npx drizzle-kit studio",
+    "studio:local": "dotenv -e ../../apps/server/.env.local npx drizzle-kit studio",
     "studio:prod": "dotenv -e ../../apps/server/.env.production npx drizzle-kit studio"
   },
   "dependencies": {

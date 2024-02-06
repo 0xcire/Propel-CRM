@@ -16,7 +16,7 @@ export const validateRequest = (schema: SchemaParams) => {
     try {
       const requestBodies = getRequestBodies(req);
 
-      for (let body of requestBodies) {
+      for (const body of requestBodies) {
         const context = body.context as keyof SchemaParams;
         if (schema[context] && objectNotEmpty(body.data)) {
           const validatedData = await schema[context]?.parseAsync(body.data);

@@ -34,10 +34,6 @@
 
   - [ ] Account recovery, email verification, sending pdf reports, etc
 
-- MapBox
-
-  - [ ] address autocomplete
-
 - Amazon S3
 
   - [ ] Avatar image upload

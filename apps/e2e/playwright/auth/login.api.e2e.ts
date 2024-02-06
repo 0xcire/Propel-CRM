@@ -29,7 +29,7 @@ test.describe("cookies are properly set", () => {
   });
 
   test("auth cookies are handled properly", async ({ page, users }) => {
-    const currentUser = await users.create();
+    const currentUser = await users.create({});
     await page.goto("/auth/signin");
 
     await users.login({

@@ -1,5 +1,14 @@
 import type { InferSelectModel, InferInsertModel } from "drizzle-orm";
-import { users, contacts, usersToContacts, tasks, listings, listingsToContacts, soldListings } from "../schema";
+import {
+  users,
+  contacts,
+  usersToContacts,
+  tasks,
+  listings,
+  listingsToContacts,
+  soldListings,
+  tempRequests,
+} from "../schema";
 
 export type User = InferSelectModel<typeof users>;
 export type NewUser = InferInsertModel<typeof users>;
@@ -21,3 +30,6 @@ export type NewListingContactRelation = InferInsertModel<typeof listingsToContac
 
 export type SoldListings = InferSelectModel<typeof soldListings>;
 export type NewSoldListing = InferInsertModel<typeof soldListings>;
+
+export type TempRequest = InferSelectModel<typeof tempRequests>;
+export type NewTempRequest = InferInsertModel<typeof tempRequests>;

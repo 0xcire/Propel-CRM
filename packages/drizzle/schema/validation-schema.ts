@@ -63,6 +63,22 @@ export const listingAndContactIDValidator = listingIDSchema.merge(contactIDSchem
   contactID: schema.contactID.trim(),
 }));
 
+export const accountRecoveryValidator = z
+  .object({
+    email: z.string().email(),
+  })
+  .transform((schema) => ({
+    email: schema.email.trim(),
+  }));
+
+export const verifyEmailQueryValidator = z
+  .object({
+    token: z.string(),
+  })
+  .transform((schema) => ({
+    token: schema.token.trim(),
+  }));
+
 export const signupValidator = createInsertSchema(users)
   .pick({
     name: true,
@@ -77,6 +93,10 @@ export const signupValidator = createInsertSchema(users)
     email: user.email.trim(),
     passwrd: user.password.trim(),
   }));
+
+export const updateUserFromRecoveryValidator = password.transform((schema) => ({
+  password: schema.password.trim(),
+}));
 
 export const updateUserValidator = createInsertSchema(users)
   .pick({

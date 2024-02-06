@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-import { signUpPassword, verifyPassword } from '@/lib/validations/schema';
 
 import { useUser } from '@/lib/react-query-auth';
 import { useUpdateAccount } from '../hooks/useUpdateAccount';
+
+import { passwordSchema } from '@/lib/validations/auth';
 
 import {
   Dialog,
@@ -24,15 +23,13 @@ import { useToast } from '@/components/ui/use-toast';
 
 import { TextInput } from '@/components/form/TextInput';
 import { SubmitButton } from '@/components/SubmitButton';
+
+import { RequestEmailButton } from '@/features/common/user/RequestEmailButton';
+
+import { fieldsAreEqual } from '@/utils/form-data';
+
 import type { Toast } from '@/types';
-
-const PasswordSchema = z.object({
-  verifyPassword: verifyPassword,
-  password: signUpPassword,
-  confirmPassword: signUpPassword,
-});
-
-type PasswordFields = z.infer<typeof PasswordSchema>;
+import type { PasswordFields } from '@/lib/validations/types';
 
 export function Authentication(): JSX.Element {
   const [open, setOpen] = useState(false);
@@ -42,7 +39,7 @@ export function Authentication(): JSX.Element {
   const { mutate, isLoading } = useUpdateAccount();
 
   const form = useForm<PasswordFields>({
-    resolver: zodResolver(PasswordSchema),
+    resolver: zodResolver(passwordSchema),
     defaultValues: {
       verifyPassword: '',
       password: '',
@@ -50,12 +47,13 @@ export function Authentication(): JSX.Element {
     },
   });
 
-  const passwordIsConfirmed = (): boolean => {
-    return form.getValues().password === form.getValues().confirmPassword;
-  };
-
   function onSubmit(values: PasswordFields): Toast | void {
-    if (!passwordIsConfirmed()) {
+    if (
+      !fieldsAreEqual(
+        form.getValues().password,
+        form.getValues().confirmPassword
+      )
+    ) {
       return toast({
         description: 'Please confirm your new password correctly.',
       });
@@ -77,63 +75,61 @@ export function Authentication(): JSX.Element {
   return (
     <>
       <Typography variant='h3'>Password and Authentication</Typography>
+      <div className='mt-4 flex items-center gap-2'>
+        {!user.data?.isVerified && <RequestEmailButton />}
 
-      <Dialog
-        open={open}
-        onOpenChange={setOpen}
-      >
-        <DialogTrigger asChild>
-          <Button
-            className='mt-4'
-            variant='outline'
-          >
-            Change Password
-          </Button>
-        </DialogTrigger>
-        <DialogContent className='sm:max-w-[425px]'>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <DialogHeader>
-                <DialogTitle>Change Password</DialogTitle>
-                <DialogDescription>
-                  Enter your current password and your new password.
-                </DialogDescription>
-              </DialogHeader>
-              <div className='grid gap-4 py-4'>
-                <TextInput
-                  name='verifyPassword'
-                  type='password'
-                  label='Old Password'
-                  placeholder='oldpassword123'
-                  control={form.control}
-                />
-                <TextInput
-                  name='password'
-                  type='password'
-                  label='New Password'
-                  placeholder='password123'
-                  control={form.control}
-                />
-                <TextInput
-                  name='confirmPassword'
-                  type='password'
-                  label='Confirm Password'
-                  placeholder='password123'
-                  control={form.control}
-                />
-              </div>
-              <DialogFooter>
-                <SubmitButton
-                  isLoading={isLoading}
-                  disabled={false}
-                >
-                  Save Changes
-                </SubmitButton>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
+        <Dialog
+          open={open}
+          onOpenChange={setOpen}
+        >
+          <DialogTrigger asChild>
+            <Button variant='outline'>Change Password</Button>
+          </DialogTrigger>
+          <DialogContent className='sm:max-w-[425px]'>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <DialogHeader>
+                  <DialogTitle>Change Password</DialogTitle>
+                  <DialogDescription>
+                    Enter your current password and your new password.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className='grid gap-4 py-4'>
+                  <TextInput
+                    name='verifyPassword'
+                    type='password'
+                    label='Old Password'
+                    placeholder='oldpassword123'
+                    control={form.control}
+                  />
+                  <TextInput
+                    name='password'
+                    type='password'
+                    label='New Password'
+                    placeholder='password123'
+                    control={form.control}
+                  />
+                  <TextInput
+                    name='confirmPassword'
+                    type='password'
+                    label='Confirm Password'
+                    placeholder='password123'
+                    control={form.control}
+                  />
+                </div>
+                <DialogFooter>
+                  <SubmitButton
+                    isLoading={isLoading}
+                    disabled={false}
+                  >
+                    Save Changes
+                  </SubmitButton>
+                </DialogFooter>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+      </div>
     </>
   );
 }

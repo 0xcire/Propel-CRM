@@ -1,8 +1,9 @@
 name: "Propel Deployment"
 
 on:
-  push:
-    branches: [main, master]
+  # push:
+  #   branches: [main, master]
+  # if this is the case, manually trigger via workflow_dispatch ?
   pull_request:
     branches: [main, master]
 

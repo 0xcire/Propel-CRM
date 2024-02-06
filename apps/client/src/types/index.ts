@@ -14,6 +14,8 @@ export type User = {
   username: string;
   email: string;
   lastLogin?: Date | null;
+  isAdmin?: boolean;
+  isVerified?: boolean;
 };
 
 export interface BaseResponse {
