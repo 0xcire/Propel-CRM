@@ -40,6 +40,7 @@ export default (router: Router) => {
     validateRequest({ body: signinValidator }),
     validatePreAuthSession,
     validateCSRF, //
+    // rateLimitRequestByUserEmail, -> [ ]: not sure why this didn't come to mind. refactor rate limit code into middleware
     signin
   );
 
@@ -65,6 +66,7 @@ export default (router: Router) => {
     }),
     validatePreAuthSession,
     validateCSRF,
+    // rateLimitRequestByUserEmail,
     requestPasswordRecovery
   );
 
@@ -103,6 +105,7 @@ export default (router: Router) => {
     validateSession,
     isOwner,
     validateCSRF,
+    // rateLimitRequestByUserID,
     requestNewEmailVerification
   );
 };
