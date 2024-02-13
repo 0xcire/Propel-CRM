@@ -85,8 +85,8 @@ export const tasks = pgTable("tasks", {
   userID: integer("user_id")
     .references(() => users.id, { onDelete: "cascade" })
     .notNull(),
-  listingID: integer("listing_id").references(() => listings.id),
-  contactID: integer("contact_id").references(() => contacts.id),
+  listingID: integer("listing_id").references(() => listings.id, { onDelete: "cascade" }),
+  contactID: integer("contact_id").references(() => contacts.id, { onDelete: "cascade" }),
   title: varchar("title", { length: 255 }).notNull(),
   description: varchar("description", { length: 255 }),
   notes: varchar("notes", { length: 255 }),
