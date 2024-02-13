@@ -75,7 +75,10 @@ export function UpdateTask({ task, text, userID }: TaskProps): JSX.Element {
             {text}
           </p>
         ) : (
-          <InfoIcon size={16} />
+          <InfoIcon
+            data-testid='task-update-svg'
+            size={16}
+          />
         )}
       </DialogTrigger>
       <DialogContent

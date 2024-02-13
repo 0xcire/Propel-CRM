@@ -1,7 +1,5 @@
 import { useMemo, useState } from 'react';
 
-import { useUser } from '@/lib/react-query-auth';
-
 import { useUpdateListing } from '../../hooks/useUpdateListing';
 
 import { PencilIcon } from 'lucide-react';
@@ -22,9 +20,14 @@ import { transformData } from '../../utils';
 
 import type { Listing, NewListing, ListingFields } from '../../types';
 
-export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
+// [ ]: currently redundant w/ <ListingRoute /> can refactor when adding img upload
+
+type UpdateListingProps = {
+  listing: Listing;
+};
+
+export function UpdateListing({ listing }: UpdateListingProps): JSX.Element {
   const [open, setOpen] = useState(false);
-  const user = useUser();
   const updateListing = useUpdateListing();
 
   const defaultValues = useMemo(
@@ -33,7 +36,7 @@ export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
   );
 
   function onSubmit(values: ListingFields): void {
-    const transformedData = transformData(user.data?.id as number, values);
+    const transformedData = transformData(values);
 
     const data: Partial<NewListing> = filterEqualFields({
       newData: transformedData,
@@ -55,15 +58,17 @@ export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
       open={open}
       onOpenChange={setOpen}
     >
-      <Tooltip content='edit'>
-        <DialogTrigger asChild>
+      <DialogTrigger asChild>
+        <Tooltip content='edit'>
           <PencilIcon
+            data-testid='update-listing-svg'
             className='ml-auto cursor-pointer'
             size={18}
             tabIndex={0}
           />
-        </DialogTrigger>
-      </Tooltip>
+        </Tooltip>
+      </DialogTrigger>
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Update Listing</DialogTitle>

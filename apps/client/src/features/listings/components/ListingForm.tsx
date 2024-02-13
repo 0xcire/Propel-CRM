@@ -75,6 +75,7 @@ export function ListingForm({
 
           <div className='flex items-center justify-between gap-2 pt-2'>
             <SelectInput
+              testId='property-type'
               name='propertyType'
               options={propertyTypeSelectOptions}
               placeholder='Property Type'
@@ -83,6 +84,7 @@ export function ListingForm({
             />
 
             <SelectInput
+              testId='bedrooms'
               name='bedrooms'
               options={roomsSelectOptions}
               label='Bedrooms'
@@ -90,6 +92,7 @@ export function ListingForm({
               control={form.control}
             />
             <SelectInput
+              testId='baths'
               name='baths'
               options={roomsSelectOptions}
               label='Baths'

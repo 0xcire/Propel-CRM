@@ -1,11 +1,9 @@
 import type { NewListing, ListingFields, Listing } from '../types';
 
 export const transformData = (
-  userID: number,
   values: ListingFields
-): NewListing => {
+): Omit<NewListing, 'userID'> => {
   return {
-    userID: userID,
     address: values.address,
     description: values.description,
     propertyType: values.propertyType,

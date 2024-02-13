@@ -58,6 +58,7 @@ export function AddContact({ text }: { text?: string }): JSX.Element {
         <Tooltip content='Add new contact'>
           <DialogTrigger asChild>
             <UserPlus
+              data-testid='add-contact-svg'
               className='cursor-pointer'
               size={20}
               tabIndex={0}

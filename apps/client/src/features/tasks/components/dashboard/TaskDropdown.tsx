@@ -10,12 +10,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { AddTask } from '@/features/common/tasks/components/AddTask';
+import { handleOnOpenChange } from '@/utils';
 
 export function TaskDropdown(): JSX.Element {
   const [showCompleted, setShowCompleted] = useTaskContext()['completed'];
+  const [open, setOpen] = useTaskContext()['dropdownState'];
 
   return (
-    <DropdownMenu>
+    <DropdownMenu
+      open={open}
+      onOpenChange={(open): void => handleOnOpenChange(open, setOpen)}
+    >
       <DropdownMenuTrigger asChild>
         <MoreVerticalIcon
           tabIndex={0}
@@ -26,7 +31,10 @@ export function TaskDropdown(): JSX.Element {
         align='end'
         data-align='start'
       >
-        <AddTask asDropdownMenuItem />
+        <AddTask
+          setDropDownOpen={setOpen}
+          asDropdownMenuItem
+        />
 
         <DropdownMenuItem
           onClick={(): void => setShowCompleted(!showCompleted)}

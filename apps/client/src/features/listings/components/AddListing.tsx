@@ -60,6 +60,7 @@ export function AddListing({ text }: AddListingProps): JSX.Element {
         <Tooltip content='Add Listing'>
           <DialogTrigger asChild>
             <PlusIcon
+              data-testid='add-listing-svg'
               className='cursor-pointer'
               size={18}
             />

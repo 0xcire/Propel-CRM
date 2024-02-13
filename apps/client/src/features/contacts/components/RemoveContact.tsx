@@ -50,6 +50,7 @@ export function RemoveContact({
           </DropdownMenuItem>
         ) : (
           <Trash2Icon
+            data-testid='remove-contact-svg'
             className='cursor-pointer'
             size={18}
             tabIndex={0}

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:ui": "dotenv -e ../server/.env.test npx playwright test --ui",
+    "test:ui": "npx playwright test --ui",
     "test:local": "dotenv -e ../server/.env.test npx playwright test",
     "test": "npx playwright test",
     "e2etest:ci": "CI=true npm run test",

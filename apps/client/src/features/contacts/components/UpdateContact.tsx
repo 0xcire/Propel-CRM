@@ -76,6 +76,7 @@ export function UpdateContact({
         <Tooltip content='edit'>
           <DialogTrigger asChild>
             <PencilIcon
+              data-testid='update-contact-svg'
               className='cursor-pointer'
               size={18}
               tabIndex={0}

@@ -12,6 +12,7 @@ A CRM for real estate agents.
 - Session based cookie authentication
   - password salt & hashing w/ bcrypt
   - Login in rate limiting via email
+  - Client side idle timeout reset notifications
 - Dashboard overview of recent listings, contacts, tasks, and analytics
 
 - Protected routes on client only shown when valid user data is returned from server
@@ -35,7 +36,11 @@ A CRM for real estate agents.
   - average days on market
   - sale to list ratio
 
-- Debouncing on all table search queries to minimize amount of requests made
+- Debouncing on search queries to minimize amount of requests made
+
+- Playwright e2e tests
+
+- Email service to verify account email, recover account password and create / send analytics reports ( WIP )
 
 - Authentication & Security (following OWASP standards)
 

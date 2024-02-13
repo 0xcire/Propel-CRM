@@ -1,8 +1,15 @@
-import { Page, WorkerInfo } from "@playwright/test";
 import { TESTMAIL_ENDPOINT, TESTMAIL_KEY, TESTMAIL_NAMESPACE } from "../config";
 
-export const createEmailsFixture = (page: Page, workerInfo: WorkerInfo) => {
-  console.log(page, workerInfo);
+type TestMailResponse = {
+  result: "success" | "fail";
+  message: string | null;
+  count: number;
+  limit: number;
+  offset: number;
+  emails: Array<unknown>;
+};
+
+export const createEmailsFixture = () => {
   return {
     getByTag: async (tag: string) => {
       const res = await fetch(
@@ -13,7 +20,7 @@ export const createEmailsFixture = (page: Page, workerInfo: WorkerInfo) => {
         throw new Error(`${res.status}: ${res.statusText}`);
       }
 
-      const data = await res.json();
+      const data: TestMailResponse = await res.json();
 
       return data;
     },
