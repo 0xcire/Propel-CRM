@@ -1,5 +1,13 @@
 import { expect } from "@playwright/test";
 import { test } from "./lib/fixtures";
+import {
+  getAlertDialogConfirmButton,
+  getDashboardDefaultByText,
+  getDeleteTableRowActionButton,
+  getNoResultsTableDefault,
+  getTableRowActionButton,
+  getUpdateTableRowActionButton,
+} from "./utils";
 
 test.describe("tasks default values and actions", () => {
   test.beforeEach(async ({ page, users }) => {
@@ -18,7 +26,7 @@ test.describe("tasks default values and actions", () => {
 
   test("UI defaults on dashboard & route", async ({ page }) => {
     await test.step("dashboard displays correct information for fresh account", async () => {
-      await expect(page.getByText("No tasks to display.", { exact: true })).toBeVisible();
+      await expect(getDashboardDefaultByText(page, "No tasks to display.")).toBeVisible();
     });
 
     await test.step("tasks page query params are set", async () => {
@@ -27,14 +35,17 @@ test.describe("tasks default values and actions", () => {
     });
 
     await test.step("tasks page displays correct information for fresh account", async () => {
-      await expect(page.getByText("No results.", { exact: true })).toBeVisible();
+      await expect(getNoResultsTableDefault(page)).toBeVisible();
     });
   });
 
   test("dashboard user actions", async ({ page, tasks }) => {
     await test.step("user can create task", async () => {
-      await page.locator('[aria-haspopup="menu"]').last().click();
-      await page.getByText(/Add Task/i).click();
+      const dashboardTaskMenuButton = page.locator('[aria-haspopup="menu"]').last();
+      await dashboardTaskMenuButton.click();
+
+      const taskMenuAddTaskButton = page.getByText(/Add Task/i);
+      await taskMenuAddTaskButton.click();
 
       await tasks.submitForm({
         title: "Finish playwright tests",
@@ -54,7 +65,8 @@ test.describe("tasks default values and actions", () => {
     });
 
     await test.step("user can mark task complete", async () => {
-      await page.locator('[role="checkbox"]').first().click();
+      const taskCheckbox = page.locator('[role="checkbox"]').first();
+      await taskCheckbox.click();
 
       await expect(page.getByText("I updated the title")).not.toBeVisible();
     });
@@ -63,7 +75,8 @@ test.describe("tasks default values and actions", () => {
   test("contacts route user actions", async ({ page, tasks }) => {
     await test.step("User can create task", async () => {
       // can't await page.goto('/tasks') ?
-      await page.locator("[href='/tasks?page=1&limit=10&completed=false']").click();
+      const taskPageNavLink = page.locator("[href='/tasks?page=1&limit=10&completed=false']");
+      await taskPageNavLink.click();
 
       await page.getByRole("button", { name: "Add Task", exact: false }).click();
 
@@ -75,9 +88,8 @@ test.describe("tasks default values and actions", () => {
     });
 
     await test.step("user can update task", async () => {
-      await page.locator("tr:first-child td:last-child button").click();
-
-      await page.getByText("Update").click();
+      await getTableRowActionButton(page).click();
+      await getUpdateTableRowActionButton(page).click();
 
       await tasks.submitForm({
         title: "Even more playwright testing",
@@ -87,9 +99,9 @@ test.describe("tasks default values and actions", () => {
     });
 
     await test.step("user can delete task", async () => {
-      await page.locator("tr:first-child td:last-child button").click();
-      await page.getByText("Delete").click();
-      await page.getByRole("button", { name: "Remove" }).click();
+      await getTableRowActionButton(page).click();
+      await getDeleteTableRowActionButton(page).click();
+      await getAlertDialogConfirmButton(page).click();
 
       await expect(page.locator("tr").nth(1)).not.toHaveText(/Even more playwright testing/i);
     });

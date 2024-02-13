@@ -1,5 +1,13 @@
 import { expect } from "@playwright/test";
 import { test } from "./lib/fixtures";
+import {
+  getAlertDialogConfirmButton,
+  getDashboardDefaultByText,
+  getDeleteTableRowActionButton,
+  getNoResultsTableDefault,
+  getTableRowActionButton,
+  getUpdateTableRowActionButton,
+} from "./utils";
 
 test.describe("listings default values and actions", () => {
   test.beforeEach(async ({ page, users }) => {
@@ -17,9 +25,8 @@ test.describe("listings default values and actions", () => {
   });
 
   test("UI defaults on dashboard & route", async ({ page }) => {
-    await page.waitForSelector('[data-testid="dashboard"]');
     await test.step("dashboard displays correct information for fresh account", async () => {
-      await expect(page.getByText("Add Listings")).toBeVisible();
+      await expect(getDashboardDefaultByText(page, "Add Listings")).toBeVisible();
     });
 
     await test.step("listings page query params are set", async () => {
@@ -28,7 +35,7 @@ test.describe("listings default values and actions", () => {
     });
 
     await test.step("listings page displays correct information for fresh account", async () => {
-      await expect(page.getByText("No results.", { exact: true })).toBeVisible();
+      await expect(getNoResultsTableDefault(page)).toBeVisible();
     });
   });
 
@@ -64,7 +71,8 @@ test.describe("listings default values and actions", () => {
   test("listings route user actions", async ({ page, listings }) => {
     await test.step("User can create listing", async () => {
       // can't await page.goto('/listings') ?
-      await page.locator("[href='/listings?page=1&limit=10&status=active']").click();
+      const listingPageNavLink = page.locator("[href='/listings?page=1&limit=10&status=active']");
+      await listingPageNavLink.click();
 
       await page.getByRole("button", { name: "Add Listing", exact: true }).click();
 
@@ -82,9 +90,8 @@ test.describe("listings default values and actions", () => {
     });
 
     await test.step("user can update listing", async () => {
-      await page.locator("tr:first-child td:last-child button").click();
-
-      await page.getByText("Update").click();
+      await getTableRowActionButton(page).click();
+      await getUpdateTableRowActionButton(page).click();
 
       await listings.submitForm({
         price: "350000",
@@ -95,9 +102,9 @@ test.describe("listings default values and actions", () => {
     });
 
     await test.step("user can delete listing", async () => {
-      await page.locator("tr:first-child td:last-child button").click();
-      await page.getByText("Delete").click();
-      await page.getByRole("button", { name: "Remove" }).click();
+      await getTableRowActionButton(page).click();
+      await getDeleteTableRowActionButton(page).click();
+      await getAlertDialogConfirmButton(page).click();
 
       await expect(page.locator("tr").nth(1)).not.toHaveText(/123 Fake St Los Angeles, CA 01234/i);
     });

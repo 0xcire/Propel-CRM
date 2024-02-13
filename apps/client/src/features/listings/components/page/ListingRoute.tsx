@@ -23,7 +23,7 @@ import { transformData } from '../../utils';
 
 import type { NewListing, ListingFields } from '../../types';
 
-// TODO: Currently just update form.
+// [ ]: currently redundant w/ <UpdateListing /> can refactor when adding img upload
 // when adding file uploads, can improve this
 // then add <UpdateListing listing={row.original} /> to ListingColumns
 
