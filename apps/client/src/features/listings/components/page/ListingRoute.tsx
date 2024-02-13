@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useUser } from '@/lib/react-query-auth';
-
 import { useListing } from '../../hooks/useListing';
 
 import { useUpdateListing } from '../../hooks/useUpdateListing';
@@ -32,7 +30,6 @@ import type { NewListing, ListingFields } from '../../types';
 export function ListingRoute(): JSX.Element {
   const [routeOpen, setRouteOpen] = useState(true);
 
-  const user = useUser();
   const updateListing = useUpdateListing();
 
   const { id } = useParams();
@@ -77,7 +74,7 @@ export function ListingRoute(): JSX.Element {
   const defaultValues = generateDefaultValues(listingData);
 
   function onSubmit(values: ListingFields): void {
-    const transformedData = transformData(user.data?.id as number, values);
+    const transformedData = transformData(values);
 
     const data: Partial<NewListing> = filterEqualFields({
       newData: transformedData,

@@ -1,7 +1,5 @@
 import { useMemo, useState } from 'react';
 
-import { useUser } from '@/lib/react-query-auth';
-
 import { useUpdateListing } from '../../hooks/useUpdateListing';
 
 import { PencilIcon } from 'lucide-react';
@@ -24,8 +22,8 @@ import type { Listing, NewListing, ListingFields } from '../../types';
 
 export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
   const [open, setOpen] = useState(false);
-  const user = useUser();
   const updateListing = useUpdateListing();
+  console.log('hey');
 
   const defaultValues = useMemo(
     () => generateDefaultValues(listing),
@@ -33,12 +31,14 @@ export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
   );
 
   function onSubmit(values: ListingFields): void {
-    const transformedData = transformData(user.data?.id as number, values);
+    const transformedData = transformData(values);
 
     const data: Partial<NewListing> = filterEqualFields({
       newData: transformedData,
       originalData: listing,
     });
+    console.log(transformData, listing);
+    console.log(data);
 
     updateListing.mutate(
       { id: listing.id, data: data },
@@ -58,6 +58,7 @@ export function UpdateListing({ listing }: { listing: Listing }): JSX.Element {
       <Tooltip content='edit'>
         <DialogTrigger asChild>
           <PencilIcon
+            data-testid='update-listing-svg'
             className='ml-auto cursor-pointer'
             size={18}
             tabIndex={0}

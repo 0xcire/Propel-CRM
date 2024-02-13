@@ -30,6 +30,7 @@ interface SelectInputProps<
   }>;
   label?: string;
   placeholder: string;
+  testId?: string;
 }
 
 export function SelectInput<
@@ -41,6 +42,7 @@ export function SelectInput<
   options,
   label,
   placeholder,
+  testId,
 }: SelectInputProps<TFieldValues, OptionType>): JSX.Element {
   return (
     <FormField
@@ -60,7 +62,7 @@ export function SelectInput<
             }
           >
             <FormControl>
-              <SelectTrigger>
+              <SelectTrigger data-testid={testId}>
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
             </FormControl>

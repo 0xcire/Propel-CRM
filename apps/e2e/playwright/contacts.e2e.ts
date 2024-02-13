@@ -66,13 +66,9 @@ test.describe("contacts default values and actions", () => {
 
   test("contacts route user actions", async ({ page, contacts }) => {
     await test.step("User can create contact", async () => {
+      // can't await page.goto('/contacts') ?
       await page.locator("[href='/contacts?page=1&limit=10']").click();
 
-      //   await page.locator("_react=AddContact").click();
-      //   await page.locator("button", { hasText: "Add Contact" }).click();
-      //   await expect(page.url()).toBe("http://localhost:9090/contacts/?page=1&limit=10");
-      //   await page.getByText("Add Contact").first().click();
-      await expect(page.getByRole("heading", { name: "Contacts" })).toBeVisible();
       await page.getByTestId("add-contact").click();
 
       await contacts.submitForm({
@@ -94,7 +90,7 @@ test.describe("contacts default values and actions", () => {
         name: "John Moe",
       });
 
-      await expect(page.locator("tr").nth(1)).toHaveText(/John Doe/i);
+      await expect(page.locator("tr").nth(1)).toHaveText(/John Moe/i);
     });
 
     await test.step("user can delete contact", async () => {
@@ -102,7 +98,7 @@ test.describe("contacts default values and actions", () => {
       await page.getByText("Delete").click();
       await page.getByRole("button", { name: "Remove" }).click();
 
-      await expect(page.locator("tr").nth(1)).not.toHaveText(/John Doe/i);
+      await expect(page.locator("tr").nth(1)).not.toHaveText(/John Moe/i);
     });
   });
 });

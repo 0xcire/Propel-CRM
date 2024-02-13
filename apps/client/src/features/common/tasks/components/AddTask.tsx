@@ -24,7 +24,7 @@ import { formatISO } from 'date-fns';
 import { filterUndefined } from '@/utils/form-data';
 import { handleOnOpenChange } from '@/utils';
 
-import type { PropsWithChildren } from 'react';
+import type { Dispatch, PropsWithChildren, SetStateAction } from 'react';
 import type { CreateTaskFields } from '@/features/tasks/components/TaskForm';
 import type { DeepPartial } from 'react-hook-form';
 
@@ -32,6 +32,7 @@ interface AddTaskProps extends PropsWithChildren {
   asDropdownMenuItem?: boolean;
   contactID?: number;
   listingID?: number;
+  setDropDownOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
 export function AddTask({
@@ -39,6 +40,7 @@ export function AddTask({
   asDropdownMenuItem,
   contactID,
   listingID,
+  setDropDownOpen,
 }: AddTaskProps): JSX.Element {
   const [open, setOpen] = useState(false);
 
@@ -77,6 +79,7 @@ export function AddTask({
     createTask.mutate(data, {
       onSuccess: () => {
         setOpen(false);
+        setDropDownOpen && setDropDownOpen(false);
       },
     });
   }
@@ -92,13 +95,24 @@ export function AddTask({
             onSelect={(e): void => e.preventDefault()}
             className='cursor-pointer'
           >
-            {listingID || contactID ? <></> : <PlusIcon size={18} />}
+            {listingID || contactID ? (
+              <></>
+            ) : (
+              <PlusIcon
+                aria-hidden={true}
+                size={18}
+              />
+            )}
             Add Task
           </DropdownMenuItem>
         ) : (
-          <Button size='sm'>
+          <Button
+            data-testid='add-task'
+            size='sm'
+          >
             <span className='flex items-center'>
               <PlusIcon
+                aria-hidden={true}
                 className='pt-[2px]'
                 size={18}
               />
