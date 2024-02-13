@@ -39,9 +39,7 @@ export const useUpdateTask = ({
         const keys = findRelevantKeys(queryClient, 'tasks', id);
 
         keys.forEach((key) => {
-          queryClient.invalidateQueries(key, {
-            refetchType: 'none',
-          });
+          queryClient.invalidateQueries(key);
         });
       }
     },
