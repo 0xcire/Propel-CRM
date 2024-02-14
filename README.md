@@ -31,14 +31,22 @@ A CRM for real estate agents.
 - Analytics page that shows the following for a specified time frame:
 
   - Sales volume & total sales volume
-  - GCI
+  - GCI (Gross Commission Income)
   - average days to close lead
   - average days on market
   - sale to list ratio
 
 - Debouncing on search queries to minimize amount of requests made
 
+- Custom hooks for a variety of commmon logic including:
+
+  - React Query queries and mutations
+  - (re)setting default search params
+  - setting document.title on routes
+  - idle timeout toast/reset & account verification toast
+
 - Playwright e2e tests
+- Unit tests for pure util functions
 
 - Email service to verify account email, recover account password and create / send analytics reports ( WIP )
 
@@ -73,6 +81,12 @@ A CRM for real estate agents.
 - TypeScript
 - Node
 - Express
+
+### Testing
+
+- Jest
+- Playwright
+- SuperTest
 
 ### Database
 
