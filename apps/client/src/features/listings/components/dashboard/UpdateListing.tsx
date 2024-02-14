@@ -58,16 +58,16 @@ export function UpdateListing({ listing }: UpdateListingProps): JSX.Element {
       open={open}
       onOpenChange={setOpen}
     >
-      <DialogTrigger asChild>
-        <Tooltip content='edit'>
+      <Tooltip content='edit'>
+        <DialogTrigger asChild>
           <PencilIcon
             data-testid='update-listing-svg'
             className='ml-auto cursor-pointer'
             size={18}
             tabIndex={0}
           />
-        </Tooltip>
-      </DialogTrigger>
+        </DialogTrigger>
+      </Tooltip>
 
       <DialogContent>
         <DialogHeader>
