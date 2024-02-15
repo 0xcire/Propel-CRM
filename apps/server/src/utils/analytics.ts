@@ -1,32 +1,26 @@
-export const formatAnalyticsData = <T extends { month: unknown }>(
-  data: Array<T>,
-  getValue: (data: unknown) => unknown,
-  defaultValue: string
-) => {
+export const formatAnalyticsData = <T extends { month: string; [key: string]: string | number }>(data: Array<T>) => {
+  if (data.length === 0) {
+    return [];
+  }
+
+  // if data has length, data[0] can't be T | undefined?
+  const key = Object.keys(data[0] as T).find((key) => key !== "month") ?? "";
+
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const existingMonths = data.map((data) => (data as { month: unknown } & unknown).month);
-  return data.length > 0
-    ? months.map((month, index) => {
-        if (!data[index] && !existingMonths.includes(month)) {
-          return {
-            month: month,
-            value: defaultValue,
-          };
-        }
+  const formatData = months.map((month) => {
+    const dataPointByMonth = data.find((item) => item.month === month);
 
-        if (!existingMonths.includes(month)) {
-          return {
-            month: month,
-            value: defaultValue,
-          };
-        }
+    if (!dataPointByMonth) {
+      return {
+        month: month,
+        value: "0",
+      };
+    }
+    return {
+      month: month,
+      value: dataPointByMonth[key],
+    };
+  });
 
-        const referenceIdx = existingMonths.indexOf(month);
-
-        return {
-          month: data && data[referenceIdx]?.month,
-          value: getValue(data[referenceIdx]),
-        };
-      })
-    : [];
+  return formatData;
 };

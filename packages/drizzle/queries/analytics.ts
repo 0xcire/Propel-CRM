@@ -1,15 +1,15 @@
-import { and, between, eq, isNotNull, sql } from "drizzle-orm";
+import { and, asc, between, eq, isNotNull, sql } from "drizzle-orm";
 import { listings, listingsToContacts, soldListings } from "../schema";
 import { db } from "..";
 
-const month = sql`TO_CHAR(${soldListings.soldAt} AT TIME ZONE 'UTC', 'Mon')`;
+const month = sql<string>`TO_CHAR(${soldListings.soldAt} AT TIME ZONE 'UTC', 'Mon')`;
 const monthNumberFromName = sql`EXTRACT(MONTH FROM ${soldListings.soldAt})`;
 
 export const getSalesDataByYear = async (userID: number, year: number) => {
   const usersSalesVolume = await db
     .select({
       month: month,
-      volume: sql<number>`sum(${soldListings.salePrice})`,
+      volume: sql<string>`sum(${soldListings.salePrice})`,
     })
     .from(listings)
     .leftJoin(soldListings, eq(soldListings.listingID, listings.id))
@@ -30,7 +30,7 @@ export const getListToSaleRatioByYear = async (userID: number, year: number) => 
   const usersSaleToListRatio = await db
     .select({
       month: month,
-      ratio: sql`AVG(CAST(${soldListings.salePrice} AS numeric(11,2)) / CAST(${listings.price} AS numeric(11,2)))`,
+      ratio: sql<string>`AVG(CAST(${soldListings.salePrice} AS numeric(11,2)) / CAST(${listings.price} AS numeric(11,2)))`,
     })
     .from(listings)
     .leftJoin(soldListings, eq(soldListings.listingID, listings.id))
@@ -51,7 +51,7 @@ export const getAvgDays = async (userID: number, year: number) => {
   const average = await db
     .select({
       month: month,
-      average: sql`AVG(EXTRACT(DAYS FROM ${soldListings.soldAt} - ${listings.createdAt}))`,
+      average: sql<string>`AVG(EXTRACT(DAYS FROM ${soldListings.soldAt} - ${listings.createdAt}))`,
     })
     .from(listings)
     .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
@@ -73,7 +73,7 @@ export const getAvgTimeToClose = async (userID: number, year: number) => {
   const timeToClose = await db
     .select({
       month: month,
-      days: sql`AVG(EXTRACT(DAYS FROM ${soldListings.soldAt} - ${listingsToContacts.createdAt}))`,
+      days: sql<string>`AVG(EXTRACT(DAYS FROM ${soldListings.soldAt} - ${listingsToContacts.createdAt}))`,
     })
     .from(listings)
     .leftJoin(soldListings, eq(soldListings.listingID, listings.id))
@@ -94,11 +94,13 @@ export const getAvgTimeToClose = async (userID: number, year: number) => {
 };
 
 export const getExistingYears = async (userID: number) => {
+  const year = sql`EXTRACT(YEAR FROM ${soldListings.soldAt})`;
   const years = (
     await db
       .selectDistinct({ year: sql`EXTRACT(YEAR FROM ${soldListings.soldAt})` })
       .from(soldListings)
       .where(eq(soldListings.userID, userID))
+      .orderBy(asc(year))
   ).map((data) => data.year);
 
   return years;

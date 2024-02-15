@@ -18,17 +18,7 @@ export const getSalesVolumeForYear = async (req: Request, res: Response) => {
 
   const usersSalesVolume = await getSalesDataByYear(userID, yearParam);
 
-  const fullSalesVolume = formatAnalyticsData(
-    usersSalesVolume,
-    (data) =>
-      (
-        data as {
-          month: unknown;
-          volume: unknown;
-        }
-      ).volume,
-    "0"
-  );
+  const fullSalesVolume = formatAnalyticsData(usersSalesVolume);
 
   return res.status(200).json({
     message: "",
@@ -60,17 +50,7 @@ export const getAvgListingDaysOnMarket = async (req: Request, res: Response) => 
   const yearParam = year ? +year : currentYear;
 
   const avgDaysOnMarket = await getAvgDays(userID, yearParam);
-  const fullDaysOnMarket = formatAnalyticsData(
-    avgDaysOnMarket,
-    (data) =>
-      (
-        data as {
-          month: unknown;
-          average: unknown;
-        }
-      ).average,
-    "0"
-  );
+  const fullDaysOnMarket = formatAnalyticsData(avgDaysOnMarket);
 
   return res.status(200).json({
     message: "",
@@ -88,17 +68,7 @@ export const getListToSaleRatioForYear = async (req: Request, res: Response) => 
 
     const listToSaleRatio = await getListToSaleRatioByYear(userID, yearParam);
 
-    const fullListToSaleRatio = formatAnalyticsData(
-      listToSaleRatio,
-      (data) =>
-        (
-          data as {
-            month: unknown;
-            ratio: unknown;
-          }
-        ).ratio,
-      "0"
-    );
+    const fullListToSaleRatio = formatAnalyticsData(listToSaleRatio);
 
     return res.status(200).json({
       message: "",
@@ -119,17 +89,7 @@ export const getAvgTimeToCloseLead = async (req: Request, res: Response) => {
 
     const avgTimeToClose = await getAvgTimeToClose(userID, yearParam);
 
-    const fullAvgTimeToClose = formatAnalyticsData(
-      avgTimeToClose,
-      (data) =>
-        (
-          data as {
-            month: unknown;
-            days: unknown;
-          }
-        ).days,
-      "0"
-    );
+    const fullAvgTimeToClose = formatAnalyticsData(avgTimeToClose);
 
     return res.status(200).json({
       message: "",
