@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 import {
   deleteTemporaryRequest,
   findUsersByID,
@@ -5,9 +7,10 @@ import {
   getTempRequestFromToken,
   updateUserByID,
 } from "@propel/drizzle";
-import dayjs from "dayjs";
 
-import { createVerifyEmailRequestAndSendEmail } from "../../utils";
+import { PropelHTTPError } from "../../lib/http-error";
+
+import { createVerifyEmailRequestAndSendEmail, handleError } from "../../utils";
 
 import type { Request, Response } from "express";
 
@@ -16,33 +19,33 @@ export const verifyEmail = async (req: Request, res: Response) => {
     const { token } = req.query;
 
     if (typeof token !== "string") {
-      return res.status(400).json({
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
         message: "Invalid token",
       });
     }
 
     if (!token) {
-      return res.status(400).json({
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
         message: "Request token required.",
       });
     }
 
     const tempRequest = await getTempRequestFromToken(token);
-
     await deleteTemporaryRequest({ id: token });
 
     if (!tempRequest || !tempRequest.userID) {
-      return res.status(400).json({
-        message: "Request expired.",
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Request required.",
       });
     }
 
     if (!dayjs().isBefore(dayjs(tempRequest.expiry))) {
-      // [ ]: throw new PropelHTTPError({})
-      // [ ]: throw new PropelDBError({status: 500, message: })
-
-      return res.status(400).json({
-        message: "Request expired.",
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Request required.",
       });
     }
 
@@ -52,7 +55,8 @@ export const verifyEmail = async (req: Request, res: Response) => {
     });
 
     if (!updatedUser) {
-      return res.status(500).json({
+      throw new PropelHTTPError({
+        code: "INTERNAL_SERVER_ERROR",
         message: "There was an issue verifying your email. Please try again.",
       });
     }
@@ -61,8 +65,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
       message: "Email verified.",
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -75,13 +78,15 @@ export const requestNewEmailVerification = async (req: Request, res: Response) =
     const userByID = await findUsersByID({ id: userID, verification: true });
 
     if (!userByID) {
-      return res.status(404).json({
+      throw new PropelHTTPError({
+        code: "NOT_FOUND",
         message: "Can't find user.",
       });
     }
 
     if (userByID.isVerified) {
-      return res.status(400).json({
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
         message: "User is already verified.",
       });
     }
@@ -89,7 +94,8 @@ export const requestNewEmailVerification = async (req: Request, res: Response) =
     const requests = await getAllTempRequestsForUserID(userID);
 
     if (requests.length > MAX_REQUESTS_AT_A_TIME) {
-      return res.status(429).json({
+      throw new PropelHTTPError({
+        code: "TOO_MANY_REQUESTS",
         message: "Too many requests. Please try again later.",
       });
     }
@@ -100,7 +106,6 @@ export const requestNewEmailVerification = async (req: Request, res: Response) =
       message: "New verification email is on it's way",
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };

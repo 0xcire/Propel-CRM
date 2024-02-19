@@ -8,12 +8,13 @@ import {
   //
 } from "@propel/drizzle";
 import { checkPassword, hashPassword } from "@propel/lib";
-import { isDeployed } from "../utils";
-import { ABSOLUTE_SESSION_COOKIE, SALT_ROUNDS, sessionRelatedCookies } from "../config";
+
+import { handleError, removeAuthSessionCookies } from "../utils";
+import { PropelHTTPError } from "../lib/http-error";
+
+import { ABSOLUTE_SESSION_COOKIE, SALT_ROUNDS } from "../config";
 
 import type { Request, Response } from "express";
-
-// TODO: have some stuff here being repeated with auth controller, consider extracting
 
 export const getMyInfo = async (req: Request, res: Response) => {
   try {
@@ -25,7 +26,8 @@ export const getMyInfo = async (req: Request, res: Response) => {
     });
 
     if (!userByID) {
-      return res.status(204).json({
+      throw new PropelHTTPError({
+        code: "NOT_FOUND",
         message: "Can't find user.",
       });
     }
@@ -35,8 +37,7 @@ export const getMyInfo = async (req: Request, res: Response) => {
       user: userByID,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -47,30 +48,16 @@ export const deleteUser = async (req: Request, res: Response) => {
 
     await deleteRedisKV(sessionToken);
 
-    // TODO: in future, need to also delete all related rows in other tables
     const deletedUser = await deleteUserByID(+(id as string));
 
-    sessionRelatedCookies.forEach((cookie) => {
-      res.clearCookie(cookie, {
-        path: "/",
-        domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
-        sameSite: "lax",
-      });
-    });
-
-    res.clearCookie("idle", {
-      path: "/",
-      domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
-      sameSite: "lax",
-    });
+    removeAuthSessionCookies(req, res);
 
     return res.status(200).json({
       message: "successfully deleted.",
       user: deletedUser,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -79,11 +66,19 @@ export const updateUser = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { username, email, verifyPassword, password } = req.body;
 
+    if (!id) {
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "User ID required.",
+      });
+    }
+
     let hashedPassword;
 
     if (!verifyPassword) {
-      return res.status(401).json({
-        message: "Verify password to confirm changes.",
+      throw new PropelHTTPError({
+        code: "UNAUTHORIZED",
+        message: "Verify password to confirm changes",
       });
     }
 
@@ -95,7 +90,8 @@ export const updateUser = async (req: Request, res: Response) => {
       const passwordMatches = await checkPassword(password, currentUser?.hashedPassword as string);
 
       if (passwordMatches) {
-        return res.status(409).json({
+        throw new PropelHTTPError({
+          code: "CONFLICT",
           message: "Password can't match previous one.",
         });
       }
@@ -104,7 +100,8 @@ export const updateUser = async (req: Request, res: Response) => {
     const passwordVerified = await checkPassword(verifyPassword, currentUser?.hashedPassword as string);
 
     if (!passwordVerified) {
-      return res.status(409).json({
+      throw new PropelHTTPError({
+        code: "CONFLICT",
         message: "Enter your password correctly to confirm changes.",
       });
     }
@@ -113,7 +110,8 @@ export const updateUser = async (req: Request, res: Response) => {
       const userByUsername = await findUsersByUsername(username);
 
       if (userByUsername) {
-        return res.status(409).json({
+        throw new PropelHTTPError({
+          code: "CONFLICT",
           message: "Username is taken. Please pick another.",
         });
       }
@@ -123,14 +121,15 @@ export const updateUser = async (req: Request, res: Response) => {
       const userByEmail = await findUsersByEmail({ email: email });
 
       if (userByEmail) {
-        return res.status(409).json({
+        throw new PropelHTTPError({
+          code: "CONFLICT",
           message: "Email is already taken. Please pick another.",
         });
       }
     }
 
     const updatedUser = await updateUserByID({
-      id: +(id as string),
+      id: +id,
       newUsername: username,
       newEmail: email,
       newPassword: hashedPassword,
@@ -141,7 +140,6 @@ export const updateUser = async (req: Request, res: Response) => {
       user: updatedUser,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };

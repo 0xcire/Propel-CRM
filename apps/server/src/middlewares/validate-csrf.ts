@@ -1,4 +1,6 @@
-import { deriveSessionCSRFToken, isDeployed, safeComparison } from "../utils";
+import { PropelHTTPError } from "../lib/http-error";
+
+import { deriveSessionCSRFToken, isDeployed, safeComparison, handleError } from "../utils";
 import { CSRF_SECRET, PRE_AUTH_CSRF_SECRET, PRE_AUTH_SESSION_COOKIE } from "../config";
 
 import type { Request, Response, NextFunction } from "express";
@@ -10,21 +12,24 @@ export const validateCSRF = (req: Request, res: Response, next: NextFunction) =>
     const { id: sessionID } = req.session;
 
     if (req.method !== "DELETE" && !req.is("application/json")) {
-      return res.status(400).json({
-        message: "Unsupported content type.",
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Unsupported content type;",
       });
     }
 
     if (isDeployed(req)) {
       if (req.get("Referer") !== "https://propel-crm.xyz/" && req.get("origin") !== "https://propel-crm.xyz") {
-        return res.status(400).json({
-          message: "Invalid client.",
+        throw new PropelHTTPError({
+          code: "BAD_REQUEST",
+          message: "Invalid client",
         });
       }
     }
 
     if (!receivedCSRFToken) {
-      return res.status(403).json({
+      throw new PropelHTTPError({
+        code: "FORBIDDEN",
         message: "Invalid CSRF Token",
       });
     }
@@ -42,14 +47,14 @@ export const validateCSRF = (req: Request, res: Response, next: NextFunction) =>
     }
 
     if (!safeComparison(receivedCSRFTokenBuffer, csrfTokenExpectedBuffer)) {
-      return res.status(403).json({
+      throw new PropelHTTPError({
+        code: "FORBIDDEN",
         message: "Invalid CSRF Token",
       });
     }
 
     return next();
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };

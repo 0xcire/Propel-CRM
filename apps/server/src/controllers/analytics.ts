@@ -5,64 +5,72 @@ import {
   getListToSaleRatioByYear,
   getSalesDataByYear,
 } from "@propel/drizzle";
-import { formatAnalyticsData, getCurrentYear } from "../utils";
+
+import { formatAnalyticsData, getCurrentYear, handleError } from "../utils";
 
 import type { Request, Response } from "express";
 
 export const getSalesVolumeForYear = async (req: Request, res: Response) => {
-  const userID = req.user.id;
-  const { year } = req.query;
+  try {
+    const userID = req.user.id;
+    const { year } = req.query;
 
-  const currentYear = getCurrentYear();
-  const yearParam = year ? +year : currentYear;
+    const currentYear = getCurrentYear();
+    const yearParam = year ? +year : currentYear;
 
-  const usersSalesVolume = await getSalesDataByYear(userID, yearParam);
+    const usersSalesVolume = await getSalesDataByYear(userID, yearParam);
 
-  const fullSalesVolume = formatAnalyticsData(usersSalesVolume);
+    const fullSalesVolume = formatAnalyticsData(usersSalesVolume);
 
-  return res.status(200).json({
-    message: "",
-    volumes: fullSalesVolume,
-  });
+    return res.status(200).json({
+      message: "",
+      volumes: fullSalesVolume,
+    });
+  } catch (error) {
+    return handleError(error, res);
+  }
 };
 
 export const getExistingSalesYears = async (req: Request, res: Response) => {
-  const userID = req.user.id;
+  try {
+    const userID = req.user.id;
 
-  const years = await getExistingYears(userID);
+    const years = await getExistingYears(userID);
 
-  return res.status(200).json({
-    message: "",
-    years: years,
-  });
-};
-
-// GCI - Gross Commission Income
-export const getGCIData = async () => {
-  return 0;
+    return res.status(200).json({
+      message: "",
+      years: years,
+    });
+  } catch (error) {
+    return handleError(error, res);
+  }
 };
 
 export const getAvgListingDaysOnMarket = async (req: Request, res: Response) => {
-  const userID = req.user.id;
-  const { year } = req.query;
+  try {
+    const userID = req.user.id;
+    const { year } = req.query;
 
-  const currentYear = getCurrentYear();
-  const yearParam = year ? +year : currentYear;
+    const currentYear = getCurrentYear();
+    const yearParam = year ? +year : currentYear;
 
-  const avgDaysOnMarket = await getAvgDays(userID, yearParam);
-  const fullDaysOnMarket = formatAnalyticsData(avgDaysOnMarket);
+    const avgDaysOnMarket = await getAvgDays(userID, yearParam);
+    const fullDaysOnMarket = formatAnalyticsData(avgDaysOnMarket);
 
-  return res.status(200).json({
-    message: "",
-    averages: fullDaysOnMarket,
-  });
+    return res.status(200).json({
+      message: "",
+      averages: fullDaysOnMarket,
+    });
+  } catch (error) {
+    return handleError(error, res);
+  }
 };
 
 export const getListToSaleRatioForYear = async (req: Request, res: Response) => {
-  const userID = req.user.id;
-  const { year } = req.query;
-
   try {
+    const userID = req.user.id;
+    const { year } = req.query;
+
     const currentYear = getCurrentYear();
     const yearParam = year ? +year : currentYear;
 
@@ -75,15 +83,15 @@ export const getListToSaleRatioForYear = async (req: Request, res: Response) => 
       ratios: fullListToSaleRatio,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
 export const getAvgTimeToCloseLead = async (req: Request, res: Response) => {
-  const userID = req.user.id;
-  const { year } = req.query;
   try {
+    const userID = req.user.id;
+    const { year } = req.query;
+
     const currentYear = getCurrentYear();
     const yearParam = year ? +year : currentYear;
 
@@ -96,7 +104,6 @@ export const getAvgTimeToCloseLead = async (req: Request, res: Response) => {
       days: fullAvgTimeToClose,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };

@@ -1,5 +1,3 @@
-import type { Request, Response } from "express";
-
 import {
   deleteContactByID,
   deleteUserContactRelation,
@@ -14,8 +12,11 @@ import {
   updateContactByID,
 } from "@propel/drizzle";
 
-import { objectNotEmpty } from "../utils";
+import { PropelHTTPError } from "../lib/http-error";
 
+import { objectNotEmpty, handleError } from "../utils";
+
+import type { Request, Response } from "express";
 import type { NewContact } from "@propel/drizzle";
 import type { Limit } from "@propel/types";
 
@@ -30,8 +31,7 @@ export const getDashboardContacts = async (req: Request, res: Response) => {
       contacts: userDashboardContacts,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -41,7 +41,8 @@ export const searchUsersContacts = async (req: Request, res: Response) => {
     const { name, page, limit } = req.query;
 
     if (!name) {
-      return res.status(400).json({
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
         message: "Please enter a name to search.",
       });
     }
@@ -57,8 +58,9 @@ export const searchUsersContacts = async (req: Request, res: Response) => {
       usersSearchedContacts = await searchForContacts({
         userID: userID,
         name: name as string,
-        limit: limit as Limit,
-        page: +page!,
+        limit: limit ? (limit as Limit) : "10",
+        // page: page ? +page : 1,
+        page: +(page ?? "1"),
       });
     }
 
@@ -67,8 +69,7 @@ export const searchUsersContacts = async (req: Request, res: Response) => {
       contacts: usersSearchedContacts,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -84,8 +85,7 @@ export const getMyContacts = async (req: Request, res: Response) => {
       contacts: userContacts,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -93,17 +93,13 @@ export const getSpecificContact = async (req: Request, res: Response) => {
   try {
     const contactByID = req.contact;
 
-    // TODO:
-    // on get, message unnecessary
-    // getByID should just return that one element, ex.) contact vs contacts
-    // mainly just typing issue on client
+    // [ ]: on get, message unnecessary
     return res.status(200).json({
       message: "",
       contacts: [contactByID],
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -113,7 +109,10 @@ export const createContact = async (req: Request, res: Response) => {
     const { name, email, phoneNumber, address } = req.body;
 
     if (!name || !email || !phoneNumber || !address) {
-      return res.status(400).json({});
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "All fields required.",
+      });
     }
 
     const contact: NewContact = {
@@ -137,7 +136,8 @@ export const createContact = async (req: Request, res: Response) => {
       contactID = existingContact.id;
       const establishedRelation = await findRelation({ currentUserID: id, existingContactID: contactID });
       if (establishedRelation) {
-        return res.status(409).json({
+        throw new PropelHTTPError({
+          code: "CONFLICT",
           message: "Contact already exists in your network.",
         });
       }
@@ -150,8 +150,7 @@ export const createContact = async (req: Request, res: Response) => {
       contact: contact,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -160,22 +159,29 @@ export const updateContact = async (req: Request, res: Response) => {
     const { contactID } = req.params;
 
     if (!objectNotEmpty(req.body)) {
-      return res.status(400).json({
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
         message: "Nothing to update.",
+      });
+    }
+
+    if (!contactID) {
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Contact ID required.",
       });
     }
 
     const fields = { ...req.body };
 
-    const updatedContact = await updateContactByID({ contactID: +contactID!, inputs: fields });
+    const updatedContact = await updateContactByID({ contactID: +contactID, inputs: fields });
 
     return res.status(200).json({
       message: `Updated ${req.contact.name} successfully.`,
       contact: updatedContact,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -184,21 +190,27 @@ export const deleteContact = async (req: Request, res: Response) => {
     const userID = req.user.id;
     const { contactID } = req.params;
 
-    const relations = await getContactRelations(+contactID!);
+    if (!contactID) {
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Contact ID required.",
+      });
+    }
+
+    const relations = await getContactRelations(+contactID);
 
     if (relations.length === 1) {
-      await deleteUserContactRelation({ userID: userID, contactID: +contactID! });
+      await deleteUserContactRelation({ userID: userID, contactID: +contactID });
 
-      await deleteContactByID(+contactID!);
+      await deleteContactByID(+contactID);
     } else {
-      await deleteUserContactRelation({ userID: userID, contactID: +contactID! });
+      await deleteUserContactRelation({ userID: userID, contactID: +contactID });
     }
 
     return res.status(200).json({
       message: `Successfully removed ${req.contact.name} from your network.`,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({});
+    return handleError(error, res);
   }
 };

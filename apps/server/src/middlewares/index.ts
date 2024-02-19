@@ -1,3 +1,6 @@
+import { PropelHTTPError } from "../lib/http-error";
+import { handleError } from "../utils/handle-error";
+
 import type { Request, Response, NextFunction } from "express";
 
 export const isOwner = (req: Request, res: Response, next: NextFunction) => {
@@ -6,29 +9,30 @@ export const isOwner = (req: Request, res: Response, next: NextFunction) => {
     const authenticatedUserID = req.user.id;
 
     if (!authenticatedUserID) {
-      return res.status(403).json({
+      throw new PropelHTTPError({
+        code: "FORBIDDEN",
         message: "Not authenticated.",
       });
     }
 
     if (authenticatedUserID.toString() !== id) {
-      return res.status(403).json({
+      throw new PropelHTTPError({
+        code: "FORBIDDEN",
         message: "Can only perform this operation on your own account.",
       });
     }
 
     next();
   } catch (error) {
-    console.log(error);
-    return res.status(400).json({});
+    return handleError(error, res);
   }
 };
 
 // []
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log(req);
-    if ("this is a string") {
+    // useless param right now.
+    if (req.headers["x"]) {
       res.sendStatus(403);
     }
     next();

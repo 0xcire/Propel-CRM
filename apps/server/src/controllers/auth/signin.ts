@@ -1,9 +1,10 @@
 import { findUsersByEmail } from "@propel/drizzle";
-import { RateLimiterRes, consumeRateLimitPoint, deleteRateLimit, getRateLimiter } from "@propel/redis";
-import { checkPassword } from "@propel/lib";
+import { consumeRateLimitPoint, deleteRateLimit, getRateLimiter } from "@propel/redis";
 
-import { handleRateLimitErrorResponse, validateRateLimitAndSetResponse } from "../../lib";
-import { persistAuthSession, removePreAuthCookies, setAuthSessionCookies, createToken } from "../../utils";
+import { checkPassword } from "@propel/lib";
+import { persistAuthSession, removePreAuthCookies, setAuthSessionCookies, createToken, handleError } from "../../utils";
+
+import { PropelHTTPError } from "../../lib/http-error";
 
 import type { Request, Response } from "express";
 import type { UserInput } from "../types";
@@ -13,18 +14,21 @@ export const signin = async (req: Request, res: Response) => {
     const { email, password }: UserInput = req.body;
 
     if (!email || !password) {
-      return res.sendStatus(400);
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Please fill in all fields.",
+      });
     }
 
     const rateLimiter = await getRateLimiter(email);
     const tries = rateLimiter?.remainingPoints;
-    validateRateLimitAndSetResponse(rateLimiter, res);
 
     const userByEmail = await findUsersByEmail({ email: email, signingIn: true });
     await consumeRateLimitPoint(email);
 
     if (!userByEmail) {
-      return res.status(401).json({
+      throw new PropelHTTPError({
+        code: "UNAUTHORIZED",
         message: `Incorrect email or password. ${tries ?? "5"} tries remaining.`,
       });
     }
@@ -33,7 +37,8 @@ export const signin = async (req: Request, res: Response) => {
       const passwordMatches = await checkPassword(password, userByEmail.hashedPassword);
 
       if (!passwordMatches) {
-        return res.status(401).json({
+        throw new PropelHTTPError({
+          code: "UNAUTHORIZED",
           message: `Incorrect email or password. ${tries ?? "5"} tries remaining.`,
         });
       }
@@ -52,12 +57,6 @@ export const signin = async (req: Request, res: Response) => {
       user: userByEmail,
     });
   } catch (error) {
-    console.log(error);
-
-    if (error instanceof RateLimiterRes) {
-      return handleRateLimitErrorResponse(error, res);
-    }
-
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };

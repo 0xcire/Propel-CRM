@@ -84,7 +84,12 @@ export const getUserDashboardListings = async (userID: number) => {
   return userListings;
 };
 
-export const getAllUserListings = async ({ userID, page, status, limit = "10" }: getAllUserListingsParams) => {
+export const getAllUserListings = async ({
+  userID,
+  page,
+  status = "active",
+  limit = "10",
+}: getAllUserListingsParams) => {
   let userListings;
 
   if (status === "active") {
@@ -169,7 +174,13 @@ export const findContactsRelatedListings = async ({ userID, contactID }: FindCon
   return contactListings;
 };
 
-export const searchForListings = async ({ userID, address, status, page, limit }: SearchForListingsParams) => {
+export const searchForListings = async ({
+  userID,
+  address,
+  status = "active",
+  page,
+  limit = "10",
+}: SearchForListingsParams) => {
   let userListings;
 
   if (status === "active") {

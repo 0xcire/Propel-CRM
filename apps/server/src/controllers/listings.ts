@@ -1,5 +1,3 @@
-import { Request, Response } from "express";
-
 import {
   findContactByID,
   deleteListingByID,
@@ -15,6 +13,10 @@ import {
   updateListingByID,
 } from "@propel/drizzle";
 
+import { PropelHTTPError } from "../lib/http-error";
+import { handleError } from "../utils";
+
+import type { Request, Response } from "express";
 import type { NewListing, NewSoldListing } from "@propel/drizzle";
 import type { Limit, ListingStatus } from "@propel/types";
 
@@ -28,8 +30,7 @@ export const getDashboardListings = async (req: Request, res: Response) => {
       listings: userDashboardListings,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -40,7 +41,7 @@ export const getAllListings = async (req: Request, res: Response) => {
 
     const userListings = await getAllUserListings({
       userID: userID,
-      page: +page!,
+      page: +(page ?? "1"),
       status: status as ListingStatus,
       limit: limit as Limit,
     });
@@ -50,8 +51,7 @@ export const getAllListings = async (req: Request, res: Response) => {
       listings: userListings,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -60,8 +60,9 @@ export const searchUsersListings = async (req: Request, res: Response) => {
     const userID = req.user.id;
     const { address, status, limit, page } = req.query;
 
-    if (!address) {
-      return res.status(400).json({
+    if (!address || typeof address !== "string") {
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
         message: "Please enter an address to search.",
       });
     }
@@ -75,9 +76,9 @@ export const searchUsersListings = async (req: Request, res: Response) => {
     if (address) {
       usersSearchedListings = await searchForListings({
         userID: userID,
-        address: address as string,
+        address: address,
         status: status as ListingStatus,
-        page: +page!,
+        page: +(page ?? "1"),
         limit: limit as Limit,
       });
     }
@@ -86,8 +87,7 @@ export const searchUsersListings = async (req: Request, res: Response) => {
       listings: usersSearchedListings,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -96,15 +96,21 @@ export const getContactsRelatedListings = async (req: Request, res: Response) =>
     const userID = req.user.id;
     const { contactID } = req.params;
 
-    const contactsListings = await findContactsRelatedListings({ userID: userID, contactID: +contactID! });
+    if (!contactID) {
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Contact ID required.",
+      });
+    }
+
+    const contactsListings = await findContactsRelatedListings({ userID: userID, contactID: +contactID });
 
     return res.status(200).json({
       message: "",
       listings: contactsListings,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -113,8 +119,9 @@ export const getSpecificListing = async (req: Request, res: Response) => {
     const { listingID } = req.params;
 
     if (!listingID) {
-      return res.status(400).json({
-        message: "Please provide a listing ID.",
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Listing ID required.",
       });
     }
 
@@ -125,8 +132,7 @@ export const getSpecificListing = async (req: Request, res: Response) => {
       listings: [listing],
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -136,7 +142,10 @@ export const createListing = async (req: Request, res: Response) => {
     const { address, propertyType, price, bedrooms, baths, squareFeet, description }: NewListing = req.body;
 
     if (!address || !propertyType || !price || !bedrooms || !baths || !squareFeet || !description) {
-      return res.status(400).json({});
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "All fields required.",
+      });
     }
 
     const listing: NewListing = { ...req.body, userID: userID };
@@ -148,8 +157,7 @@ export const createListing = async (req: Request, res: Response) => {
       listings: newListing,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -158,19 +166,25 @@ export const updateListing = async (req: Request, res: Response) => {
     const userID = req.user.id;
     const { listingID } = req.params;
 
+    if (!listingID) {
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Listing ID required.",
+      });
+    }
+
     if (Object.keys(req.body).length === 0) {
       return res.status(400).json({});
     }
 
-    const updatedListingByID = await updateListingByID({ listing: req.body, listingID: +listingID!, userID: userID });
+    const updatedListingByID = await updateListingByID({ listing: req.body, listingID: +listingID, userID: userID });
 
     return res.status(200).json({
       message: "Updated listing.",
       listings: updatedListingByID,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -179,14 +193,20 @@ export const deleteListing = async (req: Request, res: Response) => {
     const userID = req.user.id;
     const { listingID } = req.params;
 
-    const deletedListingByID = await deleteListingByID(+listingID!, userID);
+    if (!listingID) {
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Listing ID required.",
+      });
+    }
+
+    const deletedListingByID = await deleteListingByID(+listingID, userID);
 
     return res.status(200).json({
       message: `Deleted listing: ${deletedListingByID?.id}`,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -196,23 +216,32 @@ export const markListingAsSold = async (req: Request, res: Response) => {
     const { listingID } = req.params;
     const values: NewSoldListing = req.body;
 
+    if (!listingID) {
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Listing ID required.",
+      });
+    }
+
     if (values.userID !== userID) {
       return res.status(400).json({
         message: "",
       });
     }
 
-    if (values.listingID !== +listingID!) {
+    if (values.listingID !== +listingID) {
       return res.status(400).json({
         message: "",
       });
     }
 
     // TODO: refactor to have contactID & isContactOwner check at router
+    // /listings/:listingID/sold/:contactID
     const contactByID = await findContactByID(values.contactID as number, userID);
 
     if (!contactByID) {
-      return res.status(400).json({
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
         message: "That's weird, couldn't find that contact to add. Please try again.",
       });
     }
@@ -223,8 +252,7 @@ export const markListingAsSold = async (req: Request, res: Response) => {
       message: `${values.listingID} marked sold.`,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -233,22 +261,36 @@ export const addListingLead = async (req: Request, res: Response) => {
     const { listingID, contactID } = req.params;
     const { name } = req.contact;
 
-    const existingLead = await findExistingLead(+listingID!, +contactID!);
+    if (!listingID) {
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Listing ID required.",
+      });
+    }
+
+    if (!contactID) {
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Contact ID required.",
+      });
+    }
+
+    const existingLead = await findExistingLead(+listingID, +contactID);
 
     if (existingLead) {
-      return res.status(400).json({
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
         message: `${name} is already an established lead for listing: ${listingID}`,
       });
     }
 
-    await insertNewLead(+listingID!, +contactID!);
+    await insertNewLead(+listingID, +contactID);
 
     return res.status(201).json({
       message: `Added ${name} to listing: ${listingID}`,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -257,13 +299,26 @@ export const removeListingLead = async (req: Request, res: Response) => {
     const { listingID, contactID } = req.params;
     const { name } = req.contact;
 
-    await removeLead(+listingID!, +contactID!);
+    if (!listingID) {
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Listing ID required.",
+      });
+    }
+
+    if (!contactID) {
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Contact ID required.",
+      });
+    }
+
+    await removeLead(+listingID, +contactID);
 
     return res.status(200).json({
       message: `Successfully removed lead: ${name} from listing: ${listingID}`,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };

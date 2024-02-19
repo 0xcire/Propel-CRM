@@ -1,10 +1,12 @@
-import { deleteTemporaryRequest, findUsersByEmail, getTempRequestFromToken, updateUserByID } from "@propel/drizzle";
-import { RateLimiterRes, consumeRateLimitPoint, getRateLimiter } from "@propel/redis";
 import dayjs from "dayjs";
+
+import { deleteTemporaryRequest, findUsersByEmail, getTempRequestFromToken, updateUserByID } from "@propel/drizzle";
+import { consumeRateLimitPoint } from "@propel/redis";
 import { hashPassword } from "@propel/lib";
 
-import { handleRateLimitErrorResponse, validateRateLimitAndSetResponse } from "../../lib";
-import { createRecoverPasswordRequestAndSendEmail } from "../../utils";
+import { PropelHTTPError } from "../../lib/http-error";
+
+import { createRecoverPasswordRequestAndSendEmail, handleError } from "../../utils";
 
 import { SALT_ROUNDS } from "../../config";
 
@@ -14,10 +16,8 @@ export const requestPasswordRecovery = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
 
+    // [ ] should using a new instance of rateLimiterRes with different opts.keyPrefix - 'recovery'
     const recoveryIdentifier = `${email}-recovery`;
-
-    const rateLimiter = await getRateLimiter(recoveryIdentifier);
-    validateRateLimitAndSetResponse(rateLimiter, res);
 
     const userByEmail = await findUsersByEmail({ email: email });
     await consumeRateLimitPoint(recoveryIdentifier);
@@ -34,14 +34,7 @@ export const requestPasswordRecovery = async (req: Request, res: Response) => {
       message: "Incoming! Password reset email heading your way.",
     });
   } catch (error) {
-    console.log(error);
-
-    if (error instanceof RateLimiterRes) {
-      return handleRateLimitErrorResponse(error, res);
-    }
-    return res.status(500).json({
-      message: "There was an error processing your request. Please try again.",
-    });
+    return handleError(error, res);
   }
 };
 
@@ -50,13 +43,17 @@ export const getValidRecoveryRequest = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!id) {
-      return res.status(400).json({ message: "Recovery request ID needed." });
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Recovery request ID required.",
+      });
     }
 
     const tempRequest = await getTempRequestFromToken(id);
 
     if (!tempRequest) {
-      return res.status(404).json({
+      throw new PropelHTTPError({
+        code: "NOT_FOUND",
         message: "Request expired.",
       });
     }
@@ -64,16 +61,16 @@ export const getValidRecoveryRequest = async (req: Request, res: Response) => {
     if (!dayjs().isBefore(dayjs(tempRequest.expiry))) {
       await deleteTemporaryRequest({ id: id });
 
-      return res.status(400).json({
-        message: "Request expired",
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Request expired.",
       });
     }
 
     res.setHeader("Referrer-Policy", "no-referrer");
     return res.status(200).json({});
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "" });
+    return handleError(error, res);
   }
 };
 
@@ -83,20 +80,25 @@ export const updateUserFromAccountRecovery = async (req: Request, res: Response)
     const { password } = req.body;
 
     if (!id) {
-      return res.status(400).json({ message: "Request ID needed." });
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Request ID required.",
+      });
     }
 
     const tempRequest = await getTempRequestFromToken(id);
 
     if (!tempRequest || !tempRequest.userID) {
-      return res.status(404).json({
+      throw new PropelHTTPError({
+        code: "NOT_FOUND",
         message: "Request expired.",
       });
     }
 
     if (!dayjs().isBefore(dayjs(tempRequest.expiry))) {
-      return res.status(400).json({
-        message: "Request expired",
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Request expired.",
       });
     }
 
@@ -108,7 +110,8 @@ export const updateUserFromAccountRecovery = async (req: Request, res: Response)
     });
 
     if (!updatedUser) {
-      return res.status(500).json({
+      throw new PropelHTTPError({
+        code: "INTERNAL_SERVER_ERROR",
         message: "There was an error updating your account. Please try again.",
       });
     }
@@ -119,7 +122,6 @@ export const updateUserFromAccountRecovery = async (req: Request, res: Response)
       message: "Password updated successfully.",
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "" });
+    return handleError(error, res);
   }
 };

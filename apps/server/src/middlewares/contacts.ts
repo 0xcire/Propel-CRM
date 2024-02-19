@@ -1,47 +1,55 @@
 import { findContactByID, findRelation } from "@propel/drizzle";
 
+import { PropelHTTPError } from "../lib/http-error";
+import { handleError } from "../utils/handle-error";
+
 import type { Request, Response, NextFunction } from "express";
 import type { Contact } from "@propel/drizzle";
 
 export const isContactOwner = async (req: Request, res: Response, next: NextFunction) => {
-  const userID = req.user.id;
-  const { contactID } = req.params;
-  const method = req.method;
+  try {
+    const userID = req.user.id;
+    const { contactID } = req.params;
+    const method = req.method;
 
-  const contactByID = await findContactByID(+contactID!, userID);
+    if (!contactID) {
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "Contact ID is required.",
+      });
+    }
 
-  const contactToUserRelation = await findRelation({ currentUserID: userID, existingContactID: +contactID! });
+    const contactByID = await findContactByID(+contactID, userID);
+    const contactToUserRelation = await findRelation({ currentUserID: userID, existingContactID: +contactID });
 
-  if (!contactID) {
-    return res.status(400).json({
-      message: "Please provide a contact ID",
-    });
+    if (!contactByID) {
+      throw new PropelHTTPError({
+        code: "NOT_FOUND",
+        message: `Contact by id: ${contactID} does not exist`,
+      });
+    }
+
+    if (!contactToUserRelation) {
+      throw new PropelHTTPError({
+        code: "FORBIDDEN",
+        message: "Cannot perform operations on this contact.",
+      });
+    }
+
+    // need name to return helpful message for POST / PATCH, DELETE
+    if (contactByID.name && method !== "GET") {
+      req.contact = {
+        name: contactByID.name,
+      };
+    }
+
+    // only applies to get('/contacts/:id')
+    if (method === "GET") {
+      req.contact = contactByID as Contact;
+    }
+
+    return next();
+  } catch (error) {
+    return handleError(error, res);
   }
-
-  // TODO: should just make one query that joins on usersToContacts, and checks, instead of making these two queries
-  if (!contactByID) {
-    return res.status(404).json({
-      message: `Contact by id: ${contactID} does not exist`,
-    });
-  }
-
-  if (!contactToUserRelation) {
-    return res.status(403).json({
-      message: "Cannot perform operations on this contact.",
-    });
-  }
-
-  // need name to return helpful message for POST / PATCH, DELETE
-  if (contactByID.name && method !== "GET") {
-    req.contact = {
-      name: contactByID.name,
-    };
-  }
-
-  // only applies to get('/contacts/:id')
-  if (method === "GET") {
-    req.contact = contactByID as Contact;
-  }
-
-  return next();
 };

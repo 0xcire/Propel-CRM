@@ -1,5 +1,14 @@
 import { deleteRedisKV, getValueFromRedisKey } from "@propel/redis";
-import { createToken, createSecureCookie, deriveSessionCSRFToken, isDeployed } from "../utils";
+import {
+  createToken,
+  createSecureCookie,
+  deriveSessionCSRFToken,
+  isDeployed,
+  handleError,
+  //
+} from "../utils";
+
+import { PropelHTTPError } from "../lib/http-error";
 
 import {
   ABSOLUTE_SESSION_COOKIE,
@@ -19,8 +28,9 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
     const idleSession: string | undefined = req.signedCookies[IDLE_SESSION_COOKIE];
 
     if (absoluteSession && idleSession && absoluteSession !== idleSession) {
-      return res.status(403).json({
-        message: "Session is invalid.",
+      throw new PropelHTTPError({
+        code: "FORBIDDEN",
+        message: "Session invalid.",
       });
     }
 
@@ -47,8 +57,9 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
 
       initializePreAuthSession(req, res);
 
-      return res.status(403).json({
-        message: "Session does not exist",
+      throw new PropelHTTPError({
+        code: "FORBIDDEN",
+        message: "Session does not exist.",
       });
     }
 
@@ -74,15 +85,17 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
 
       initializePreAuthSession(req, res);
 
-      return res.status(403).json({
-        message: "Session has timed out.",
+      throw new PropelHTTPError({
+        code: "FORBIDDEN",
+        message: "Session has timed out",
       });
     }
 
     const userIDByToken = await getValueFromRedisKey(absoluteSession);
 
     if (!userIDByToken) {
-      return res.status(403).json({
+      throw new PropelHTTPError({
+        code: "FORBIDDEN",
         message: "Can't find user.",
       });
     }
@@ -116,8 +129,7 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
 
     return next();
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 
@@ -126,7 +138,8 @@ export const validatePreAuthSession = async (req: Request, res: Response, next: 
     const preAuthSession = req.signedCookies[PRE_AUTH_SESSION_COOKIE];
 
     if (!preAuthSession) {
-      return res.status(400).json({
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
         message: "Session likely timed out. Please refresh the page.",
       });
     }
@@ -137,8 +150,7 @@ export const validatePreAuthSession = async (req: Request, res: Response, next: 
 
     return next();
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
 

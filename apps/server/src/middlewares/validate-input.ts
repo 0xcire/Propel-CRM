@@ -1,5 +1,5 @@
-import { AnyZodObject, ZodEffects, ZodError } from "zod";
-import { objectNotEmpty } from "../utils";
+import { AnyZodObject, ZodEffects } from "zod";
+import { objectNotEmpty, handleError } from "../utils";
 import { getRequestBodies } from "../config";
 
 import type { Request, Response, NextFunction } from "express";
@@ -26,12 +26,7 @@ export const validateRequest = (schema: SchemaParams) => {
 
       return next();
     } catch (error) {
-      if (error instanceof ZodError) {
-        return res.status(422).json({
-          message: "Invalid inputs on request.",
-        });
-      }
-      return res.status(400).json({});
+      return handleError(error, res);
     }
   };
 };

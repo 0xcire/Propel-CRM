@@ -1,12 +1,15 @@
 import { NewUser, findUsersByEmail, findUsersByUsername, insertNewUser } from "@propel/drizzle";
 import { hashPassword } from "@propel/lib";
 
+import { PropelHTTPError } from "../../lib/http-error";
+
 import {
   createToken,
   persistAuthSession,
   removePreAuthCookies,
   setAuthSessionCookies,
   createVerifyEmailRequestAndSendEmail,
+  handleError,
 } from "../../utils";
 
 import { SALT_ROUNDS } from "../../config";
@@ -19,19 +22,24 @@ export const signup = async (req: Request, res: Response) => {
     const { name, username, email, password }: UserInput = req.body;
 
     if (!name || !username || !email || !password) {
-      return res.sendStatus(400);
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
+        message: "All fields required.",
+      });
     }
 
     const userByUsername = await findUsersByUsername(username);
     if (userByUsername) {
-      return res.status(409).json({
+      throw new PropelHTTPError({
+        code: "CONFLICT",
         message: "Username not available. Please pick another.",
       });
     }
 
     const userByEmail = await findUsersByEmail({ email: email });
     if (userByEmail) {
-      return res.status(409).json({
+      throw new PropelHTTPError({
+        code: "CONFLICT",
         message: "Email already exists.",
       });
     }
@@ -46,7 +54,8 @@ export const signup = async (req: Request, res: Response) => {
     const insertedUser = await insertNewUser(newUser);
 
     if (!insertedUser) {
-      return res.status(400).json({
+      throw new PropelHTTPError({
+        code: "BAD_REQUEST",
         message: "There was an error creating your account. Please try again.",
       });
     }
@@ -64,7 +73,6 @@ export const signup = async (req: Request, res: Response) => {
       user: insertedUser,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({});
+    return handleError(error, res);
   }
 };
