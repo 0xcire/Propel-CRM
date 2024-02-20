@@ -29,6 +29,7 @@ import {
   listingQueryValidator,
   listingSearchQueryValidator,
   contactIDValidator,
+  markSoldValidator,
 } from "@propel/drizzle";
 
 export default (router: Router) => {
@@ -96,11 +97,12 @@ export default (router: Router) => {
   );
 
   router.post(
-    "/listings/status/:listingID",
-    validateRequest({ cookies: authCookieValidator, params: listingIDValidator }),
+    "/listings/:listingID/sold/:contactID",
+    validateRequest({ cookies: authCookieValidator, params: listingIDValidator, body: markSoldValidator }),
     validateSession,
     validateCSRF,
     isListingOwner,
+    isContactOwner,
     markListingAsSold
   );
 

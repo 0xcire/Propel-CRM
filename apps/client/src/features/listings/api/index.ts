@@ -64,7 +64,7 @@ export const markListingAsSold = (
   values: SoldListing
 ): Promise<ListingResponse> => {
   return Post({
-    endpoint: `listings/status/${values.listingID}`,
+    endpoint: `listings/${values.listingID}/sold/${values.contactID}`,
     body: JSON.stringify(values),
   }).then(handleAPIResponse<ListingResponse>);
 };

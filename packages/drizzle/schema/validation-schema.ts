@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { createInsertSchema } from "drizzle-zod";
-import { users, contacts, tasks, listings } from "../schema";
+import { users, contacts, tasks, listings, soldListings } from "../schema";
 
 import isEmail from "validator/lib/isEmail";
 
@@ -62,6 +62,13 @@ export const listingAndContactIDValidator = listingIDSchema.merge(contactIDSchem
   listingID: schema.listingID.trim(),
   contactID: schema.contactID.trim(),
 }));
+
+export const markSoldValidator = createInsertSchema(soldListings, {
+  contactID: (schema) => schema.contactID.positive(),
+  listingID: (schema) => schema.listingID.positive(),
+  salePrice: (schema) => schema.salePrice.trim(),
+  userID: (schema) => schema.userID.positive(),
+});
 
 export const accountRecoveryValidator = z
   .object({

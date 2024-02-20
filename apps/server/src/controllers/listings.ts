@@ -1,5 +1,4 @@
 import {
-  findContactByID,
   deleteListingByID,
   findContactsRelatedListings,
   findExistingLead,
@@ -212,7 +211,6 @@ export const deleteListing = async (req: Request, res: Response) => {
 
 export const markListingAsSold = async (req: Request, res: Response) => {
   try {
-    const userID = req.user.id;
     const { listingID } = req.params;
     const values: NewSoldListing = req.body;
 
@@ -223,33 +221,10 @@ export const markListingAsSold = async (req: Request, res: Response) => {
       });
     }
 
-    if (values.userID !== userID) {
-      return res.status(400).json({
-        message: "",
-      });
-    }
-
-    if (values.listingID !== +listingID) {
-      return res.status(400).json({
-        message: "",
-      });
-    }
-
-    // TODO: refactor to have contactID & isContactOwner check at router
-    // /listings/:listingID/sold/:contactID
-    const contactByID = await findContactByID(values.contactID as number, userID);
-
-    if (!contactByID) {
-      throw new PropelHTTPError({
-        code: "BAD_REQUEST",
-        message: "That's weird, couldn't find that contact to add. Please try again.",
-      });
-    }
-
     await insertSoldListingData(values);
 
     return res.status(200).json({
-      message: `${values.listingID} marked sold.`,
+      message: `Listing: ${values.listingID} sold to ${req.contact.name}`,
     });
   } catch (error) {
     return handleError(error, res);
