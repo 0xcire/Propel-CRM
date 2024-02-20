@@ -1,5 +1,5 @@
 import { findUsersByEmail } from "@propel/drizzle";
-import { consumeRateLimitPoint, deleteRateLimit, getRateLimiter } from "@propel/redis";
+import { limiterByEmailForSignIn, deleteRateLimit, getRateLimiter } from "@propel/redis";
 
 import { checkPassword } from "@propel/lib";
 import { persistAuthSession, removePreAuthCookies, setAuthSessionCookies, createToken, handleError } from "../../utils";
@@ -20,11 +20,10 @@ export const signin = async (req: Request, res: Response) => {
       });
     }
 
-    const rateLimiter = await getRateLimiter(email);
+    const rateLimiter = await getRateLimiter(limiterByEmailForSignIn, email);
     const tries = rateLimiter?.remainingPoints;
 
     const userByEmail = await findUsersByEmail({ email: email, signingIn: true });
-    await consumeRateLimitPoint(email);
 
     if (!userByEmail) {
       throw new PropelHTTPError({
@@ -46,7 +45,7 @@ export const signin = async (req: Request, res: Response) => {
 
     const sessionID = createToken(16);
 
-    await deleteRateLimit(email);
+    await deleteRateLimit(limiterByEmailForSignIn, email);
     await persistAuthSession(req, sessionID, userByEmail.id);
 
     removePreAuthCookies(req, res);

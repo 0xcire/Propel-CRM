@@ -19,12 +19,6 @@ export const getTempRequest = async (email: string) => {
   return tempRequest[0];
 };
 
-export const getAllTempRequestsForUserID = async (userID: number) => {
-  const requests = await db.select().from(tempRequests).where(eq(tempRequests.userID, userID));
-
-  return requests;
-};
-
 export const getTempRequestFromToken = async (token: string) => {
   const tempRequest = await db
     .select({

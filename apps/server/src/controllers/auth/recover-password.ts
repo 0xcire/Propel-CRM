@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 
 import { deleteTemporaryRequest, findUsersByEmail, getTempRequestFromToken, updateUserByID } from "@propel/drizzle";
-import { consumeRateLimitPoint } from "@propel/redis";
+import { deleteRateLimit, limiterByEmailForAccountRecovery } from "@propel/redis";
 import { hashPassword } from "@propel/lib";
 
 import { PropelHTTPError } from "../../lib/http-error";
@@ -16,11 +16,7 @@ export const requestPasswordRecovery = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
 
-    // [ ] should using a new instance of rateLimiterRes with different opts.keyPrefix - 'recovery'
-    const recoveryIdentifier = `${email}-recovery`;
-
     const userByEmail = await findUsersByEmail({ email: email });
-    await consumeRateLimitPoint(recoveryIdentifier);
 
     if (!userByEmail) {
       return res.status(200).json({
@@ -28,6 +24,7 @@ export const requestPasswordRecovery = async (req: Request, res: Response) => {
       });
     }
 
+    await deleteRateLimit(limiterByEmailForAccountRecovery, email);
     await createRecoverPasswordRequestAndSendEmail(userByEmail.id, userByEmail.email);
 
     return res.status(200).json({

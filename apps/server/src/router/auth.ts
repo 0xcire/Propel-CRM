@@ -14,6 +14,7 @@ import {
   verifyEmailQueryValidator,
 } from "@propel/drizzle";
 import { isOwner } from "../middlewares";
+import { rateLimitSignIn, rateLimitAccountRecovery, rateLimitAccountVerification } from "../middlewares/rate-limit";
 import {
   signin,
   signup,
@@ -24,6 +25,7 @@ import {
   verifyEmail,
   requestNewEmailVerification,
 } from "../controllers/auth";
+
 import { PRE_AUTH_SESSION_COOKIE } from "../config";
 
 export default (router: Router) => {
@@ -39,8 +41,8 @@ export default (router: Router) => {
     "/auth/signin",
     validateRequest({ body: signinValidator }),
     validatePreAuthSession,
-    validateCSRF, //
-    // rateLimitRequestByUserEmail, -> [ ]: not sure why this didn't come to mind. refactor rate limit code into middleware
+    validateCSRF,
+    rateLimitSignIn,
     signin
   );
 
@@ -66,7 +68,7 @@ export default (router: Router) => {
     }),
     validatePreAuthSession,
     validateCSRF,
-    // rateLimitRequestByUserEmail,
+    rateLimitAccountRecovery,
     requestPasswordRecovery
   );
 
@@ -105,7 +107,7 @@ export default (router: Router) => {
     validateSession,
     isOwner,
     validateCSRF,
-    // rateLimitRequestByUserID,
+    rateLimitAccountVerification,
     requestNewEmailVerification
   );
 };

@@ -1,5 +1,5 @@
 import { insertNewUser, deleteUserByID, findUsersByUsername, getTempRequest } from "@propel/drizzle";
-import { deleteRedisKV, limiterConsecutiveFailsByEmail } from "@propel/redis";
+import { deleteRateLimit, deleteRedisKV, limiterByEmailForSignIn } from "@propel/redis";
 import { hashPassword } from "@propel/lib";
 
 import { TESTMAIL_NAMESPACE } from "../config";
@@ -121,10 +121,10 @@ export const createUsersFixture = (page: Page, workerInfo: WorkerInfo) => {
     clearRateLimit: async (email: string | Array<string>) => {
       if (Array.isArray(email)) {
         return email.forEach(async (address) => {
-          await limiterConsecutiveFailsByEmail.delete(address);
+          await deleteRateLimit(limiterByEmailForSignIn, address);
         });
       }
-      return await limiterConsecutiveFailsByEmail.delete(email);
+      return await deleteRateLimit(limiterByEmailForSignIn, email);
     },
 
     getTempRequestToken: async (email: string) => {

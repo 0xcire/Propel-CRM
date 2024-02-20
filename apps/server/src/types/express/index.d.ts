@@ -2,11 +2,11 @@ declare namespace Express {
   interface Request {
     user: {
       id: number;
+      email?: string;
     };
     session: {
       id: string;
     };
-    task: {};
     listing: {
       id: number;
       createdAt: Date | null;
@@ -39,7 +39,6 @@ declare namespace Express {
       dueDate: string | null;
       completed: boolean | null;
       priority: "low" | "medium" | "high" | null;
-      status: "todo" | "in progress" | "done" | "canceled" | null;
     };
   }
 }
