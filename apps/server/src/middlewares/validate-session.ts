@@ -109,7 +109,6 @@ export const validateSession = async (req: Request, res: Response, next: NextFun
         id: absoluteSession,
       };
 
-      // setIdleTimeout()
       // reset idle timeout
       createSecureCookie(req, {
         res: res,

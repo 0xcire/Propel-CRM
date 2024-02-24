@@ -26,6 +26,7 @@ import {
 
 export default (router: Router) => {
   router.get(
+    // [ ]: these dashboard endpoints likely can be removed
     "/dashboard/contacts",
     validateRequest({ cookies: authCookieValidator }),
     validateSession,
@@ -39,6 +40,7 @@ export default (router: Router) => {
     getMyContacts
   );
 
+  // [ ]: could also be removed and logic added to /contacts
   router.get(
     "/contacts/search",
     validateRequest({ cookies: authCookieValidator, query: contactSearchQueryValidator }),

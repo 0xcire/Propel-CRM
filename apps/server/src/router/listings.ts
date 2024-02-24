@@ -33,6 +33,7 @@ import {
 } from "@propel/drizzle";
 
 export default (router: Router) => {
+  // [ ] : could be removed
   router.get(
     "/dashboard/listings",
     validateRequest({ cookies: authCookieValidator }),
@@ -47,6 +48,7 @@ export default (router: Router) => {
     getAllListings
   );
 
+  // [ ]: could be removed
   router.get(
     "/listings/search",
     validateRequest({ cookies: authCookieValidator, query: listingSearchQueryValidator }),

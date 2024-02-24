@@ -30,6 +30,7 @@ import {
 } from "@propel/drizzle";
 
 export default (router: Router) => {
+  // [ ]: can be removed
   router.get(
     "/dashboard/tasks",
     validateRequest({ query: dashboardTaskQueryValidator, cookies: authCookieValidator }),
@@ -44,6 +45,7 @@ export default (router: Router) => {
     getTasks
   );
 
+  // [ ] could be removed
   router.get(
     "/tasks/search",
     validateRequest({ cookies: authCookieValidator, query: taskQuerySearchValidator }),

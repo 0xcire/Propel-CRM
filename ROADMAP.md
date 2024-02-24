@@ -1,5 +1,8 @@
 ## Roadmap
 
+I see this being something that will be forever a WIP.
+So many features to add, so many improvements and optimizations to make as I learn more!
+
 ### MVP Features
 
 - [x] adding **full** Docker support
@@ -28,11 +31,13 @@
 
 - React Query
 
-  - [x] optimistic UI, only applied to delete mutations
+  - [x] optimistic UI ( only applied to delete mutations )
 
 - Resend (Email Service)
 
-  - [ ] Account recovery, email verification, sending pdf reports, etc
+  - [x] Account Recovery
+  - [x] Email Verification
+  - [ ] Create / Send PDF report on analytics
 
 - Amazon S3
 
@@ -41,10 +46,11 @@
 
 - auth / user-slice
 
-  - [ ] email confirmation
-  - [ ] account recovery
+  - [x] email confirmation
+  - [x] account recovery
   - [ ] 2fa opt-in
   - [ ] disable account
+  - [ ] export data as csv?
 
 - contacts-slice
 

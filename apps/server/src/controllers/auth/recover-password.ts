@@ -59,7 +59,7 @@ export const getValidRecoveryRequest = async (req: Request, res: Response) => {
       await deleteTemporaryRequest({ id: id });
 
       throw new PropelHTTPError({
-        code: "BAD_REQUEST",
+        code: "UNAUTHORIZED",
         message: "Request expired.",
       });
     }
@@ -94,7 +94,7 @@ export const updateUserFromAccountRecovery = async (req: Request, res: Response)
 
     if (!dayjs().isBefore(dayjs(tempRequest.expiry))) {
       throw new PropelHTTPError({
-        code: "BAD_REQUEST",
+        code: "UNAUTHORIZED",
         message: "Request expired.",
       });
     }
