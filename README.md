@@ -47,6 +47,7 @@ A CRM for real estate agents.
 
 - Playwright e2e tests
 - Unit tests for pure util functions
+- Supertest for API level integration tests
 
 - Email service to verify account email, recover account password and create / send analytics reports ( WIP )
 
@@ -135,7 +136,11 @@ open up `http://localhost:5173/` in your browser
 
 ## Running Tests
 
-- run `npm run test:local --workspace=e2e`
+in root dir:
+
+- for e2e: run `npm run test:local --workspace=e2e`
+- for server unit/integration tests: run `npm run test --workspace=server`
+  - ensure you initialize preview env with `npm run preview` before hand
 
 ## Interacting with DB via Drizzle
 
@@ -202,6 +207,13 @@ see more drizzle specific commands [here](https://orm.drizzle.team/kit-docs/comm
 
 - Also had trouble initially wrapping my head around SQL aggregate functions when creating the analytics view
 
+- API testing strategy & openAPI
+
+  - while not a replacement, currently using Supertest as a way to test & "document" api functionality
+  - could look to refactor backend with Tsoa, Nest, Deepkit, etc to generate openAPI docs in the future
+    - an example of me doing so with Tsoa can be seen [here](https://github.com/0xcire/sentinel-vacation-rentals)
+  - these tests do not run in CI, they run in husky pre-push
+
 - e2e testing strategy
 
   - hesitancy on exactly how to run tests in CI
@@ -241,5 +253,6 @@ see more drizzle specific commands [here](https://orm.drizzle.team/kit-docs/comm
   - Using some serverless providers in Upstash & Neon, could rearchitect express app/infra to run serverless.
 
 - Monorepo architecture
+
   - ran into instances where I realized some code sharing (especially for e2e testing)
   - Had I planned for this from the start, I think I would have gone with Nx, however, a migration using turborepo seemed more straightforward
