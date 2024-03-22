@@ -3,7 +3,8 @@ import { test, expect, describe } from "@jest/globals";
 import dayjs from "dayjs";
 
 import { createRequestAndDeleteRedundancy, deleteTemporaryRequest, queryClient } from "@propel/drizzle";
-import { getHeaderFromResponse, sendGetRequestToPath } from "../utils/requests";
+import { sendGetRequestToPath } from "../utils/requests";
+import { getHeaderFromResponse } from "../utils/headers";
 
 const FAKE_REQUEST_ID = "347458c6-e7b9-4ad7-b71b-1e8e3e365a86";
 
@@ -11,16 +12,17 @@ afterAll(async () => {
   await queryClient.end();
 });
 
-describe("auth related GET endpoints", () => {
+describe("GET /auth/recovery/:id", () => {
   test("return 404 for no found temp_request", async () => {
     const header = await getHeaderFromResponse();
 
-    const { statusCode } = await sendGetRequestToPath({
-      path: `auth/recovery/${FAKE_REQUEST_ID}`,
+    const { statusCode, body } = await sendGetRequestToPath({
+      path: `/auth/recovery/${FAKE_REQUEST_ID}`,
       header: header,
     });
 
     expect(statusCode).toBe(404);
+    expect(body.message).toBe("Request expired.");
   });
 
   test("return 401 for expired temp_request", async () => {
@@ -35,12 +37,13 @@ describe("auth related GET endpoints", () => {
 
     const header = await getHeaderFromResponse();
 
-    const { statusCode } = await sendGetRequestToPath({
+    const { statusCode, body } = await sendGetRequestToPath({
       path: `/auth/recovery/${requestID}`,
       header: header,
     });
 
     expect(statusCode).toBe(401);
+    expect(body.message).toBe("Request expired.");
 
     // delete clean up handled in getValidRecoveryRequest controller
   });
