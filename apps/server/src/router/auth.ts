@@ -29,13 +29,7 @@ import {
 import { PRE_AUTH_SESSION_COOKIE } from "../config";
 
 export default (router: Router) => {
-  router.post(
-    "/auth/signup",
-    validateRequest({ body: signupValidator }),
-    validatePreAuthSession,
-    validateCSRF, //
-    signup
-  );
+  router.post("/auth/signup", validateRequest({ body: signupValidator }), validatePreAuthSession, signup);
 
   router.post(
     "/auth/signin",

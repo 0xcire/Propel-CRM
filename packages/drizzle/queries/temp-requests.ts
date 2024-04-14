@@ -47,18 +47,25 @@ export const createRequestAndDeleteRedundancy = async ({ id, expiry, userEmail, 
     );
   }
 
-  const temp = await db.insert(tempRequests).values({
-    id: id,
-    expiry: expiry,
-    userEmail: userEmail,
-    userID: userID,
-  });
+  const temp = await db
+    .insert(tempRequests)
+    .values({
+      id: id,
+      expiry: expiry,
+      userEmail: userEmail,
+      userID: userID,
+    })
+    .returning();
 
-  return temp;
+  return temp[0];
 };
 
 export const deleteTemporaryRequest = async ({ id }: Pick<TempRequest, "id">) => {
   const deletedRequest = await db.delete(tempRequests).where(eq(tempRequests.id, id)).returning();
 
   return deletedRequest[0];
+};
+
+export const deleteTemporaryRequestByEmail = async ({ userEmail }: Pick<TempRequest, "userEmail">) => {
+  await db.delete(tempRequests).where(eq(tempRequests.userEmail, userEmail as string));
 };

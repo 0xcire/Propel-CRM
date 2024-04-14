@@ -321,6 +321,16 @@ export const findExistingLead = async (listingID: number, contactID: number) => 
   return existingLead[0];
 };
 
+export const isListingSold = async (listingID: number): Promise<boolean> => {
+  const rows = await db
+    .select()
+    .from(listings)
+    .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
+    .where(eq(listings.id, listingID));
+
+  return rows.length === 1;
+};
+
 export const insertSoldListingData = async (values: NewSoldListing) => {
   const soldListing = await db.insert(soldListings).values(values).onConflictDoNothing().returning({
     listingID: soldListings.listingID,
@@ -331,6 +341,10 @@ export const insertSoldListingData = async (values: NewSoldListing) => {
   });
 
   return soldListing[0];
+};
+
+export const removeSoldListingData = async (listingID: number) => {
+  await db.delete(soldListings).where(eq(soldListings.listingID, listingID));
 };
 
 export const insertNewLead = async (listingID: number, contactID: number, createdAt?: Date) => {

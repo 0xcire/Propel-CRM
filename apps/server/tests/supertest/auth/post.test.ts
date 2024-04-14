@@ -1,24 +1,75 @@
 import { test, expect, describe } from "@jest/globals";
-import { sendMutationRequestToPath } from "../utils/requests";
-import { findCookieByName, getHeaderFromResponse, parseCookieForValue } from "../utils/headers";
 
-import { deleteRateLimit, deleteRedisKV, limiterByEmailForSignIn, redisClient } from "@propel/redis";
+import { sendMutationRequestToPath } from "../utils/requests";
+import { cleanUpSession, disconnectFromDb, disconnectFromRedis } from "../utils/session";
+import { removeTestUserAndSession } from "../utils/test-entities";
+
+import { findUsersByUsername, deleteTemporaryRequestByEmail } from "@propel/drizzle";
+import { deleteRateLimit, limiterByEmailForAccountRecovery, limiterByEmailForSignIn } from "@propel/redis";
+
+afterAll(async () => {
+  await disconnectFromDb();
+  disconnectFromRedis();
+});
+
+describe("POST /auth/signup", () => {
+  test("returns 409 for taken username", async () => {
+    const { statusCode } = await sendMutationRequestToPath({
+      method: "post",
+      path: "/auth/signup",
+      data: {
+        name: "Bill Bob",
+        username: `test123`,
+        email: "definitelynotfake@email.com",
+        password: "YouCantGuessThis123!",
+      },
+    });
+    expect(statusCode).toBe(409);
+  });
+
+  test("returns 409 for taken email", async () => {
+    const { statusCode } = await sendMutationRequestToPath({
+      method: "post",
+      path: "/auth/signup",
+      data: {
+        name: "Bill Bob",
+        username: `st${Date.now()}`,
+        email: "test@gmail.com",
+        password: "YouCantGuessThis123!",
+      },
+    });
+    expect(statusCode).toBe(409);
+  });
+
+  test("returns 201 for created (new) user", async () => {
+    const now = `st${Date.now()}`;
+    const { statusCode, headers } = await sendMutationRequestToPath({
+      method: "post",
+      path: "/auth/signup",
+      data: {
+        name: "Bill Bob",
+        username: now,
+        email: `${now}@gmail.com`,
+        password: "YouCantGuessThis123!",
+      },
+    });
+    expect(statusCode).toBe(201);
+
+    const user = await findUsersByUsername(now);
+
+    if (user) {
+      await removeTestUserAndSession(user, headers);
+      await deleteTemporaryRequestByEmail({ userEmail: `${now}@gmail.com` });
+    }
+  });
+});
 
 describe("POST /auth/signin", () => {
-  // [x]: 401 for no user by email
-  // [x]: 401 for incorrect password
-  // [ ]: 200
-  // [ ]: test the rate limit?
-
-  afterAll(async () => {
-    redisClient.disconnect();
-  });
   test("returns 401 for incorrect email", async () => {
-    const header = await getHeaderFromResponse();
     const { statusCode } = await sendMutationRequestToPath({
       method: "post",
       path: "/auth/signin",
-      header: header,
+
       data: {
         email: "definitelynotfake@email.com",
         password: "YouCantGuessThis123!",
@@ -30,11 +81,10 @@ describe("POST /auth/signin", () => {
   });
 
   test("returns 401 for incorrect password", async () => {
-    const header = await getHeaderFromResponse();
     const { statusCode } = await sendMutationRequestToPath({
       method: "post",
       path: "/auth/signin",
-      header: header,
+
       data: {
         email: "test@gmail.com",
         password: "YouCantGuessThis123!",
@@ -44,11 +94,10 @@ describe("POST /auth/signin", () => {
   });
 
   test("returns 200 for success", async () => {
-    const header = await getHeaderFromResponse();
     const { statusCode, headers } = await sendMutationRequestToPath({
       method: "post",
       path: "/auth/signin",
-      header: header,
+
       data: {
         email: "test@gmail.com",
         password: "testtest",
@@ -56,42 +105,60 @@ describe("POST /auth/signin", () => {
     });
     expect(statusCode).toBe(200);
 
-    const sessionCookie = findCookieByName(
-      headers["set-cookie"] as unknown as Array<string>,
-      "absolute-propel-session"
-    );
-    const signedSessionID = parseCookieForValue(sessionCookie);
-
-    const sessionID = decodeURIComponent(signedSessionID.slice(0, signedSessionID.lastIndexOf("."))).slice(2);
-
-    await deleteRedisKV(sessionID);
+    await cleanUpSession(headers);
   });
 });
 
-// describe("POST /auth/signout", () => {
-//   // [ ]: 200
+describe("POST /auth/signout", () => {
+  test("returns 200 when user signs out", async () => {
+    const { headers } = await sendMutationRequestToPath({
+      method: "post",
+      path: "/auth/signin",
+      data: {
+        email: "test@gmail.com",
+        password: "testtest",
+      },
+    });
 
-//   beforeAll(async () => {
-//     console.log("hey");
-//   });
-//   test("hey", async () => {
-//     expect(1).toBe(1);
-//   });
-// });
+    const { statusCode } = await sendMutationRequestToPath({
+      method: "post",
+      path: "/auth/signout",
+      header: headers,
+    });
+    expect(statusCode).toBe(200);
+  });
+});
 
-// describe("POST /auth/recovery", () => {
-//   // [ ]: 200 success
-//   // [ ]: 200 fail
-//   // should purposely be ambiguous
-//   test("hey", async () => {
-//     expect(1).toBe(1);
-//   });
-// });
+describe("POST /auth/recovery", () => {
+  test("return 200 for non existing email", async () => {
+    const { statusCode } = await sendMutationRequestToPath({
+      method: "post",
+      path: "/auth/recovery",
+      data: {
+        email: "fugazi@email.com",
+      },
+    });
+    expect(statusCode).toBe(200);
 
-// describe("POST /auth/verify-email/:id", () => {
-//   // [ ]: 400 no email -> technically should not be possible...?
-//   // [ ]: 200
-//   test("hey", async () => {
-//     expect(1).toBe(1);
-//   });
-// });
+    await deleteRateLimit(limiterByEmailForAccountRecovery, "fugazi@email.com");
+  });
+
+  test("return 200 for existing email", async () => {
+    const { statusCode } = await sendMutationRequestToPath({
+      method: "post",
+      path: "/auth/recovery",
+      data: {
+        email: "test@email.com",
+      },
+    });
+    expect(statusCode).toBe(200);
+
+    await deleteRateLimit(limiterByEmailForAccountRecovery, "test@email.com");
+  });
+});
+
+// methods tested in e2e
+
+// POST /auth/verify-email/:id
+// PATCH /auth/recovery/:id
+// PATCH /auth/verify-email

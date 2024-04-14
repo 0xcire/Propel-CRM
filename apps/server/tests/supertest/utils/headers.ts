@@ -20,6 +20,14 @@ export const parseCookieForValue = (cookie: string | undefined): string => {
   return cookie.split(";")[0].split("=")[1];
 };
 
+// assuming additional cookie params are causing diff signature when unsigning cookie?
+export const decodeSignedCookie = (signedCookie: string): string => {
+  const noSignature = signedCookie.slice(0, signedCookie.lastIndexOf("."));
+  const decode = decodeURIComponent(noSignature).slice(2);
+
+  return decode;
+};
+
 const getCSRFToken = (header: Header): string => {
   const setCookieHeader = header["set-cookie"] as unknown as Array<string>;
 
@@ -30,10 +38,7 @@ const getCSRFToken = (header: Header): string => {
 };
 
 export const generateBaseHeaders = (header: Header) => {
-  const cookiesString = [...header["set-cookie"]].join();
-
   return {
-    Cookie: cookiesString,
     Accept: "application/json",
     "Content-Type": "application/json",
     "X-Propel-CSRF": getCSRFToken(header),

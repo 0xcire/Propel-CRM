@@ -139,8 +139,9 @@ open up `http://localhost:5173/` in your browser
 in root dir:
 
 - for e2e: run `npm run test:local --workspace=e2e`
-- for server unit/integration tests: run `npm run test --workspace=server`
-  - ensure you initialize preview env with `npm run preview` before hand
+- for server unit & integration tests: run `npm run test --workspace=server`
+  - ensure you initialize preview env with `npm run preview` beforehand &
+  - seed local db with `npm run migrate:local --workspace=@propel/drizzle && npm run seed:local --workspace=@propel/drizzle` if not done so already
 
 ## Interacting with DB via Drizzle
 

@@ -272,11 +272,13 @@ export const listingQuerySchema = z
   })
   .merge(paginationSchema);
 
-export const listingSearchQuerySchema = listingQuerySchema.merge(
-  z.object({
-    address: z.string(),
-  })
-);
+export const listingSearchQuerySchema = listingQuerySchema
+  .merge(
+    z.object({
+      address: z.string(),
+    })
+  )
+  .partial();
 
 export const listingQueryValidator = listingQuerySchema.transform((schema) => ({
   page: schema.page.trim(),
@@ -285,10 +287,10 @@ export const listingQueryValidator = listingQuerySchema.transform((schema) => ({
 }));
 
 export const listingSearchQueryValidator = listingSearchQuerySchema.transform((schema) => ({
-  page: schema.page.trim(),
-  limit: schema.limit.trim(),
-  status: schema.status.trim(),
-  address: schema.address.trim(),
+  page: schema.page?.trim(),
+  limit: schema.limit?.trim(),
+  status: schema.status?.trim(),
+  address: schema.address?.trim(),
 }));
 
 export const analyticsQuerySchema = z

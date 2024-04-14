@@ -46,6 +46,8 @@ export const signin = async (req: Request, res: Response) => {
     const sessionID = createToken(16);
 
     await deleteRateLimit(limiterByEmailForSignIn, email);
+    // [ ]: if class based, persistAuthSession could be private method on controller
+    // seems much better this way
     await persistAuthSession(req, sessionID, userByEmail.id);
 
     removePreAuthCookies(req, res);

@@ -48,7 +48,6 @@ export default (router: Router) => {
     getAllListings
   );
 
-  // [ ]: could be removed
   router.get(
     "/listings/search",
     validateRequest({ cookies: authCookieValidator, query: listingSearchQueryValidator }),

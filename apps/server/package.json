@@ -9,7 +9,7 @@
     "dev": "NODE_ENV=development nodemon",
     "build": "tsc",
     "start": "npm run build && NODE_ENV=production node ./dist/index.js",
-    "test": "dotenv -e ./.env.local jest --verbose"
+    "test": "dotenv -e ./.env.local jest"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +25,7 @@
     "@types/body-parser": "^1.19.2",
     "@types/compression": "^1.7.2",
     "@types/cookie-parser": "^1.4.3",
+    "@types/cookie-signature": "^1.1.2",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/node": "^20.9.1",
@@ -53,5 +54,8 @@
     "http-status-codes": "^2.3.0",
     "validator": "^13.11.0",
     "zod": "^3.22.0"
+  },
+  "jest": {
+    "verbose": true
   }
 }

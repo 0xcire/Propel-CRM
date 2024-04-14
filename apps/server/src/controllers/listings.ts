@@ -7,6 +7,7 @@ import {
   insertNewLead,
   insertNewListing,
   insertSoldListingData,
+  isListingSold,
   removeLead,
   searchForListings,
   updateListingByID,
@@ -221,6 +222,15 @@ export const markListingAsSold = async (req: Request, res: Response) => {
       });
     }
 
+    const listingIsSold = await isListingSold(+listingID);
+
+    if (listingIsSold) {
+      throw new PropelHTTPError({
+        code: "CONFLICT",
+        message: "This listing is already marked sold.",
+      });
+    }
+
     await insertSoldListingData(values);
 
     return res.status(200).json({
@@ -254,7 +264,7 @@ export const addListingLead = async (req: Request, res: Response) => {
 
     if (existingLead) {
       throw new PropelHTTPError({
-        code: "BAD_REQUEST",
+        code: "CONFLICT",
         message: `${name} is already an established lead for listing: ${listingID}`,
       });
     }
