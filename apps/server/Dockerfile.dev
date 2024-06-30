@@ -7,7 +7,7 @@ FROM base as prune
 WORKDIR /app
 RUN npm install -g turbo
 COPY . .
-RUN turbo prune --scope=server --docker
+RUN turbo prune server --docker
 
 # ----- installer and runner -----
 
@@ -24,5 +24,5 @@ RUN npm install
 COPY --from=prune /app/out/full/ .
 COPY turbo.json turbo.json
 
-CMD npm run migrate:local --workspace=@propel/drizzle && npx turbo dev --scope=server
+CMD npm run migrate:local --workspace=@propel/drizzle && npx turbo dev --filter=server
 # ^ migrate after docker network init

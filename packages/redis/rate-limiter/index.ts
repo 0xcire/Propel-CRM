@@ -4,6 +4,8 @@ import { redisClient } from "../client";
 const maxPoints = 5;
 const _15_MINUTES = 60 * 15;
 
+// this should just be some wrapper class i init with params
+
 export const limiterByUserIDForAccountVerification = new RateLimiterRedis({
   storeClient: redisClient,
   keyPrefix: "user_id_verification",
