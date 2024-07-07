@@ -1,9 +1,6 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-
-import { and, eq } from "drizzle-orm";
-
 import postgres from "postgres";
-
+import { drizzle } from "drizzle-orm/postgres-js";
+import { and, eq } from "drizzle-orm";
 import { faker } from "@faker-js/faker";
 
 import {
