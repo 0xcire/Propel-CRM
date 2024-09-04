@@ -5,7 +5,8 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 // import { sql } from "drizzle-orm";
 import router from "./router";
-import { COOKIE_SECRET, ENV } from "./config";
+import { COOKIE_SECRET, NODE_ENV, configStore } from "./config";
+import { validateConfig } from "./config/config-validator";
 
 const app = express();
 app.set("trust proxy", true);
@@ -38,9 +39,11 @@ app.use(
   })
 );
 
+validateConfig(configStore);
+
 const PORT = 1337;
 app.listen(PORT, () => {
-  if (ENV === "development") {
+  if (NODE_ENV === "development") {
     console.log(`DOCKER: http://localhost:8080 \n NON-DOCKER: http://localhost:5173`);
   } else {
     console.log("running in prod");

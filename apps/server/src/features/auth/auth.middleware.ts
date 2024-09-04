@@ -20,4 +20,5 @@ export class AuthMiddleware {
   }
 }
 
-// new AuthMiddleware().isAccountOwner();
+// const am = new AuthMiddleware().isAccountOwner();
+// authMiddleware.isAccountOwner();

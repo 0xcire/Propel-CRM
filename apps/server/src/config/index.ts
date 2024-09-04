@@ -1,9 +1,57 @@
 import dotenv from "dotenv";
 import type { Request } from "express";
+import { Config } from "./types";
+import { DEFAULT, ENV } from "../types/enums";
 
 dotenv.config();
 
-export const ENV = process.env.NODE_ENV;
+export const configStore: Config = {
+  email: {
+    resendKey: <string>process.env[ENV.RESEND_KEY],
+    verifyEmail: <string>process.env[ENV.VERIFY_EMAIL],
+    recoveryEmail: <string>process.env[ENV.RECOVERY_EMAIL],
+  },
+  redis: {
+    host: <string>process.env[ENV.REDIS_HOST],
+    username: <string>process.env[ENV.REDIS_USERNAME],
+    password: <string>process.env[ENV.REDIS_PW],
+    port: <string>process.env[ENV.REDIS_PORT],
+  },
+  postgres: {
+    url: <string>process.env[ENV.PG_URL],
+  },
+  session: {
+    idleLength: <number>+(process.env[ENV.IDLE_SESSION_LENGTH] || DEFAULT.IDLE_SESSION_LENGTH),
+    preAuthLength: <number>+(process.env[ENV.PRE_AUTH_SESSION_LENGTH] || DEFAULT.PRE_AUTH_SESSION_LENGTH),
+    absoluteLength: <number>+(process.env[ENV.ABSOLUTE_SESSION_LENGTH] || DEFAULT.ABSOLUTE_SESSION_LENGTH),
+  },
+  secret: {
+    preAuthCsrf: <string>process.env[ENV.PRE_AUTH_CSRF_SECRET],
+    csrf: <string>process.env[ENV.CSRF_SECRET],
+    cookie: <string>process.env[ENV.COOKIE_SECRET],
+  },
+  saltRounds: <number>+(process.env[ENV.SALT_ROUNDS] || DEFAULT.SALT_ROUNDS),
+  oneHour: DEFAULT.ONE_HOUR as number,
+};
+
+export const config = {
+  get: (key: string) => {
+    if (key.includes(".")) {
+      const split = key.split(".");
+      if (split.length === 2) {
+        const key = split[0];
+        const nestedKey = split[1];
+
+        //@ts-ignore - unless im missing something relatively simple, typing nested index signatures seems like a pain so I'm just going to pretend
+        return configStore[key][nestedKey];
+      }
+    }
+
+    return configStore[key as keyof typeof configStore];
+  },
+};
+
+export const NODE_ENV = process.env.NODE_ENV;
 
 export const RESEND_KEY = process.env.RESEND_KEY;
 export const RECOVERY_EMAIL = process.env.RECOVERY_EMAIL;

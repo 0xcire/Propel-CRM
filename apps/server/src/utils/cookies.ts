@@ -1,9 +1,9 @@
-import { ENV } from "../config";
+import { NODE_ENV } from "../config";
 
 import type { Request, Response } from "express";
 
 export const isDeployed = (req: Request) => {
-  return ENV === "production" && !req.headers.referer?.includes("localhost");
+  return NODE_ENV === "production" && !req.headers.referer?.includes("localhost");
 };
 
 type CreateSecureCookieParams = {

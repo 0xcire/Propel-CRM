@@ -20,24 +20,36 @@ export class EmailService implements IEmailService {
   constructor(private resendService: ResendService) {}
 
   public async sendEmail({ userInfo, type }: SendEmailParams): Promise<void> {
-    const emailHtml = this.getEmailHtmlByType(type, userInfo.token);
+    const { html, from, subject } = this.getEmailInfoByType(type, userInfo.token);
+
+    if (!html || !from || !subject) {
+      throw new Error("Unable to send email. Invalid parameters.");
+    }
 
     return await this.resendService.actions.send({
-      from: `Propel Recovery <${RECOVERY_EMAIL as string}>`,
+      from: from,
       to: userInfo.recipient,
-      subject: "Password Reset Link",
-      html: emailHtml,
+      subject: subject,
+      html: html,
     });
   }
 
-  private getEmailHtmlByType(type: EmailType, token: string) {
+  private getEmailInfoByType(type: EmailType, token: string) {
     switch (type) {
       case "recovery":
-        return recoverPasswordEmailTemplate(token);
+        return {
+          html: recoverPasswordEmailTemplate(token),
+          from: `Propel Recovery <${RECOVERY_EMAIL as string}>`,
+          subject: "Password Reset Link",
+        };
       case "verify":
-        return verifyAccountEmailTemplate(token);
+        return {
+          html: verifyAccountEmailTemplate(token),
+          from: `Propel Verify <${VERIFY_EMAIL as string}>`,
+          subject: "Password Verification Link",
+        };
       default:
-        return "";
+        return {};
     }
   }
 }

@@ -4,6 +4,42 @@ import { and, eq } from "drizzle-orm";
 
 import type { TempRequest, NewTempRequest } from "../types";
 
+export class TempRequestService {
+  public async getTempRequestIdByEmail(email: string): Promise<Pick<TempRequest, "id"> | undefined> {
+    const tempRequestIds = await db
+      .select({
+        id: tempRequests.id,
+      })
+      .from(tempRequests)
+      .where(eq(tempRequests.userEmail, email));
+
+    if (!tempRequestIds || tempRequestIds.length === 0) {
+      return undefined;
+    }
+
+    return tempRequestIds[0];
+  }
+
+  public async getTempRequestByToken(token: string): Promise<Omit<TempRequest, "userEmail"> | undefined> {
+    const tempRequest = await db
+      .select({
+        id: tempRequests.id,
+        userID: tempRequests.userID,
+        expiry: tempRequests.expiry,
+      })
+      .from(tempRequests)
+      .where(eq(tempRequests.id, token));
+
+    if (!tempRequest || tempRequest.length === 0) {
+      return undefined;
+    }
+
+    return tempRequest[0];
+  }
+
+  public createRequestAndDeleteRedundancy() {}
+}
+
 export const getTempRequest = async (email: string) => {
   const tempRequest = await db
     .select({

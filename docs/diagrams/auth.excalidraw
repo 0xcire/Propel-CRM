@@ -5,8 +5,8 @@
   "elements": [
     {
       "type": "text",
-      "version": 1434,
-      "versionNonce": 454127439,
+      "version": 1466,
+      "versionNonce": 626103830,
       "isDeleted": false,
       "id": "4P_Fhia2EJwRty1T2RfOk",
       "fillStyle": "hachure",
@@ -26,7 +26,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1700625182629,
+      "updated": 1725305046279,
       "link": null,
       "locked": false,
       "fontSize": 18.48421052631575,
@@ -37,12 +37,12 @@
       "containerId": null,
       "originalText": "On Sign In:\n\n- User sends Username || Email & Password to server\n- find user by email\n- if user, password is checked against hashedPW via bcrypt\n- 'session' cookie is created with generated token and updated in db\n- user gets redirected to app\n\nOn Sign Up:\n- User sends name, username, email, password\n- server trys to find user via username and user via email\n- if no conflict, server inserts new user\n    - hashedPW is generated via bcrypt\n    - token is generated and saved to db\n    - token is set as 'session' cookie\n- user gets redirected to app\n\nOn Sign Out:\n- If own user\n    - update sessionToken column to \"\"\n    - res.clearCookie('session') \n- user gets redirected to sign up/in flow",
       "lineHeight": 1.25,
-      "baseline": 501
+      "baseline": 504
     },
     {
       "type": "text",
-      "version": 378,
-      "versionNonce": 1820012833,
+      "version": 380,
+      "versionNonce": 1120599626,
       "isDeleted": false,
       "id": "ZhxeRB6nsr7ygZjfeTuQk",
       "fillStyle": "hachure",
@@ -62,7 +62,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1700625182630,
+      "updated": 1725305046279,
       "link": null,
       "locked": false,
       "fontSize": 18.07027292233665,
@@ -73,12 +73,12 @@
       "containerId": null,
       "originalText": "Client Router: \nreact-query-auth here?\nconst authenticated = false;\nrouter = authenticated ? <Private /> : <Public />",
       "lineHeight": 1.25,
-      "baseline": 83
+      "baseline": 86
     },
     {
       "type": "rectangle",
-      "version": 230,
-      "versionNonce": 212330353,
+      "version": 231,
+      "versionNonce": 1646420822,
       "isDeleted": false,
       "id": "BvBEfZimNSqsaaywrjw0X",
       "fillStyle": "hachure",
@@ -117,14 +117,14 @@
           "type": "arrow"
         }
       ],
-      "updated": 1700548862706,
+      "updated": 1725305046279,
       "link": null,
       "locked": false
     },
     {
       "type": "rectangle",
-      "version": 330,
-      "versionNonce": 1794888017,
+      "version": 331,
+      "versionNonce": 304653578,
       "isDeleted": false,
       "id": "mxwwtSMIDIYJ_Y5k8q-Lp",
       "fillStyle": "hachure",
@@ -163,14 +163,14 @@
           "type": "arrow"
         }
       ],
-      "updated": 1700548862706,
+      "updated": 1725305046279,
       "link": null,
       "locked": false
     },
     {
       "type": "text",
-      "version": 63,
-      "versionNonce": 283422063,
+      "version": 65,
+      "versionNonce": 2112325782,
       "isDeleted": false,
       "id": "J8CEedbGF6ZbmNbkWRfMy",
       "fillStyle": "hachure",
@@ -190,7 +190,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1700625182631,
+      "updated": 1725305046279,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -201,12 +201,12 @@
       "containerId": null,
       "originalText": "Client",
       "lineHeight": 1.25,
-      "baseline": 18
+      "baseline": 21
     },
     {
       "type": "text",
-      "version": 28,
-      "versionNonce": 1595565313,
+      "version": 30,
+      "versionNonce": 1554215882,
       "isDeleted": false,
       "id": "AzkFORWkBhGN-DZTPgo0t",
       "fillStyle": "hachure",
@@ -226,7 +226,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1700625182631,
+      "updated": 1725305046279,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -237,12 +237,12 @@
       "containerId": null,
       "originalText": "Server",
       "lineHeight": 1.25,
-      "baseline": 18
+      "baseline": 21
     },
     {
       "type": "arrow",
-      "version": 106,
-      "versionNonce": 1593843761,
+      "version": 107,
+      "versionNonce": 1213597142,
       "isDeleted": false,
       "id": "gazuU2f3S_1AhWIFW0bxN",
       "fillStyle": "hachure",
@@ -264,7 +264,7 @@
         "type": 2
       },
       "boundElements": [],
-      "updated": 1700548725942,
+      "updated": 1725305046279,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -293,8 +293,8 @@
     },
     {
       "type": "text",
-      "version": 62,
-      "versionNonce": 32188303,
+      "version": 64,
+      "versionNonce": 341207690,
       "isDeleted": false,
       "id": "iu4v-kqZmEBfcV5NVDSnW",
       "fillStyle": "hachure",
@@ -314,7 +314,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1700625182632,
+      "updated": 1725305046279,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -325,12 +325,12 @@
       "containerId": null,
       "originalText": "POST /signin\nemail, pass",
       "lineHeight": 1.25,
-      "baseline": 43
+      "baseline": 46
     },
     {
       "type": "arrow",
-      "version": 146,
-      "versionNonce": 1632869695,
+      "version": 147,
+      "versionNonce": 1384307478,
       "isDeleted": false,
       "id": "0OH-dd2WXkHTvB_xxRGvU",
       "fillStyle": "hachure",
@@ -352,7 +352,7 @@
         "type": 2
       },
       "boundElements": [],
-      "updated": 1700548728536,
+      "updated": 1725305046279,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -381,8 +381,8 @@
     },
     {
       "type": "text",
-      "version": 340,
-      "versionNonce": 1130896609,
+      "version": 342,
+      "versionNonce": 805079370,
       "isDeleted": false,
       "id": "t-lvY2XdvSR21UkPH84bC",
       "fillStyle": "hachure",
@@ -402,7 +402,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1700625182632,
+      "updated": 1725305046279,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -413,12 +413,12 @@
       "containerId": null,
       "originalText": "cookies:\nidle session,\nabsolute session,\ncsrf token derived from session1",
       "lineHeight": 1.25,
-      "baseline": 93
+      "baseline": 96
     },
     {
       "type": "arrow",
-      "version": 233,
-      "versionNonce": 1897735455,
+      "version": 234,
+      "versionNonce": 1122175062,
       "isDeleted": false,
       "id": "50KO_uT1cs80yfcfO7R5_",
       "fillStyle": "hachure",
@@ -440,7 +440,7 @@
         "type": 2
       },
       "boundElements": [],
-      "updated": 1700548897550,
+      "updated": 1725305046279,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -469,8 +469,8 @@
     },
     {
       "type": "text",
-      "version": 279,
-      "versionNonce": 475880879,
+      "version": 281,
+      "versionNonce": 384880650,
       "isDeleted": false,
       "id": "thw9OzsIGT8e-P70o9zzi",
       "fillStyle": "hachure",
@@ -490,7 +490,7 @@
       "frameId": null,
       "roundness": null,
       "boundElements": [],
-      "updated": 1700625182633,
+      "updated": 1725305046279,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -501,12 +501,12 @@
       "containerId": null,
       "originalText": "protected routes validate session,\nrefresh idle timeout.\nstate changing requests validate csrf token",
       "lineHeight": 1.25,
-      "baseline": 68
+      "baseline": 71
     },
     {
       "type": "arrow",
-      "version": 189,
-      "versionNonce": 482860255,
+      "version": 190,
+      "versionNonce": 692817302,
       "isDeleted": false,
       "id": "Lp7zfPoTN0nbam4EHcmX7",
       "fillStyle": "hachure",
@@ -528,7 +528,7 @@
         "type": 2
       },
       "boundElements": [],
-      "updated": 1700548901827,
+      "updated": 1725305046279,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -557,8 +557,8 @@
     },
     {
       "type": "text",
-      "version": 389,
-      "versionNonce": 1760811201,
+      "version": 391,
+      "versionNonce": 221134538,
       "isDeleted": false,
       "id": "QokYdmHUaLReHcMpPDsHY",
       "fillStyle": "hachure",
@@ -583,7 +583,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1700625182634,
+      "updated": 1725305046279,
       "link": null,
       "locked": false,
       "fontSize": 18.795082740311614,
@@ -594,7 +594,7 @@
       "containerId": null,
       "originalText": "if invalid session\ninvalidate cookies, remove session data from redis",
       "lineHeight": 1.25,
-      "baseline": 39
+      "baseline": 42
     }
   ],
   "appState": {

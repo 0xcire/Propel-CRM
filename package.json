@@ -12,6 +12,7 @@
     "dev": "cd .docker && docker compose -f docker-compose.dev.yml up",
     "dev:down": "docker compose -f .docker/docker-compose.dev.yml down",
     "preview": "cd .docker && docker compose -f docker-compose.preview.yml up",
+    "docker:prune": "docker system prune -a -f",
     "build-images": "cd .docker && docker compose -f docker-compose.local.yml up",
     "build-push-images": "cd ./scripts && ./build-push-images.sh",
     "zip-bean-deploy": "cd ./scripts && ./zip-bean-deploy.sh",
