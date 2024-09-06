@@ -5,8 +5,8 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 // import { sql } from "drizzle-orm";
 import router from "./router";
-import { COOKIE_SECRET, NODE_ENV, configStore } from "./config";
-import { validateConfig } from "./config/config-validator";
+import { COOKIE_SECRET, NODE_ENV } from "./config";
+// import { validateConfig } from "./config/config-validator";
 
 const app = express();
 app.set("trust proxy", true);
@@ -39,7 +39,7 @@ app.use(
   })
 );
 
-validateConfig(configStore);
+// validateConfig(configStore);
 
 const PORT = 1337;
 app.listen(PORT, () => {

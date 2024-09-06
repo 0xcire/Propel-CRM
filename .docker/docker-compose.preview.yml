@@ -1,5 +1,4 @@
 # use this to preview production build locally
-version: "3.9"
 
 services:
   db:
