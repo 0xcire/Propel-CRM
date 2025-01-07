@@ -2,13 +2,13 @@ import { and, asc, between, eq, isNotNull, sql } from "drizzle-orm";
 import { listings, listingsToContacts, soldListings } from "../schema";
 import { db } from "..";
 
-const month = sql<string>`TO_CHAR(${soldListings.soldAt} AT TIME ZONE 'UTC', 'Mon')`;
-const monthNumberFromName = sql`EXTRACT(MONTH FROM ${soldListings.soldAt})`;
+const LISTING_SALE_MONTH = sql<string>`TO_CHAR(${soldListings.soldAt} AT TIME ZONE 'UTC', 'Mon')`;
+const LISTING_SALE_MONTH_AS_NUMBER = sql`EXTRACT(MONTH FROM ${soldListings.soldAt})`;
 
-export const getSalesDataByYear = async (userID: number, year: number) => {
+export const getSalesVolumeByYearQuery = async (userID: number, year: number) => {
   const usersSalesVolume = await db
     .select({
-      month: month,
+      month: LISTING_SALE_MONTH,
       volume: sql<string>`sum(${soldListings.salePrice})`,
     })
     .from(listings)
@@ -20,16 +20,16 @@ export const getSalesDataByYear = async (userID: number, year: number) => {
         between(soldListings.soldAt, new Date(`1-1-${year}`), new Date(`12-31-${year}`))
       )
     )
-    .groupBy(month, monthNumberFromName)
-    .orderBy(monthNumberFromName);
+    .groupBy(LISTING_SALE_MONTH, LISTING_SALE_MONTH_AS_NUMBER)
+    .orderBy(LISTING_SALE_MONTH_AS_NUMBER)
 
   return usersSalesVolume;
 };
 
-export const getListToSaleRatioByYear = async (userID: number, year: number) => {
+export const getListToSaleRatioByYearQuery = async (userID: number, year: number) => {
   const usersSaleToListRatio = await db
     .select({
-      month: month,
+      month: LISTING_SALE_MONTH,
       ratio: sql<string>`AVG(CAST(${soldListings.salePrice} AS numeric(11,2)) / CAST(${listings.price} AS numeric(11,2)))`,
     })
     .from(listings)
@@ -41,16 +41,16 @@ export const getListToSaleRatioByYear = async (userID: number, year: number) => 
         between(soldListings.soldAt, new Date(`1-1-${year}`), new Date(`12-31-${year}`))
       )
     )
-    .groupBy(month, monthNumberFromName)
-    .orderBy(monthNumberFromName);
+    .groupBy(LISTING_SALE_MONTH, LISTING_SALE_MONTH_AS_NUMBER)
+    .orderBy(LISTING_SALE_MONTH_AS_NUMBER);
 
   return usersSaleToListRatio;
 };
 
-export const getAvgDays = async (userID: number, year: number) => {
+export const getAvgDaysOnMarketQuery = async (userID: number, year: number) => {
   const average = await db
     .select({
-      month: month,
+      month: LISTING_SALE_MONTH,
       average: sql<string>`AVG(EXTRACT(DAYS FROM ${soldListings.soldAt} - ${listings.createdAt}))`,
     })
     .from(listings)
@@ -63,16 +63,16 @@ export const getAvgDays = async (userID: number, year: number) => {
         between(soldListings.soldAt, new Date(`1-1-${year}`), new Date(`12-31-${year}`))
       )
     )
-    .groupBy(month, monthNumberFromName)
-    .orderBy(monthNumberFromName);
+    .groupBy(LISTING_SALE_MONTH, LISTING_SALE_MONTH_AS_NUMBER)
+    .orderBy(LISTING_SALE_MONTH_AS_NUMBER);
 
   return average;
 };
 
-export const getAvgTimeToClose = async (userID: number, year: number) => {
+export const getAvgTimeToCloseQuery = async (userID: number, year: number) => {
   const timeToClose = await db
     .select({
-      month: month,
+      month: LISTING_SALE_MONTH,
       days: sql<string>`AVG(EXTRACT(DAYS FROM ${soldListings.soldAt} - ${listingsToContacts.createdAt}))`,
     })
     .from(listings)
@@ -87,21 +87,19 @@ export const getAvgTimeToClose = async (userID: number, year: number) => {
         between(listingsToContacts.createdAt, new Date(`1-1-${year}`), new Date(`12-31-${year}`))
       )
     )
-    .groupBy(month, monthNumberFromName)
-    .orderBy(monthNumberFromName);
+    .groupBy(LISTING_SALE_MONTH, LISTING_SALE_MONTH_AS_NUMBER)
+    .orderBy(LISTING_SALE_MONTH_AS_NUMBER);
 
   return timeToClose;
 };
 
-export const getExistingYears = async (userID: number) => {
-  const year = sql`EXTRACT(YEAR FROM ${soldListings.soldAt})`;
-  const years = (
-    await db
-      .selectDistinct({ year: sql`EXTRACT(YEAR FROM ${soldListings.soldAt})` })
-      .from(soldListings)
-      .where(eq(soldListings.userID, userID))
-      .orderBy(asc(year))
-  ).map((data) => data.year);
+export const getExistingYearsQuery = async (userID: number) => {
+  const year = sql<string>`EXTRACT(YEAR FROM ${soldListings.soldAt})`;
+  const years = await db
+    .selectDistinct({ year: year })
+    .from(soldListings)
+    .where(eq(soldListings.userID, userID))
+    .orderBy(asc(year))
 
   return years;
 };
