@@ -1,8 +1,8 @@
 import { ZodError } from "zod";
 import { RateLimiterRes } from "@propel/redis";
-import { PropelHTTPError } from "../lib/http-error";
+import { PropelHTTPError } from "../../lib/http-error";
 
-import { handleRateLimitErrorResponse } from "../lib";
+import { handleRateLimitErrorResponse } from "../../lib";
 
 import type { Response } from "express";
 

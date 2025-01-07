@@ -1,4 +1,10 @@
-export const formatAnalyticsData = <T extends { month: string; [key: string]: string | number }>(data: Array<T>) => {
+import { months } from "../constants";
+
+export const formatAnalyticsData = <
+  T extends { month: string; [key: string]: string | number }
+>(
+  data: Array<T>
+) => {
   if (data.length === 0) {
     return [];
   }
@@ -6,7 +12,6 @@ export const formatAnalyticsData = <T extends { month: string; [key: string]: st
   // if data has length, data[0] can't be T | undefined?
   const key = Object.keys(data[0] as T).find((key) => key !== "month") ?? "";
 
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const formatData = months.map((month) => {
     const dataPointByMonth = data.find((item) => item.month === month);
 

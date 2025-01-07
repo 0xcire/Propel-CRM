@@ -8,7 +8,7 @@ import {
   createContact,
   updateContact,
   deleteContact,
-} from "../controllers/contacts";
+} from "../../controllers/contacts";
 
 import { validateRequest } from "../middlewares/validate-input";
 import { validateSession } from "../middlewares/validate-session";
@@ -35,21 +35,30 @@ export default (router: Router) => {
 
   router.get(
     "/contacts",
-    validateRequest({ cookies: authCookieValidator, query: contactQueryValidator }),
+    validateRequest({
+      cookies: authCookieValidator,
+      query: contactQueryValidator,
+    }),
     validateSession,
     getMyContacts
   );
 
   router.get(
     "/contacts/search",
-    validateRequest({ cookies: authCookieValidator, query: contactSearchQueryValidator }),
+    validateRequest({
+      cookies: authCookieValidator,
+      query: contactSearchQueryValidator,
+    }),
     validateSession,
     searchUsersContacts
   );
 
   router.get(
     "/contacts/:contactID",
-    validateRequest({ cookies: authCookieValidator, params: contactIDValidator }),
+    validateRequest({
+      cookies: authCookieValidator,
+      params: contactIDValidator,
+    }),
     validateSession,
     isContactOwner,
     getSpecificContact
@@ -57,7 +66,10 @@ export default (router: Router) => {
 
   router.post(
     "/contacts",
-    validateRequest({ body: createContactValidator, cookies: authCookieValidator }),
+    validateRequest({
+      body: createContactValidator,
+      cookies: authCookieValidator,
+    }),
     validateSession,
     validateCSRF,
     createContact
@@ -65,7 +77,11 @@ export default (router: Router) => {
 
   router.patch(
     "/contacts/:contactID",
-    validateRequest({ body: updateContactValidator, cookies: authCookieValidator, params: contactIDValidator }),
+    validateRequest({
+      body: updateContactValidator,
+      cookies: authCookieValidator,
+      params: contactIDValidator,
+    }),
     validateSession,
     validateCSRF,
     isContactOwner,
@@ -74,7 +90,10 @@ export default (router: Router) => {
 
   router.delete(
     "/contacts/:contactID",
-    validateRequest({ cookies: authCookieValidator, params: contactIDValidator }),
+    validateRequest({
+      cookies: authCookieValidator,
+      params: contactIDValidator,
+    }),
     validateSession,
     validateCSRF,
     isContactOwner,

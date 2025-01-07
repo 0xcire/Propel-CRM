@@ -1,6 +1,9 @@
 import { Router } from "express";
 
-import { validatePreAuthSession, validateSession } from "../middlewares/validate-session";
+import {
+  validatePreAuthSession,
+  validateSession,
+} from "../middlewares/validate-session";
 import { validateCSRF } from "../middlewares/validate-csrf";
 
 import { validateRequest } from "../middlewares/validate-input";
@@ -14,7 +17,11 @@ import {
   verifyEmailQueryValidator,
 } from "@propel/drizzle";
 import { isOwner } from "../middlewares";
-import { rateLimitSignIn, rateLimitAccountRecovery, rateLimitAccountVerification } from "../middlewares/rate-limit";
+import {
+  rateLimitSignIn,
+  rateLimitAccountRecovery,
+  rateLimitAccountVerification,
+} from "../middlewares/rate-limit";
 import {
   signin,
   signup,
@@ -24,12 +31,34 @@ import {
   updateUserFromAccountRecovery,
   verifyEmail,
   requestNewEmailVerification,
-} from "../controllers/auth";
+} from "../../controllers/auth";
 
-import { PRE_AUTH_SESSION_COOKIE } from "../config";
+import { PRE_AUTH_SESSION_COOKIE } from "../../common/config";
+import { ValidateRequest } from "../middlewares/validate-request";
+
+export class AuthRouter {
+  constructor(
+    validateRequest: ValidateRequest,
+    
+  ) {}
+
+  public init(router: Router) {
+    router.post(
+      "/auth/signup",
+      validateRequest({ body: signupValidator }),
+      validatePreAuthSession,
+      signup
+    );
+  }
+}
 
 export default (router: Router) => {
-  router.post("/auth/signup", validateRequest({ body: signupValidator }), validatePreAuthSession, signup);
+  router.post(
+    "/auth/signup",
+    validateRequest({ body: signupValidator }),
+    validatePreAuthSession,
+    signup
+  );
 
   router.post(
     "/auth/signin",

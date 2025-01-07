@@ -10,16 +10,26 @@ import {
   getExistingSalesYears,
   getListToSaleRatioForYear,
   getSalesVolumeForYear,
-} from "../controllers/analytics";
+} from "../../controllers/analytics";
 
-import { analyticsQuerySchema, authCookieValidator, paramSchema } from "@propel/drizzle";
+import {
+  analyticsQuerySchema,
+  authCookieValidator,
+  paramSchema,
+} from "@propel/drizzle";
+import { UserPermissionsMiddleware } from "../middlewares/user-permissions";
 
 export default (router: Router) => {
+  const userPermissions = new UserPermissionsMiddleware();
   router.get(
     "/analytics/sales/:id",
-    validateRequest({ cookies: authCookieValidator, params: paramSchema, query: analyticsQuerySchema }),
+    validateRequest({
+      cookies: authCookieValidator,
+      params: paramSchema,
+      query: analyticsQuerySchema,
+    }),
     validateSession,
-    isOwner,
+    userPermissions.isAccountOwner,
     getSalesVolumeForYear
   );
 
@@ -33,7 +43,11 @@ export default (router: Router) => {
 
   router.get(
     "/analytics/days-on-market/:id",
-    validateRequest({ cookies: authCookieValidator, params: paramSchema, query: analyticsQuerySchema }),
+    validateRequest({
+      cookies: authCookieValidator,
+      params: paramSchema,
+      query: analyticsQuerySchema,
+    }),
     validateSession,
     isOwner,
     getAvgListingDaysOnMarket
@@ -41,7 +55,11 @@ export default (router: Router) => {
 
   router.get(
     "/analytics/list-sale-ratio/:id",
-    validateRequest({ cookies: authCookieValidator, params: paramSchema, query: analyticsQuerySchema }),
+    validateRequest({
+      cookies: authCookieValidator,
+      params: paramSchema,
+      query: analyticsQuerySchema,
+    }),
     validateSession,
     isOwner,
     getListToSaleRatioForYear
@@ -49,7 +67,11 @@ export default (router: Router) => {
 
   router.get(
     "/analytics/time-to-close/:id",
-    validateRequest({ cookies: authCookieValidator, params: paramSchema, query: analyticsQuerySchema }),
+    validateRequest({
+      cookies: authCookieValidator,
+      params: paramSchema,
+      query: analyticsQuerySchema,
+    }),
     validateSession,
     isOwner,
     getAvgTimeToCloseLead

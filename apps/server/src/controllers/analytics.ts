@@ -6,7 +6,11 @@ import {
   getSalesDataByYear,
 } from "@propel/drizzle";
 
-import { formatAnalyticsData, getCurrentYear, handleError } from "../utils";
+import {
+  formatAnalyticsData,
+  getCurrentYear,
+  handleError,
+} from "../common/utils";
 
 import type { Request, Response } from "express";
 

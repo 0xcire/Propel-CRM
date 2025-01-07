@@ -1,5 +1,5 @@
 // ref: https://stackoverflow.com/questions/41102060/typescript-extending-error-class
-// http status implementation is my own
+// http status implementation is my own - although not saying its very impressive
 
 import HttpStatus from "http-status-codes";
 
@@ -23,3 +23,4 @@ export class PropelHTTPError extends Error {
     this.message = opts.message;
   }
 }
+

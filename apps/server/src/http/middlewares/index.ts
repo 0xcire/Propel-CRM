@@ -1,5 +1,5 @@
-import { PropelHTTPError } from "../lib/http-error";
-import { handleError } from "../utils/handle-error";
+import { handleError } from "../../common/utils";
+import { PropelHTTPError } from "../../lib/http-error";
 
 import type { Request, Response, NextFunction } from "express";
 

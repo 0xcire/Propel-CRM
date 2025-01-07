@@ -6,9 +6,9 @@ import { hashPassword } from "@propel/lib";
 
 import { PropelHTTPError } from "../../lib/http-error";
 
-import { createRecoverPasswordRequestAndSendEmail, handleError } from "../../utils";
+import { createRecoverPasswordRequestAndSendEmail, handleError } from "../../common/utils";
 
-import { SALT_ROUNDS } from "../../config";
+import { SALT_ROUNDS } from "../../common/config";
 
 import type { Request, Response } from "express";
 

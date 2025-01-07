@@ -9,10 +9,10 @@ import {
 } from "@propel/drizzle";
 import { checkPassword, hashPassword } from "@propel/lib";
 
-import { handleError, removeAuthSessionCookies } from "../utils";
+import { handleError, removeAuthSessionCookies } from "../common/utils";
 import { PropelHTTPError } from "../lib/http-error";
 
-import { ABSOLUTE_SESSION_COOKIE, SALT_ROUNDS } from "../config";
+import { ABSOLUTE_SESSION_COOKIE, SALT_ROUNDS } from "../common/config";
 
 import type { Request, Response } from "express";
 

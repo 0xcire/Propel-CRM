@@ -4,9 +4,9 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 // import { sql } from "drizzle-orm";
-import router from "./router";
-import { COOKIE_SECRET, NODE_ENV } from "./config";
-// import { validateConfig } from "./config/config-validator";
+import router from "./http/router";
+import { COOKIE_SECRET, NODE_ENV } from "./common/config";
+// import { d } from "./config/config-validator";
 
 const app = express();
 app.set("trust proxy", true);

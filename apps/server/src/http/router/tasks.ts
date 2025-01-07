@@ -8,7 +8,7 @@ import {
   getDashboardTasks,
   getTask,
   searchUsersTasks,
-} from "../controllers/tasks";
+} from "../../controllers/tasks";
 
 import { validateRequest } from "../middlewares/validate-input";
 import { validateSession } from "../middlewares/validate-session";
@@ -33,14 +33,20 @@ export default (router: Router) => {
   // [ ]: can be removed
   router.get(
     "/dashboard/tasks",
-    validateRequest({ query: dashboardTaskQueryValidator, cookies: authCookieValidator }),
+    validateRequest({
+      query: dashboardTaskQueryValidator,
+      cookies: authCookieValidator,
+    }),
     validateSession,
     getDashboardTasks
   );
 
   router.get(
     "/tasks",
-    validateRequest({ query: taskQueryValidator, cookies: authCookieValidator }),
+    validateRequest({
+      query: taskQueryValidator,
+      cookies: authCookieValidator,
+    }),
     validateSession,
     getTasks
   );
@@ -48,7 +54,10 @@ export default (router: Router) => {
   // [ ] could be removed
   router.get(
     "/tasks/search",
-    validateRequest({ cookies: authCookieValidator, query: taskQuerySearchValidator }),
+    validateRequest({
+      cookies: authCookieValidator,
+      query: taskQuerySearchValidator,
+    }),
     validateSession,
     searchUsersTasks
   );
@@ -63,7 +72,11 @@ export default (router: Router) => {
 
   router.get(
     "/tasks/listings/:listingID",
-    validateRequest({ query: taskQueryValidator, params: listingIDValidator, cookies: authCookieValidator }),
+    validateRequest({
+      query: taskQueryValidator,
+      params: listingIDValidator,
+      cookies: authCookieValidator,
+    }),
     validateSession,
     isListingOwner,
     getTasks
@@ -71,7 +84,11 @@ export default (router: Router) => {
 
   router.get(
     "/tasks/contacts/:contactID",
-    validateRequest({ query: taskQueryValidator, params: contactIDValidator, cookies: authCookieValidator }),
+    validateRequest({
+      query: taskQueryValidator,
+      params: contactIDValidator,
+      cookies: authCookieValidator,
+    }),
     validateSession,
     isContactOwner,
     getTasks
@@ -79,7 +96,10 @@ export default (router: Router) => {
 
   router.post(
     "/tasks",
-    validateRequest({ body: createTaskValidator, cookies: authCookieValidator }),
+    validateRequest({
+      body: createTaskValidator,
+      cookies: authCookieValidator,
+    }),
     validateSession,
     validateCSRF,
     createTask
@@ -87,7 +107,11 @@ export default (router: Router) => {
 
   router.patch(
     "/tasks/:taskID",
-    validateRequest({ body: updateTaskValidator, cookies: authCookieValidator, params: taskIDValidator }),
+    validateRequest({
+      body: updateTaskValidator,
+      cookies: authCookieValidator,
+      params: taskIDValidator,
+    }),
     validateSession,
     validateCSRF,
     isTaskOwner,

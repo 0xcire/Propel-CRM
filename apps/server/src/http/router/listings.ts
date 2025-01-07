@@ -12,7 +12,7 @@ import {
   markListingAsSold,
   searchUsersListings,
   getContactsRelatedListings,
-} from "../controllers/listings";
+} from "../../controllers/listings";
 
 import { validateRequest } from "../middlewares/validate-input";
 import { validateSession } from "../middlewares/validate-session";
@@ -43,21 +43,30 @@ export default (router: Router) => {
 
   router.get(
     "/listings",
-    validateRequest({ cookies: authCookieValidator, query: listingQueryValidator }),
+    validateRequest({
+      cookies: authCookieValidator,
+      query: listingQueryValidator,
+    }),
     validateSession,
     getAllListings
   );
 
   router.get(
     "/listings/search",
-    validateRequest({ cookies: authCookieValidator, query: listingSearchQueryValidator }),
+    validateRequest({
+      cookies: authCookieValidator,
+      query: listingSearchQueryValidator,
+    }),
     validateSession,
     searchUsersListings
   );
 
   router.get(
     "/listings/contacts/:contactID",
-    validateRequest({ cookies: authCookieValidator, params: contactIDValidator }),
+    validateRequest({
+      cookies: authCookieValidator,
+      params: contactIDValidator,
+    }),
     validateSession,
     isContactOwner,
     getContactsRelatedListings
@@ -65,7 +74,10 @@ export default (router: Router) => {
 
   router.get(
     "/listings/:listingID",
-    validateRequest({ cookies: authCookieValidator, params: listingIDValidator }),
+    validateRequest({
+      cookies: authCookieValidator,
+      params: listingIDValidator,
+    }),
     validateSession,
     isListingOwner,
     getSpecificListing
@@ -73,7 +85,10 @@ export default (router: Router) => {
 
   router.post(
     "/listings",
-    validateRequest({ body: createListingSchema, cookies: authCookieValidator }),
+    validateRequest({
+      body: createListingSchema,
+      cookies: authCookieValidator,
+    }),
     validateSession,
     validateCSRF,
     createListing
@@ -81,7 +96,11 @@ export default (router: Router) => {
 
   router.patch(
     "/listings/:listingID",
-    validateRequest({ body: updateListingSchema, cookies: authCookieValidator, params: listingIDValidator }),
+    validateRequest({
+      body: updateListingSchema,
+      cookies: authCookieValidator,
+      params: listingIDValidator,
+    }),
     validateSession,
     validateCSRF,
     isListingOwner,
@@ -90,7 +109,10 @@ export default (router: Router) => {
 
   router.delete(
     "/listings/:listingID",
-    validateRequest({ cookies: authCookieValidator, params: listingIDValidator }),
+    validateRequest({
+      cookies: authCookieValidator,
+      params: listingIDValidator,
+    }),
     validateSession,
     validateCSRF,
     isListingOwner,
@@ -99,7 +121,11 @@ export default (router: Router) => {
 
   router.post(
     "/listings/:listingID/sold/:contactID",
-    validateRequest({ cookies: authCookieValidator, params: listingIDValidator, body: markSoldValidator }),
+    validateRequest({
+      cookies: authCookieValidator,
+      params: listingIDValidator,
+      body: markSoldValidator,
+    }),
     validateSession,
     validateCSRF,
     isListingOwner,
@@ -109,7 +135,10 @@ export default (router: Router) => {
 
   router.post(
     "/listings/:listingID/lead/:contactID",
-    validateRequest({ cookies: authCookieValidator, params: listingAndContactIDValidator }),
+    validateRequest({
+      cookies: authCookieValidator,
+      params: listingAndContactIDValidator,
+    }),
     validateSession,
     validateCSRF,
     isListingOwner,
@@ -119,7 +148,10 @@ export default (router: Router) => {
 
   router.delete(
     "/listings/:listingID/lead/:contactID",
-    validateRequest({ cookies: authCookieValidator, params: listingAndContactIDValidator }),
+    validateRequest({
+      cookies: authCookieValidator,
+      params: listingAndContactIDValidator,
+    }),
     validateSession,
     validateCSRF,
     isListingOwner,

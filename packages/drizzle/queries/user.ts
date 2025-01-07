@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db } from "..";
 import { users } from "../schema";
 
@@ -31,22 +31,35 @@ export const findUsersByEmail = async ({
   signingIn,
 }: FindUsersByEmailParams): Promise<
   | {
-      username?: string | undefined;
-      hashedPassword?: string | undefined;
-      id: number;
-      email: string;
-    }
+    username?: string | undefined;
+    hashedPassword?: string | undefined;
+    id: number;
+    email: string;
+  }
   | undefined
 > => {
+  const findUsersByEmailSql = sql`
+      SELECT 
+        ${users.id},
+        ${users.email}
+      ${signingIn ? `${users.username}, ${users.hashedPassword}` : ','}
+      FROM ${users} 
+      WHERE 
+        ${users.email} = ${email}
+    `;
+
+  console.log(findUsersByEmailSql)
+
+  // await db.execute(findUsersByEmailSql)
   const user = await db
     .select({
       id: users.id,
       email: users.email,
       ...(signingIn
         ? {
-            username: users.username,
-            hashedPassword: users.hashedPassword,
-          }
+          username: users.username,
+          hashedPassword: users.hashedPassword,
+        }
         : {}),
     })
     .from(users)
@@ -97,22 +110,22 @@ export const findUsersByID = async ({ id, requestingInfo, updating, verification
       email: users.email,
       ...(verification
         ? {
-            isVerified: users.isVerified,
-          }
+          isVerified: users.isVerified,
+        }
         : {}),
       ...(requestingInfo
         ? {
-            name: users.name,
-            lastLogin: users.lastLogin,
-            createdAt: users.createdAt,
-            isAdmin: users.isAdmin,
-            isVerified: users.isVerified,
-          }
+          name: users.name,
+          lastLogin: users.lastLogin,
+          createdAt: users.createdAt,
+          isAdmin: users.isAdmin,
+          isVerified: users.isVerified,
+        }
         : {}),
       ...(updating
         ? {
-            hashedPassword: users.hashedPassword,
-          }
+          hashedPassword: users.hashedPassword,
+        }
         : {}),
     })
     .from(users)
@@ -131,23 +144,23 @@ export const updateUserByID = async ({ id, newUsername, newEmail, newPassword, v
     .set({
       ...(newUsername
         ? {
-            username: newUsername,
-          }
+          username: newUsername,
+        }
         : {}),
       ...(newEmail
         ? {
-            email: newEmail,
-          }
+          email: newEmail,
+        }
         : {}),
       ...(newPassword
         ? {
-            hashedPassword: newPassword,
-          }
+          hashedPassword: newPassword,
+        }
         : {}),
       ...(verified !== undefined
         ? {
-            isVerified: verified,
-          }
+          isVerified: verified,
+        }
         : {}),
     })
     .where(eq(users.id, id))
