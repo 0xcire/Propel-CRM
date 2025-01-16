@@ -112,6 +112,7 @@ export const findContactByID = async (contactID: number, userID: number) => {
 export const updateContactByID = async ({ contactID, inputs }: UpdateContactByIDParams) => {
   const updatedContact = await db
     .update(contacts)
+    // this is disgusting.
     .set({
       ...(inputs.name
         ? {
