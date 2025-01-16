@@ -1,15 +1,17 @@
+import { AnalyticsService } from "./analytics.service";
 import { PropelResponse } from "../lib/response";
+
 import {
   getCurrentYear,
   handleError,
 } from "../common/utils";
 import type { Request, Response } from "express";
-import type { IAnalyticsService } from "./analytics.interface";
+
 
 export class AnalyticsController {
-  private analyticsService: IAnalyticsService;
+  private analyticsService: AnalyticsService;
 
-  constructor(analyticsService: IAnalyticsService) {
+  constructor(analyticsService: AnalyticsService) {
     this.analyticsService = analyticsService
   }
 

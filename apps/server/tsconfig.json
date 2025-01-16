@@ -8,8 +8,7 @@
     /* Modules */
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    // "baseUrl": "./",
-    // "paths": {},
+    "baseUrl": "./",
     "typeRoots": ["./src/types"],
     "resolveJsonModule": true,
 
