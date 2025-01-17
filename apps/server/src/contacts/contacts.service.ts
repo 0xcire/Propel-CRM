@@ -1,7 +1,23 @@
-import { Contact, deleteContactByID, deleteUserContactRelation, findContactByDetails, findRelation, getContactRelations, getUserDashboardContacts, getUsersContacts, insertNewContact, insertNewRelation, NewContact, searchForContacts, updateContactByID } from "@propel/drizzle";
-import { IContactsService } from "./contacts.interface";
-import { Limit } from "@propel/types";
+import { 
+  deleteContactByID, 
+  deleteUserContactRelation, 
+  findContactByDetails, 
+  findRelation, 
+  getContactRelations, 
+  getUserDashboardContacts, 
+  getUsersContacts, 
+  insertNewContact, 
+  insertNewRelation, 
+  NewContact, 
+  searchForContacts, 
+  updateContactByID 
+} from "@propel/drizzle";
 import { PropelHTTPError } from "../lib/http-error";
+
+import type { Limit } from "@propel/types";
+import type { Contact } from "@propel/drizzle";
+import type { IContactsService } from "./contacts.interface";
+
 
 export class ContactsService implements IContactsService {
     async getDashboardContacts(userId: number): Promise<Array<Contact | null>> { // TODO: hmm - return type - look at query
@@ -10,15 +26,13 @@ export class ContactsService implements IContactsService {
 
     // ?
     async searchContacts(name: string, userId: number, page?: string, limit?: string): Promise<Omit<Contact, 'createdAt'>[]> {
-        let contacts: Omit<Contact, 'createdAt'>[] = [];
-        
         // react query query does not run if name is ''
         if (name && name === "") {
-            contacts = [];
+            return [];
         }
     
         if (name) {
-            contacts = await searchForContacts({
+            return await searchForContacts({
             userID: userId,
             name: name as string,
             limit: limit ? (limit as Limit) : "10",
@@ -27,7 +41,7 @@ export class ContactsService implements IContactsService {
           });
         }
 
-        return contacts
+        return []
     }
 
     async getAllContacts(userId: number, page?: string, limit?: string): Promise<Array<Contact | null>> {

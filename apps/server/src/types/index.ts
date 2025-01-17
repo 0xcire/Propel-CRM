@@ -1,4 +1,6 @@
+import { Limit } from "@propel/types";
 import { PropelHTTPError } from "../lib/http-error";
+import type { Request, Response } from 'express'
 
 // handler = (req, res): Promise<PropelResponse | PropelError> => { return }
 
@@ -16,3 +18,13 @@ export type PropelError = IPropelHTTPError;
 export type IPropelHTTPError = InstanceType<typeof PropelHTTPError>;
 
 // export type PropelError =
+
+export type Ctx = {
+  req: Request,
+  res: Response
+}
+
+export type PaginationQuery = {
+  page: number;
+  limit: Limit;
+}

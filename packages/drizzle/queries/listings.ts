@@ -183,6 +183,7 @@ export const searchForListings = async ({
 }: SearchForListingsParams) => {
   let userListings;
 
+  // should probably use a query builder to build a query....
   if (status === "active") {
     userListings = await db
       .select(activeListingSelect)

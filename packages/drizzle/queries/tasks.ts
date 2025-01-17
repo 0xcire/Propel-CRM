@@ -26,13 +26,13 @@ interface GetUsersContactTasksParams extends GetUserTasksParams {
 
 type UpdateTaskByIDParams = {
   userID: number;
-  taskID: string;
+  taskID: number;
   newData: Partial<NewTask>;
 };
 
 type DeleteTaskByIDParams = {
   userID: number;
-  taskID: string;
+  taskID: number;
 };
 
 export const findTaskByID = async (id: number) => {
@@ -162,7 +162,6 @@ export const insertNewTask = async (task: NewTask) => {
     notes: tasks.notes,
     dueDate: tasks.dueDate,
     completed: tasks.completed,
-
     priority: tasks.priority,
   });
 
@@ -204,7 +203,7 @@ export const updateTaskByID = async ({ userID, taskID, newData }: UpdateTaskByID
           }
         : {}),
     })
-    .where(and(eq(tasks.id, +taskID), eq(tasks.userID, userID)))
+    .where(and(eq(tasks.id, taskID), eq(tasks.userID, userID)))
     .returning({
       id: tasks.id,
       title: tasks.title,
@@ -221,7 +220,7 @@ export const updateTaskByID = async ({ userID, taskID, newData }: UpdateTaskByID
 export const deleteTaskByID = async ({ userID, taskID }: DeleteTaskByIDParams) => {
   const deletedTask = await db
     .delete(tasks)
-    .where(and(eq(tasks.id, +taskID), eq(tasks.userID, userID)))
+    .where(and(eq(tasks.id, taskID), eq(tasks.userID, userID)))
     .returning({ id: tasks.id });
 
   if (deletedTask.length === 0) {

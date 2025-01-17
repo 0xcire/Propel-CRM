@@ -10,14 +10,12 @@ export class ListingsService implements IListingsService {
     }
 
     async searchListings(userId: number, { address, status, page, limit }: ListingSearchQuery): Promise<Listing[]> {
-        let usersSearchedListings: Listing[] = [];
-        
         if (address && address === "") {
-          return usersSearchedListings
+          return []
         }
     
         if (address) {
-          usersSearchedListings = await searchForListings({
+          return await searchForListings({
             userID: userId,
             address: address,
             status: status,
@@ -26,7 +24,7 @@ export class ListingsService implements IListingsService {
           }) as Listing[];
         }
 
-        return usersSearchedListings
+        return []
     }
 
     async getAllListings(userId: number, { page, status, limit }: Omit<ListingSearchQuery, "address">): Promise<Listing[]> {
