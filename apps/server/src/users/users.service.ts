@@ -7,7 +7,7 @@ import { deleteRedisKV } from "@propel/redis";
 import { Ctx } from "../types";
 import { removeAuthSessionCookies } from "../common/utils";
 
-export class UsersService implements IUsersService{
+export class UsersService implements IUsersService {
     async getCurrentUserInfo(userId: number): Promise<Partial<User> | undefined> {
         return await findUsersByID({
             id: userId,
@@ -81,7 +81,11 @@ export class UsersService implements IUsersService{
 
     async deleteUser(userId: number, sessionId: string, { req, res }: Ctx): Promise<{ name: string; username: string; } | undefined> {
         const results = await Promise.all([deleteRedisKV(sessionId), deleteUserByID(userId)])
-        removeAuthSessionCookies(req, res);
+        removeAuthSessionCookies({ req, res });
+
+        req.session = {
+          id: ''
+        }
         
         return results[1]
     }

@@ -1,23 +1,19 @@
 import dayjs from 'dayjs'
-import { deleteRateLimit, getRateLimiter, limiterByEmailForAccountRecovery, limiterByEmailForSignIn, limiterByUserIDForAccountVerification } from '@propel/redis'
-import { deleteTemporaryRequest, findUsersByEmail, findUsersByUsername, getTempRequestFromToken, insertNewUser, NewUser, updateUserByID } from '@propel/drizzle'
+import { deleteRateLimit, deleteRedisKV, getRateLimiter, limiterByEmailForAccountRecovery, limiterByEmailForSignIn, limiterByUserIDForAccountVerification, setRedisKV } from '@propel/redis'
+import { createRequestAndDeleteRedundancy, deleteTemporaryRequest, findUsersByEmail, findUsersByUsername, getTempRequestFromToken, insertNewUser, NewUser, updateUserByID } from '@propel/drizzle'
 import { checkPassword, hashPassword } from '@propel/lib'
 import { PropelHTTPError } from '../lib/http-error'
 // TODO: should maybe not be here
-import { createRecoverPasswordRequestAndSendEmail, createToken, createVerifyEmailRequestAndSendEmail, persistAuthSession, removeAuthSessionCookies, removePreAuthCookies, removeSessionPersistence, setAuthSessionCookies } from '../common/utils'
-import { ABSOLUTE_SESSION_COOKIE, SALT_ROUNDS } from '../common/config'
+import { createSecureCookie, createToken, deriveSessionCSRFToken, isDeployed, removeAuthSessionCookies } from '../common/utils'
+import { ABSOLUTE_SESSION_COOKIE, ABSOLUTE_SESSION_LENGTH, CSRF_COOKIE, CSRF_SECRET, IDLE_SESSION_COOKIE, IDLE_SESSION_LENGTH, PRE_AUTH_SESSION_COOKIE, SALT_ROUNDS } from '../common/config'
 
 import type { IAuthService } from "./auth.interface"
 import type { UserInput, ZUser } from './types'
 import type { Ctx } from '../types'
+import { randomUUID } from 'node:crypto'
+import { sendRecoverPasswordEmail, sendVerifyAccountEmail } from '@propel/emails'
 
 export class AuthService implements IAuthService {
-    // private rateLimiterService: IRateLimiterService
-
-    // constructor(rateLimiterService: IRateLimiterService) {
-    //     this.rateLimiterService = rateLimiterService
-    // }
-
     async signUp({ name, username, email, password }: UserInput, { req, res }: Ctx) {
         if (!name || !username || !email || !password) {
             throw new PropelHTTPError({
@@ -59,12 +55,11 @@ export class AuthService implements IAuthService {
         }
     
         const sessionID = createToken(64);
+        await this.persistAuthSession({ req, res }, sessionID, insertedUser.id);
+        await this.createTempRequestAndNotify('verify', { id: insertedUser.id, email: insertedUser.email })
     
-        await persistAuthSession(req, sessionID, insertedUser.id);
-        await createVerifyEmailRequestAndSendEmail(insertedUser.id, insertedUser.email);
-    
-        removePreAuthCookies(req, res);
-        setAuthSessionCookies(req, res, sessionID);
+        this.removePreAuthCookies({ req, res });
+        this.setAuthSessionCookies({ req, res }, sessionID);
 
         return insertedUser;
     }
@@ -98,10 +93,10 @@ export class AuthService implements IAuthService {
         await deleteRateLimit(limiterByEmailForSignIn, email);
         // [ ]: if class based, persistAuthSession could be private method on controller
         // seems much better this way
-        await persistAuthSession(req, sessionID, userByEmail.id);
+        await this.persistAuthSession({ req, res }, sessionID, userByEmail.id);
     
-        removePreAuthCookies(req, res);
-        setAuthSessionCookies(req, res, sessionID);
+        this.removePreAuthCookies({ req, res });
+        this.setAuthSessionCookies({ req, res }, sessionID);
 
         return userByEmail;
     }
@@ -109,8 +104,8 @@ export class AuthService implements IAuthService {
     async signOut({ req, res }: Ctx): Promise<void> {
         const sessionId = req.signedCookies[ABSOLUTE_SESSION_COOKIE as string];
         
-        await removeSessionPersistence(req, sessionId);
-        removeAuthSessionCookies(req, res);
+        await this.removeSessionPersistence({ req, res }, sessionId);
+        removeAuthSessionCookies({ req, res });
     }
 
     async verifyEmail(token: string): Promise<void> {
@@ -146,7 +141,7 @@ export class AuthService implements IAuthService {
 
     async initNewEmailVerification(userId: number, email: string): Promise<void> {
       await deleteRateLimit(limiterByUserIDForAccountVerification, userId.toString());
-      await createVerifyEmailRequestAndSendEmail(userId, email);
+      await this.createTempRequestAndNotify('verify', { id: userId, email })
     }
 
     async initAccountRecovery(email: string): Promise<void> {
@@ -160,7 +155,7 @@ export class AuthService implements IAuthService {
       }
   
       await deleteRateLimit(limiterByEmailForAccountRecovery, email);
-      await createRecoverPasswordRequestAndSendEmail(userByEmail.id, userByEmail.email);
+      await this.createTempRequestAndNotify('recovery', { id: userByEmail.id, email: userByEmail.email })
     }
 
     async validateTempRecoverySession(id: string): Promise<void> {
@@ -218,9 +213,73 @@ export class AuthService implements IAuthService {
       await deleteTemporaryRequest({ id: id });
     }
 
-    // private async persistAuthSession() { }
+    private async persistAuthSession({ req }: Ctx, sessionID: string, userID: number) { 
+      req.session = {
+          id: sessionID,
+        };
+        await setRedisKV(sessionID, String(userID), +(ABSOLUTE_SESSION_LENGTH as string));
+     }
 
-    // private removePreAuthCookies() { }
+    private removePreAuthCookies({ req, res }: Ctx) { 
+      res.clearCookie(PRE_AUTH_SESSION_COOKIE, {
+        path: "/",
+        domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
+        sameSite: "lax",
+      });
+     }
 
-    // private setAuthSessionCookies() { }
+    private setAuthSessionCookies({ req, res }: Ctx, sessionID: string) { 
+      createSecureCookie(req, {
+        res: res,
+        name: ABSOLUTE_SESSION_COOKIE as string,
+        value: sessionID,
+        age: +(ABSOLUTE_SESSION_LENGTH as string),
+      });
+    
+      createSecureCookie(req, {
+        res: res,
+        name: IDLE_SESSION_COOKIE as string,
+        value: sessionID,
+        age: +(IDLE_SESSION_LENGTH as string),
+      });
+    
+      res.cookie(CSRF_COOKIE, deriveSessionCSRFToken(CSRF_SECRET, sessionID), {
+        httpOnly: false,
+        secure: true,
+        signed: false,
+        sameSite: "lax",
+        domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
+        maxAge: +(ABSOLUTE_SESSION_LENGTH as string),
+      });
+    }
+
+    private async removeSessionPersistence({ req }: Ctx, sessionID: string) {
+      req.session = {
+        id: "",
+      };
+      await deleteRedisKV(sessionID);
+    }
+
+    // designed how this might look in larger system
+    private async createTempRequestAndNotify(requestType: 'verify' | 'recovery', recipient: { id: number, email: string }) {
+      const id = randomUUID();
+
+      await createRequestAndDeleteRedundancy({
+        id: id,
+        expiry: dayjs().add(1, "hour").toDate(),
+        userEmail: recipient.email,
+        userID: recipient.id,
+      });
+
+      switch (requestType) {
+        case 'recovery':
+          await sendRecoverPasswordEmail(recipient.email, id);
+          return;
+        case 'verify': 
+          await sendVerifyAccountEmail(recipient.email, id);
+          return;
+        default:
+          return;
+      }
+    }
 }

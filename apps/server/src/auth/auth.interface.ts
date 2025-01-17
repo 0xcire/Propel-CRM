@@ -1,3 +1,5 @@
+import type { Request, Response, NextFunction } from "express";
+import type { MiddlewareResponse } from "../common/middleware/types";
 import type { UserInput, ZUser } from "./types";
 import type { Ctx } from '../types';
 
@@ -12,3 +14,21 @@ export interface IAuthService {
     validateTempRecoverySession(tempSessionId: string): Promise<void> // TODO: is this needed?
     updateUserFromAccountRecovery(id: string, plainTextPass: string): Promise<void>
 }
+
+export interface IRateLimitMiddleware {
+    accountRecoveryRl(
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ): Promise<MiddlewareResponse>;
+    accountVerificationRl(
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ): Promise<MiddlewareResponse>;
+    signInRl(
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ): Promise<MiddlewareResponse>;
+  }

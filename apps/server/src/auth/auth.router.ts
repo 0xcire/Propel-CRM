@@ -8,14 +8,10 @@ import {
   updateUserFromRecoveryValidator,
   verifyEmailQueryValidator,
 } from "@propel/drizzle";
-import {
-  rateLimitSignIn,
-  rateLimitAccountRecovery,
-  rateLimitAccountVerification,
-} from "../middlewares/rate-limit";
 
 import { AuthController } from "./auth.controller";
-import { AuthService } from "./auth.service";
+import { AuthService } from "./auth.service"
+import { RateLimitMiddleware } from "./auth.middleware";
 import { ValidateRequestMiddleware } from "../common/middleware/validate-request";
 import { ValidateSessionMiddleware } from "../common/middleware/validate-session";
 import { UserPermissionsMiddleware } from "../common/middleware/user-permissions";
@@ -26,6 +22,7 @@ export default (router: Router) => {
     const { validate: validateRequest } = new ValidateRequestMiddleware();
     const { validateSession, validatePreAuthSession } = new ValidateSessionMiddleware();
     const { validateCsrf } = new ValidateCsrfMiddleware();
+    const { accountRecoveryRl, accountVerificationRl, signInRl } = new RateLimitMiddleware();
     const perm = new UserPermissionsMiddleware();
     const ctrl = new AuthController(new AuthService())
     
@@ -33,7 +30,7 @@ export default (router: Router) => {
     "/auth/signup",
     // TODO: rename signUpDto,
     // TODO: all these terribly named xValidator, xSchema bullsht needs to be renamed xDto, this is dumb. lol
-    // or at the very least make it consistent w/ xValidator or xSchema. but Dto is preferred i think
+    // or at the very least make it consistent w/ xValidator or xSchema. but Dto is preferred i think - source: my tenured 9 months of total exp :D
     validateRequest({ body: signupValidator }),
     validatePreAuthSession,
     ctrl['handleSignUp']
@@ -44,7 +41,7 @@ export default (router: Router) => {
     validateRequest({ body: signinValidator }),
     validatePreAuthSession,
     validateCsrf,
-    rateLimitSignIn,
+    signInRl,
     ctrl['handleSignIn']
   );
 
@@ -70,7 +67,7 @@ export default (router: Router) => {
     }),
     validatePreAuthSession,
     validateCsrf,
-    rateLimitAccountRecovery,
+    accountRecoveryRl,
     ctrl['handleInitAccountRecovery']
   );
 
@@ -109,7 +106,7 @@ export default (router: Router) => {
     validateSession,
     perm['isAccountOwner'],
     validateCsrf,
-    rateLimitAccountVerification, // TODO: potentially refactor
+    accountVerificationRl,
     ctrl['handleInitNewEmailVerification']
   );
 };
