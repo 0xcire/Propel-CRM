@@ -14,7 +14,6 @@ import {
   rateLimitAccountVerification,
 } from "../middlewares/rate-limit";
 
-
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { ValidateRequestMiddleware } from "../common/middleware/validate-request";
