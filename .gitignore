@@ -3,6 +3,7 @@ TODO.md
 node_modules/
 
 .turbo
+.qodo
 
 .DS_Store
 

@@ -2,25 +2,21 @@
 
 ...after abandoning the project for ~1 year and getting some real world experience!
 
-Opening the repo for the first time after was hilarious... this code was interesting.
 
-## What was Changed?
+## general
 
-This was never intended to be a product. Just something to build which would eventually end up touching many different areas.
-Some areas have not been reached, but I've learned maybe on the job for example. Message queue's being on of those areas.
+- going forward if im creating a web facing product im using every framework under the sun. before my internship i had some pride for whatever reason for writing every bit of code, config, etc etc. It's so nice to skip a lot of boilerplate in order to get to writing whatever functionality you need. 
+    - i have some projects planned that require a little more control and for those projects, i would never use some ridiculous js-embedded library for example. use the right tool for the job. lot of noise out there arguing over effectively nothing, imo :D
 
-Since this will never be productized, I will just be making some QOL improvements, altering deployment scripts to keep running on a small VPS, and doing some refactors.
+## What is bad?
 
-This will serve as a decent example of my ability to do things in Express before showcasing Nestjs examples. For backend services where node is an acceptable choice, and based on my limited experience, its so hard to beat what Nest offers. (This experience being the only internship I've ever held, so take that w/ a grain of salt :D)
-
-There are some glaringly bad design choices I made here which again, will not be addressed, but just discussed here.
-
-
-### What is bad?
-
-- Testing
-    - Desire for integration testing made structure of monorepo not idealA
-- Environment management is rather disgusting here
-- Having entire application stack in monorepo isn't particularly bad but i think my overall archiecture choices using this approach were bad
-    - find myself continually asking "why <insert nice words and phrases> did i do this"
+- environment mgmt is not good. too complex.
+    - partially due to testing and accessing containers via hostname or localhost
+    - going for unit tests, e2e, and mocking services
+    - ^ maybe also can expose a local url like "domain.sh" via reverse proxy but this is based off 0 research so far
+- testing choices, went for full integration tests ( which i incorrectly call e2e ) and minimal unit and e2e tests
+    - i think benefit here is ensuring db queries work, however there is additional overhead. just something to consider
+- after using next & nest js at work, I definitely will be reaching for these frameworks to create products in the future. So much QOL
+    - or even dropping next js and using file-based routing via tanstack router.
+      not having to manually configure routing in react, express, or something else is a nice time save
 
