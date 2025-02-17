@@ -10,11 +10,7 @@ export class ListingsService implements IListingsService {
     }
 
     async searchListings(userId: number, { address, status, page, limit }: ListingSearchQuery): Promise<Listing[]> {
-        if (address && address === "") {
-          return []
-        }
-    
-        if (address) {
+        if (address && address.length > 0) {
           return await searchForListings({
             userID: userId,
             address: address,

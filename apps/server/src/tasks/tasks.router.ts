@@ -21,7 +21,7 @@ import { isListingOwner } from "../listings/listings.middleware";
 import { isContactOwner } from "../contacts/contacts.middleware";
 
 export default (router: Router) => {
-    const { validate: validateRequest } = new ValidateRequestMiddleware();
+    const { validateRequest } = new ValidateRequestMiddleware();
     const { validateSession } = new ValidateSessionMiddleware();
     const { validateCsrf } = new ValidateCsrfMiddleware();
   const ctrl = new TasksController(new TasksService())

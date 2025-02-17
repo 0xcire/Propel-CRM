@@ -5,10 +5,11 @@ A CRM for real estate agents.
 - [Related resources](./docs/RESOURCES.md)
 - [Roadmap](./docs/ROADMAP.md)
 - [Features](./docs/FEATURES.md)
+- [Thoughts after ~1 year](./docs/THOUGHTS.md)
 
 ## Important Note
 
-This app was built in two parts - if you will. Part 1 - me being absolutely clueless, kind of just stumbling overmyself. Part 2 - as I was able to leverage this \*\*\* afpp into a job, I quickly learnt how terrible I truly was. And mainly the (link merge here) can show a lot of improvements I made server-side as a result of the lessons I learnt at my first job!! Also - not re-built into Next/Nest as I want to build a different application using this stack!
+<!-- This app was built in two parts - if you will. Part 1 - me being absolutely clueless, kind of just stumbling overmyself. Part 2 - as I was able to leverage this \*\*\* afpp into a job, I quickly learnt how terrible I truly was. And mainly the (link merge here) can show a lot of improvements I made server-side as a result of the lessons I learnt at my first job!! Also - not re-built into Next/Nest as I want to build a different application using this stack! -->
 
 ## Architecture
 
@@ -37,6 +38,7 @@ This app was built in two parts - if you will. Part 1 - me being absolutely clue
 - SuperTest
 
 ### Database
+
 
 - Redis
 - PostgreSQL on [Neon](https://neon.tech/)

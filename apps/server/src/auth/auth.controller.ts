@@ -15,13 +15,13 @@ export class AuthController {
         this.authService = authService
     }
 
-    async handleSignUp(req: Request, res: Response) {
+    handleSignUp = async (req: Request, res: Response) => {
         try {
             const userDto: UserInput = req.body;
 
             const user = await this.authService.signUp(userDto, { req, res })
 
-            return PropelResponse(201, {
+            return PropelResponse(res, 201, {
                 message: 'Signing up',
                 user: user
             })
@@ -30,11 +30,10 @@ export class AuthController {
         }
     }
 
-    async handleSignIn(req: Request, res: Response) {
+    handleSignIn = async (req: Request, res: Response) => {
         try {
             const { email, password }: UserInput = req.body;
 
-            // TODO: validateRequest?
             if (!email || !password) {
                 throw new PropelHTTPError({
                   code: "BAD_REQUEST",
@@ -43,8 +42,14 @@ export class AuthController {
             }
 
             const userByEmail = await this.authService.signIn(email, password, { req, res })
+
+            console.log('SIGNED IN USER', userByEmail)
         
-            return PropelResponse(200, {
+            // response.status(200).json({
+            //     message: "Signing in",
+            //     user: userByEmail
+            // });
+            return PropelResponse(res, 200, {
                 message: "Signing in",
                 user: userByEmail
             })
@@ -53,11 +58,11 @@ export class AuthController {
         }
     }
 
-    async handleSignOut(req: Request, res: Response) {
+    handleSignOut = async (req: Request, res: Response) => {
         try {
             await this.authService.signOut({ req, res })
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: "Signing out"
             })
         } catch (error) {
@@ -65,7 +70,7 @@ export class AuthController {
         }
     }
 
-    async handleVerifyEmail(req: Request, res: Response) {
+    handleVerifyEmail = async (req: Request, res: Response) => {
         try { 
             const { token } = req.query;
 
@@ -85,7 +90,7 @@ export class AuthController {
 
             await this.authService.verifyEmail(token)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: "Email verified"
             })
         } catch (error) {
@@ -93,7 +98,7 @@ export class AuthController {
         }
     }
 
-    async handleInitNewEmailVerification(req: Request, res: Response) {
+    handleInitNewEmailVerification = async (req: Request, res: Response) => {
         try {
             const { id: userID, email } = req.user;
 
@@ -106,7 +111,7 @@ export class AuthController {
 
             await this.authService.initNewEmailVerification(userID, email)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: "New verification email is on it's way",
             })
         } catch (error) {
@@ -114,13 +119,13 @@ export class AuthController {
         }
     }
 
-    async handleInitAccountRecovery(req: Request, res: Response) {
+    handleInitAccountRecovery = async (req: Request, res: Response) => {
         try {
             const { email } = req.body;
 
             await this.authService.initAccountRecovery(email)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: "Incoming! Password reset email heading your way."
             })
         } catch (error) {
@@ -128,7 +133,7 @@ export class AuthController {
         }
     }
 
-    async handleValidateTempRecoverySession(req: Request, res: Response) {
+    handleValidateTempRecoverySession = async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
 
@@ -142,13 +147,13 @@ export class AuthController {
             await this.authService.validateTempRecoverySession(id)
 
             res.setHeader("Referrer-Policy", "no-referrer");
-            return PropelResponse(200, {})
+            return PropelResponse(res, 200, {})
         } catch (error) {
             return handleError(error, res)
         }
     }
 
-    async handleUpdateUserFromAccountRecovery(req: Request, res: Response) {
+    handleUpdateUserFromAccountRecovery = async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
             const { password } = req.body;
@@ -162,7 +167,7 @@ export class AuthController {
 
             await this.authService.updateUserFromAccountRecovery(id, password)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: "Password updated successfully."
             })
 

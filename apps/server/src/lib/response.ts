@@ -1,5 +1,5 @@
-import { response, type Response } from "express";
+import { type Response } from "express";
 
-export const PropelResponse = (code: 200 | 201, data: object): Response => {
-  return response.status(code).json(data);
+export const PropelResponse = (res: Response, code: 200 | 201, data: object): Response => {
+  return res.status(code).json(data);
 };

@@ -11,13 +11,13 @@ export class ContactsController {
         this.contactsService = contactsService
     }
 
-    async handleGetDashboardContacts(req: Request, res: Response) {
+    handleGetDashboardContacts = async (req: Request, res: Response) => {
         try {
             const id = req.user.id;
 
             const contacts = await this.contactsService.getDashboardContacts(id)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: '',
                 contacts: contacts
             })
@@ -26,7 +26,7 @@ export class ContactsController {
         }
     }
 
-    async handleSearchContacts(req: Request, res:Response) {
+    handleSearchContacts = async (req: Request, res:Response) => {
         try {
             const userID = req.user.id;
             const { name, page, limit } = req.query;
@@ -48,7 +48,7 @@ export class ContactsController {
 
             const contacts = await this.contactsService.searchContacts(name, userID, page, limit)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: '',
                 contacts: contacts
             })
@@ -57,7 +57,7 @@ export class ContactsController {
         }
     }
 
-    async handleGetContacts(req: Request, res: Response) {
+    handleGetContacts = async (req: Request, res: Response) => {
         try {
             const userID = req.user.id;
             const { page, limit } = req.query;
@@ -72,7 +72,7 @@ export class ContactsController {
 
             const contacts = await this.contactsService.getAllContacts(userID, page, limit)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: '',
                 contacts: contacts
             })
@@ -81,11 +81,11 @@ export class ContactsController {
         }
     }
 
-    async handleGetContactById(req: Request, res: Response) {
+    handleGetContactById = async (req: Request, res: Response) => {
         try {
             const contactByID = req.contact;
             
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: '',
                 contacts: [contactByID]
             })
@@ -94,7 +94,7 @@ export class ContactsController {
         }
     }
 
-    async handleCreateContact(req: Request, res: Response) {
+    handleCreateContact = async (req: Request, res: Response) => {
         try {
             const userId = req.user.id;
             const { name, email, phoneNumber, address } = req.body;
@@ -106,15 +106,15 @@ export class ContactsController {
                 });
             }
 
-            const res = await this.contactsService.createContact(userId, { name, email, phoneNumber, address })
+            const data = await this.contactsService.createContact(userId, { name, email, phoneNumber, address })
         
-            return PropelResponse(201, res)
+            return PropelResponse(res, 201, data)
         } catch (error) {
             return handleError(error, res)
         }
     }
 
-    async handleUpdateContact(req: Request, res: Response) {
+    handleUpdateContact = async (req: Request, res: Response) => {
         try {
             const { contactID } = req.params;
 
@@ -134,7 +134,7 @@ export class ContactsController {
 
             const updatedContact = await this.contactsService.updateContact(contactID, req.body)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: `Updated ${req.contact.name} successfully.`,
                 contact: updatedContact,
             })
@@ -143,7 +143,7 @@ export class ContactsController {
         }
     }
 
-    async handleDeleteContact(req: Request, res: Response) {
+    handleDeleteContact = async (req: Request, res: Response) => {
             try {
                 const userID = req.user.id;
                 const { contactID } = req.params;
@@ -157,7 +157,7 @@ export class ContactsController {
 
                 await this.contactsService.deleteContact(userID, contactID)
 
-                return PropelResponse(200, {
+                return PropelResponse(res, 200, {
                     message: `Successfully removed ${req.contact.name} from your network.`,
                 })
             } catch (error) {

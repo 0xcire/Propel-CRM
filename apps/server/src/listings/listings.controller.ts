@@ -3,9 +3,9 @@ import { PropelHTTPError } from "../lib/http-error";
 import { PropelResponse } from "../lib/response";
 import { ListingsService } from "./listings.service";
 
-import type { Request, Response } from 'express'
-import { ListingSearchQuery } from "./types";
-import { NewListing, NewSoldListing } from "@propel/drizzle";
+import type { Request, Response } from 'express';
+import type { NewListing, NewSoldListing } from "@propel/drizzle";
+import type { ListingSearchQuery } from "./types";
 
 export class ListingsController {
     private listingsService: ListingsService
@@ -14,13 +14,13 @@ export class ListingsController {
         this.listingsService = listingsService
     }
 
-    async handleGetDashboardListings(req: Request, res: Response) {
+    handleGetDashboardListings = async (req: Request, res: Response) => {
         try {
             const userId = req.user.id;
 
             const listings = await this.listingsService.getDashboardListings(userId)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: '',
                 listings
             })
@@ -29,7 +29,7 @@ export class ListingsController {
         }
     }
 
-    async handleSearchListings(req: Request, res: Response) {
+    handleSearchListings = async (req: Request, res: Response) => {
         try {
             const userId = req.user.id;
             const { address, status, limit, page } = req.query;
@@ -43,7 +43,7 @@ export class ListingsController {
 
             const listings = await this.listingsService.searchListings(userId, { address, status, limit, page } as unknown as ListingSearchQuery)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: '',
                 listings: listings
             })
@@ -52,14 +52,15 @@ export class ListingsController {
         }
     }
 
-    async handleGetAllListings(req: Request, res: Response) {
+    handleGetAllListings = async (req: Request, res: Response) => {
         try {
             const userID = req.user.id;
             const { page, status, limit } = req.query;
 
-            const listings = await this.listingsService.getAllListings(userID, { page, status, limit } as unknown as ListingSearchQuery)
+            // holy bandaid
+            const listings = await this.listingsService.getAllListings(userID,  <Omit<ListingSearchQuery, "address">><unknown>{ page, status, limit })
         
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: '',
                 listings
             })
@@ -68,7 +69,7 @@ export class ListingsController {
         }
     }
 
-    async handleGetContactsRelatedListings(req: Request, res: Response) {
+    handleGetContactsRelatedListings = async (req: Request, res: Response) => {
         try {
             const userID = req.user.id;
             const { contactID } = req.params;
@@ -82,7 +83,7 @@ export class ListingsController {
 
             const listings = await this.listingsService.getContactsRelatedListings(userID, +contactID)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 messsage: '',
                 listings
             })
@@ -91,7 +92,7 @@ export class ListingsController {
         }
     }
 
-    async handleGetListingById(req: Request, res: Response) {
+    handleGetListingById = async (req: Request, res: Response) => {
         try {
             const { listingID } = req.params;
 
@@ -102,7 +103,7 @@ export class ListingsController {
               });
             }
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: '',
                 listings: [req.listing]
             })
@@ -111,12 +112,11 @@ export class ListingsController {
         }
     }
 
-    async handleCreateListing(req: Request, res: Response) {
+    handleCreateListing = async (req: Request, res: Response) => {
         try {
             const userID = req.user.id;
             const { address, propertyType, price, bedrooms, baths, squareFeet, description }: NewListing = req.body;
         
-            // TODO: does validate request not do this
             if (!address || !propertyType || !price || !bedrooms || !baths || !squareFeet || !description) {
                 throw new PropelHTTPError({
                   code: "BAD_REQUEST",
@@ -124,9 +124,9 @@ export class ListingsController {
                 });
             }
             
-            const listing = await this.listingsService.createListing(userID, { address, propertyType, price, bedrooms, baths, squareFeet, description })
+            const listing = await this.listingsService.createListing(userID, req.body)
         
-            return PropelResponse(201, {
+            return PropelResponse(res, 201, {
                 message: "Listing added",
                 listings: listing,
             })
@@ -135,7 +135,7 @@ export class ListingsController {
         }
     }
 
-    async handleUpdateListing(req: Request, res: Response) {
+    handleUpdateListing = async (req: Request, res: Response) => {
         try {
             const userID = req.user.id;
             const { listingID } = req.params;
@@ -153,7 +153,7 @@ export class ListingsController {
 
             const updatedListing = await this.listingsService.updateListing(userID, +listingID, req.body)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: "Updated listing.",
                 listings: updatedListing,
             })
@@ -162,7 +162,7 @@ export class ListingsController {
         }
     }
 
-    async handleDeleteListing(req: Request, res: Response) {
+    handleDeleteListing = async (req: Request, res: Response) => {
         try {
             const userID = req.user.id;
             const { listingID } = req.params;
@@ -176,7 +176,7 @@ export class ListingsController {
 
             const deleteRes = await this.listingsService.deleteListing(userID, +listingID)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: `Deleted listing: ${deleteRes?.id}`,
             })
         } catch (error) {
@@ -184,7 +184,7 @@ export class ListingsController {
         }
     }
 
-    async handleInitListingSale(req: Request, res: Response) {
+    handleInitListingSale = async (req: Request, res: Response) => {
         try {
             const { listingID } = req.params;
             const values: NewSoldListing = req.body;
@@ -198,7 +198,7 @@ export class ListingsController {
 
             await this.listingsService.initListingSale(+listingID, values)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: `Listing: ${values.listingID} sold to ${req.contact.name}`,
             })
         } catch (error) {
@@ -206,7 +206,7 @@ export class ListingsController {
         }
     }
 
-    async handleAddLeadToListing(req: Request, res: Response) {
+    handleAddLeadToListing = async (req: Request, res: Response) => {
         try {
             const { listingID, contactID } = req.params;
             const { name } = req.contact;
@@ -227,7 +227,7 @@ export class ListingsController {
 
             await this.listingsService.addLeadToListing(+contactID, +listingID, name)
 
-            return PropelResponse(201, {
+            return PropelResponse(res, 201, {
                 message: `Added ${name} to listing: ${listingID}`,
             })
         } catch (error) {
@@ -235,7 +235,7 @@ export class ListingsController {
         }
     }
 
-    async handleRemoveLeadFromListing(req: Request, res: Response) {
+    handleRemoveLeadFromListing = async (req: Request, res: Response) => {
         try {
             const { listingID, contactID } = req.params;
             const { name } = req.contact;
@@ -256,7 +256,7 @@ export class ListingsController {
 
             await this.listingsService.removeLeadFromListing(+contactID, +listingID)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: `Successfully removed lead: ${name} from listing: ${listingID}`,
             })
         } catch (error) {

@@ -98,6 +98,8 @@ export class AuthService implements IAuthService {
         this.removePreAuthCookies({ req, res });
         this.setAuthSessionCookies({ req, res }, sessionID);
 
+        console.log('wE FUCKING MADE IT')
+
         return userByEmail;
     }
 

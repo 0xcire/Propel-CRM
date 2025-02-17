@@ -24,6 +24,8 @@ export const getValueFromRedisKey = async (key: string) => {
   const value = await redisClient.get(key);
   return value;
 };
+
+// TODO: what is happening when an error occurs here via no value from key or anything else
 export const deleteRedisKV = async (key: string) => {
   await redisClient.del(key);
 };

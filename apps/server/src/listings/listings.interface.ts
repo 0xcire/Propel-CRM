@@ -1,5 +1,5 @@
 import type { NewListing, NewSoldListing, Listing as _Listing, } from "@propel/drizzle"
-import { Listing, ListingSearchQuery, UpdatedListing } from "./types"
+import type { Listing, ListingSearchQuery, UpdatedListing } from "./types"
 
 export interface IListingsService {
     getDashboardListings(userId: number): Promise<Listing[]> 

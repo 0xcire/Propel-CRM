@@ -15,14 +15,14 @@ export class AnalyticsController {
     this.analyticsService = analyticsService
   }
 
-  public async handleGetSalesVolumeForYear(req: Request, res: Response) {
+  handleGetSalesVolumeForYear = async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
       const year = this.getValidYear(req.query)
 
       const salesVolume = await this.analyticsService.getSalesVolumeForYear(userId, year)
 
-      return PropelResponse(200, {
+      return PropelResponse(res, 200, {
         message: '', // TODO: fix on client
         volumes: salesVolume
       })
@@ -31,13 +31,13 @@ export class AnalyticsController {
     }
   }
 
-  public async handleGetExistingSalesYears(req: Request, res: Response) {
+  handleGetExistingSalesYears = async (req: Request, res: Response) => {
     try {
       const userId = req.user.id;
 
       const years = await this.analyticsService.getExistingSalesYears(userId)
 
-      return PropelResponse(200, {
+      return PropelResponse(res, 200, {
         message: '', // TODO: fix
         years: years
       })
@@ -46,14 +46,14 @@ export class AnalyticsController {
     }
   }
 
-  public async handleGetAvgListingDaysOnMarket(req: Request, res: Response) {
+  handleGetAvgListingDaysOnMarket = async (req: Request, res: Response) => {
     try {
       const userID = req.user.id;
       const year = this.getValidYear(req.query)
 
       const averageDaysOnMarket = await this.analyticsService.getAvgListingDaysOnMarket(userID, year)
 
-      return PropelResponse(200, {
+      return PropelResponse(res, 200, {
         message: '',
         averages: averageDaysOnMarket
       })
@@ -62,14 +62,14 @@ export class AnalyticsController {
     }
   }
 
-  public async handleGetListToSaleRatioForYear(req: Request, res: Response) {
+  handleGetListToSaleRatioForYear = async (req: Request, res: Response) => {
     try {
       const userID = req.user.id;
       const year = this.getValidYear(req.query)
 
       const listToSaleRatio = await this.analyticsService.getListToSaleRatioForYear(userID, year)
 
-      return PropelResponse(200, {
+      return PropelResponse(res, 200, {
         message: '',
         ratios: listToSaleRatio // TODO: ratio. and fix everywhere else
       })
@@ -78,14 +78,14 @@ export class AnalyticsController {
     }
   }
 
-  public async handleGetAvgTimeToCloseLead(req: Request, res: Response) {
+  handleGetAvgTimeToCloseLead = async (req: Request, res: Response) => {
     try {
       const userID = req.user.id;
       const year = this.getValidYear(req.query)
 
       const averageTimeToClose = await this.analyticsService.getAvgTimeToCloseLead(userID, year)
 
-      return PropelResponse(200, {
+      return PropelResponse(res, 200, {
         message: '',
         days: averageTimeToClose
       })

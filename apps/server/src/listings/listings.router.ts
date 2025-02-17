@@ -19,10 +19,11 @@ import { isContactOwner } from "../contacts/contacts.middleware";
 import { isListingOwner } from "./listings.middleware";
 
 export default (router: Router) => {
-    const { validate: validateRequest } = new ValidateRequestMiddleware();
-    const { validateSession } = new ValidateSessionMiddleware();
-    const { validateCsrf } = new ValidateCsrfMiddleware();
-    const ctrl = new ListingsController(new ListingsService())
+  const { validateRequest } = new ValidateRequestMiddleware();
+  const { validateSession } = new ValidateSessionMiddleware();
+  const { validateCsrf } = new ValidateCsrfMiddleware();
+  const ctrl = new ListingsController(new ListingsService())
+
   router.get(
     "/dashboard/listings",
     validateRequest({ cookies: authCookieValidator }),

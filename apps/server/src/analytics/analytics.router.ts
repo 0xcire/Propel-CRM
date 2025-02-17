@@ -13,7 +13,7 @@ import { AnalyticsService } from "./analytics.service";
 // TODO: still need to move some schemas to common/dto or analytics/dto/*
 
 export default (router: Router) => {
-  const { validate: validateRequest } = new ValidateRequestMiddleware();
+  const {  validateRequest } = new ValidateRequestMiddleware();
   const { validateSession } = new ValidateSessionMiddleware();
   const perm = new UserPermissionsMiddleware();
   const ctrl = new AnalyticsController(new AnalyticsService());

@@ -14,41 +14,43 @@ import { ValidateRequestMiddleware } from "../common/middleware/validate-request
 import type { Response } from 'express'
 
 export default (router: Router) => {
-  const { validate: validateRequest } = new ValidateRequestMiddleware();
-  const { validateSession } = new ValidateSessionMiddleware();
-  const { validateCsrf } = new ValidateCsrfMiddleware();
+  const vr = new ValidateRequestMiddleware();
+  const vs = new ValidateSessionMiddleware();
+  const vc = new ValidateCsrfMiddleware();
   const perm = new UserPermissionsMiddleware();
-  const ctrl = new UsersController(new UsersService())
 
-  router.get("/user/refresh", validateSession, (_, res: Response) => {
+  const service = new UsersService()
+  const ctrl = new UsersController(service)
+
+  router.get("/user/refresh", vs.validateSession, (_, res: Response) => {
     return res.status(200).json({});
   });
 
   router.get(
     "/user/me",
-    validateRequest({ cookies: authCookieValidator }),
-    validateSession,
-    ctrl['handleGetCurrentUserInfo']
+    vr.validateRequest({ cookies: authCookieValidator }),
+    vs.validateSession,
+    ctrl.handleGetCurrentUserInfo
   );
 
   router.patch(
     "/user/:id",
-    validateRequest({
+    vr.validateRequest({
       body: updateUserValidator,
       params: paramSchema,
       cookies: authCookieValidator,
     }),
-    validateSession,
-    validateCsrf,
+    vs.validateSession,
+    vc.validateCsrf,
     perm['isAccountOwner'],
     ctrl['handleUpdateUser']
   );
 
   router.delete(
     "/user/:id",
-    validateRequest({ params: paramSchema, cookies: authCookieValidator }),
-    validateSession,
-    validateCsrf,
+    vr.validateRequest({ params: paramSchema, cookies: authCookieValidator }),
+    vs.validateSession,
+    vc.validateCsrf,
     perm['isAccountOwner'],
     ctrl['handleDeleteUser']
   );

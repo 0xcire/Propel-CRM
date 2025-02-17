@@ -7,11 +7,11 @@ import type { Request, Response, NextFunction } from "express";
 import type { MiddlewareResponse } from "./types";
 
 export class ValidateCsrfMiddleware {
-  public async validateCsrf(
+  public validateCsrf = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<MiddlewareResponse> {
+  ): Promise<MiddlewareResponse> => {
     try {
       const receivedCSRFToken = req.headers["x-propel-csrf"] as string;
       const preAuthSession = req.signedCookies[PRE_AUTH_SESSION_COOKIE];

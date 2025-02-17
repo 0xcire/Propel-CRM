@@ -24,11 +24,11 @@ import type { MiddlewareResponse } from "./types";
 
 // TODO: potential clean up of code branching here
 export class ValidateSessionMiddleware {
-  public async validateSession(
+  public validateSession = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<MiddlewareResponse> {
+  ): Promise<MiddlewareResponse> => {
     try {
       const absoluteSession: string | undefined =
         req.signedCookies[ABSOLUTE_SESSION_COOKIE];

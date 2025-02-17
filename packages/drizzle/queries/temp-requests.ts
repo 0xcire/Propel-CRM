@@ -37,7 +37,7 @@ export class TempRequestService {
     return tempRequest[0];
   }
 
-  public createRequestAndDeleteRedundancy() {}
+  // public createRequestAndDeleteRedundancy() {}
 }
 
 export const getTempRequest = async (email: string) => {

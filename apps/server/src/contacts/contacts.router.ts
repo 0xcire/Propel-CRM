@@ -16,7 +16,7 @@ import { isContactOwner } from "./contacts.middleware";
 import { ValidateCsrfMiddleware } from "../common/middleware/validate-csrf";
 
 export default (router: Router) => {
-    const { validate: validateRequest } = new ValidateRequestMiddleware();
+    const { validateRequest } = new ValidateRequestMiddleware();
     const { validateSession } = new ValidateSessionMiddleware();
     const { validateCsrf } = new ValidateCsrfMiddleware();
     const ctrl = new ContactsController(new ContactsService())

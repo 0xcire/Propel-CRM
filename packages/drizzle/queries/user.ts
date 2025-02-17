@@ -48,7 +48,7 @@ export const findUsersByEmail = async ({
         ${users.email} = ${email}
     `;
 
-  console.log(findUsersByEmailSql)
+  console.log('LORENZO', findUsersByEmailSql)
 
   // await db.execute(findUsersByEmailSql)
   const user = await db

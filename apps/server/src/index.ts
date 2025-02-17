@@ -4,12 +4,15 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 // import { sql } from "drizzle-orm";
-import router from "./http/router";
+import router from "./common/router";
 import { COOKIE_SECRET, NODE_ENV } from "./common/config";
+// import { pino } from "./common/logger";
 // import { d } from "./config/config-validator";
 
 const app = express();
 app.set("trust proxy", true);
+
+// app.use(pino())
 
 app.use(
   helmet({

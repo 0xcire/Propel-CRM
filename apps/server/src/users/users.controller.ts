@@ -13,7 +13,7 @@ export class UsersController {
         this.usersService = usersService
     }
 
-    async handleGetCurrentUserInfo(req: Request, res: Response) {
+    handleGetCurrentUserInfo = async (req: Request, res: Response) => {
         try {
             const userId = req.user.id;
 
@@ -26,7 +26,7 @@ export class UsersController {
                 });
             }
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: 'Found user',
                 user
             })
@@ -35,7 +35,7 @@ export class UsersController {
         }
     }
 
-    async handleUpdateUser(req: Request, res: Response) {
+    handleUpdateUser = async (req: Request, res: Response)  => {
         try {
             const { userId } = req.params;
             // const { username, email, verifyPassword, password } = req.body;
@@ -49,7 +49,7 @@ export class UsersController {
 
             const user = await this.usersService.updateUser(+userId, req.body)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: "Updated successfully.",
                 user
             })
@@ -59,7 +59,7 @@ export class UsersController {
     }
 
 
-    async handleDeleteUser(req: Request, res: Response) {
+    handleDeleteUser = async (req: Request, res: Response)  => {
         try {
             const { id: userId } = req.params;
             const sessionId = req.signedCookies[ABSOLUTE_SESSION_COOKIE as string];
@@ -73,7 +73,7 @@ export class UsersController {
 
             const user = await this.usersService.deleteUser(+userId, sessionId, { req, res })
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: "successfully deleted.",
                 user
             })

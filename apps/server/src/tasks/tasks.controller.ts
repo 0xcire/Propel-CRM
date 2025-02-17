@@ -15,14 +15,14 @@ export class TasksController {
         this.tasksService = tasksService
     }
 
-    async handleGetDashboardTasks(req: Request, res: Response) {
+    handleGetDashboardTasks = async (req: Request, res: Response) => {
         try {
             const userID = req.user.id;
             const { completed } = <{ completed: Completed }>req.query;
 
             const tasks = await this.tasksService.getDashboardTasks(userID, { completed, limit: '20', page: 1 })
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: '',
                 tasks
             })
@@ -31,7 +31,7 @@ export class TasksController {
         }
     }
 
-    async handleSearchTasks(req: Request, res: Response) {
+    handleSearchTasks = async (req: Request, res: Response) => {
         try {
             const userID = req.user.id;
             const { title } = req.query;
@@ -45,7 +45,7 @@ export class TasksController {
 
             const tasks = await this.tasksService.searchTasks(userID, req.query as unknown as Omit<TaskSearchQuery, "priority">)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: '',
                 tasks
             })
@@ -54,7 +54,7 @@ export class TasksController {
         }
     }
 
-    async handleGetAllTasks(req: Request, res: Response) {
+    handleGetAllTasks = async (req: Request, res: Response) => {
         try {
             const userID = req.user.id;
             const query = req.query as unknown as TaskSearchQuery
@@ -62,7 +62,7 @@ export class TasksController {
 
             const tasks = await this.tasksService.getAllTasks(userID, query, params)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: '',
                 tasks
             })
@@ -71,7 +71,7 @@ export class TasksController {
         }
     }
 
-    async handleGetTaskById(req: Request, res: Response) {
+    handleGetTaskById = async (req: Request, res: Response) => {
         try {
             const { taskID } = req.params;
 
@@ -82,7 +82,7 @@ export class TasksController {
               });
             }
         
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
               message: "",
               tasks: [req.task],
             });
@@ -91,7 +91,7 @@ export class TasksController {
         }
     }
 
-    async handleCreateTask(req: Request, res: Response) {
+    handleCreateTask = async (req: Request, res: Response) => {
         try {
             const userID = req.user.id;
             const { title, description, notes, dueDate, completed, priority, listingID, contactID } = req.body;
@@ -117,7 +117,7 @@ export class TasksController {
 
             const task = await this.tasksService.createTask(newTask)
 
-            return PropelResponse(201, {
+            return PropelResponse(res, 201, {
                 message: 'Added new task',
                 task
             })
@@ -126,7 +126,7 @@ export class TasksController {
         }
     }
 
-    async handleUpdateTask(req: Request, res: Response) {
+    handleUpdateTask = async (req: Request, res: Response) => {
         try {
             const userID = req.user.id;
             const { taskID } = req.params;
@@ -149,7 +149,7 @@ export class TasksController {
 
             const updatedTask = await this.tasksService.updateTask(userID, +taskID, req.body)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: 'Updated task',
                 updatedTask
             })
@@ -158,7 +158,7 @@ export class TasksController {
         }
     }
 
-    async handleDeleteTask(req: Request, res: Response) {
+    handleDeleteTask = async (req: Request, res: Response) => {
         try {
             const userID = req.user.id;
             const { taskID } = req.params;
@@ -172,7 +172,7 @@ export class TasksController {
 
             const task = await this.tasksService.deleteTask(userID, +taskID)
 
-            return PropelResponse(200, {
+            return PropelResponse(res, 200, {
                 message: "Deleted task",
                 task
             })

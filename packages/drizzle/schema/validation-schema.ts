@@ -21,6 +21,7 @@ export const authCookieValidator = authCookieSchema.transform((schema) => ({
   "absolute-propel-session": schema["absolute-propel-session"]?.trim(),
 }));
 
+// TODO: this should not be in drizzle schema
 export const paramSchema = z
   .object({
     id: z.string(),

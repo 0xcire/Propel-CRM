@@ -18,95 +18,96 @@ import { UserPermissionsMiddleware } from "../common/middleware/user-permissions
 import { ValidateCsrfMiddleware } from "../common/middleware/validate-csrf";
 import { PRE_AUTH_SESSION_COOKIE } from "../common/config";
 
-export default (router: Router) => {
-    const { validate: validateRequest } = new ValidateRequestMiddleware();
-    const { validateSession, validatePreAuthSession } = new ValidateSessionMiddleware();
-    const { validateCsrf } = new ValidateCsrfMiddleware();
-    const { accountRecoveryRl, accountVerificationRl, signInRl } = new RateLimitMiddleware();
+export const AuthRouter = (router: Router) => {
+    const r = new ValidateRequestMiddleware();
+    const s = new ValidateSessionMiddleware();
+    const c = new ValidateCsrfMiddleware();
+    const rl = new RateLimitMiddleware();
     const perm = new UserPermissionsMiddleware();
-    const ctrl = new AuthController(new AuthService())
+    const service = new AuthService();
+    const ctrl = new AuthController(service)
     
   router.post(
     "/auth/signup",
     // TODO: rename signUpDto,
     // TODO: all these terribly named xValidator, xSchema bullsht needs to be renamed xDto, this is dumb. lol
     // or at the very least make it consistent w/ xValidator or xSchema. but Dto is preferred i think - source: my tenured 9 months of total exp :D
-    validateRequest({ body: signupValidator }),
-    validatePreAuthSession,
+    r.validateRequest({ body: signupValidator }),
+    s.validatePreAuthSession,
     ctrl['handleSignUp']
   );
 
   router.post(
     "/auth/signin",
-    validateRequest({ body: signinValidator }),
-    validatePreAuthSession,
-    validateCsrf,
-    signInRl,
+    r.validateRequest({ body: signinValidator }),
+    s.validatePreAuthSession,
+    c.validateCsrf,
+    rl.signInRl,
     ctrl['handleSignIn']
   );
 
   router.post(
     "/auth/signout",
-    validateRequest({ cookies: authCookieValidator }),
-    validateSession,
-    validateCsrf,
+    r.validateRequest({ cookies: authCookieValidator }),
+    s.validateSession,
+    c.validateCsrf,
     ctrl['handleSignOut']
   );
 
   router.get(
     "/auth/recovery/:id",
-    validateRequest({ params: paramSchema }),
-    validatePreAuthSession,
+    r.validateRequest({ params: paramSchema }),
+    s.validatePreAuthSession,
     ctrl['handleValidateTempRecoverySession']
   );
 
   router.post(
     "/auth/recovery",
-    validateRequest({
+    r.validateRequest({
       body: accountRecoveryValidator,
     }),
-    validatePreAuthSession,
-    validateCsrf,
-    accountRecoveryRl,
+    s.validatePreAuthSession,
+    c.validateCsrf,
+    rl.accountRecoveryRl,
     ctrl['handleInitAccountRecovery']
   );
 
   router.patch(
     "/auth/recovery/:id",
-    validateRequest({
+    r.validateRequest({
       body: updateUserFromRecoveryValidator,
       params: paramSchema,
     }),
-    validatePreAuthSession,
-    validateCsrf,
+    s.validatePreAuthSession,
+    c.validateCsrf,
     ctrl['handleUpdateUserFromAccountRecovery']
   );
 
   router.patch(
     "/auth/verify-email",
-    validateRequest({
+    r.validateRequest({
       query: verifyEmailQueryValidator,
     }),
     (req, res, next) => {
       if (req.signedCookies[PRE_AUTH_SESSION_COOKIE]) {
-        validatePreAuthSession(req, res, next);
+        s.validatePreAuthSession(req, res, next);
       } else {
-        validateSession(req, res, next);
+        s.validateSession(req, res, next);
       }
     },
-    validateCsrf,
+    c.validateCsrf,
     ctrl['handleVerifyEmail']
   );
 
   router.post(
     "/auth/verify-email/:id",
-    validateRequest({
+    r.validateRequest({
       params: paramSchema,
     }),
-    validateSession,
+    s.validateSession,
     perm['isAccountOwner'],
-    validateCsrf,
-    accountVerificationRl,
+    c.validateCsrf,
+    rl.accountVerificationRl,
     ctrl['handleInitNewEmailVerification']
   );
 };
