@@ -40,7 +40,7 @@ test.describe("user sign up flow", () => {
       await expect(page.getByText("Email verified.", { exact: true }).first()).toBeVisible();
     });
 
-    await test.step("requset is now invalid", async () => {
+    await test.step("request is now invalid", async () => {
       await page.goto(`/auth/verify-email?token=${requestToken}`);
 
       await expect(page.getByRole("heading", { name: "Request Expired" })).toBeVisible();

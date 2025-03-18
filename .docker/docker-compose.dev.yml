@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   db:
     extends:
@@ -33,6 +31,20 @@ services:
       dockerfile: ./apps/server/Dockerfile.dev
     env_file:
       - ../apps/server/.env.development
+    #environment:
+    #  RESEND_KEY: ${RESEND_KEY}
+    #  RECOVERY_EMAIL: ${RECOVERY_EMAIL}
+    #  VERIFY_EMAIL: ${VERIFY_EMAIL}
+    #  PG_URL: ${PG_URL}
+    #  REDIS_HOST: ${REDIS_HOST}
+    #  REDIS_PORT: ${REDIS_PORT}
+    #  IDLE_SESSION_LENGTH: ${IDLE_SESSION_LENGTH}
+    #  ABSOLUTE_SESSION_LENGTH: ${ABSOLUTE_SESSION_LENGTH}
+    #  PRE_AUTH_SESSION_LENGTH: ${PRE_AUTH_SESSION_LENGTH}
+    #  CSRF_SECRET: ${CSRF_SECRET}
+    #  PRE_AUTH_CSRF_SECRET: ${PRE_AUTH_CSRF_SECRET}
+    #  COOKIE_SECRET: ${COOKIE_SECRET}
+    #  SALT_ROUNDS: ${SALT_ROUNDS}
     volumes:
       - ../:/app
       - /app/node_modules

@@ -6,3 +6,4 @@ import { PG_URL } from "../config";
 
 export const queryClient = postgres(`${PG_URL}`);
 export const db = drizzle(queryClient, { schema: schema });
+//export class DrizzleService {}

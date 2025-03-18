@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { createInsertSchema } from "drizzle-zod";
-import { users, contacts, tasks, listings } from "../schema";
+import { users, contacts, tasks, listings, soldListings } from "../schema";
 
 import isEmail from "validator/lib/isEmail";
 
@@ -21,6 +21,7 @@ export const authCookieValidator = authCookieSchema.transform((schema) => ({
   "absolute-propel-session": schema["absolute-propel-session"]?.trim(),
 }));
 
+// TODO: this should not be in drizzle schema
 export const paramSchema = z
   .object({
     id: z.string(),
@@ -62,6 +63,13 @@ export const listingAndContactIDValidator = listingIDSchema.merge(contactIDSchem
   listingID: schema.listingID.trim(),
   contactID: schema.contactID.trim(),
 }));
+
+export const markSoldValidator = createInsertSchema(soldListings, {
+  contactID: (schema) => schema.contactID.positive(),
+  listingID: (schema) => schema.listingID.positive(),
+  salePrice: (schema) => schema.salePrice.trim(),
+  userID: (schema) => schema.userID.positive(),
+});
 
 export const accountRecoveryValidator = z
   .object({
@@ -265,11 +273,13 @@ export const listingQuerySchema = z
   })
   .merge(paginationSchema);
 
-export const listingSearchQuerySchema = listingQuerySchema.merge(
-  z.object({
-    address: z.string(),
-  })
-);
+export const listingSearchQuerySchema = listingQuerySchema
+  .merge(
+    z.object({
+      address: z.string(),
+    })
+  )
+  .partial();
 
 export const listingQueryValidator = listingQuerySchema.transform((schema) => ({
   page: schema.page.trim(),
@@ -278,10 +288,10 @@ export const listingQueryValidator = listingQuerySchema.transform((schema) => ({
 }));
 
 export const listingSearchQueryValidator = listingSearchQuerySchema.transform((schema) => ({
-  page: schema.page.trim(),
-  limit: schema.limit.trim(),
-  status: schema.status.trim(),
-  address: schema.address.trim(),
+  page: schema.page?.trim(),
+  limit: schema.limit?.trim(),
+  status: schema.status?.trim(),
+  address: schema.address?.trim(),
 }));
 
 export const analyticsQuerySchema = z

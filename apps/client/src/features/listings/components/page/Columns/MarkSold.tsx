@@ -90,6 +90,7 @@ export function MarkSold({
   const onSubmit = (values: MarkSoldFields): void => {
     markSold.mutate(
       {
+        // [ ]: refactor
         listingID: listingID,
         contactID: +values.contactID,
         salePrice: values.salePrice,

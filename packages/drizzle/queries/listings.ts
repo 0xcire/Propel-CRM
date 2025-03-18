@@ -84,7 +84,12 @@ export const getUserDashboardListings = async (userID: number) => {
   return userListings;
 };
 
-export const getAllUserListings = async ({ userID, page, status, limit = "10" }: getAllUserListingsParams) => {
+export const getAllUserListings = async ({
+  userID,
+  page,
+  status = "active",
+  limit = "10",
+}: getAllUserListingsParams) => {
   let userListings;
 
   if (status === "active") {
@@ -169,9 +174,16 @@ export const findContactsRelatedListings = async ({ userID, contactID }: FindCon
   return contactListings;
 };
 
-export const searchForListings = async ({ userID, address, status, page, limit }: SearchForListingsParams) => {
+export const searchForListings = async ({
+  userID,
+  address,
+  status = "active",
+  page,
+  limit = "10",
+}: SearchForListingsParams) => {
   let userListings;
 
+  // should probably use a query builder to build a query....
   if (status === "active") {
     userListings = await db
       .select(activeListingSelect)
@@ -310,6 +322,16 @@ export const findExistingLead = async (listingID: number, contactID: number) => 
   return existingLead[0];
 };
 
+export const isListingSold = async (listingID: number): Promise<boolean> => {
+  const rows = await db
+    .select()
+    .from(listings)
+    .leftJoin(soldListings, eq(listings.id, soldListings.listingID))
+    .where(eq(listings.id, listingID));
+
+  return rows.length === 1;
+};
+
 export const insertSoldListingData = async (values: NewSoldListing) => {
   const soldListing = await db.insert(soldListings).values(values).onConflictDoNothing().returning({
     listingID: soldListings.listingID,
@@ -320,6 +342,10 @@ export const insertSoldListingData = async (values: NewSoldListing) => {
   });
 
   return soldListing[0];
+};
+
+export const removeSoldListingData = async (listingID: number) => {
+  await db.delete(soldListings).where(eq(soldListings.listingID, listingID));
 };
 
 export const insertNewLead = async (listingID: number, contactID: number, createdAt?: Date) => {

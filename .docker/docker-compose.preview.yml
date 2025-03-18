@@ -1,5 +1,4 @@
 # use this to preview production build locally
-version: "3.9"
 
 services:
   db:
@@ -23,6 +22,9 @@ services:
     build:
       context: ../
       dockerfile: ./apps/client/Dockerfile
+    volumes:
+      - ../:/app
+      - /app/node_modules
     restart: always
   api:
     extends:
@@ -35,6 +37,9 @@ services:
         condition: "service_healthy"
     env_file:
       - ../apps/server/.env.development
+    volumes:
+      - ../:/app
+      - /app/node_modules
   nginx:
     extends:
       file: docker-compose.common.yml

@@ -15,6 +15,13 @@
       "when": 1707844407940,
       "tag": "0001_massive_outlaw_kid",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1711579487708,
+      "tag": "0002_flat_iron_lad",
+      "breakpoints": true
     }
   ]
 }

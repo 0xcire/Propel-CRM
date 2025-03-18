@@ -59,7 +59,7 @@ export const usersToContacts = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
     contactID: integer("contact_id")
       .notNull()
-      .references(() => contacts.id),
+      .references(() => contacts.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   },
   (table) => {

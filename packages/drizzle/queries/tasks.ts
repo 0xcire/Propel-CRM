@@ -26,13 +26,13 @@ interface GetUsersContactTasksParams extends GetUserTasksParams {
 
 type UpdateTaskByIDParams = {
   userID: number;
-  taskID: string;
+  taskID: number;
   newData: Partial<NewTask>;
 };
 
 type DeleteTaskByIDParams = {
   userID: number;
-  taskID: string;
+  taskID: number;
 };
 
 export const findTaskByID = async (id: number) => {
@@ -45,7 +45,7 @@ export const findTaskByID = async (id: number) => {
   return task[0];
 };
 
-export const getUserDashboardTasks = async ({ userID, completed, page, limit }: GetUserTasksParams) => {
+export const getUserDashboardTasks = async ({ userID, completed = "false", page, limit }: GetUserTasksParams) => {
   const userTasks = await db
     .select()
     .from(tasks)
@@ -64,7 +64,7 @@ export const getUserDashboardTasks = async ({ userID, completed, page, limit }: 
   return userTasks;
 };
 
-export const getUserTasks = async ({ userID, completed, page, priority, limit }: GetUserTasksParams) => {
+export const getUserTasks = async ({ userID, completed, page, priority, limit = "10" }: GetUserTasksParams) => {
   const userTasks = await db.query.tasks.findMany({
     where: and(
       eq(tasks.userID, userID),
@@ -87,6 +87,7 @@ export const getUsersListingTasks = async ({
   page = 1,
   priority,
   listingID,
+  limit = "10",
 }: GetUsersListingTasksParams) => {
   const userListingTasks = await db.query.tasks.findMany({
     where: and(
@@ -97,7 +98,7 @@ export const getUsersListingTasks = async ({
       isNull(tasks.contactID)
     ),
     orderBy: [desc(tasks.createdAt)],
-    limit: 10,
+    limit: +limit,
     ...(page && { offset: (page - 1) * 10 }),
   });
 
@@ -110,6 +111,7 @@ export const getUsersContactTasks = async ({
   page = 1,
   priority,
   contactID,
+  limit = "10",
 }: GetUsersContactTasksParams) => {
   const userContactTasks = await db.query.tasks.findMany({
     where: and(
@@ -120,14 +122,20 @@ export const getUsersContactTasks = async ({
       eq(tasks.contactID, contactID)
     ),
     orderBy: [desc(tasks.createdAt)],
-    limit: 10,
+    limit: +limit,
     ...(page && { offset: (page - 1) * 10 }),
   });
 
   return userContactTasks;
 };
 
-export const searchForTasks = async ({ userID, completed, title, page, limit }: SearchForTasksParams) => {
+export const searchForTasks = async ({
+  userID,
+  completed = "false",
+  title,
+  page,
+  limit = "10",
+}: SearchForTasksParams) => {
   const userTasks = await db
     .select()
     .from(tasks)
@@ -154,7 +162,6 @@ export const insertNewTask = async (task: NewTask) => {
     notes: tasks.notes,
     dueDate: tasks.dueDate,
     completed: tasks.completed,
-
     priority: tasks.priority,
   });
 
@@ -196,7 +203,7 @@ export const updateTaskByID = async ({ userID, taskID, newData }: UpdateTaskByID
           }
         : {}),
     })
-    .where(and(eq(tasks.id, +taskID), eq(tasks.userID, userID)))
+    .where(and(eq(tasks.id, taskID), eq(tasks.userID, userID)))
     .returning({
       id: tasks.id,
       title: tasks.title,
@@ -213,7 +220,7 @@ export const updateTaskByID = async ({ userID, taskID, newData }: UpdateTaskByID
 export const deleteTaskByID = async ({ userID, taskID }: DeleteTaskByIDParams) => {
   const deletedTask = await db
     .delete(tasks)
-    .where(and(eq(tasks.id, +taskID), eq(tasks.userID, userID)))
+    .where(and(eq(tasks.id, taskID), eq(tasks.userID, userID)))
     .returning({ id: tasks.id });
 
   if (deletedTask.length === 0) {

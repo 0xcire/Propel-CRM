@@ -16,6 +16,9 @@ export default defineConfig({
   build: {
     sourcemap: 'hidden',
   },
+  server: {
+    allowedHosts: ['client']
+  },
   test: {
     globals: true,
     environment: 'jsdom',

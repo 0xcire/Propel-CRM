@@ -4,11 +4,15 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 // import { sql } from "drizzle-orm";
-import router from "./router";
-import { COOKIE_SECRET, ENV } from "./config";
+import router from "./common/router";
+import { COOKIE_SECRET, NODE_ENV } from "./common/config";
+// import { pino } from "./common/logger";
+// import { d } from "./config/config-validator";
 
 const app = express();
-app.set("trust proxy", true);
+app.set("trust proxy", 1);
+
+// app.use(pino())
 
 app.use(
   helmet({
@@ -31,16 +35,19 @@ app.use(compression());
 
 app.use(
   cors({
-    origin: "https://propel-crm.xyz",
+    origin: "https://propel-crm.cire.sh",
     credentials: true,
-    preflightContinue: true,
-    // exposedHeaders: [""],
+    // preflightContinue: true,
+    exposedHeaders: ["X-PROPEL-CSRF"],
+    allowedHeaders: ["Content-Type", "X-PROPEL-CSRF"],
   })
 );
 
+// validateConfig(configStore);
+
 const PORT = 1337;
 app.listen(PORT, () => {
-  if (ENV === "development") {
+  if (NODE_ENV === "development") {
     console.log(`DOCKER: http://localhost:8080 \n NON-DOCKER: http://localhost:5173`);
   } else {
     console.log("running in prod");

@@ -22,4 +22,4 @@ RUN npm install
 COPY --from=prune /app/out/full/ .
 COPY turbo.json turbo.json
 
-CMD npx turbo dev --scope=client
+CMD npx turbo dev --filter=client

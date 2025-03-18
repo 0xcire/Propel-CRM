@@ -2,57 +2,23 @@
 
 A CRM for real estate agents.
 
-- [Related resources](./RESOURCES.md)
-- [Roadmap](./ROADMAP.md)
+- [Related resources](./docs/RESOURCES.md)
+- [Roadmap](./docs/ROADMAP.md)
+- [Features](./docs/FEATURES.md)
+- [Thoughts after ~1 year](./docs/THOUGHTS.md)
 
-## Features
+## Important Note
 
-- Production ready Docker configuration
-  - Nginx rate limiting, SSL, proxy
-- Session based cookie authentication
-  - password salt & hashing w/ bcrypt
-  - Login in rate limiting via email
-  - Client side idle timeout reset notifications
-- Dashboard overview of recent listings, contacts, tasks, and analytics
+Some parts of this app are hilariously poorly designed, which I did not come to realize until I got a job
 
-- Protected routes on client only shown when valid user data is returned from server
+- Env configuration
+  - includes docker config
+- I forced a monorepo for client + server just for e2e tests which I am likely to never do again
+   - would consider monorepo for all client apps, and another for all apis or something similar though
+- "Pre Auth" in my own-rolled auth service was not required here
 
-- Listings, Contacts, & Tasks page that show user data in a searchable, filterable & paginated table
-
-  - Contacts searchable by name
-  - tasks filterable by priority
-  - listings by status (active or sold)
-
-  - each row contains a dropdown menu to perform full CRUD operations on that entity & manage potential relationships w/ other data
-    - Add lead (contact) to a listing
-    - mark listings as sold to specific lead @ specified price
-    - add listing & contact specific tasks
-
-- Analytics page that shows the following for a specified time frame:
-
-  - Sales volume & total sales volume
-  - GCI
-  - average days to close lead
-  - average days on market
-  - sale to list ratio
-
-- Debouncing on search queries to minimize amount of requests made
-
-- Playwright e2e tests
-
-- Email service to verify account email, recover account password and create / send analytics reports ( WIP )
-
-- Authentication & Security (following OWASP standards)
-
-  - XSS validation
-  - CSRF protection using the cookie to header pattern
-  - Idle / Absolute session management
-  - (to implement) authentication in terms of secure password resets, etc
-
-- Shell scripts to automate build processes
-  - build/deploy docker images
-  - sync client build with s3 and invalidate
-  - package docker compose and .ebextensions in zip file for server deployment
+Service was previously all on aws
+Free plan ran out and wanted to learn more so now this is deployed on a VPS 
 
 ## Architecture
 
@@ -74,7 +40,14 @@ A CRM for real estate agents.
 - Node
 - Express
 
+### Testing
+
+- Jest
+- Playwright
+- SuperTest
+
 ### Database
+
 
 - Redis
 - PostgreSQL on [Neon](https://neon.tech/)
@@ -121,7 +94,12 @@ open up `http://localhost:5173/` in your browser
 
 ## Running Tests
 
-- run `npm run test:local --workspace=e2e`
+in root dir:
+
+- for e2e: run `npm run test:local --workspace=e2e`
+- for server unit & integration tests: run `npm run test --workspace=server`
+  - ensure you initialize preview env with `npm run preview` beforehand &
+  - seed local db with `npm run migrate:local --workspace=@propel/drizzle && npm run seed:local --workspace=@propel/drizzle` if not done so already
 
 ## Interacting with DB via Drizzle
 
@@ -188,6 +166,13 @@ see more drizzle specific commands [here](https://orm.drizzle.team/kit-docs/comm
 
 - Also had trouble initially wrapping my head around SQL aggregate functions when creating the analytics view
 
+- API testing strategy & openAPI
+
+  - while not a replacement, currently using Supertest as a way to test & "document" api functionality
+  - could look to refactor backend with Tsoa, Nest, Deepkit, etc to generate openAPI docs in the future
+    - an example of me doing so with Tsoa can be seen [here](https://github.com/0xcire/sentinel-vacation-rentals)
+  - these tests do not run in CI, they run in husky pre-push
+
 - e2e testing strategy
 
   - hesitancy on exactly how to run tests in CI
@@ -227,5 +212,6 @@ see more drizzle specific commands [here](https://orm.drizzle.team/kit-docs/comm
   - Using some serverless providers in Upstash & Neon, could rearchitect express app/infra to run serverless.
 
 - Monorepo architecture
+
   - ran into instances where I realized some code sharing (especially for e2e testing)
   - Had I planned for this from the start, I think I would have gone with Nx, however, a migration using turborepo seemed more straightforward

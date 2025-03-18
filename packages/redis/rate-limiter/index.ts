@@ -1,26 +1,40 @@
 import { RateLimiterRedis } from "rate-limiter-flexible";
 import { redisClient } from "../client";
 
-export const maxConsecutiveFailsByEmail = 5;
-const TWO_HOURS = 60 * 60 * 2;
+const maxPoints = 5;
 const _15_MINUTES = 60 * 15;
 
-export const limiterConsecutiveFailsByEmail = new RateLimiterRedis({
+// this should just be some wrapper class i init with params
+
+export const limiterByUserIDForAccountVerification = new RateLimiterRedis({
   storeClient: redisClient,
-  keyPrefix: "limit_by_email",
-  points: maxConsecutiveFailsByEmail,
-  duration: TWO_HOURS,
-  blockDuration: _15_MINUTES,
+  keyPrefix: "user_id_verification",
+  points: maxPoints,
+  duration: _15_MINUTES,
 });
 
-export const getRateLimiter = async (email: string) => {
-  return await limiterConsecutiveFailsByEmail.get(email);
+export const limiterByEmailForAccountRecovery = new RateLimiterRedis({
+  storeClient: redisClient,
+  keyPrefix: "email_recovery",
+  points: maxPoints,
+  duration: _15_MINUTES,
+});
+
+export const limiterByEmailForSignIn = new RateLimiterRedis({
+  storeClient: redisClient,
+  keyPrefix: "email_signin",
+  points: maxPoints,
+  duration: _15_MINUTES,
+});
+
+export const getRateLimiter = async (limiter: RateLimiterRedis, identifier: string) => {
+  return await limiter.get(identifier);
 };
 
-export const consumeRateLimitPoint = async (email: string) => {
-  await limiterConsecutiveFailsByEmail.consume(email);
+export const consumeRateLimitPoint = async (limiter: RateLimiterRedis, identifier: string) => {
+  await limiter.consume(identifier);
 };
 
-export const deleteRateLimit = async (email: string) => {
-  await limiterConsecutiveFailsByEmail.delete(email);
+export const deleteRateLimit = async (limiter: RateLimiterRedis, identifier: string) => {
+  await limiter.delete(identifier);
 };

@@ -1,6 +1,6 @@
 # TODO: dumb-init in gcr distroless?
 
-FROM node:20-bullseye-slim as base
+FROM node:20-bullseye-slim AS base
 
 # ----- prune -----
 
@@ -13,7 +13,7 @@ RUN turbo prune server --docker
 
 # ----- build -----
 
-FROM base as build-stage
+FROM base AS build-stage
 
 WORKDIR /app
 
@@ -25,11 +25,11 @@ RUN npm install
 COPY --from=prune /app/out/full/ .
 COPY turbo.json turbo.json
 
-RUN npx turbo build --filter=server...
+RUN npx turbo build --filter=server... --no-cache
 
 # ----- production dependencies -----
 
-FROM base as prod-deps
+FROM base AS prod-deps
 
 WORKDIR /app
 COPY --from=prune /app/out/json/ .
@@ -46,11 +46,20 @@ RUN npm install --omit=dev --workspace=server
 
 # ----- runner -----
 
-FROM gcr.io/distroless/nodejs20-debian11
+FROM base as runner
 
 COPY --chown=node:node --from=prod-deps /app ./app
 EXPOSE 1337
 WORKDIR /app/apps/server
 
 ENV NODE_ENV="production"
-CMD ["index.js"]
+CMD ["node", "index.js"]
+
+# FROM gcr.io/distroless/nodejs20-debian11
+# 
+# COPY --chown=node:node --from=prod-deps /app ./app
+# EXPOSE 1337
+# WORKDIR /app/apps/server
+# 
+# ENV NODE_ENV="production"
+# CMD ["index.js"]

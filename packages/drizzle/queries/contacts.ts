@@ -49,7 +49,7 @@ export const getUserDashboardContacts = async (userID: number) => {
   return userContacts;
 };
 
-export const getUsersContacts = async (userID: number, page: number, limit: Limit) => {
+export const getUsersContacts = async (userID: number, page: number, limit: Limit = "10") => {
   const userContactJoin = await db
     .select()
     .from(usersToContacts)
@@ -64,7 +64,7 @@ export const getUsersContacts = async (userID: number, page: number, limit: Limi
   return userContacts;
 };
 
-export const searchForContacts = async ({ userID, name, page, limit }: SearchForContactsParams) => {
+export const searchForContacts = async ({ userID, name, page, limit = "10" }: SearchForContactsParams) => {
   const query = db
     .select({
       id: contacts.id,
@@ -89,7 +89,7 @@ export const searchForContacts = async ({ userID, name, page, limit }: SearchFor
 };
 
 export const findContactByID = async (contactID: number, userID: number) => {
-  let contact = await db
+  const contact = await db
     .select({
       id: contacts.id,
       name: contacts.name,
@@ -112,6 +112,7 @@ export const findContactByID = async (contactID: number, userID: number) => {
 export const updateContactByID = async ({ contactID, inputs }: UpdateContactByIDParams) => {
   const updatedContact = await db
     .update(contacts)
+    // this is disgusting.
     .set({
       ...(inputs.name
         ? {
