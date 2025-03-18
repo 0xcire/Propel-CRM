@@ -38,17 +38,15 @@ export const findUsersByEmail = async ({
   }
   | undefined
 > => {
-  const findUsersByEmailSql = sql`
-      SELECT 
-        ${users.id},
-        ${users.email}
-      ${signingIn ? `${users.username}, ${users.hashedPassword}` : ','}
-      FROM ${users} 
-      WHERE 
-        ${users.email} = ${email}
-    `;
-
-  console.log('LORENZO', findUsersByEmailSql)
+  //const findUsersByEmailSql = sql`
+  //    SELECT 
+  //      ${users.id},
+  //      ${users.email}
+  //    ${signingIn ? `${users.username}, ${users.hashedPassword}` : ','}
+  //    FROM ${users} 
+  //    WHERE 
+  //      ${users.email} = ${email}
+  //  `;
 
   // await db.execute(findUsersByEmailSql)
   const user = await db

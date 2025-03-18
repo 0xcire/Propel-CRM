@@ -9,7 +9,16 @@ A CRM for real estate agents.
 
 ## Important Note
 
-<!-- This app was built in two parts - if you will. Part 1 - me being absolutely clueless, kind of just stumbling overmyself. Part 2 - as I was able to leverage this \*\*\* afpp into a job, I quickly learnt how terrible I truly was. And mainly the (link merge here) can show a lot of improvements I made server-side as a result of the lessons I learnt at my first job!! Also - not re-built into Next/Nest as I want to build a different application using this stack! -->
+Some parts of this app are hilariously poorly designed, which I did not come to realize until I got a job
+
+- Env configuration
+  - includes docker config
+- I forced a monorepo for client + server just for e2e tests which I am likely to never do again
+   - would consider monorepo for all client apps, and another for all apis or something similar though
+- "Pre Auth" in my own-rolled auth service was not required here
+
+Service was previously all on aws
+Free plan ran out and wanted to learn more so now this is deployed on a VPS 
 
 ## Architecture
 

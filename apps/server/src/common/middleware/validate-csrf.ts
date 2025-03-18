@@ -26,8 +26,8 @@ export class ValidateCsrfMiddleware {
 
       if (isDeployed(req)) {
         if (
-          req.get("Referer") !== "https://propel-crm.xyz/" &&
-          req.get("origin") !== "https://propel-crm.xyz"
+          req.get("Referer") !== "https://propel-crm.cire.sh/" &&
+          req.get("origin") !== "https://propel-crm.cire.sh"
         ) {
           throw new PropelHTTPError({
             code: "BAD_REQUEST",

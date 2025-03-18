@@ -47,13 +47,13 @@ export class ValidateSessionMiddleware {
           res.clearCookie(IDLE_SESSION_COOKIE, {
             path: "/",
             // TODO: make this env var
-            domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
+            domain: isDeployed(req) ? ".cire.sh" : undefined,
             sameSite: "lax",
           });
 
           res.clearCookie("idle", {
             path: "/",
-            domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
+            domain: isDeployed(req) ? ".cire.sh" : undefined,
             sameSite: "lax",
           });
 
@@ -77,13 +77,13 @@ export class ValidateSessionMiddleware {
           await deleteRedisKV(absoluteSession);
           res.clearCookie(ABSOLUTE_SESSION_COOKIE, {
             path: "/",
-            domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
+            domain: isDeployed(req) ? ".cire.sh" : undefined,
             sameSite: "lax",
           });
 
           res.clearCookie(CSRF_COOKIE, {
             path: "/",
-            domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
+            domain: isDeployed(req) ? ".cire.sh" : undefined,
             sameSite: "lax",
           });
         }
@@ -130,7 +130,7 @@ export class ValidateSessionMiddleware {
           maxAge: +(IDLE_SESSION_LENGTH as string),
           httpOnly: false,
           sameSite: "lax",
-          domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
+          domain: isDeployed(req) ? ".cire.sh" : undefined,
           secure: true,
         });
       }
@@ -188,7 +188,7 @@ export class ValidateSessionMiddleware {
           secure: true,
           signed: false,
           sameSite: "lax",
-          domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
+          domain: isDeployed(req) ? ".cire.sh" : undefined,
           maxAge: +(PRE_AUTH_SESSION_LENGTH as string),
         }
       );

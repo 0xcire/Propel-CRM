@@ -19,7 +19,7 @@ export const createSecureCookie = (req: Request, { res, name, value, age }: Crea
     httpOnly: true,
     secure: true,
     sameSite: "lax",
-    domain: isDeployed(req) ? "propel-crm.xyz" : undefined,
+    domain: isDeployed(req) ? ".cire.sh" : undefined,
     signed: true,
   });
 };

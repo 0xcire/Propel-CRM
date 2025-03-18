@@ -10,7 +10,7 @@ import { COOKIE_SECRET, NODE_ENV } from "./common/config";
 // import { d } from "./config/config-validator";
 
 const app = express();
-app.set("trust proxy", true);
+app.set("trust proxy", 1);
 
 // app.use(pino())
 
@@ -35,10 +35,11 @@ app.use(compression());
 
 app.use(
   cors({
-    origin: "https://propel-crm.xyz",
+    origin: "https://propel-crm.cire.sh",
     credentials: true,
-    preflightContinue: true,
-    // exposedHeaders: [""],
+    // preflightContinue: true,
+    exposedHeaders: ["X-PROPEL-CSRF"],
+    allowedHeaders: ["Content-Type", "X-PROPEL-CSRF"],
   })
 );
 

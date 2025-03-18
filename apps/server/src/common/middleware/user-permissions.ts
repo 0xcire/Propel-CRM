@@ -29,7 +29,6 @@ export class UserPermissionsMiddleware implements IUserPermissionsMiddleware {
       }
       next();
     } catch (error) {
-      console.log(error);
       return handleError(error, res);
     }
   }
