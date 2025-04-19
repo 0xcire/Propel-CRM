@@ -13,8 +13,8 @@ Some parts of this app are hilariously poorly designed, which I did not come to 
 
 - Env configuration
   - includes docker config
-- I forced a monorepo for client + server just for e2e tests which I am likely to never do again
-   - would consider monorepo for all client apps, and another for all apis or something similar though
+- Monorepo design would need to be slightly re-thought if I wanted to go down that route.
+  - tradeoffs maybe not worth it when self hosting own architecture vs. using SaaS products. Depends.
 - "Pre Auth" in my own-rolled auth service was not required here
 
 Service was previously all on aws
