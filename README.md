@@ -14,7 +14,6 @@ Some parts of this app are hilariously poorly designed, which I did not come to 
 - Env configuration
   - includes docker config
 - Monorepo design would need to be slightly re-thought if I wanted to go down that route.
-  - tradeoffs maybe not worth it when self hosting own architecture vs. using SaaS products. Depends.
 - "Pre Auth" in my own-rolled auth service was not required here
 
 Service was previously all on aws
